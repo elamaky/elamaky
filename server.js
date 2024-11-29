@@ -30,16 +30,13 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-// Lista autorizovanih korisnika i banovanih korisnika
-const authorizedUsers = new Set(['Radio Galaksija', 'ZI ZU', '__X__']);
-const bannedUsers = new Set();
-
 // Skladištenje informacija o gostima
 const guests = {};
 const assignedNumbers = new Set(); // Set za generisane brojeve
+const authorizedUsers = new Set(['Radio Galaksija', 'ZI ZU', '__X__']); // Dodaj autorizovane korisnike
 
 // Dodavanje socket događaja iz banmodula
-setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
+setupSocketEvents(io, guests); // Dodavanje guests u banmodul
 
 // Socket.io događaji
 io.on('connection', (socket) => {
@@ -74,10 +71,11 @@ io.on('connection', (socket) => {
             italic: msgData.italic,
             color: msgData.color,
             nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
-            time: time,
+            time: time
+        };
 
-          // Spremi IP, poruku i nickname u fajl
-        saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);  
+        // Spremi IP, poruku i nickname u fajl
+        saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
         
         io.emit('chatMessage', messageToSend);
     });
