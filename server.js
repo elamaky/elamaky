@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
     // Obrada prijave korisnika
     socket.on('userLoggedIn', async (username) => {
         if (authorizedUsers.has(username)) {
-            guests[socket.id] = `${username} (Admin)`; // Ako je admin
+            guests[socket.id] = username; // Ne dodajemo (Admin) oznaku
             console.log(`${username} je autentifikovan kao admin.`);
         } else {
             guests[socket.id] = username; // Ako je običan gost
@@ -76,7 +76,7 @@ io.on('connection', (socket) => {
             nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
             time: time,
         };
-         // Spremi IP, poruku i nickname u fajl
+        // Spremi IP, poruku i nickname u fajl
         saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
         
         io.emit('chatMessage', messageToSend);
