@@ -6,6 +6,7 @@ const { register, login } = require('./prijava');
 const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodula
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const { saveIpData, getIpData } = require('./ip'); // Uvozimo ip.js
+const { ensureRadioGalaksijaAtTop } = require('./sitnice');
 const pingService = require('./ping');
 require('dotenv').config();
 
@@ -51,6 +52,7 @@ io.on('connection', (socket) => {
 
     // Emitovanje događaja da bi ostali korisnici videli novog gosta
     socket.broadcast.emit('newGuest', nickname);
+    const updatedGuests = ensureRadioGalaksijaAtTop(guests);
     io.emit('updateGuestList', Object.values(guests));
 
     // Obrada prijave korisnika
