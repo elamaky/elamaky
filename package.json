@@ -30,6 +30,8 @@
     "socket.io": "^4.8.1",
     "uuid": "^8.0.0",
      "ws": "^8.18.0"
+    "moment-timezone": "^0.5.34"
+
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
