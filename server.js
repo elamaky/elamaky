@@ -4,6 +4,8 @@ const socketIo = require('socket.io');
 const { connectDB } = require('./mongo');
 const { register, login } = require('./prijava');
 const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodula
+const { listenForUserLogin } = require('./stream');
+const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const pingService = require('./ping');
 require('dotenv').config();
 
@@ -16,6 +18,8 @@ connectDB(); // Povezivanje na bazu podataka
 // Middleware za parsiranje JSON podataka i serviranje statičkih fajlova
 app.use(express.json());
 app.use(express.static(__dirname + '/public'));
+app.use('/guests', uuidRouter); // Dodavanje ruta u aplikaciju
+app.set('trust proxy', true);
 
 // Rute za registraciju i prijavu
 app.post('/register', (req, res) => register(req, res, io));
@@ -25,6 +29,9 @@ app.post('/login', (req, res) => login(req, res, io));
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
+
+// Pozovi funkciju koja osluškuje login korisnika i pokreće strim
+listenForUserLogin(io);
 
 // Lista autorizovanih korisnika i banovanih korisnika
 const authorizedUsers = new Set(['Radio Galaksija', 'ZI ZU', '__X__']);
