@@ -33,10 +33,10 @@ app.get('/', (req, res) => {
 // Skladištenje informacija o gostima
 const guests = {};
 const assignedNumbers = new Set(); // Set za generisane brojeve
-const authorizedUsers = new Set(['Radio Galaksija', 'ZI ZU', '__X__']); // Dodaj autorizovane korisnike
+const bannedUsers = new Set(); // Set za banovane korisnike
 
 // Dodavanje socket događaja iz banmodula
-setupSocketEvents(io, guests); // Dodavanje guests u banmodul
+setupSocketEvents(io, guests, bannedUsers); // Prosleđujemo bannedUsers
 
 // Socket.io događaji
 io.on('connection', (socket) => {
@@ -87,17 +87,15 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-    // Mogućnost banovanja korisnika prema nickname-u
-    socket.on('banUser', (nicknameToBan) => {
-        const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
-
-        if (socketIdToBan) {
+    // Mogućnost banovanja korisnika prema socket.id
+    socket.on('banUser', (socketIdToBan) => {
+        if (bannedUsers.has(socketIdToBan)) {
             io.to(socketIdToBan).emit('banned');
             io.sockets.sockets[socketIdToBan].disconnect();
-            console.log(`Korisnik ${nicknameToBan} (ID: ${socketIdToBan}) je banovan.`);
+            console.log(`Korisnik sa ID ${socketIdToBan} je banovan.`);
         } else {
-            console.log(`Korisnik ${nicknameToBan} nije pronađen.`);
-            socket.emit('userNotFound', nicknameToBan);
+            console.log(`Korisnik sa ID ${socketIdToBan} nije pronađen.`);
+            socket.emit('userNotFound', socketIdToBan);
         }
     });
 
