@@ -6,7 +6,7 @@ const { register, login } = require('./prijava');
 const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodula
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const { saveIpData, getIpData } = require('./ip'); // Uvozimo ip.js
-const { ensureRadioGalaksijaAtTop, handleChatMessage } = require('./sitnice'); // Uvoz funkcije iz sitnice.js
+const { ensureRadioGalaksijaAtTop } = require('./sitnice'); // Uvoz funkcije iz sitnice.js
 const pingService = require('./ping');
 require('dotenv').config();
 
@@ -44,14 +44,11 @@ setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u 
 
 // Socket.io događaji
 io.on('connection', (socket) => {
-    const ipAddress = socket.handshake.address; // Dobijamo IP adresu korisnika
-    saveIpData(socket.id, ipAddress); // Sačuvaj IP adresu u bazu ili neki drugi storage
-
     // Generisanje jedinstvenog broja za gosta
     const uniqueNumber = generateUniqueNumber();
     const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
     guests[socket.id] = nickname; // Dodajemo korisnika u guest list
-    console.log(`${nickname} se povezao sa IP adresom: ${ipAddress}`);
+    console.log(`${nickname} se povezao.`);
 
     // Ažuriranje liste gostiju
     const updatedGuests = ensureRadioGalaksijaAtTop(guests);  
@@ -59,7 +56,7 @@ io.on('connection', (socket) => {
 
     // Emitovanje događaja da bi ostali korisnici videli novog gosta
     socket.broadcast.emit('newGuest', nickname);
-    io.emit('updateGuestList', updatedGuests);  // Emituj ažuriranu listu
+    io.emit('updateGuestList', updatedGuests);  // Emituj ažuriranu listu, ne Object.values(guests)
 
     // Obrada prijave korisnika
     socket.on('userLoggedIn', async (username) => {
@@ -75,7 +72,19 @@ io.on('connection', (socket) => {
 
     // Obrada slanja poruka u četu
     socket.on('chatMessage', (msgData) => {
-        handleChatMessage(io, socket, msgData); // Pozivanje funkcije sa socketom
+        const time = new Date().toLocaleTimeString();
+        const messageToSend = {
+            text: msgData.text,
+            bold: msgData.bold,
+            italic: msgData.italic,
+            color: msgData.color,
+            nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
+            time: time,
+        };
+        // Spremi IP, poruku i nickname u fajl
+        saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
+        
+        io.emit('chatMessage', messageToSend);
     });
 
     // Obrada diskonekcije korisnika
