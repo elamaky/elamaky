@@ -6,6 +6,7 @@ const { register, login } = require('./prijava');
 const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodula
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const { saveIpData, getIpData } = require('./ip'); // Uvozimo ip.js
+const { ensureRadioGalaksijaAtTop } = require('./sitnice'); // Uvoz funkcije iz sitnice.js
 const pingService = require('./ping');
 require('dotenv').config();
 
