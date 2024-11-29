@@ -4,7 +4,6 @@ const socketIo = require('socket.io');
 const { connectDB } = require('./mongo');
 const { register, login } = require('./prijava');
 const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodula
-const { listenForUserLogin } = require('./stream');
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const pingService = require('./ping');
 require('dotenv').config();
@@ -29,9 +28,6 @@ app.post('/login', (req, res) => login(req, res, io));
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
-
-// Pozovi funkciju koja osluškuje login korisnika i pokreće strim
-listenForUserLogin(io);
 
 // Lista autorizovanih korisnika i banovanih korisnika
 const authorizedUsers = new Set(['Radio Galaksija', 'ZI ZU', '__X__']);
