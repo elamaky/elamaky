@@ -13,7 +13,7 @@ function ensureRadioGalaksijaAtTop(guests) {
 }
 
 // Funkcija koja se poziva prilikom slanja poruka
-function handleChatMessage(socket, msgData) {
+function handleChatMessage(io, socket, msgData) {
     // Ignoriši ako je poruka identična
     if (lastMessages[socket.id] === msgData.text) return;
     lastMessages[socket.id] = msgData.text; // Sačuvaj novu poruku
@@ -43,11 +43,13 @@ function handleChatMessage(socket, msgData) {
 }
 
 // Registracija događaja kada korisnik pošalje poruku
-socket.on('chatMessage', (msgData) => {
-    handleChatMessage(socket, msgData);
-});
+// Ovaj deo će biti pozvan iz server.js kada se koristi socket
+// socket.on('chatMessage', (msgData) => {
+//     handleChatMessage(io, socket, msgData);
+// });
 
-// Eksport funkcije
+// Eksport funkcija koje želimo koristiti u serveru
 module.exports = {
-    ensureRadioGalaksijaAtTop
+    ensureRadioGalaksijaAtTop,
+    handleChatMessage
 };
