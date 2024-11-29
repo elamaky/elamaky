@@ -75,7 +75,10 @@ io.on('connection', (socket) => {
             color: msgData.color,
             nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
             time: time,
-        };
+
+          // Spremi IP, poruku i nickname u fajl
+        saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);  
+        
         io.emit('chatMessage', messageToSend);
     });
 
