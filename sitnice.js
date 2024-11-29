@@ -1,4 +1,4 @@
-const moment = require('moment-timezone'); // Uveri se da si instalirao moment-timezone
+const moment = require('moment-timezone');
 const lastMessages = {}; // Objekat za čuvanje poslednjih poruka
 
 function ensureRadioGalaksijaAtTop(guests) {
