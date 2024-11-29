@@ -50,11 +50,16 @@ io.on('connection', (socket) => {
     guests[socket.id] = nickname; // Dodajemo korisnika u guest list
     console.log(`${nickname} se povezao.`);
 
+    // Ažuriranje liste gostiju
+    const updatedGuests = ensureRadioGalaksijaAtTop(guests);  
+    io.emit('updateGuestList', updatedGuests);  // Emituj ažuriranu listu
+
     // Emitovanje događaja da bi ostali korisnici videli novog gosta
     socket.broadcast.emit('newGuest', nickname);
-    io.emit('updateGuestList', Object.values(guests));
+    io.emit('updateGuestList', updatedGuests);  // Emituj ažuriranu listu, ne Object.values(guests)
+});
 
-    // Obrada prijave korisnika
+  // Obrada prijave korisnika
     socket.on('userLoggedIn', async (username) => {
         if (authorizedUsers.has(username)) {
             guests[socket.id] = username; // Ne dodajemo (Admin) oznaku
