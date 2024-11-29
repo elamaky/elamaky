@@ -51,15 +51,13 @@ io.on('connection', (socket) => {
     console.log(`${nickname} se povezao.`);
 
     // Ažuriranje liste gostiju
-    const updatedGuests = ensureRadioGalaksijaAtTop(guests);  
+    const updatedGuests = ensureRadioGalaksijaAtTop(guests);
     io.emit('updateGuestList', updatedGuests);  // Emituj ažuriranu listu
 
     // Emitovanje događaja da bi ostali korisnici videli novog gosta
     socket.broadcast.emit('newGuest', nickname);
-    io.emit('updateGuestList', updatedGuests);  // Emituj ažuriranu listu, ne Object.values(guests)
-});
 
-  // Obrada prijave korisnika
+    // Obrada prijave korisnika
     socket.on('userLoggedIn', async (username) => {
         if (authorizedUsers.has(username)) {
             guests[socket.id] = username; // Ne dodajemo (Admin) oznaku
@@ -84,7 +82,7 @@ io.on('connection', (socket) => {
         };
         // Spremi IP, poruku i nickname u fajl
         saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
-        
+
         io.emit('chatMessage', messageToSend);
     });
 
