@@ -1,18 +1,22 @@
-const { exec } = require('child_process');
+const ButtClient = require('buttjs');
 
 // Funkcija za startovanje strima
 function startStream(username) {
   if (username === 'Radio Galaksija') {
     console.log(`Pokrećem strim za: ${username}`);  // Dodaj log za proveru da li je funkcija pozvana
 
-    // Pokreće BUTT u pozadini, bez GUI
-    exec('butt --nogui --stream-url=http://link.zeno.fm:80/krdfduyswxhtv --stream-name="Radio Galaksija" --user-name=source --password=hoRXuevt', (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Exec error: ${error}`);
+    // Postavi IP adresu i port (ako je potrebno promeniti)
+    let host = "127.0.0.1";
+    let port = 1256;
+    let client = new ButtClient(host, port);
+
+    // Pokreći strim
+    client.startStreaming((err, _) => {
+      if (err) {
+        console.error("Greška pri pokretanju strima: ", err);
         return;
       }
-      console.log(`Strim za Radio Galaksija je započet: ${stdout}`);
-      console.error(`stderr: ${stderr}`);
+      console.log("Strim je uspešno pokrenut.");
     });
   }
 }
