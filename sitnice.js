@@ -1,5 +1,6 @@
 const moment = require('moment-timezone');
 const lastMessages = {}; // Objekat za čuvanje poslednjih poruka
+const userFormatting = {}; // Objekat za čuvanje opcija formatiranja korisnika
 
 // Funkcija za obezbeđivanje da 'Radio Galaksija' bude na vrhu liste gostiju
 function ensureRadioGalaksijaAtTop(guests) {
@@ -12,11 +13,45 @@ function ensureRadioGalaksijaAtTop(guests) {
     return guestList;
 }
 
+// Funkcija za primenu formatiranja
+function applyFormatting(userId, message) {
+    const formatting = userFormatting[userId] || {};
+
+    if (formatting.underline) {
+        message = `<u>${message}</u>`;
+    }
+    if (formatting.overline) {
+        message = `<span style="text-decoration: overline;">${message}</span>`;
+    }
+
+    return message;
+}
+
 // Funkcija koja se poziva prilikom slanja poruka
 function handleChatMessage(io, socket, msgData) {
+    const userId = socket.id;
+
     // Ignoriši ako je poruka identična
-    if (lastMessages[socket.id] === msgData.text) return;
-    lastMessages[socket.id] = msgData.text; // Sačuvaj novu poruku
+    if (lastMessages[userId] === msgData.text) return;
+    lastMessages[userId] = msgData.text; // Sačuvaj novu poruku
+
+    // Obrada #l ili #L komande za uključivanje/isključivanje underline
+    if (msgData.text.trim().toLowerCase() === '#l') {
+        userFormatting[userId] = {
+            ...userFormatting[userId],
+            underline: !userFormatting[userId]?.underline,
+        };
+        return;
+    }
+
+    // Obrada #u ili #U komande za uključivanje/isključivanje overline
+    if (msgData.text.trim().toLowerCase() === '#u') {
+        userFormatting[userId] = {
+            ...userFormatting[userId],
+            overline: !userFormatting[userId]?.overline,
+        };
+        return;
+    }
 
     // Obrada #n komande
     if (msgData.text.includes('#n')) {
@@ -25,13 +60,15 @@ function handleChatMessage(io, socket, msgData) {
         io.emit('chatMessage', message);
     }
 
-    // Emituj originalnu poruku
-    io.emit('chatMessage', msgData.text);
+    // Formatiraj i emituj poruku
+    const formattedMessage = applyFormatting(userId, msgData.text);
+    io.emit('chatMessage', formattedMessage);
 
     // Dupliranje poruke ako završava sa #
     if (msgData.text.endsWith('#')) {
         const duplicateMessage = msgData.text.slice(0, -1); // Ukloni #
-        io.emit('chatMessage', duplicateMessage); // Emituj duplu poruku
+        const formattedDuplicateMessage = applyFormatting(userId, duplicateMessage);
+        io.emit('chatMessage', formattedDuplicateMessage); // Emituj duplu poruku
     }
 
     // Ako korisnik pošalje #g
@@ -42,14 +79,7 @@ function handleChatMessage(io, socket, msgData) {
     }
 }
 
-// Registracija događaja kada korisnik pošalje poruku
-// Ovaj deo će biti pozvan iz server.js kada se koristi socket
-// socket.on('chatMessage', (msgData) => {
-//     handleChatMessage(io, socket, msgData);
-// });
-
-// Eksport funkcija koje želimo koristiti u serveru
 module.exports = {
     ensureRadioGalaksijaAtTop,
-    handleChatMessage
+    handleChatMessage,
 };
