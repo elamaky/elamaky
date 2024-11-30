@@ -43,25 +43,20 @@ document.getElementById('deleteChatBtn').onclick = function() {
 let isPrivateChatActive = false; // Privatni chat status
 let currentPrivateRecipient = null; // Trenutni privatni primalac
 
+// Funkcija za aktiviranje privatnog chata
 document.getElementById('privateChatBtn').onclick = function() {
-    isPrivateChatActive = !isPrivateChatActive; // Prebaci privatni chat
-    if (isPrivateChatActive) {
-        alert('Privatni chat je uključen za sve!');
+    if (currentPrivateRecipient) {
+        isPrivateChatActive = !isPrivateChatActive; // Prebaci privatni chat
+        if (isPrivateChatActive) {
+            alert('Privatni chat je uključen za ' + currentPrivateRecipient);
+        } else {
+            alert('Privatni chat je isključen.');
+            currentPrivateRecipient = null; // Očisti trenutnog primaoca
+        }
     } else {
-        alert('Privatni chat je isključen.');
-        currentPrivateRecipient = null; // Očisti trenutnog primaoca
+        alert("Greška: Niste izabrali gosta za privatni chat!");
     }
 };
-
-// Funkcija za otvaranje modala
-document.getElementById('openModal').onclick = openModal;
-
-// Funkcija za brisanje chata
-function deleteChat() {
-    const messageArea = document.getElementById('messageArea');
-    messageArea.innerHTML = '';  // Očisti sve poruke
-    alert('Chat je obrisan.');
-}
 
 // Kada korisnik klikne na gosta
 document.getElementById('guestList').addEventListener('click', function(event) {
@@ -84,6 +79,12 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
     if (event.key === 'Enter') {
         event.preventDefault();
         let message = this.value;
+        
+        // Proveri da li je korisnik aktivan
+        if (!activeUser) {
+            alert("Greška: Aktivni korisnik nije postavljen.");
+            return;
+        }
 
         // Ako je privatni chat aktivan i postoji primalac
         if (isPrivateChatActive && currentPrivateRecipient) {
@@ -104,6 +105,8 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
 // Prikazivanje privatnih poruka u message area
 socket.on('privateMessage', function(data) {
     let messageArea = document.getElementById('messageArea');
+    
+    // Prikazivanje samo ako je primalac ili pošiljalac trenutni korisnik
     if (data.recipient === activeUser || data.sender === activeUser) {
         let newMessage = document.createElement('div');
         newMessage.classList.add('message');
