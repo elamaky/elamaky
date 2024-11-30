@@ -8,6 +8,7 @@ const { saveIpData, getIpData } = require('./ip'); // Uvozimo ip.js
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const { ensureRadioGalaksijaAtTop } = require('./sitnice');
 const konobaricaModul = require('./konobaricamodul');
+const { startPrivateChat, endPrivateChat, sendPrivateMessage, isAuthorizedUser } = require('./privateChat');
 const pingService = require('./ping');
 require('dotenv').config();
 
@@ -118,6 +119,21 @@ io.on('connection', (socket) => {
         return number;
     }
 });
+
+ // Aktivacija privatnog chata
+    socket.on('startPrivateChat', (receiverId) => {
+        startPrivateChat(socket, receiverId);
+    });
+
+    // Zatvaranje privatnog chata
+    socket.on('endPrivateChat', (receiverId) => {
+        endPrivateChat(socket, receiverId);
+    });
+
+    // Slanje privatne poruke
+    socket.on('privateMessage', (data) => {
+        sendPrivateMessage(socket, data);
+    });
 
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
