@@ -4,7 +4,6 @@ const socketIo = require('socket.io');
 const { connectDB } = require('./mongo');
 const { register, login } = require('./prijava');
 const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodula
-const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const { saveIpData, getIpData } = require('./ip'); // Uvozimo ip.js
 const { ensureRadioGalaksijaAtTop } = require('./sitnice');
 const konobaricaModul = require('./konobaricamodul');
@@ -21,8 +20,6 @@ konobaricaModul(io);
 // Middleware za parsiranje JSON podataka i serviranje statičkih fajlova
 app.use(express.json());
 app.use(express.static(__dirname + '/public'));
-app.use('/guests', uuidRouter); // Dodavanje ruta u aplikaciju
-app.set('trust proxy', true);
 
 // Rute za registraciju i prijavu
 app.post('/register', (req, res) => register(req, res, io));
