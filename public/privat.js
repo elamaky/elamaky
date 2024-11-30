@@ -1,8 +1,9 @@
+<script>
 document.addEventListener('DOMContentLoaded', () => {
     const messageArea = document.getElementById('messageArea');
     const contextMenu = document.getElementById('contextMenu');
     const togglePrivateChatBtn = document.getElementById('togglePrivateChat');
-    
+
     // Spisak dozvoljenih nickova
     const allowedNicknames = ["Radio Galaksija", "ZI ZU", "__X__"];
 
@@ -41,3 +42,4 @@ document.addEventListener('DOMContentLoaded', () => {
 function getCurrentUserNickname() {
     return "Radio Galaksija"; // Ovo je samo primer
 }
+</script>
