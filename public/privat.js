@@ -41,7 +41,6 @@ document.getElementById('deleteChatBtn').onclick = function() {
 
 let isPrivateChatActive = false;  // Status privatnog chata
 let currentPrivateRecipient = null;  // Trenutni privatni primalac
-let activeUser = null;  // Trenutni korisnik
 
 // Funkcija za postavljanje aktivnog korisnika
 function setActiveUser(username) {
