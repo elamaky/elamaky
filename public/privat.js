@@ -39,28 +39,18 @@ document.getElementById('deleteChatBtn').onclick = function() {
     deleteChat();
 };
 
-// Funkcija za aktiviranje privatnog chata
-let isPrivateChatActive = false; // Privatni chat status
-let currentPrivateRecipient = null; // Trenutni privatni primalac
+let isPrivateChatActive = false;  // Status privatnog chata
+let currentPrivateRecipient = null;  // Trenutni privatni primalac
+let activeUser = null;  // Trenutni korisnik
 
-// Funkcija za aktiviranje privatnog chata
-document.getElementById('privateChatBtn').onclick = function() {
-    if (currentPrivateRecipient) {
-        isPrivateChatActive = !isPrivateChatActive; // Prebaci privatni chat
-        if (isPrivateChatActive) {
-            alert('Privatni chat je uključen za ' + currentPrivateRecipient);
-        } else {
-            alert('Privatni chat je isključen.');
-            currentPrivateRecipient = null; // Očisti trenutnog primaoca
-        }
-    } else {
-        alert("Greška: Niste izabrali gosta za privatni chat!");
-    }
-};
+// Funkcija za postavljanje aktivnog korisnika
+function setActiveUser(username) {
+    activeUser = username;
+}
 
 // Kada korisnik klikne na gosta
 document.getElementById('guestList').addEventListener('click', function(event) {
-    const guestName = event.target.textContent; // Uzmi ime gosta na kojeg je kliknuto
+    const guestName = event.target.textContent; // Uzmi ime gosta
     if (guestName) {
         currentPrivateRecipient = guestName; // Postavi trenutnog primaoca
 
@@ -79,26 +69,25 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
     if (event.key === 'Enter') {
         event.preventDefault();
         let message = this.value;
-        
-        // Proveri da li je korisnik aktivan
-        if (!activeUser) {
-            alert("Greška: Aktivni korisnik nije postavljen.");
-            return;
-        }
 
-        // Ako je privatni chat aktivan i postoji primalac
+        if (message.trim() === "") return; // Ne šaljemo prazne poruke
+
         if (isPrivateChatActive && currentPrivateRecipient) {
+            // Slanje privatne poruke
             socket.emit('privateMessage', {
                 recipient: currentPrivateRecipient,
                 sender: activeUser,
                 text: message
             });
         } else {
-            // Normalna poruka koja ide svim korisnicima
-            socket.emit('chatMessage', { sender: activeUser, text: message });
+            // Slanje normalne poruke svim korisnicima
+            socket.emit('chatMessage', {
+                sender: activeUser,
+                text: message
+            });
         }
 
-        this.value = ''; // Isprazni polje za unos
+        this.value = ''; // Isprazni chat input
     }
 });
 
@@ -106,7 +95,7 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
 socket.on('privateMessage', function(data) {
     let messageArea = document.getElementById('messageArea');
     
-    // Prikazivanje samo ako je primalac ili pošiljalac trenutni korisnik
+    // Prikazivanje poruke ako je primalac ili pošiljalac trenutni korisnik
     if (data.recipient === activeUser || data.sender === activeUser) {
         let newMessage = document.createElement('div');
         newMessage.classList.add('message');
@@ -123,3 +112,18 @@ socket.on('chatMessage', function(data) {
     newMessage.innerHTML = `<strong>${data.sender}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
     messageArea.prepend(newMessage);
 });
+
+// Funkcija za aktiviranje privatnog chata
+document.getElementById('privateChatBtn').onclick = function() {
+    if (currentPrivateRecipient) {
+        isPrivateChatActive = !isPrivateChatActive; // Prebaci privatni chat
+        if (isPrivateChatActive) {
+            alert('Privatni chat je uključen za ' + currentPrivateRecipient);
+        } else {
+            alert('Privatni chat je isključen.');
+            currentPrivateRecipient = null; // Očisti trenutnog primaoca
+        }
+    } else {
+        alert("Greška: Niste izabrali gosta za privatni chat!");
+    }
+};
