@@ -1,35 +1,32 @@
-// client.js - Kod za klijent-side (Može biti HTML/JS)
+document.addEventListener('DOMContentLoaded', () => {
+    const massagerArea = document.getElementById('massagerArea'); // Pretpostavljam da imate ovaj div
+    const modal = document.getElementById('privateChatModal');
+    const span = document.getElementsByClassName('close')[0];
+    const togglePrivateChatBtn = document.getElementById('togglePrivateChat');
 
-const socket = io(); // Inicijalizacija soketa
+    // Desni klik na massager area
+    massagerArea.addEventListener('contextmenu', function(event) {
+        event.preventDefault(); // Sprečava prikazivanje kontekstnog menija
+        modal.style.display = 'block'; // Otvara modal
+    });
 
-socket.on('private_chat_started', (receiverId) => {
-    console.log(`Privatni chat započet sa ${receiverId}`);
-});
-
-socket.on('private_chat_ended', (senderId) => {
-    console.log(`Privatni chat završen sa ${senderId}`);
-});
-
-socket.on('private_message', (message) => {
-    console.log(`Poruka primljena: ${message.text} od ${message.nickname} u ${message.time}`);
-});
-
-socket.on('error', (errorMessage) => {
-    console.log(`Greška: ${errorMessage}`);
-});
-
-// Funkcija za započinjanje privatnog chata
-function togglePrivateChat(receiverId) {
-    // Proverite da li ste već u privatnom chatu
-    socket.emit('start_private_chat', receiverId);
-}
-
-// Funkcija za slanje privatne poruke
-function sendPrivateMessage(receiverId, message) {
-    if (message.trim() === '') {
-        console.log('Poruka ne može biti prazna.');
-        return;
+    // Zatvori modal kada se klikne na X
+    span.onclick = function() {
+        modal.style.display = 'none';
     }
 
-    socket.emit('send_private_message', { receiverId, message });
-}
+    // Zatvori modal kada se klikne van njega
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // Uključivanje/isključivanje privatnog chata
+    togglePrivateChatBtn.onclick = function() {
+        // Logika za uključivanje ili isključivanje privatnog chata
+        // Možda pozivanje socket emit funkcije ovde
+        console.log("Toggle privatni chat");
+        // Ovde dodajte svoju logiku, na primer emitovanje događaja socketu
+    }
+});
