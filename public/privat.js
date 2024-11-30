@@ -47,6 +47,9 @@ document.getElementById('deleteChatBtn').onclick = function() {
     alert("Funkcija za brisanje chata nije implementirana!"); // Placeholder
 };
 
+
+
+
 // Kada korisnik klikne na gosta
 document.getElementById('guestList').addEventListener('click', function(event) {
     const guestName = event.target.textContent.trim(); // Uzmi ime gosta
