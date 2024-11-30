@@ -21,6 +21,14 @@ function openModal() {
         modal.style.display = 'block'; // Otvori modal ako je pristup već odobren
     }
 
+    // Otvaranje modala na pritisak tastera "D"
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'D' || event.key === 'd') {
+        openModal(); // Poziva funkciju za otvaranje modala
+    }
+});
+
+
     window.onclick = function(event) {
         if (event.target === modal) {
             modal.style.display = 'none';
