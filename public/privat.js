@@ -16,6 +16,14 @@ function openModal() {
             alert("Pogrešna lozinka!");
         }
     }
+
+    window.onclick = function(event) {
+    const modal = document.getElementById('optionsModal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+};
+
 }
 
 // Funkcija za postavljanje korisnika
