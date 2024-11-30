@@ -41,5 +41,32 @@
 }
 
 
+#contextMenu {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    display: none;
+    z-index: 10;
+}
+
+.privateMessageIndicator {
+    font-style: italic;
+    color: green;
+}
+
+.statusMessage {
+    color: blue;
+    font-weight: bold;
+}
+
+.guestItem {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.guestItem:hover {
+    background-color: #f0f0f0;
+}
 
 
