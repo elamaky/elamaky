@@ -1,5 +1,3 @@
-const socket = io();
-
 // Promenljive za privatni chat
 let privateChatActive = false;
 let privateChatReceiver = null;
