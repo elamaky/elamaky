@@ -105,4 +105,45 @@ document.getElementById('privateChatBtn').onclick = function() {
     }
 };
 
+// Kada korisnik klikne na gosta
+document.getElementById('guestList').addEventListener('click', function(event) {
+    const guestName = event.target.textContent; // Uzmi ime gosta na kojeg je kliknuto
+    if (guestName) {
+        currentPrivateRecipient = guestName; // Postavi trenutnog primaoca
+
+        // Prikazivanje vizuelne trake
+        const guestElements = document.querySelectorAll('#guestList .guest');
+        guestElements.forEach(guest => guest.classList.remove('selected')); // Ukloni prethodne selekcije
+        event.target.classList.add('selected'); // Dodaj selektovani stil
+
+        // Postavi formu za privatnu poruku
+        document.getElementById('chatInput').placeholder = `Poruka za ${guestName}...`;
+    }
+});
+
+// Funkcija za slanje poruke
+document.getElementById('chatInput').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter' && currentPrivateRecipient) {
+        event.preventDefault();
+        let message = this.value;
+        if (isPrivateChatActive && currentPrivateRecipient) {
+            socket.emit('privateMessage', {
+                recipient: currentPrivateRecipient,
+                text: message
+            });
+        }
+        this.value = ''; // Isprazni polje za unos
+    }
+});
+
+// Prikazivanje privatnih poruka u message area
+socket.on('privateMessage', function(data) {
+    let messageArea = document.getElementById('messageArea');
+    let newMessage = document.createElement('div');
+    newMessage.classList.add('message');
+    newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
+    messageArea.prepend(newMessage);
+});
+
+
 
