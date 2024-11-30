@@ -82,6 +82,22 @@ io.on('connection', (socket) => {
             nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
             time: time,
         };
+
+ // Aktivacija privatnog chata
+    socket.on('startPrivateChat', (receiverId) => {
+        startPrivateChat(socket, receiverId);
+    });
+
+    // Zatvaranje privatnog chata
+    socket.on('endPrivateChat', (receiverId) => {
+        endPrivateChat(socket, receiverId);
+    });
+
+    // Slanje privatne poruke
+    socket.on('privateMessage', (data) => {
+        sendPrivateMessage(socket, data);
+    });
+
         // Spremi IP, poruku i nickname u fajl
         saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
         
@@ -119,21 +135,6 @@ io.on('connection', (socket) => {
         return number;
     }
 });
-
- // Aktivacija privatnog chata
-    socket.on('startPrivateChat', (receiverId) => {
-        startPrivateChat(socket, receiverId);
-    });
-
-    // Zatvaranje privatnog chata
-    socket.on('endPrivateChat', (receiverId) => {
-        endPrivateChat(socket, receiverId);
-    });
-
-    // Slanje privatne poruke
-    socket.on('privateMessage', (data) => {
-        sendPrivateMessage(socket, data);
-    });
 
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
