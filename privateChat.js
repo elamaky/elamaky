@@ -4,6 +4,11 @@ let isPrivateChatEnabled = false;  // Zastavica za privatni chat
 let privateChatReceiver = null;    // Ko je trenutno izabran za privatni chat
 const allowedUsers = ['Radio Galaksija', 'ZI ZU', '__X__'];  // Dozvoljeni korisnici
 
+// Elementi za interakciju
+const contextMenu = document.getElementById('contextMenu');
+const messageArea = document.getElementById('messageArea');
+const chatInput = document.getElementById('chatInput');
+
 // Funkcija za prikazivanje/skrivanje kontekstnog menija
 messageArea.addEventListener('contextmenu', (e) => {
     e.preventDefault(); // Sprečava prikazivanje default menija
@@ -81,10 +86,10 @@ function addGuestToPrivateChat(guestName) {
     document.getElementById('guestList').appendChild(guestDiv);
 }
 
+// Backend funkcije za upravljanje privatnim chatom
 const privateChats = {};  // Čuva privatne chatove (socket.id => [socket.id])
 
-// Funkcija za početak privatnog chata
-function startPrivateChat(socket, receiverId) {
+function startPrivateChatBackend(socket, receiverId) {
     privateChats[socket.id] = privateChats[socket.id] || [];
     privateChats[socket.id].push(receiverId);
 
@@ -95,8 +100,7 @@ function startPrivateChat(socket, receiverId) {
     socket.to(receiverId).emit('private_chat_started', socket.id);
 }
 
-// Funkcija za završavanje privatnog chata
-function endPrivateChat(socket, receiverId) {
+function endPrivateChatBackend(socket, receiverId) {
     privateChats[socket.id] = privateChats[socket.id].filter(id => id !== receiverId);
     privateChats[receiverId] = privateChats[receiverId].filter(id => id !== socket.id);
 
@@ -104,8 +108,7 @@ function endPrivateChat(socket, receiverId) {
     socket.to(receiverId).emit('private_chat_ended', socket.id);
 }
 
-// Funkcija za slanje privatne poruke
-function sendPrivateMessage(socket, data) {
+function sendPrivateMessageBackend(socket, data) {
     const { receiverId, message } = data;
 
     if (privateChats[socket.id] && privateChats[socket.id].includes(receiverId)) {
@@ -124,10 +127,9 @@ function sendPrivateMessage(socket, data) {
     }
 }
 
-// Funkcija za proveru korisnika za administraciju
 function isAuthorizedUser(username) {
     const authorizedUsers = ['Radio Galaksija', 'ZI ZU', '__X__'];
     return authorizedUsers.includes(username);
 }
 
-module.exports = { startPrivateChat, endPrivateChat, sendPrivateMessage, isAuthorizedUser };
+module.exports = { startPrivateChatBackend, endPrivateChatBackend, sendPrivateMessageBackend, isAuthorizedUser };
