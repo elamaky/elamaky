@@ -1,81 +1,35 @@
-// privat.js - Kod za browser
+// client.js - Kod za klijent-side (Može biti HTML/JS)
 
-const contextMenu = document.getElementById('contextMenu');
-const messageArea = document.getElementById('messageArea');
-const chatInput = document.getElementById('chatInput');
+const socket = io(); // Inicijalizacija soketa
 
-let isPrivateChatEnabled = false;
-let privateChatReceiver = null;
-const allowedUsers = ['Radio Galaksija', 'ZI ZU', '__X__'];
-
-// Funkcija za prikazivanje/skrivanje kontekstnog menija
-messageArea.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-    contextMenu.style.display = 'block';
-    contextMenu.style.left = `${e.pageX}px`;
-    contextMenu.style.top = `${e.pageY}px`;
+socket.on('private_chat_started', (receiverId) => {
+    console.log(`Privatni chat započet sa ${receiverId}`);
 });
 
-// Funkcija za uključivanje/isključivanje privatnog chata
-function togglePrivateChat() {
-    const username = prompt('Unesite svoje ime korisnika:', 'Gost');
-    if (allowedUsers.includes(username)) {
-        isPrivateChatEnabled = !isPrivateChatEnabled;
-        alert(`Privatni chat ${isPrivateChatEnabled ? 'uključen' : 'isključen'}`);
-        privateChatReceiver = null;
-        const statusMessage = document.createElement('div');
-        statusMessage.textContent = isPrivateChatEnabled ? `Privatni chat je sada aktivan. Izaberite korisnika.` : `Privatni chat je isključen.`;
-        statusMessage.className = 'statusMessage';
-        messageArea.appendChild(statusMessage);
-    } else {
-        alert('Nemaš dozvolu za aktiviranje privatnog chata.');
-    }
+socket.on('private_chat_ended', (senderId) => {
+    console.log(`Privatni chat završen sa ${senderId}`);
+});
+
+socket.on('private_message', (message) => {
+    console.log(`Poruka primljena: ${message.text} od ${message.nickname} u ${message.time}`);
+});
+
+socket.on('error', (errorMessage) => {
+    console.log(`Greška: ${errorMessage}`);
+});
+
+// Funkcija za započinjanje privatnog chata
+function togglePrivateChat(receiverId) {
+    // Proverite da li ste već u privatnom chatu
+    socket.emit('start_private_chat', receiverId);
 }
 
-// Funkcija za odabir korisnika za privatni chat
-function startPrivateChat(user) {
-    if (!isPrivateChatEnabled) {
-        alert('Privatni chat nije aktivan.');
+// Funkcija za slanje privatne poruke
+function sendPrivateMessage(receiverId, message) {
+    if (message.trim() === '') {
+        console.log('Poruka ne može biti prazna.');
         return;
     }
 
-    if (allowedUsers.includes(user)) {
-        privateChatReceiver = user;
-        const privateMessage = document.createElement('div');
-        privateMessage.textContent = `Privatan chat sa: ${user}`;
-        privateMessage.className = 'privateMessageIndicator';
-        messageArea.appendChild(privateMessage);
-        chatInput.placeholder = `Pišite poruku za ${user}`;
-        chatInput.focus();
-    } else {
-        alert('Ovaj korisnik nije dozvoljen za privatni chat.');
-    }
-}
-
-// Event za slanje privatnih poruka
-chatInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && privateChatReceiver) {
-        const messageText = chatInput.value;
-        if (messageText.trim()) {
-            socket.emit('privateMessage', {
-                message: messageText,
-                receiver: privateChatReceiver,
-            });
-            chatInput.value = '';
-        }
-    }
-});
-
-// Skriva meni nakon korišćenja
-document.addEventListener('click', () => {
-    contextMenu.style.display = 'none';
-});
-
-// Funkcija za dodavanje korisnika u privatni chat
-function addGuestToPrivateChat(guestName) {
-    const guestDiv = document.createElement('div');
-    guestDiv.textContent = guestName;
-    guestDiv.className = 'guestItem';
-    guestDiv.addEventListener('click', () => startPrivateChat(guestName));
-    document.getElementById('guestList').appendChild(guestDiv);
+    socket.emit('send_private_message', { receiverId, message });
 }
