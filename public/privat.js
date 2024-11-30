@@ -84,16 +84,17 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
     if (event.key === 'Enter') {
         event.preventDefault();
         let message = this.value;
-        
+
         // Ako je privatni chat aktivan i postoji primalac
         if (isPrivateChatActive && currentPrivateRecipient) {
             socket.emit('privateMessage', {
                 recipient: currentPrivateRecipient,
+                sender: activeUser,
                 text: message
             });
         } else {
             // Normalna poruka koja ide svim korisnicima
-            socket.emit('chatMessage', { text: message });
+            socket.emit('chatMessage', { sender: activeUser, text: message });
         }
 
         this.value = ''; // Isprazni polje za unos
@@ -103,12 +104,19 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
 // Prikazivanje privatnih poruka u message area
 socket.on('privateMessage', function(data) {
     let messageArea = document.getElementById('messageArea');
-    let newMessage = document.createElement('div');
-    newMessage.classList.add('message');
-    newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
-    messageArea.prepend(newMessage);
+    if (data.recipient === activeUser || data.sender === activeUser) {
+        let newMessage = document.createElement('div');
+        newMessage.classList.add('message');
+        newMessage.innerHTML = `<strong>${data.sender} ---> ${data.recipient}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
+        messageArea.prepend(newMessage);
+    }
 });
 
-
-
-
+// Prikazivanje normalnih poruka u message area
+socket.on('chatMessage', function(data) {
+    let messageArea = document.getElementById('messageArea');
+    let newMessage = document.createElement('div');
+    newMessage.classList.add('message');
+    newMessage.innerHTML = `<strong>${data.sender}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
+    messageArea.prepend(newMessage);
+});
