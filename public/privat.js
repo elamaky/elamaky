@@ -36,3 +36,10 @@ document.getElementById('privateChatBtn').onclick = function() {
 // Ostale funkcije za dugmadi...
 document.getElementById('openModal').onclick = openModal;
 
+function deleteChat() {
+    const messageArea = document.getElementById('messageArea');
+    messageArea.innerHTML = '';  // Očisti sve poruke
+    alert('Chat je obrisan.');
+}
+
+
