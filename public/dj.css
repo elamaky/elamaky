@@ -4,16 +4,16 @@
     align-items: center;
     font-size: 16px;
     margin: 5px 0;
-    padding-left: 20px; /* Da bismo omogućili prostor za ikonu */
-    font-weight: bold;  /* Dodajemo bold */
-    font-style: italic; /* Dodajemo italic */
-    color: inherit; /* Nasleđivanje boje od JavaScript-a */
+    padding-left: 20px;
+    font-weight: bold;
+    font-style: italic;
+    color: inherit;
 }
 
-/* Stil za ostale goste, sve imaju istu osnovnu postavku */
+/* Stil za ostale goste */
 .guest::before {
-    content: "•";  /* Tačka pre imena gostiju */
-    color: white;   /* Bela boja tačke */
+    content: "•"; 
+    color: white;   
     margin-right: 10px;
     font-size: 18px;
 }
@@ -30,8 +30,8 @@
 /* Stil za poruke konobarice */
 .konobarica {
     color: #ff6347; /* Boja za Konobaricu */
-    font-weight: bold; /* Bold za Konobaricu */
-    font-style: italic; /* Italic za Konobaricu */
+    font-weight: bold;
+    font-style: italic;
 }
 
 /* Stil za sistemske poruke */
@@ -40,7 +40,7 @@
     color: #888;
 }
 
-<!-- Modal za privatni chat -->
+/* Modal za privatni chat */
 <div id="privateChatModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -86,3 +86,13 @@
         cursor: pointer;
     }
 
+    #contextMenu {
+        display: none; /* Sakriveno po defaultu */
+        position: absolute; /* Pozicija će zavisiti od mjesta klika */
+        z-index: 10;
+        background-color: white; /* Pozadina */
+        border: 1px solid black; /* Okvir */
+        padding: 10px;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+</style>
