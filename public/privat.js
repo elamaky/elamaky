@@ -39,62 +39,10 @@ document.getElementById('deleteChatBtn').onclick = function() {
     deleteChat();
 };
 
-// Funkcija za ostale dugmadi
-document.getElementById('privateChatBtn').onclick = function() {
-    // Implementiraj privatnu chat funkciju
-};
-
-document.getElementById('openModal').onclick = openModal;
-
-function deleteChat() {
-    const messageArea = document.getElementById('messageArea');
-    messageArea.innerHTML = '';  // Očisti sve poruke
-    alert('Chat je obrisan.');
-}
-
-
+// Funkcija za aktiviranje privatnog chata
 let isPrivateChatActive = false; // Privatni chat status
 let currentPrivateRecipient = null; // Trenutni privatni primalac
 
-// Funkcija za otvaranje modala
-function openModal() {
-    const modal = document.getElementById('optionsModal');
-    if (allowedUsers.includes(activeUser)) {
-        modal.style.display = 'block';  // Otvori modal bez lozinke za određene korisnike
-    } else {
-        if (!isAccessGranted) {
-            const password = prompt("Unesite lozinku:");
-            if (password === "galaksija123") {
-                isAccessGranted = true;
-                modal.style.display = 'block';  // Otvori modal nakon validne lozinke
-            } else {
-                alert("Pogrešna lozinka!");
-            }
-        } else {
-            modal.style.display = 'block';  // Otvori modal ako je pristup dozvoljen
-        }
-    }
-
-    window.onclick = function(event) {
-        const modal = document.getElementById('optionsModal');
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
-    };
-}
-
-// Funkcija za aktiviranje privatnog chata
-document.getElementById('privateChatBtn').onclick = function() {
-    isPrivateChatActive = !isPrivateChatActive; // Prebaci privatni chat
-    if (isPrivateChatActive) {
-        alert('Privatni chat je uključen.');
-    } else {
-        alert('Privatni chat je isključen.');
-        currentPrivateRecipient = null; // Očisti trenutnog primaoca
-    }
-};
-
-// Funkcija za aktiviranje privatnog chata
 document.getElementById('privateChatBtn').onclick = function() {
     isPrivateChatActive = !isPrivateChatActive; // Prebaci privatni chat
     if (isPrivateChatActive) {
@@ -104,6 +52,16 @@ document.getElementById('privateChatBtn').onclick = function() {
         currentPrivateRecipient = null; // Očisti trenutnog primaoca
     }
 };
+
+// Funkcija za otvaranje modala
+document.getElementById('openModal').onclick = openModal;
+
+// Funkcija za brisanje chata
+function deleteChat() {
+    const messageArea = document.getElementById('messageArea');
+    messageArea.innerHTML = '';  // Očisti sve poruke
+    alert('Chat je obrisan.');
+}
 
 // Kada korisnik klikne na gosta
 document.getElementById('guestList').addEventListener('click', function(event) {
@@ -123,15 +81,21 @@ document.getElementById('guestList').addEventListener('click', function(event) {
 
 // Funkcija za slanje poruke
 document.getElementById('chatInput').addEventListener('keydown', function(event) {
-    if (event.key === 'Enter' && currentPrivateRecipient) {
+    if (event.key === 'Enter') {
         event.preventDefault();
         let message = this.value;
+        
+        // Ako je privatni chat aktivan i postoji primalac
         if (isPrivateChatActive && currentPrivateRecipient) {
             socket.emit('privateMessage', {
                 recipient: currentPrivateRecipient,
                 text: message
             });
+        } else {
+            // Normalna poruka koja ide svim korisnicima
+            socket.emit('chatMessage', { text: message });
         }
+
         this.value = ''; // Isprazni polje za unos
     }
 });
@@ -144,6 +108,7 @@ socket.on('privateMessage', function(data) {
     newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
     messageArea.prepend(newMessage);
 });
+
 
 
 
