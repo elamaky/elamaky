@@ -1,13 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const massagerArea = document.getElementById('massagerArea'); // Pretpostavljam da imate ovaj div
+    const messageArea = document.getElementById('messageArea');
     const modal = document.getElementById('privateChatModal');
     const span = document.getElementsByClassName('close')[0];
     const togglePrivateChatBtn = document.getElementById('togglePrivateChat');
 
-    // Desni klik na massager area
-    massagerArea.addEventListener('contextmenu', function(event) {
+    // Spisak dozvoljenih nickova
+    const allowedNicknames = ["Radio Galaksija", "ZI ZU", "__X__"];
+
+    // Pretpostavljam da imaš način da dođeš do trenutnog korisnikovog nadimka
+    let currentUserNickname = getCurrentUserNickname(); // Ovde treba implementirati funkciju za dobijanje korisničkog nadimka
+
+    // Desni klik na messageArea
+    messageArea.addEventListener('contextmenu', function(event) {
         event.preventDefault(); // Sprečava prikazivanje kontekstnog menija
-        modal.style.display = 'block'; // Otvara modal
+        if (allowedNicknames.includes(currentUserNickname)) {
+            modal.style.display = 'block'; // Otvara modal
+        }
     });
 
     // Zatvori modal kada se klikne na X
@@ -24,9 +32,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Uključivanje/isključivanje privatnog chata
     togglePrivateChatBtn.onclick = function() {
-        // Logika za uključivanje ili isključivanje privatnog chata
-        // Možda pozivanje socket emit funkcije ovde
         console.log("Toggle privatni chat");
-        // Ovde dodajte svoju logiku, na primer emitovanje događaja socketu
+        // Ovde dodajte vašu logiku za uključivanje ili isključivanje privatnog chata, kao što je emitovanje preko socket-a
     }
 });
+
+// Dummy funkcija za dobijanje trenutnog korisničkog nadimka, promenite ovo prema vašim potrebama
+function getCurrentUserNickname() {
+    // Ovdje treba implementirati stvarni način da dobijete trenutni nadimak korisnika
+    return "Radio Galaksija"; // Ovo je samo primer
+}
