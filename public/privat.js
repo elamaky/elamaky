@@ -50,7 +50,7 @@ document.getElementById('addImage').addEventListener('click', function() {
             img.src = imageSource;  
             img.style.width = "200px";  
             img.style.height = "200px"; 
-            img.style.position = "absolute"; 
+            img.style.position = "relative"; 
             img.style.zIndex = "1000";  
             img.classList.add('draggable', 'resizable');  
             img.style.border = "none"; // Ukloni border po defaultu
