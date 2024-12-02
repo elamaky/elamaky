@@ -38,7 +38,7 @@ document.getElementById('clearChat').addEventListener('click', function() {
     console.log("Chat je obrisan.");
 });
 
-document.getElementById('addImage').addEventListener('click', function () {
+document.getElementById('addImage').addEventListener('click', function() {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
     if (imageSource) {
@@ -48,21 +48,15 @@ document.getElementById('addImage').addEventListener('click', function () {
         if (validFormats.includes(fileExtension)) {
             const img = document.createElement('img');
             img.src = imageSource;
-            img.style.width = "200px";
-            img.style.height = "200px";
-            img.style.position = "absolute";
+            img.style.width = "200px"; // Dimenzije nisu promenjene
+            img.style.height = "200px"; // Dimenzije nisu promenjene
+            img.style.position = "absolute";  // Omogućava pomeranje slike na celoj stranici
             img.style.zIndex = "1000";
             img.classList.add('draggable');
-            img.classList.add('resizable');
+            document.body.appendChild(img);  // Slika se dodaje na celu stranicu
 
-            document.body.appendChild(img);
-
-          img.addEventListener('dblclick', function () {
-    img.remove();
-
-       });
-
-            enableDragAndResize(img);
+            enableDragAndResize(img); // Funkcija za pomeranje i promenu dimenzija
+            console.log("Slika je dodata preko URL-a.");
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
         }
@@ -76,11 +70,41 @@ function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
 
+    // Dugme za uklanjanje slike
+    const closeButton = document.createElement('div');
+    closeButton.innerHTML = 'X';
+    closeButton.classList.add('close-button');
+    closeButton.style.position = 'absolute';
+    closeButton.style.top = '0px';
+    closeButton.style.right = '0px';
+    closeButton.style.background = 'red';
+    closeButton.style.color = 'white';
+    closeButton.style.cursor = 'pointer';
+    closeButton.style.fontSize = '12px';
+    closeButton.style.padding = '2px 5px';
+    closeButton.style.zIndex = '2000';
+
+    // Klikom na "X" uklanja se slika
+    closeButton.addEventListener('click', function () {
+        img.remove();
+    });
+    img.appendChild(closeButton);
+
     img.addEventListener('mousedown', function (e) {
         const rect = img.getBoundingClientRect();
         const borderSize = 10;
 
-        if (e.clientX >= rect.right - borderSize && e.clientY >= rect.bottom - borderSize) {
+        if (e.clientX >= rect.left && e.clientX <= rect.left + borderSize) {
+            resizeSide = 'left';
+        } else if (e.clientX >= rect.right - borderSize && e.clientX <= rect.right) {
+            resizeSide = 'right';
+        } else if (e.clientY >= rect.top && e.clientY <= rect.top + borderSize) {
+            resizeSide = 'top';
+        } else if (e.clientY >= rect.bottom - borderSize && e.clientY <= rect.bottom) {
+            resizeSide = 'bottom';
+        }
+
+        if (resizeSide) {
             isResizing = true;
             const initialWidth = img.offsetWidth;
             const initialHeight = img.offsetHeight;
@@ -93,12 +117,25 @@ function enableDragAndResize(img) {
                         img.style.width = initialWidth + (e.clientX - startX) + 'px';
                     } else if (resizeSide === 'bottom') {
                         img.style.height = initialHeight + (e.clientY - startY) + 'px';
+                    } else if (resizeSide === 'left') {
+                        const newWidth = initialWidth - (e.clientX - startX);
+                        if (newWidth > 10) {
+                            img.style.width = newWidth + 'px';
+                            img.style.left = rect.left + (e.clientX - startX) + 'px';
+                        }
+                    } else if (resizeSide === 'top') {
+                        const newHeight = initialHeight - (e.clientY - startY);
+                        if (newHeight > 10) {
+                            img.style.height = newHeight + 'px';
+                            img.style.top = rect.top + (e.clientY - startY) + 'px';
+                        }
                     }
                 }
             };
 
             document.onmouseup = function () {
                 isResizing = false;
+                resizeSide = null;
                 document.onmousemove = null;
                 document.onmouseup = null;
             };
