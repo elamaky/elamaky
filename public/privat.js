@@ -72,11 +72,44 @@ function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
 
+    // Dodavanje okvira i dugmeta za uklanjanje slike
+    img.addEventListener('click', function () {
+        // Dodavanje okvira slike
+        img.style.border = "2px dashed red";
+
+        // Provera da li "X" već postoji, da se ne dodaje duplo
+        if (!img.querySelector('.close-button')) {
+            const closeButton = document.createElement('div');
+            closeButton.innerHTML = 'X';
+            closeButton.classList.add('close-button');
+            closeButton.style.position = 'absolute';
+            closeButton.style.top = '0px';
+            closeButton.style.right = '0px';
+            closeButton.style.background = 'red';
+            closeButton.style.color = 'white';
+            closeButton.style.cursor = 'pointer';
+            closeButton.style.fontSize = '12px';
+            closeButton.style.padding = '2px 5px';
+            closeButton.style.zIndex = '2000';
+
+            // Klikom na "X" uklanja se slika
+            closeButton.addEventListener('click', function () {
+                img.remove();
+            });
+
+            // Dodavanje dugmeta "X" na sliku
+            img.appendChild(closeButton);
+        }
+    });
+
+    img.addEventListener('blur', function () {
+        img.style.border = "none"; // Uklanja granice kada slika izgubi fokus
+    });
+
     img.addEventListener('mousedown', function (e) {
         const rect = img.getBoundingClientRect();
-        const borderSize = 10; // Širina granice za detekciju
+        const borderSize = 10;
 
-        // Detekcija pozicije kursora u odnosu na granice slike
         if (e.clientX >= rect.left && e.clientX <= rect.left + borderSize) {
             resizeSide = 'left';
         } else if (e.clientX >= rect.right - borderSize && e.clientX <= rect.right) {
@@ -102,13 +135,13 @@ function enableDragAndResize(img) {
                         img.style.height = initialHeight + (e.clientY - startY) + 'px';
                     } else if (resizeSide === 'left') {
                         const newWidth = initialWidth - (e.clientX - startX);
-                        if (newWidth > 10) { // Minimalna širina
+                        if (newWidth > 10) {
                             img.style.width = newWidth + 'px';
                             img.style.left = rect.left + (e.clientX - startX) + 'px';
                         }
                     } else if (resizeSide === 'top') {
                         const newHeight = initialHeight - (e.clientY - startY);
-                        if (newHeight > 10) { // Minimalna visina
+                        if (newHeight > 10) {
                             img.style.height = newHeight + 'px';
                             img.style.top = rect.top + (e.clientY - startY) + 'px';
                         }
@@ -123,12 +156,10 @@ function enableDragAndResize(img) {
                 document.onmouseup = null;
             };
         } else {
-            // Ako nije kliknuto na granicu, aktivira se pomeranje
             dragMouseDown(e);
         }
     });
 
-    // Funkcija za pomeranje slike
     function dragMouseDown(e) {
         e.preventDefault();
         pos3 = e.clientX;
