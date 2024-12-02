@@ -53,7 +53,8 @@ document.getElementById('addImage').addEventListener('click', function() {
             img.style.position = "absolute"; 
             img.style.zIndex = "1000";  
             img.classList.add('draggable', 'resizable');  
-            document.body.appendChild(img); // Promenjen kontejner na 'body' za pozicioniranje na celoj stranici
+            img.style.border = "none"; // Ukloni border po defaultu
+            document.body.appendChild(img);
             enableDragAndResize(img);
             console.log("Slika je dodata preko URL-a.");
         } else {
@@ -67,9 +68,17 @@ document.getElementById('addImage').addEventListener('click', function() {
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
+    
+    img.addEventListener('mouseenter', function () {
+        img.style.border = "2px dashed red"; // Prikazi granicu kada je kursor iznad slike
+    });
+    
+    img.addEventListener('mouseleave', function () {
+        img.style.border = "none"; // Sakrij granicu kada kursor nije iznad slike
+    });
 
     img.addEventListener('click', function () {
-        img.style.border = "2px dashed red";
+        img.style.border = "2px dashed red"; // Prikazi granicu kada klikneš na sliku
         if (!img.querySelector('.close-button')) {
             const closeButton = document.createElement('div');
             closeButton.innerHTML = 'X';
