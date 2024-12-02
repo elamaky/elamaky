@@ -67,7 +67,7 @@ document.getElementById('addImage').addEventListener('click', function() {
     }
 });
 
-// Funkcija za omogućavanje promene dimenzija i pomeranja slike
+// Funkcija za promenu dimenzija slike
 function enableDragAndResize(img) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
