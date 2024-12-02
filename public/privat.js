@@ -57,10 +57,10 @@ document.getElementById('addImage').addEventListener('click', function () {
 
             document.body.appendChild(img);
 
-            // Uklanjanje slike klikom na nju
-            img.addEventListener('click', function () {
-                img.remove();
-            });
+          img.addEventListener('dblclick', function () {
+    img.remove();
+
+       });
 
             enableDragAndResize(img);
         } else {
