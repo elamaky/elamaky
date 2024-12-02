@@ -52,7 +52,7 @@ document.getElementById('addImage').addEventListener('click', function() {
             img.src = imageSource;  // Podesi 'src' na URL slike
             img.style.maxWidth = "900px";  // Postavljanje početne širine
             img.style.maxHeight = "600px"; // Postavljanje početne visine
-            img.style.position = "absolute";  // Omogućava pomeranje slike unutar chat-a
+            document.getElementById('chatContainer').style.position = "relative";
             img.classList.add('draggable');  // Dodajemo klasu za pomeranje
             img.classList.add('resizable');  // Dodajemo klasu za menjanje dimenzija
             document.getElementById('chatContainer').appendChild(img);
@@ -76,9 +76,9 @@ document.getElementById('addImage').addEventListener('click', function() {
                     reader.onload = function(e) {
                         const img = document.createElement('img');
                         img.src = e.target.result;  // Podesi 'src' na Base64 sadržaj
-                        img.style.maxWidth = "200px";  // Postavljanje početne širine
-                        img.style.maxHeight = "200px"; // Postavljanje početne visine
-                        img.style.position = "absolute";  // Omogućava pomeranje slike unutar chat-a
+                        img.style.maxWidth = "900px";  // Postavljanje početne širine
+                        img.style.maxHeight = "600px"; // Postavljanje početne visine
+                        document.getElementById('chatContainer').style.position = "relative";
                         img.classList.add('draggable');  // Dodajemo klasu za pomeranje
                         img.classList.add('resizable');  // Dodajemo klasu za menjanje dimenzija
                         document.getElementById('chatContainer').appendChild(img);
