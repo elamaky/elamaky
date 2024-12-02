@@ -1,4 +1,26 @@
-// server.js - Kod za server-side (Node.js)
+// Kada korisnik pošalje URL slike
+socket.on('send-image', (imageUrl) => {
+    // Emituj sliku svim korisnicima
+    io.emit('receive-image', imageUrl);
+});
+
+// Kada korisnik pošalje zahtev za brisanje chata
+socket.on('clear-chat', () => {
+    chatMessages = []; // Obriši chat na serveru
+    io.emit('chat-cleared'); // Emituj svim korisnicima da je chat obrisan
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 const privateChats = {}; // Čuva privatne chatove (socket.id => [socket.id])
 
