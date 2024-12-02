@@ -77,10 +77,14 @@
 /* Stilovi za slike */
 img.draggable {
     cursor: move;
+    border: 2px solid #000;
+    position: absolute;
+    max-width: 200px; /* Početna širina */
+    max-height: 200px; /* Početna visina */
 }
 
 img.resizable {
-    cursor: pointer;
+    cursor: se-resize; /* Za promenu dimenzija */
 }
 
 /* Dugme za uklanjanje slike */
@@ -99,3 +103,7 @@ img.resizable {
     display: none; /* Početno nevidljivo */
 }
 
+/* Kada je kursor iznad slike, dugme za uklanjanje se prikazuje */
+img:hover .closeButton {
+    display: block;
+}
