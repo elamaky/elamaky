@@ -67,7 +67,30 @@ document.getElementById('addImage').addEventListener('click', function() {
     }
 });
 
-// Funkcija za omogućavanje pomeranja i menjanje dimenzija slika
+    // Funkcija za promenu dimenzija slike
+    img.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+
+        const initialWidth = img.offsetWidth;
+        const initialHeight = img.offsetHeight;
+        const startX = e.clientX;
+        const startY = e.clientY;
+
+        document.onmousemove = function(e) {
+            const newWidth = initialWidth + (e.clientX - startX);
+            const newHeight = initialHeight + (e.clientY - startY);
+
+            img.style.width = newWidth + 'px';
+            img.style.height = newHeight + 'px';
+        };
+
+        document.onmouseup = function() {
+            document.onmousemove = null;
+            document.onmouseup = null;
+        };
+    });
+}
+
 function enableDragAndResize(img) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
@@ -101,26 +124,3 @@ function enableDragAndResize(img) {
         document.onmousemove = null;
     }
 
-    // Funkcija za promenu dimenzija slike
-    img.addEventListener('mousedown', function(e) {
-        e.preventDefault();
-
-        const initialWidth = img.offsetWidth;
-        const initialHeight = img.offsetHeight;
-        const startX = e.clientX;
-        const startY = e.clientY;
-
-        document.onmousemove = function(e) {
-            const newWidth = initialWidth + (e.clientX - startX);
-            const newHeight = initialHeight + (e.clientY - startY);
-
-            img.style.width = newWidth + 'px';
-            img.style.height = newHeight + 'px';
-        };
-
-        document.onmouseup = function() {
-            document.onmousemove = null;
-            document.onmouseup = null;
-        };
-    });
-}
