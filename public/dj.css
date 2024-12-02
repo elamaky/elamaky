@@ -78,9 +78,6 @@
 img.draggable {
     cursor: move;
     border: 2px solid #000;
-    position: absolute;
-    max-width: 200px; /* Početna širina */
-    max-height: 200px; /* Početna visina */
 }
 
 img.resizable {
