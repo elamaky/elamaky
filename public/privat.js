@@ -38,15 +38,15 @@ document.getElementById('clearChat').addEventListener('click', function() {
     console.log("Chat je obrisan.");
 });
 
-// Dodajemo događaj za dodavanje slike
+// Dodavanje slike u chat
 document.getElementById('addImage').addEventListener('click', function() {
     const imageSource = prompt("Unesite URL slike ili ostavite prazno za upload sa računara:");
 
     if (imageSource) {
-        // Dodavanje slike preko URL-a
+        // Dodavanje slike sa URL-a
         createImage(imageSource);
     } else {
-        // Dodavanje slike sa lokalnog računara
+        // Dodavanje slike sa računara
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.accept = 'image/*';
@@ -64,29 +64,29 @@ document.getElementById('addImage').addEventListener('click', function() {
     }
 });
 
+// Funkcija za kreiranje slike
 function createImage(src) {
     const imgContainer = document.createElement('div');
     const img = document.createElement('img');
     img.src = src;
     img.classList.add('draggable');
     
+    // Dugme za uklanjanje slike
     const removeBtn = document.createElement('button');
     removeBtn.innerText = "X";
     removeBtn.classList.add('closeButton');
     removeBtn.onclick = function() {
-        imgContainer.remove();
+        imgContainer.remove(); // Uklanja sliku iz chat-a
     };
 
-    // Dodajemo dugme za uklanjanje i sliku u kontejner
     imgContainer.appendChild(img);
     imgContainer.appendChild(removeBtn);
-    
-    // Dodajemo kontejner slike u chat
-    document.getElementById('messageArea').appendChild(imgContainer);
-    
-    // Funkcija za pomeranje slike
-    let offsetX = 0, offsetY = 0;
 
+    // Dodavanje slike u chat container
+    document.getElementById('chatContent').appendChild(imgContainer);
+
+    // Omogućavanje pomeranja slike
+    let offsetX = 0, offsetY = 0;
     img.addEventListener('mousedown', function(e) {
         e.preventDefault();
         offsetX = e.clientX - img.getBoundingClientRect().left;
@@ -106,7 +106,7 @@ function createImage(src) {
         document.onmouseup = null;
     }
 
-    // Funkcija za menjanje dimenzija slike
+    // Omogućavanje promena dimenzija slike
     img.addEventListener('mousedown', function(e) {
         if (e.target === img) {
             const startX = e.clientX;
