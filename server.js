@@ -71,18 +71,6 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-    // Obrada slanja poruka u četu
-    socket.on('chatMessage', (msgData) => {
-        const time = new Date().toLocaleTimeString();
-        const messageToSend = {
-            text: msgData.text,
-            bold: msgData.bold,
-            italic: msgData.italic,
-            color: msgData.color,
-            nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
-            time: time,
-        };
-
  // Aktivacija privatnog chata
     socket.on('startPrivateChat', (receiverId) => {
         startPrivateChat(socket, receiverId);
