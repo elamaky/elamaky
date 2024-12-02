@@ -41,18 +41,36 @@
 }
 
 .modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border: 1px solid #ccc;
-    z-index: 1000;
+    display: none; /* Sakrij modal po default-u */
+    position: fixed; /* Fiksna pozicija */
+    z-index: 1; /* Na vrhu svih elemenata */
+    left: 0;
+    top: 0;
+    width: 100%; /* 100% širine */
+    height: 100%; /* 100% visine */
+    overflow: auto; /* Uključuje skrolovanje, ako je potrebno */
+    background-color: rgba(0, 0, 0, 0.5); /* Poluprozirna pozadina */
 }
-.modal-content button {
-    display: block;
-    margin: 10px 0;
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* Sredi centar */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Širina modalnog prozora */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }
 
