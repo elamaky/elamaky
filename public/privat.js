@@ -50,8 +50,8 @@ document.getElementById('addImage').addEventListener('click', function() {
             // Dodavanje slike preko URL-a
             const img = document.createElement('img');
             img.src = imageSource;  // Podesi 'src' na URL slike
-            img.style.maxWidth = "200px";  // Postavljanje početne širine
-            img.style.maxHeight = "200px"; // Postavljanje početne visine
+            img.style.maxWidth = "900px";  // Postavljanje početne širine
+            img.style.maxHeight = "600px"; // Postavljanje početne visine
             img.style.position = "absolute";  // Omogućava pomeranje slike unutar chat-a
             img.classList.add('draggable');  // Dodajemo klasu za pomeranje
             img.classList.add('resizable');  // Dodajemo klasu za menjanje dimenzija
