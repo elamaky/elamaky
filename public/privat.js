@@ -33,7 +33,7 @@ window.onclick = function(event) {
 
 // Brisanje sadržaja chata
 document.getElementById('clearChat').addEventListener('click', function() {
-    const chatWindow = document.getElementById('chatWindow');
+    const chatWindow = document.getElementById('messageArea');
     chatWindow.innerHTML = ""; // Briše sve unutar chata
     console.log("Chat je obrisan.");
 });
@@ -47,7 +47,7 @@ document.getElementById('addImage').addEventListener('click', function() {
         const img = document.createElement('img');
         img.src = imageSource;
         img.style.maxWidth = "100%";
-        document.getElementById('chatWindow').appendChild(img);
+        document.getElementById('messageArea').appendChild(img);
         console.log("Slika je dodata preko URL-a.");
     } else {
         // Dodavanje slike sa lokalnog računara
@@ -62,7 +62,7 @@ document.getElementById('addImage').addEventListener('click', function() {
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     img.style.maxWidth = "100%";
-                    document.getElementById('chatWindow').appendChild(img);
+                    document.getElementById('messageArea').appendChild(img);
                     console.log("Slika je dodata sa računara.");
                 };
                 reader.readAsDataURL(file);
@@ -71,4 +71,3 @@ document.getElementById('addImage').addEventListener('click', function() {
         fileInput.click();
     }
 });
-
