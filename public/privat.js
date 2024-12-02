@@ -147,10 +147,15 @@ function enableDragAndResize(img) {
 
     function resizeElement(e) {
         if (isResizing) {
+            // Ograničavanje minimalnih dimenzija slike
             const width = e.clientX - img.offsetLeft;
             const height = e.clientY - img.offsetTop;
-            img.style.width = width + 'px';
-            img.style.height = height + 'px';
+
+            // Obezbeđivanje da dimenzije ne budu previše male
+            if (width > 50 && height > 50) {
+                img.style.width = width + 'px';
+                img.style.height = height + 'px';
+            }
         }
     }
 
