@@ -82,6 +82,59 @@ img.draggable {
 
 img.resizable {
     cursor: se-resize; /* Za promenu dimenzija */
+
+    .resizeHandle {
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+
+.resizeHandle.top {
+    top: -5px;
+    left: 50%;
+    margin-left: -5px;
+}
+
+.resizeHandle.bottom {
+    bottom: -5px;
+    left: 50%;
+    margin-left: -5px;
+}
+
+.resizeHandle.left {
+    left: -5px;
+    top: 50%;
+    margin-top: -5px;
+}
+
+.resizeHandle.right {
+    right: -5px;
+    top: 50%;
+    margin-top: -5px;
+}
+
+.resizeHandle.top-left {
+    top: -5px;
+    left: -5px;
+}
+
+.resizeHandle.top-right {
+    top: -5px;
+    right: -5px;
+}
+
+.resizeHandle.bottom-left {
+    bottom: -5px;
+    left: -5px;
+}
+
+.resizeHandle.bottom-right {
+    bottom: -5px;
+    right: -5px;
+}
+
 }
 
 /* Dugme za uklanjanje slike */
