@@ -31,47 +31,6 @@ window.onclick = function(event) {
     }
 };
 
-// Pomeranje modala
-dragElement(document.getElementById("functionModal"));
-
-function dragElement(elmnt) {
-    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    if (document.getElementById("closeModal")) {
-        // Ako postoji dugme za zatvaranje, dodajmo njegovu funkcionalnost za pomeranje
-        document.getElementById("closeModal").onmousedown = dragMouseDown;
-    }
-
-    function dragMouseDown(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // Pozicioniraj kursor u prvi quadrant
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        document.onmouseup = closeDragElement;
-        // Pozicioniraj element u odnosu na kursor
-        document.onmousemove = elementDrag;
-    }
-
-    function elementDrag(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // Izračunaj nove pozicije na osnovu trenutnih pozicija
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        // Pomeraj element
-        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-    }
-
-    function closeDragElement() {
-        // Kada se otpusti dugme miša, ukloni pokrete
-        document.onmouseup = null;
-        document.onmousemove = null;
-    }
-}
-
 // Brisanje sadržaja chata
 document.getElementById('clearChat').addEventListener('click', function() {
     const chatWindow = document.getElementById('chatWindow');
@@ -112,3 +71,4 @@ document.getElementById('addImage').addEventListener('click', function() {
         fileInput.click();
     }
 });
+
