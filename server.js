@@ -113,19 +113,19 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Funkcija za generisanje jedinstvenog broja
-    function generateUniqueNumber() {
-        let number;
-        do {
-            number = Math.floor(Math.random() * 8889) + 1111; // Brojevi između 1111 i 9999
-        } while (assignedNumbers.has(number));
-        assignedNumbers.add(number);
-        return number;
-    }
-});
+ // Funkcija za generisanje jedinstvenog broja
+function generateUniqueNumber() {
+    let number;
+    do {
+        number = Math.floor(Math.random() * 8889) + 1111; // Brojevi između 1111 i 9999
+    } while (assignedNumbers.has(number));
+    assignedNumbers.add(number);
+    return number;
+}
 
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server je pokrenut na portu ${PORT}`);
 });
+
