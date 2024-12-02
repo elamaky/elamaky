@@ -1,127 +1,45 @@
-let isAccessGranted = false;
-let activeUser = null;
-let isPrivateChatActive = false;
-let currentPrivateRecipient = null;
-const allowedUsers = ["__X__", "___F117___", "ZI ZU"]; // Izuzeti korisnici
+document.getElementById('openModal').addEventListener('click', function() {
+    const password = prompt("Unesite lozinku:");
 
-// Funkcija za otvaranje modala
-function openModal() {
-    const modal = document.getElementById('optionsModal');
-    if (allowedUsers.includes(activeUser)) {
-        modal.style.display = 'block'; // Otvori modal bez lozinke za određene korisnike
-    } else if (!isAccessGranted) {
-        const password = prompt("Unesite lozinku:");
-        if (password === "galaksija123") {
-            isAccessGranted = true;
-            modal.style.display = 'block'; // Otvori modal nakon validne lozinke
-        } else {
-            alert("Pogrešna lozinka!");
-        }
+    const allowedNicks = ["Radio Galaksija", "ZI ZU", "__X__", "___F117___"];
+    const currentNick = "OVDE_UNESITE_NICK"; // Ovo treba da bude aktuelni korisnički nick.
+
+    if (allowedNicks.includes(currentNick) || password === "galaksija123") {
+        const functionPanel = document.getElementById('functionPanel');
+        functionPanel.style.display = functionPanel.style.display === "none" ? "block" : "none";
     } else {
-        modal.style.display = 'block'; // Otvori modal ako je pristup već odobren
-    }
-}
-
-// Dodavanje event listenera za otvaranje modala na taster "D"
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'D' || event.key === 'd') {
-        openModal();
+        alert("Nemate dozvolu da otvorite ovaj panel.");
     }
 });
 
-// Zatvaranje modala klikom izvan njega
-window.onclick = function(event) {
-    const modal = document.getElementById('optionsModal');
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
-};
-
-// Funkcija za postavljanje aktivnog korisnika
-function setActiveUser(username) {
-    activeUser = username;
-}
-
-// Funkcija za brisanje chata
-document.getElementById('deleteChatBtn').onclick = function() {
-    alert("Funkcija za brisanje chata nije implementirana!"); // Placeholder
-};
-
-
-
-
-// Kada korisnik klikne na gosta
-document.getElementById('guestList').addEventListener('click', function(event) {
-    const guestName = event.target.textContent.trim(); // Uzmi ime gosta
-    if (guestName) {
-        currentPrivateRecipient = guestName; // Postavi trenutnog primaoca
-
-        // Prikazivanje vizuelne trake
-        document.querySelectorAll('#guestList .guest').forEach(guest => guest.classList.remove('selected')); // Ukloni selekcije
-        event.target.classList.add('selected'); // Dodaj selektovani stil
-
-        // Postavi formu za privatnu poruku
-        document.getElementById('chatInput').placeholder = `Poruka za ${guestName}...`;
-    }
+// Dodavanje funkcionalnosti za dugmad u panelu
+document.getElementById('clearChat').addEventListener('click', function() {
+    // Logika za brisanje chata
+    console.log("Chat je obrisan.");
 });
 
-// Funkcija za slanje poruke
-document.getElementById('chatInput').addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-        const message = this.value.trim();
-
-        if (message === "") return; // Ne šaljemo prazne poruke
-
-        if (isPrivateChatActive && currentPrivateRecipient) {
-            // Slanje privatne poruke
-            socket.emit('privateMessage', {
-                recipient: currentPrivateRecipient,
-                sender: activeUser,
-                text: message
-            });
-        } else {
-            // Slanje normalne poruke svim korisnicima
-            socket.emit('chatMessage', {
-                sender: activeUser,
-                text: message
-            });
-        }
-
-        this.value = ''; // Isprazni chat input
-    }
+document.getElementById('privateMessage').addEventListener('click', function() {
+    // Logika za slanje privatne poruke
+    console.log("Privatna poruka je poslata.");
 });
 
-// Prikazivanje privatnih poruka u message area
-socket.on('privateMessage', function(data) {
-    const messageArea = document.getElementById('messageArea');
-    if (data.recipient === activeUser || data.sender === activeUser) {
-        const newMessage = document.createElement('div');
-        newMessage.classList.add('message');
-        newMessage.innerHTML = `<strong>${data.sender} ---> ${data.recipient}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
-        messageArea.prepend(newMessage);
-    }
+document.getElementById('addImage').addEventListener('click', function() {
+    // Logika za dodavanje slike
+    console.log("Slika je dodata.");
 });
 
-// Prikazivanje normalnih poruka u message area
-socket.on('chatMessage', function(data) {
-    const messageArea = document.getElementById('messageArea');
-    const newMessage = document.createElement('div');
-    newMessage.classList.add('message');
-    newMessage.innerHTML = `<strong>${data.sender}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
-    messageArea.prepend(newMessage);
+document.getElementById('addFcp').addEventListener('click', function() {
+    // Logika za dodavanje FCP datoteke
+    console.log("FCP datoteka je dodata.");
 });
 
-// Funkcija za aktiviranje privatnog chata
-document.getElementById('privateChatBtn').onclick = function() {
-    if (currentPrivateRecipient) {
-        isPrivateChatActive = !isPrivateChatActive; // Prebaci status privatnog chata
-        alert(`Privatni chat je ${isPrivateChatActive ? 'uključen' : 'isključen'} za ${currentPrivateRecipient}`);
-        if (!isPrivateChatActive) {
-            currentPrivateRecipient = null; // Očisti trenutnog primaoca
-        }
-    } else {
-        alert("Greška: Niste izabrali gosta za privatni chat!");
-    }
-};
+document.getElementById('addVideo').addEventListener('click', function() {
+    // Logika za dodavanje video snimka
+    console.log("Video snimak je dodat.");
+});
+
+document.getElementById('enableCamera').addEventListener('click', function() {
+    // Logika za uključivanje kamere
+    console.log("Kamera je uključena.");
+});
 
