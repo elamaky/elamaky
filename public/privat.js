@@ -50,7 +50,7 @@ document.getElementById('addImage').addEventListener('click', function() {
             img.src = imageSource;  
             img.style.width = "200px";  
             img.style.height = "200px"; 
-            img.style.position = "relative"; 
+            img.style.position = "absolute"; 
             img.style.zIndex = "1000";  
             img.classList.add('draggable', 'resizable');  
             img.style.border = "none"; // Ukloni border po defaultu
@@ -91,8 +91,8 @@ img.addEventListener('click', function () {
         closeButton.style.background = 'red';
         closeButton.style.color = 'white';
         closeButton.style.cursor = 'pointer';
-        closeButton.style.fontSize = '14px'; // Povećaj font veličinu
-        closeButton.style.padding = '2px 5px';
+        closeButton.style.fontSize = '25px'; // Povećaj font veličinu
+        closeButton.style.padding = '5px';
         closeButton.style.zIndex = '2000';
         closeButton.style.borderRadius = '3px'; // Zaokruženi ivici
 
