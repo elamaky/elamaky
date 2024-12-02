@@ -1,86 +1,131 @@
-const privateChats = {}; // Čuva privatne chatove (socket.id => [socket.id])
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+const { connectDB } = require('./mongo');
+const { register, login } = require('./prijava');
+const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodula
+const { saveIpData, getIpData } = require('./ip'); // Uvozimo ip.js
+const uuidRouter = require('./uuidmodul'); // Putanja do modula
+const { ensureRadioGalaksijaAtTop } = require('./sitnice');
+const konobaricaModul = require('./konobaricamodul');
+const { startPrivateChat, endPrivateChat, sendPrivateMessage, isAuthorizedUser } = require('./privateChat');
+const pingService = require('./ping');
+require('dotenv').config();
 
-// Kada korisnik pošalje URL slike
-function sendImage(socket, io) {
-    socket.on('send-image', (imageUrl) => {
-        io.emit('receive-image', imageUrl);
-    });
-}
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 
-// Obrada slanja poruka u četu
-function chatMessage(socket, io, guests) {
-    socket.on('chatMessage', (msgData) => {
-        const time = new Date().toLocaleTimeString('en-GB', { timeZone: 'Europe/Berlin' });
-        const messageToSend = {
-            text: msgData.text,
-            bold: msgData.bold,
-            italic: msgData.italic,
-            color: msgData.color,
-            nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
-            time: time,
-        };
-        io.emit('newMessage', messageToSend); // Emituj poruku svim korisnicima
-    });
-}
+connectDB(); // Povezivanje na bazu podataka
+konobaricaModul(io);
 
-// Kada korisnik pošalje zahtev za brisanje chata
-function clearChat(socket, io) {
-    socket.on('clear-chat', () => {
-        chatMessages = []; // Obriši chat na serveru
-        io.emit('chat-cleared'); // Emituj svim korisnicima da je chat obrisan
-    });
-}
+// Middleware za parsiranje JSON podataka i serviranje statičkih fajlova
+app.use(express.json());
+app.use(express.static(__dirname + '/public'));
+app.use('/guests', uuidRouter); // Dodavanje ruta u aplikaciju
+app.set('trust proxy', true);
 
-// Funkcija za pokretanje privatnog chata
-function startPrivateChat(socket) {
-    socket.on('start-private-chat', (receiverId) => {
-        privateChats[socket.id] = privateChats[socket.id] || [];
-        privateChats[socket.id].push(receiverId);
 
-        privateChats[receiverId] = privateChats[receiverId] || [];
-        privateChats[receiverId].push(socket.id);
+// Rute za registraciju i prijavu
+app.post('/register', (req, res) => register(req, res, io));
+app.post('/login', (req, res) => login(req, res, io));
 
-        console.log(`Privatni chat započet između ${socket.id} i ${receiverId}`);
-        socket.emit('private_chat_started', receiverId);
-        socket.to(receiverId).emit('private_chat_started', socket.id);
-    });
-}
+// Početna ruta
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/public/index.html');
+});
 
-// Funkcija za završavanje privatnog chata
-function endPrivateChat(socket) {
-    socket.on('end-private-chat', (receiverId) => {
-        privateChats[socket.id] = privateChats[socket.id].filter(id => id !== receiverId);
-        privateChats[receiverId] = privateChats[receiverId].filter(id => id !== socket.id);
+// Lista autorizovanih korisnika i banovanih korisnika
+const authorizedUsers = new Set(['Radio Galaksija', 'ZI ZU', '__X__']);
+const bannedUsers = new Set();
 
-        console.log(`Privatni chat završio između ${socket.id} i ${receiverId}`);
-        socket.emit('private_chat_ended', receiverId);
-        socket.to(receiverId).emit('private_chat_ended', socket.id);
-    });
-}
+// Skladištenje informacija o gostima
+const guests = {};
+const assignedNumbers = new Set(); // Set za generisane brojeve
 
-// Funkcija za slanje privatne poruke
-function sendPrivateMessage(socket) {
-    socket.on('send-private-message', (data) => {
-        const { receiverId, message } = data;
+// Dodavanje socket događaja iz banmodula
+setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
 
-        console.log(`Poruka od ${socket.id} za ${receiverId}: ${message}`);
+// Socket.io događaji
+io.on('connection', (socket) => {
+    // Generisanje jedinstvenog broja za gosta
+    const uniqueNumber = generateUniqueNumber();
+    const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
+    guests[socket.id] = nickname; // Dodajemo korisnika u guest list
+    console.log(`${nickname} se povezao.`);
 
-        if (privateChats[socket.id] && privateChats[socket.id].includes(receiverId)) {
-            const time = new Date().toLocaleTimeString();
-            const messageToSend = {
-                text: message,
-                nickname: socket.nickname || 'Nepoznato',
-                time: time,
-                private: true,
-            };
+    // Emitovanje događaja da bi ostali korisnici videli novog gosta
+    const updatedGuests = ensureRadioGalaksijaAtTop(guests);
+    socket.broadcast.emit('newGuest', nickname);
+    io.emit('updateGuestList', Object.values(guests));
 
-            socket.to(receiverId).emit('private_message', messageToSend);
-            socket.emit('private_message', messageToSend);
+    // Obrada prijave korisnika
+    socket.on('userLoggedIn', async (username) => {
+        if (authorizedUsers.has(username)) {
+            guests[socket.id] = username; // Ne dodajemo (Admin) oznaku
+            console.log(`${username} je autentifikovan kao admin.`);
         } else {
-            console.log(`Greška: Niste u privatnom razgovoru sa ${receiverId}`);
-            socket.emit('error', 'Niste u privatnom razgovoru.');
+            guests[socket.id] = username; // Ako je običan gost
+            console.log(`${username} se prijavio kao gost.`);
+        }
+        io.emit('updateGuestList', Object.values(guests));
+    });
+
+ // Aktivacija privatnog chata
+    socket.on('startPrivateChat', (receiverId) => {
+        startPrivateChat(socket, receiverId);
+    });
+
+    // Zatvaranje privatnog chata
+    socket.on('endPrivateChat', (receiverId) => {
+        endPrivateChat(socket, receiverId);
+    });
+
+    // Slanje privatne poruke
+    socket.on('privateMessage', (data) => {
+        sendPrivateMessage(socket, data);
+    });
+
+        // Spremi IP, poruku i nickname u fajl
+        saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
+        
+        io.emit('chatMessage', messageToSend);
+    });
+
+    // Obrada diskonekcije korisnika
+    socket.on('disconnect', () => {
+        console.log(`${guests[socket.id]} se odjavio.`);
+        delete guests[socket.id]; // Uklanjanje gosta iz liste
+        io.emit('updateGuestList', Object.values(guests));
+    });
+
+    // Mogućnost banovanja korisnika prema nickname-u
+    socket.on('banUser', (nicknameToBan) => {
+        const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
+
+        if (socketIdToBan) {
+            io.to(socketIdToBan).emit('banned');
+            io.sockets.sockets[socketIdToBan].disconnect();
+            console.log(`Korisnik ${nicknameToBan} (ID: ${socketIdToBan}) je banovan.`);
+        } else {
+            console.log(`Korisnik ${nicknameToBan} nije pronađen.`);
+            socket.emit('userNotFound', nicknameToBan);
         }
     });
-}
 
-module.exports = { sendImage, chatMessage, clearChat, startPrivateChat, endPrivateChat, sendPrivateMessage };
+    // Funkcija za generisanje jedinstvenog broja
+    function generateUniqueNumber() {
+        let number;
+        do {
+            number = Math.floor(Math.random() * 8889) + 1111; // Brojevi između 1111 i 9999
+        } while (assignedNumbers.has(number));
+        assignedNumbers.add(number);
+        return number;
+    }
+});
+
+// Pokretanje servera na definisanom portu
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server je pokrenut na portu ${PORT}`);
+});
