@@ -4,6 +4,19 @@ socket.on('send-image', (imageUrl) => {
     io.emit('receive-image', imageUrl);
 });
 
+ // Obrada slanja poruka u četu
+    socket.on('chatMessage', (msgData) => {
+        const time = new Date().toLocaleTimeString('en-GB', { timeZone: 'Europe/Berlin' });
+        const messageToSend = {
+            text: msgData.text,
+            bold: msgData.bold,
+            italic: msgData.italic,
+            color: msgData.color,
+            nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
+            time: time,
+        };
+
+
 // Kada korisnik pošalje zahtev za brisanje chata
 socket.on('clear-chat', () => {
     chatMessages = []; // Obriši chat na serveru
