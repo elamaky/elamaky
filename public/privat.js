@@ -72,28 +72,43 @@ function dragElement(elmnt) {
     }
 }
 
-// Dodavanje funkcionalnosti za dugmad u panelu
+// Brisanje sadržaja chata
 document.getElementById('clearChat').addEventListener('click', function() {
+    const chatWindow = document.getElementById('chatWindow');
+    chatWindow.innerHTML = ""; // Briše sve unutar chata
     console.log("Chat je obrisan.");
 });
 
-document.getElementById('privateMessage').addEventListener('click', function() {
-    console.log("Privatna poruka je poslata.");
-});
-
+// Dodavanje slike (URL ili PC)
 document.getElementById('addImage').addEventListener('click', function() {
-    console.log("Slika je dodata.");
-});
+    const imageSource = prompt("Unesite URL slike ili ostavite prazno za upload sa računara:");
 
-document.getElementById('addFcp').addEventListener('click', function() {
-    console.log("FCP datoteka je dodata.");
+    if (imageSource) {
+        // Dodavanje slike preko URL-a
+        const img = document.createElement('img');
+        img.src = imageSource;
+        img.style.maxWidth = "100%";
+        document.getElementById('chatWindow').appendChild(img);
+        console.log("Slika je dodata preko URL-a.");
+    } else {
+        // Dodavanje slike sa lokalnog računara
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.onchange = function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.maxWidth = "100%";
+                    document.getElementById('chatWindow').appendChild(img);
+                    console.log("Slika je dodata sa računara.");
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+        fileInput.click();
+    }
 });
-
-document.getElementById('addVideo').addEventListener('click', function() {
-    console.log("Video snimak je dodat.");
-});
-
-document.getElementById('enableCamera').addEventListener('click', function() {
-    console.log("Kamera je uključena.");
-});
-
