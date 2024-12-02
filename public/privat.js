@@ -36,6 +36,9 @@ document.getElementById('clearChat').addEventListener('click', function() {
     const chatWindow = document.getElementById('messageArea');
     chatWindow.innerHTML = ""; // Briše sve unutar chata
     console.log("Chat je obrisan.");
+
+    // Emituj događaj serveru za brisanje chata
+    socket.emit('clear-chat'); 
 });
 
 document.getElementById('addImage').addEventListener('click', function() {
