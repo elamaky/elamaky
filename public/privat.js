@@ -52,13 +52,13 @@ document.getElementById('addImage').addEventListener('click', function () {
             img.style.height = "200px";
             img.style.position = "absolute";
             img.style.zIndex = "1000";
-            img.classList.add('resizable');
             img.classList.add('draggable');
+            img.classList.add('resizable');
 
             document.body.appendChild(img);
 
-            // Jednostavno zatvaranje slike
-            img.addEventListener('dblclick', function () {
+            // Uklanjanje slike klikom na nju
+            img.addEventListener('click', function () {
                 img.remove();
             });
 
@@ -74,6 +74,7 @@ document.getElementById('addImage').addEventListener('click', function () {
 function enableDragAndResize(img) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     let isResizing = false;
+    let resizeSide = null;
 
     img.addEventListener('mousedown', function (e) {
         const rect = img.getBoundingClientRect();
@@ -88,8 +89,11 @@ function enableDragAndResize(img) {
 
             document.onmousemove = function (e) {
                 if (isResizing) {
-                    img.style.width = initialWidth + (e.clientX - startX) + 'px';
-                    img.style.height = initialHeight + (e.clientY - startY) + 'px';
+                    if (resizeSide === 'right') {
+                        img.style.width = initialWidth + (e.clientX - startX) + 'px';
+                    } else if (resizeSide === 'bottom') {
+                        img.style.height = initialHeight + (e.clientY - startY) + 'px';
+                    }
                 }
             };
 
