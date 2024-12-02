@@ -44,18 +44,20 @@
     display: none; /* Sakrij modal po default-u */
     position: fixed; /* Fiksna pozicija */
     z-index: 1; /* Na vrhu svih elemenata */
-    width: 250px; 
-    height: 250px; 
-    overflow: auto; /* Uključuje skrolovanje, ako je potrebno */
+    left: 0;
+    top: 0;
+    width: 400px; /* Širina modalnog prozora */
+    /* Dodajte željenu visinu ako je potrebno */
+    height: auto; 
+    overflow: hidden; /* Sakrij sadržaj koji prelazi */
     background-color: rgba(0, 0, 0, 0.5); /* Poluprozirna pozadina */
 }
 
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto; /* Sredi centar */
+    margin: 0; /* Uklanjamo margin */
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Širina modalnog prozora */
 }
 
 .close {
@@ -71,4 +73,3 @@
     text-decoration: none;
     cursor: pointer;
 }
-
