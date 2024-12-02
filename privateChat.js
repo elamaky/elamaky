@@ -84,3 +84,4 @@ function sendPrivateMessage(socket) {
 }
 
 module.exports = { sendImage, chatMessage, clearChat, startPrivateChat, endPrivateChat, sendPrivateMessage };
+
