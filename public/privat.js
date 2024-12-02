@@ -44,18 +44,17 @@ document.getElementById('addImage').addEventListener('click', function() {
     if (imageSource) {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
-
+        
         if (validFormats.includes(fileExtension)) {
             const img = document.createElement('img');
-            img.src = imageSource;
-            img.style.width = "200px"; // Dimenzije nisu promenjene
-            img.style.height = "200px"; // Dimenzije nisu promenjene
-            img.style.position = "absolute";  // Omogućava pomeranje slike na celoj stranici
-            img.style.zIndex = "1000";
-            img.classList.add('draggable');
-            document.body.appendChild(img);  // Slika se dodaje na celu stranicu
-
-            enableDragAndResize(img); // Funkcija za pomeranje i promenu dimenzija
+            img.src = imageSource;  
+            img.style.width = "200px";  
+            img.style.height = "200px"; 
+            img.style.position = "absolute"; 
+            img.style.zIndex = "1000";  
+            img.classList.add('draggable', 'resizable');  
+            document.body.appendChild(img); // Promenjen kontejner na 'body' za pozicioniranje na celoj stranici
+            enableDragAndResize(img);
             console.log("Slika je dodata preko URL-a.");
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
@@ -66,29 +65,31 @@ document.getElementById('addImage').addEventListener('click', function() {
 });
 
 function enableDragAndResize(img) {
-    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     let isResizing = false;
     let resizeSide = null;
 
-    // Dugme za uklanjanje slike
-    const closeButton = document.createElement('div');
-    closeButton.innerHTML = 'X';
-    closeButton.classList.add('close-button');
-    closeButton.style.position = 'absolute';
-    closeButton.style.top = '0px';
-    closeButton.style.right = '0px';
-    closeButton.style.background = 'red';
-    closeButton.style.color = 'white';
-    closeButton.style.cursor = 'pointer';
-    closeButton.style.fontSize = '12px';
-    closeButton.style.padding = '2px 5px';
-    closeButton.style.zIndex = '2000';
+    img.addEventListener('click', function () {
+        img.style.border = "2px dashed red";
+        if (!img.querySelector('.close-button')) {
+            const closeButton = document.createElement('div');
+            closeButton.innerHTML = 'X';
+            closeButton.classList.add('close-button');
+            closeButton.style.position = 'absolute';
+            closeButton.style.top = '0px';
+            closeButton.style.right = '0px';
+            closeButton.style.background = 'red';
+            closeButton.style.color = 'white';
+            closeButton.style.cursor = 'pointer';
+            closeButton.style.fontSize = '12px';
+            closeButton.style.padding = '2px 5px';
+            closeButton.style.zIndex = '2000';
 
-    // Klikom na "X" uklanja se slika
-    closeButton.addEventListener('click', function () {
-        img.remove();
+            closeButton.addEventListener('click', function () {
+                img.remove();
+            });
+            img.appendChild(closeButton);
+        }
     });
-    img.appendChild(closeButton);
 
     img.addEventListener('mousedown', function (e) {
         const rect = img.getBoundingClientRect();
@@ -146,21 +147,16 @@ function enableDragAndResize(img) {
 
     function dragMouseDown(e) {
         e.preventDefault();
-        pos3 = e.clientX;
-        pos4 = e.clientY;
+        let pos3 = e.clientX;
+        let pos4 = e.clientY;
 
         document.onmouseup = closeDragElement;
-        document.onmousemove = elementDrag;
-    }
-
-    function elementDrag(e) {
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-
-        img.style.top = (img.offsetTop - pos2) + 'px';
-        img.style.left = (img.offsetLeft - pos1) + 'px';
+        document.onmousemove = function (e) {
+            img.style.top = (img.offsetTop - (pos4 - e.clientY)) + 'px';
+            img.style.left = (img.offsetLeft - (pos3 - e.clientX)) + 'px';
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+        };
     }
 
     function closeDragElement() {
