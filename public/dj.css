@@ -73,3 +73,29 @@
     text-decoration: none;
     cursor: pointer;
 }
+
+/* Stilovi za slike */
+img.draggable {
+    cursor: move;
+}
+
+img.resizable {
+    cursor: pointer;
+}
+
+/* Dugme za uklanjanje slike */
+.closeButton {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    display: none; /* Početno nevidljivo */
+}
+
