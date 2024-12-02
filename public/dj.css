@@ -44,10 +44,8 @@
     display: none; /* Sakrij modal po default-u */
     position: fixed; /* Fiksna pozicija */
     z-index: 1; /* Na vrhu svih elemenata */
-    left: 0;
-    top: 0;
-    width: 100%; /* 100% širine */
-    height: 100%; /* 100% visine */
+    width: 250px; 
+    height: 250px; 
     overflow: auto; /* Uključuje skrolovanje, ako je potrebno */
     background-color: rgba(0, 0, 0, 0.5); /* Poluprozirna pozadina */
 }
