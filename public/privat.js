@@ -95,7 +95,6 @@ document.getElementById('addImage').addEventListener('click', function() {
     }
 });
 
-// Funkcija za omogućavanje pomeranja i menjanje dimenzija slika
 function enableDragAndResize(img) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     let isResizing = false;
@@ -106,7 +105,6 @@ function enableDragAndResize(img) {
     function dragMouseDown(e) {
         e = e || window.event;
         e.preventDefault();
-        // Pozicioniraj kursor u prvi quadrant
         pos3 = e.clientX;
         pos4 = e.clientY;
         document.onmouseup = closeDragElement;
@@ -120,7 +118,6 @@ function enableDragAndResize(img) {
         pos2 = pos4 - e.clientY;
         pos3 = e.clientX;
         pos4 = e.clientY;
-        // Pomeraj element
         img.style.top = (img.offsetTop - pos2) + "px";
         img.style.left = (img.offsetLeft - pos1) + "px";
     }
@@ -152,8 +149,8 @@ function enableDragAndResize(img) {
         if (isResizing) {
             const width = e.clientX - img.offsetLeft;
             const height = e.clientY - img.offsetTop;
-            img.style.width = width + 'px';   // Promena širine
-            img.style.height = height + 'px'; // Promena visine
+            img.style.width = width + 'px';
+            img.style.height = height + 'px';
         }
     }
 
@@ -162,4 +159,24 @@ function enableDragAndResize(img) {
         document.onmousemove = null;
         document.onmouseup = null;
     }
+
+    // Dodaj dugme za uklanjanje slike
+    const closeButton = document.createElement('button');
+    closeButton.classList.add('closeButton');
+    closeButton.textContent = 'X';
+    img.appendChild(closeButton);
+
+    closeButton.addEventListener('click', function() {
+        img.remove();  // Uklanja sliku sa stranice
+        console.log("Slika je uklonjena.");
+    });
+
+    // Kada je kursor iznad slike, prikazuje se dugme za uklanjanje
+    img.onmouseover = function() {
+        closeButton.style.display = 'block';
+    };
+
+    img.onmouseout = function() {
+        closeButton.style.display = 'none';
+    };
 }
