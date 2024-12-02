@@ -1,21 +1,25 @@
+const privateChats = {}; // Čuva privatne chatove (socket.id => [socket.id])
+
 // Kada korisnik pošalje URL slike
 socket.on('send-image', (imageUrl) => {
     // Emituj sliku svim korisnicima
     io.emit('receive-image', imageUrl);
 });
 
- // Obrada slanja poruka u četu
-    socket.on('chatMessage', (msgData) => {
-        const time = new Date().toLocaleTimeString('en-GB', { timeZone: 'Europe/Berlin' });
-        const messageToSend = {
-            text: msgData.text,
-            bold: msgData.bold,
-            italic: msgData.italic,
-            color: msgData.color,
-            nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
-            time: time,
-        };
+// Obrada slanja poruka u četu
+socket.on('chatMessage', (msgData) => {
+    const time = new Date().toLocaleTimeString('en-GB', { timeZone: 'Europe/Berlin' });
+    const messageToSend = {
+        text: msgData.text,
+        bold: msgData.bold,
+        italic: msgData.italic,
+        color: msgData.color,
+        nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
+        time: time,
+    };
 
+    io.emit('newMessage', messageToSend); // Emituj poruku svim korisnicima
+});
 
 // Kada korisnik pošalje zahtev za brisanje chata
 socket.on('clear-chat', () => {
@@ -23,20 +27,7 @@ socket.on('clear-chat', () => {
     io.emit('chat-cleared'); // Emituj svim korisnicima da je chat obrisan
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-const privateChats = {}; // Čuva privatne chatove (socket.id => [socket.id])
-
+// Funkcija za pokretanje privatnog chata
 function startPrivateChat(socket, receiverId) {
     privateChats[socket.id] = privateChats[socket.id] || [];
     privateChats[socket.id].push(receiverId);
@@ -49,6 +40,7 @@ function startPrivateChat(socket, receiverId) {
     socket.to(receiverId).emit('private_chat_started', socket.id);
 }
 
+// Funkcija za završavanje privatnog chata
 function endPrivateChat(socket, receiverId) {
     privateChats[socket.id] = privateChats[socket.id].filter(id => id !== receiverId);
     privateChats[receiverId] = privateChats[receiverId].filter(id => id !== socket.id);
@@ -58,6 +50,7 @@ function endPrivateChat(socket, receiverId) {
     socket.to(receiverId).emit('private_chat_ended', socket.id);
 }
 
+// Funkcija za slanje privatne poruke
 function sendPrivateMessage(socket, data) {
     const { receiverId, message } = data;
 
