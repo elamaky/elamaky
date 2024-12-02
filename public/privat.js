@@ -42,13 +42,12 @@ document.getElementById('clearChat').addEventListener('click', function() {
 document.getElementById('addImage').addEventListener('click', function() {
     const imageSource = prompt("Unesite URL slike ili ostavite prazno za upload sa računara:");
 
+    let imgElement = null;
+
     if (imageSource) {
         // Dodavanje slike preko URL-a
-        const img = document.createElement('img');
-        img.src = imageSource;
-        img.style.maxWidth = "100%";
-        document.getElementById('messageArea').appendChild(img);
-        console.log("Slika je dodata preko URL-a.");
+        imgElement = document.createElement('img');
+        imgElement.src = imageSource;
     } else {
         // Dodavanje slike sa lokalnog računara
         const fileInput = document.createElement('input');
@@ -59,15 +58,79 @@ document.getElementById('addImage').addEventListener('click', function() {
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.style.maxWidth = "100%";
-                    document.getElementById('messageArea').appendChild(img);
-                    console.log("Slika je dodata sa računara.");
+                    imgElement = document.createElement('img');
+                    imgElement.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
         };
         fileInput.click();
     }
+
+    if (imgElement) {
+        // Postavljanje početnih dimenzija slike na 200x200px
+        imgElement.style.width = '200px';
+        imgElement.style.height = '200px';
+        imgElement.style.position = 'absolute'; // Omogućava pomeranje slike
+        imgElement.style.cursor = 'move'; // Menjanje kursora prilikom pomeranja
+
+        // Dodajemo sliku u chatContainer
+        const chatContainer = document.getElementById('chatContainer');
+        chatContainer.appendChild(imgElement);
+
+        // Omogućiti pomeranje slike
+        enableImageDragging(imgElement);
+        enableImageResizing(imgElement);
+    }
 });
+
+// Funkcija za omogućavanje pomeranja slike
+function enableImageDragging(img) {
+    let offsetX, offsetY, startX, startY;
+
+    img.onmousedown = function(e) {
+        e.preventDefault();
+        startX = e.clientX;
+        startY = e.clientY;
+
+        offsetX = img.offsetLeft;
+        offsetY = img.offsetTop;
+
+        document.onmousemove = function(e) {
+            let newX = offsetX + (e.clientX - startX);
+            let newY = offsetY + (e.clientY - startY);
+            img.style.left = newX + "px";
+            img.style.top = newY + "px";
+        };
+
+        document.onmouseup = function() {
+            document.onmousemove = null;
+            document.onmouseup = null;
+        };
+    };
+}
+
+// Funkcija za omogućavanje promene dimenzija slike
+function enableImageResizing(img) {
+    img.onmousedown = function(e) {
+        if (e.offsetX >= img.clientWidth - 10 && e.offsetY >= img.clientHeight - 10) {
+            let startX = e.clientX;
+            let startY = e.clientY;
+            let startWidth = img.clientWidth;
+            let startHeight = img.clientHeight;
+
+            document.onmousemove = function(e) {
+                let newWidth = startWidth + (e.clientX - startX);
+                let newHeight = startHeight + (e.clientY - startY);
+
+                img.style.width = newWidth + 'px';
+                img.style.height = newHeight + 'px';
+            };
+
+            document.onmouseup = function() {
+                document.onmousemove = null;
+                document.onmouseup = null;
+            };
+        }
+    };
+}
