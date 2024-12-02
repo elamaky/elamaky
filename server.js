@@ -112,4 +112,6 @@ function generateUniqueNumber() {
 
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, '0.0.0.0
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server je pokrenut na portu ${PORT}`);
+});
