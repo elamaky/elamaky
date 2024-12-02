@@ -38,19 +38,22 @@
         <input type="color" id="colorPicker" style="display: none;"> <!-- Skriveni color picker -->
     </div>
 
-<div id="functionPanel" style="display: none;">
-    <h2>Funkcije</h2>
-    
-    <div class="foregroundFunctions">
-        <button id="clearChat">Obriši chat</button>
-        <button id="privateMessage">Privatna poruka</button>
-    </div>
-    
-    <div class="backgroundFunctions">
-        <button id="addImage">Dodaj sliku</button>
-        <button id="addFcp">Dodaj FCP datoteku</button>
-        <button id="addVideo">Dodaj video snimak</button>
-        <button id="enableCamera">Uključi kameru</button>
+<div id="functionModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" id="closeModal">&times;</span>
+        <h2>Funkcije</h2>
+        
+        <div class="foregroundFunctions">
+            <button id="clearChat">Obriši chat</button>
+            <button id="privateMessage">Privatna poruka</button>
+        </div>
+        
+        <div class="backgroundFunctions">
+            <button id="addImage">Dodaj sliku</button>
+            <button id="addFcp">Dodaj FCP datoteku</button>
+            <button id="addVideo">Dodaj video snimak</button>
+            <button id="enableCamera">Uključi kameru</button>
+        </div>
     </div>
 </div>
 
