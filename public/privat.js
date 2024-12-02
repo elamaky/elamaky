@@ -53,6 +53,7 @@ document.getElementById('addImage').addEventListener('click', function() {
             img.style.width = "200px";  // Postavljanje početne širine
             img.style.height = "200px"; // Postavljanje početne visine
             img.style.position = "absolute";  // Omogućava pomeranje slike unutar chat-a
+            img.style.zIndex = "1000";  // Dodajemo z-index da bude ispred drugih elemenata
             img.classList.add('draggable');  // Dodajemo klasu za pomeranje
             img.classList.add('resizable');  // Dodajemo klasu za menjanje dimenzija
             document.getElementById('chatContainer').appendChild(img);
@@ -89,6 +90,8 @@ function enableDragAndResize(img) {
         pos2 = pos4 - e.clientY;
         pos3 = e.clientX;
         pos4 = e.clientY;
+
+        // Pomeraj element
         img.style.top = (img.offsetTop - pos2) + "px";
         img.style.left = (img.offsetLeft - pos1) + "px";
     }
