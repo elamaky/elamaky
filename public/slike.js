@@ -37,13 +37,6 @@ document.getElementById('clearChat').addEventListener('click', function() {
     chatWindow.innerHTML = ""; // Briše sve unutar chata
     console.log("Chat je obrisan.");
 
-// Slušanje na 'chat-cleared' događaj
-socket.on('chat-cleared', function() {
-    console.log('Chat je obrisan sa servera.');
-    const chatWindow = document.getElementById('messageArea');
-    chatWindow.innerHTML = ""; // Briše sve unutar chata
-});
-    
     // Emituj događaj serveru za brisanje chata
     socket.emit('clear-chat'); 
 });
@@ -63,33 +56,18 @@ document.getElementById('addImage').addEventListener('click', function() {
             img.style.height = "200px"; 
             img.style.position = "absolute"; 
             img.style.zIndex = "1000";  
+            img.classList.add('draggable', 'resizable');  
             img.style.border = "none"; // Ukloni border po defaultu
             img.style.display = 'block'; // Dodajemo 'block' kako bi slika bila vidljiva
             document.body.appendChild(img);
             enableDragAndResize(img);
-            
-            // Emitovanje slike svim korisnicima
-            socket.emit('add-image', imageSource);
+            console.log("Slika je dodata preko URL-a.");
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
         }
     } else {
         alert("Niste uneli URL slike.");
     }
-});
-
-// Kada server emituj sliku, klijent treba da je prikaže
-socket.on('display-image', (imageSource) => {
-    const img = document.createElement('img');
-    img.src = imageSource;  
-    img.style.width = "200px";  
-    img.style.height = "200px"; 
-    img.style.position = "absolute"; 
-    img.style.zIndex = "1000";  
-    img.style.border = "none"; 
-    img.style.display = 'block'; 
-    img.style.pointerEvents = "none"; // Onemogućava interakciju sa slikom za druge korisnike
-    document.body.appendChild(img);
 });
 
 function enableDragAndResize(img) {
@@ -177,3 +155,10 @@ function enableDragAndResize(img) {
         document.onmousemove = null;
     }
 }
+
+// Slušanje na 'chat-cleared' događaj
+socket.on('chat-cleared', function() {
+    console.log('Chat je obrisan sa servera.');
+    const chatWindow = document.getElementById('messageArea');
+    chatWindow.innerHTML = ""; // Briše sve unutar chata
+});
