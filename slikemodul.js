@@ -5,6 +5,7 @@ let socket; // Inicijalizujemo socket
 function setSocket(serverSocket, serverIo) {
     socket = serverSocket;
     io = serverIo;
+    console.log(`Socket i IO objekti su inicijalizovani za korisnika ${socket.id}`);
 }
 
 // Funkcija kada korisnik pošalje URL slike
@@ -12,12 +13,14 @@ function sendImage() {
     socket.on('send-image', (imageUrl) => {
         console.log(`Primljen URL slike od ${socket.id}: ${imageUrl}`);
         io.emit('receive-image', imageUrl); // Emitovanje slike svim korisnicima
+        console.log(`Slika emitovana svim korisnicima: ${imageUrl}`);
     });
 }
 
 // Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
     socket.on('chatMessage', (msgData) => {
+        console.log(`Primljena poruka od ${socket.id}: ${JSON.stringify(msgData)}`);
         const time = new Date().toLocaleTimeString();
         const messageToSend = {
             text: msgData.text,
@@ -27,7 +30,9 @@ function chatMessage(guests) {
             nickname: guests[socket.id],
             time: time
         };
-        io.emit('chatMessage', messageToSend);
+        console.log(`Poruka koja će biti emitovana: ${JSON.stringify(messageToSend)}`);
+        io.emit('chatMessage', messageToSend); // Emitovanje poruke svim korisnicima
+        console.log(`Poruka emitovana svim korisnicima: ${messageToSend.text}`);
     });
 }
 
@@ -36,6 +41,7 @@ function clearChat() {
     socket.on('clear-chat', () => {
         console.log(`Zahtev za brisanje chata primljen od ${socket.id}`);
         io.emit('chat-cleared'); // Emituj svim korisnicima da je chat obrisan
+        console.log(`Emitovan događaj 'chat-cleared' svim korisnicima`);
     });
 }
 
