@@ -41,6 +41,14 @@ document.getElementById('clearChat').addEventListener('click', function() {
     socket.emit('clear-chat'); 
 });
 
+// Slušanje na 'chat-cleared' događaj
+socket.on('chat-cleared', function() {
+    console.log('Chat je obrisan sa servera.');
+    const chatWindow = document.getElementById('messageArea');
+    chatWindow.innerHTML = ""; // Briše sve unutar chata
+});
+
+
 document.getElementById('addImage').addEventListener('click', function() {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
