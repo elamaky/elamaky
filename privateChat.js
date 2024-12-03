@@ -9,23 +9,18 @@ function sendImage(socket, io) {
 }
 
 // Obrada slanja poruka u četu
-function chatMessage(socket, io, guests) {
-    socket.on('chatMessage', (msgData) => {
-        const time = new Date().toLocaleTimeString('en-GB', { timeZone: 'Europe/Berlin' });
+ socket.on('chatMessage', (msgData) => {
+        const time = new Date().toLocaleTimeString();
         const messageToSend = {
             text: msgData.text,
             bold: msgData.bold,
             italic: msgData.italic,
             color: msgData.color,
-            nickname: guests[socket.id] || 'Nepoznato', // Korišćenje nadimka za slanje poruke
-            time: time,
+            nickname: guests[socket.id],
+            time: time
         };
-
-        console.log(`Poruka primljena od ${guests[socket.id]} (${socket.id}):`, msgData);
-        io.emit('newMessage', messageToSend); // Emituj poruku svim korisnicima
+        io.emit('chatMessage', messageToSend);
     });
-}
-
 // Kada korisnik pošalje zahtev za brisanje chata
 function clearChat(socket, io) {
     socket.on('clear-chat', () => {
