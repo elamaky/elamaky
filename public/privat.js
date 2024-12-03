@@ -5,7 +5,7 @@ document.getElementById('openModal').addEventListener('click', function() {
         const password = prompt("Unesite lozinku:");
 
         const allowedNicks = ["Radio Galaksija", "ZI ZU", "__X__", "___F117___"];
-        const currentNick = "OVDE_UNESITE_NICK"; // Ovo treba da bude aktuelni korisnički nick.
+        const currentNick = "Radio Galaksija"; // Ovo treba da bude aktuelni korisnički nick.
 
         if (allowedNicks.includes(currentNick) || password === "123galaksija") {
             isLoggedIn = true; // Postavljamo status na login
