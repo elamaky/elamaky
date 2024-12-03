@@ -51,7 +51,6 @@ document.getElementById('addImage').addEventListener('click', function() {
         if (validFormats.includes(fileExtension)) {
             const img = document.createElement('img');
             img.src = imageSource;  
-            console.log("Slika URL:", img.src);
             img.style.width = "200px";  
             img.style.height = "200px"; 
             img.style.position = "absolute"; 
@@ -59,8 +58,7 @@ document.getElementById('addImage').addEventListener('click', function() {
             img.classList.add('draggable', 'resizable');  
             img.style.border = "none"; // Ukloni border po defaultu
             img.style.display = 'block'; // Dodajemo 'block' kako bi slika bila vidljiva
-            document.body.appendChild(img);
-            enableDragAndResize(img);
+            document.body.appendChild(img);  // Dodajemo sliku na stranicu
             console.log("Slika je dodata preko URL-a.");
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
@@ -69,6 +67,7 @@ document.getElementById('addImage').addEventListener('click', function() {
         alert("Niste uneli URL slike.");
     }
 });
+
 
 function enableDragAndResize(img) {
     let isResizing = false;
