@@ -51,6 +51,7 @@ document.getElementById('addImage').addEventListener('click', function() {
         if (validFormats.includes(fileExtension)) {
             const img = document.createElement('img');
             img.src = imageSource;  
+            console.log("Slika URL:", img.src);
             img.style.width = "200px";  
             img.style.height = "200px"; 
             img.style.position = "absolute"; 
