@@ -57,6 +57,7 @@ document.getElementById('addImage').addEventListener('click', function() {
             img.style.zIndex = "1000";  
             img.classList.add('draggable', 'resizable');  
             img.style.border = "none"; // Ukloni border po defaultu
+            img.style.display = 'block'; // Dodajemo 'block' kako bi slika bila vidljiva
             document.body.appendChild(img);
             enableDragAndResize(img);
             console.log("Slika je dodata preko URL-a.");
