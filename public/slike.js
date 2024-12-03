@@ -59,9 +59,9 @@ document.getElementById('addImage').addEventListener('click', function() {
             img.classList.add('draggable', 'resizable');  
             img.style.border = "none"; // Ukloni border po defaultu
             img.style.display = 'block'; // Dodajemo 'block' kako bi slika bila vidljiva
-            img.style.pointerEvents = "none"; // Zaštita od slučajnog klikanja na sliku
+            img.style.pointerEvents = "none"; // Onemogućava interakciju sa slikom za korisnike
             document.body.appendChild(img);
-            enableDragAndResize(img);
+            enableDragAndResize(img); // Omogućava samo tebi da menjaš dimenzije i poziciju
             console.log("Slika je dodata preko URL-a.");
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
@@ -74,11 +74,11 @@ document.getElementById('addImage').addEventListener('click', function() {
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
-    
+
     img.addEventListener('mouseenter', function () {
         img.style.border = "2px dashed red"; // Prikazi granicu kada je kursor iznad slike
     });
-    
+
     img.addEventListener('mouseleave', function () {
         img.style.border = "none"; // Sakrij granicu kada kursor nije iznad slike
     });
@@ -156,10 +156,3 @@ function enableDragAndResize(img) {
         document.onmousemove = null;
     }
 }
-
-// Slušanje na 'chat-cleared' događaj
-socket.on('chat-cleared', function() {
-    console.log('Chat je obrisan sa servera.');
-    const chatWindow = document.getElementById('messageArea');
-    chatWindow.innerHTML = ""; // Briše sve unutar chata
-});
