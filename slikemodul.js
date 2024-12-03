@@ -8,15 +8,6 @@ function setSocket(serverSocket, serverIo) {
     console.log(`Socket i IO objekti su inicijalizovani za korisnika ${socket.id}`);
 }
 
-// Funkcija kada korisnik pošalje URL slike
-function sendImage() {
-    socket.on('send-image', (imageUrl) => {
-        console.log(`Primljen URL slike od ${socket.id}: ${imageUrl}`);
-        io.emit('receive-image', imageUrl); // Emitovanje slike svim korisnicima
-        console.log(`Slika emitovana svim korisnicima: ${imageUrl}`);
-    });
-}
-
 // Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
     socket.on('chatMessage', (msgData) => {
