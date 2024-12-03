@@ -64,12 +64,10 @@ document.getElementById('addImage').addEventListener('click', function() {
             img.style.height = "200px"; 
             img.style.position = "absolute"; 
             img.style.zIndex = "1000";  
-            img.style.border = "none"; // Ukloni border po defaultu
-            img.style.display = 'block'; // Dodajemo 'block' kako bi slika bila vidljiva
+            img.style.border = "none"; 
+            img.style.display = 'block'; 
             img.style.pointerEvents = "none"; // Onemogućava interakciju sa slikom za korisnike
             document.body.appendChild(img);
-            enableDragAndResize(img);
-            
             // Emitovanje slike svim korisnicima
             socket.emit('add-image', imageSource);
         } else {
@@ -93,6 +91,7 @@ socket.on('display-image', (imageSource) => {
     img.style.pointerEvents = "none"; // Onemogućava interakciju sa slikom za druge korisnike
     document.body.appendChild(img);
 });
+
 
 function enableDragAndResize(img) {
     let isResizing = false;
