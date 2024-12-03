@@ -69,10 +69,10 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-     // Funkcija za slanje slike
-    socket.on('send-image', (imageUrl) => {
-        console.log(`Primljen URL slike od korisnika ${socket.id}: ${imageUrl}`);
-        io.emit('receive-image', imageUrl); // Emitovanje slike svim korisnicima
+     // Kada korisnik doda sliku, server emituje svim klijentima
+    socket.on('add-image', (imageSource) => {
+        // Emitujemo URL slike svim klijentima
+        io.emit('display-image', imageSource);
     });
 
 
