@@ -106,6 +106,13 @@ function generateUniqueNumber() {
     return number;
 }
 
+// Server kod
+socket.on('send-image', (imageUrl) => {
+    console.log(`Primljen URL slike od ${socket.id}: ${imageUrl}`);
+    io.emit('receive-image', imageUrl); // Emitovanje slike svim korisnicima
+});
+
+
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
