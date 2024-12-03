@@ -31,17 +31,23 @@ window.onclick = function(event) {
     }
 };
 
+// Brisanje sadržaja chata
+document.getElementById('clearChat').addEventListener('click', function() {
+    const chatWindow = document.getElementById('messageArea');
+    chatWindow.innerHTML = ""; // Briše sve unutar chata
+    console.log("Chat je obrisan.");
+
 // Slušanje na 'chat-cleared' događaj
 socket.on('chat-cleared', function() {
     console.log('Chat je obrisan sa servera.');
     const chatWindow = document.getElementById('messageArea');
     chatWindow.innerHTML = ""; // Briše sve unutar chata
 });
+    
+    // Emituj događaj serveru za brisanje chata
+    socket.emit('clear-chat'); 
+});
 
-// Emituj događaj serveru za brisanje chata
-socket.emit('clear-chat');
-
-// Dodavanje slike na stranicu
 document.getElementById('addImage').addEventListener('click', function() {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
