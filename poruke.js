@@ -36,5 +36,10 @@ function clearChat() {
     });
 }
 
-// Eksportovanje funkcija
-module.exports = { setSocket, sendImage, chatMessage, clearChat };
+// Eksportovanje funkcija iz poruke.js
+module.exports = { 
+    setSocket, 
+    chatMessage, 
+    clearChat
+};
+
