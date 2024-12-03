@@ -4,7 +4,7 @@ const privateChats = {}; // Čuva privatne chatove (socket.id => [socket.id])
 function sendImage(socket, io) {
     socket.on('send-image', (imageUrl) => {
         console.log(`Primljen URL slike od ${socket.id}: ${imageUrl}`);
-        io.emit('receive-image', imageUrl);
+        io.emit('receive-image', imageUrl); // Emitovanje slike svim korisnicima
     });
 }
 
@@ -17,9 +17,10 @@ function chatMessage(socket, io, guests) {
             bold: msgData.bold,
             italic: msgData.italic,
             color: msgData.color,
-            nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
+            nickname: guests[socket.id] || 'Nepoznato', // Korišćenje nadimka za slanje poruke
             time: time,
         };
+
         console.log(`Poruka primljena od ${guests[socket.id]} (${socket.id}):`, msgData);
         io.emit('newMessage', messageToSend); // Emituj poruku svim korisnicima
     });
@@ -88,5 +89,3 @@ function sendPrivateMessage(socket) {
 }
 
 module.exports = { sendImage, chatMessage, clearChat, startPrivateChat, endPrivateChat, sendPrivateMessage };
-
-
