@@ -69,13 +69,12 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-     slikemodul.setSocket(socket, io);
+    // Integracija sa slikemodulom
+    slikemodul.setSocket(socket, io);
     slikemodul.sendImage();
     slikemodul.chatMessage(guests);
     slikemodul.clearChat();
-});
 
-    
     // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
