@@ -8,7 +8,7 @@ const { saveIpData, getIpData } = require('./ip'); // Uvozimo ip.js
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const { ensureRadioGalaksijaAtTop } = require('./sitnice');
 const konobaricaModul = require('./konobaricamodul');
-const slikemodul = require('./slikemodul');
+const { setSocket, chatMessage, clearChat } = require('./poruke');
 const pingService = require('./ping');
 require('dotenv').config();
 
@@ -69,10 +69,9 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-     // Pozivanje funkcija iz slikemodul.js
-    slikemodul.setSocket(socket, io);  // Povezivanje socket-a sa funkcijama
-    slikemodul.chatMessage(guests);  // Pozivanje funkcije za slanje poruka
-    slikemodul.clearChat();  // Pozivanje funkcije za brisanje chata
+setSocket(socket);
+chatMessage(socket);
+clearChat(socket);
 
     // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
