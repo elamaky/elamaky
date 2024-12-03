@@ -1,4 +1,4 @@
-let io; // Inicijalizujemo io, koji ćemo koristiti u svim funkcijama
+let io; // Inicijalizujemo io
 let socket; // Inicijalizujemo socket
 
 // Funkcija za setovanje socket-a i io objekta
