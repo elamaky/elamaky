@@ -48,7 +48,6 @@ socket.on('chat-cleared', function() {
     socket.emit('clear-chat'); 
 });
 
-// Dodavanje slike preko URL-a
 document.getElementById('addImage').addEventListener('click', function() {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
@@ -59,20 +58,18 @@ document.getElementById('addImage').addEventListener('click', function() {
         if (validFormats.includes(fileExtension)) {
             const img = document.createElement('img');
             img.src = imageSource;  
+            console.log("Slika URL:", img.src);
             img.style.width = "200px";  
             img.style.height = "200px"; 
             img.style.position = "absolute"; 
             img.style.zIndex = "1000";  
-            img.classList.add('draggable', 'resizable');  
             img.style.border = "none"; // Ukloni border po defaultu
             img.style.display = 'block'; // Dodajemo 'block' kako bi slika bila vidljiva
-            
-            // Emitovanje URL-a slike svim korisnicima
-            socket.emit('send-image', imageSource); // Slanje slike serveru
-            
             document.body.appendChild(img);
             enableDragAndResize(img);
-            console.log("Slika je dodata preko URL-a.");
+            
+            // Emitovanje slike svim korisnicima
+            socket.emit('add-image', imageSource);
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
         }
@@ -81,7 +78,20 @@ document.getElementById('addImage').addEventListener('click', function() {
     }
 });
 
-// Funkcija za omogućavanje pomeranja i promena veličine slike
+// Kada server emituj sliku, klijent treba da je prikaže
+socket.on('display-image', (imageSource) => {
+    const img = document.createElement('img');
+    img.src = imageSource;  
+    img.style.width = "200px";  
+    img.style.height = "200px"; 
+    img.style.position = "absolute"; 
+    img.style.zIndex = "1000";  
+    img.style.border = "none"; 
+    img.style.display = 'block'; 
+    img.style.pointerEvents = "none"; // Onemogućava interakciju sa slikom za druge korisnike
+    document.body.appendChild(img);
+});
+
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
@@ -167,18 +177,3 @@ function enableDragAndResize(img) {
         document.onmousemove = null;
     }
 }
-
-// Kada server pošalje sliku, prikazujemo je na stranici
-socket.on('receive-image', (imageUrl) => {
-    const img = document.createElement('img');
-    img.src = imageUrl;
-    img.style.width = "200px";  
-    img.style.height = "200px"; 
-    img.style.position = "absolute"; 
-    img.style.zIndex = "1000";  
-    img.classList.add('draggable', 'resizable');  
-    img.style.border = "none"; // Ukloni border po defaultu
-    img.style.display = 'block'; // Dodajemo 'block' kako bi slika bila vidljiva
-    document.body.appendChild(img);
-    enableDragAndResize(img);
-});
