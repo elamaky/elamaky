@@ -80,31 +80,31 @@ function enableDragAndResize(img) {
         img.style.border = "none"; // Sakrij granicu kada kursor nije iznad slike
     });
 
-   // Oznaka za sliku
-img.addEventListener('click', function () {
-    if (!img.querySelector('.close-button')) {
-        img.style.border = "2px dashed red"; // Prikazi granicu kada klikneš na sliku
+    // Oznaka za sliku (X dugme)
+    img.addEventListener('click', function () {
+        if (!img.querySelector('.close-button')) {
+            img.style.border = "2px dashed red"; // Prikazi granicu kada klikneš na sliku
 
-        const closeButton = document.createElement('div');
-        closeButton.innerHTML = 'X';
-        closeButton.classList.add('close-button');
-        closeButton.style.position = 'absolute';
-        closeButton.style.top = '5px'; // Povećaj razmak od vrha
-        closeButton.style.right = '5px'; // Povećaj razmak od desne strane
-        closeButton.style.background = 'red';
-        closeButton.style.color = 'white';
-        closeButton.style.cursor = 'pointer';
-        closeButton.style.fontSize = '25px'; // Povećaj font veličinu
-        closeButton.style.padding = '5px';
-        closeButton.style.zIndex = '2000';
-        closeButton.style.borderRadius = '3px'; // Zaokruženi ivici
+            const closeButton = document.createElement('div');
+            closeButton.innerHTML = 'X';
+            closeButton.classList.add('close-button');
+            closeButton.style.position = 'absolute';
+            closeButton.style.top = '5px'; // Povećaj razmak od vrha
+            closeButton.style.right = '5px'; // Povećaj razmak od desne strane
+            closeButton.style.background = 'red';
+            closeButton.style.color = 'white';
+            closeButton.style.cursor = 'pointer';
+            closeButton.style.fontSize = '25px'; // Povećaj font veličinu
+            closeButton.style.padding = '5px';
+            closeButton.style.zIndex = '2000';
+            closeButton.style.borderRadius = '3px'; // Zaokruženi ivici
 
-        closeButton.addEventListener('click', function () {
-            img.remove();
-        });
-        img.appendChild(closeButton);
-    }
-});
+            closeButton.addEventListener('click', function () {
+                img.remove();
+            });
+            img.appendChild(closeButton);
+        }
+    });
 
     img.addEventListener('mousedown', function (e) {
         const rect = img.getBoundingClientRect();
@@ -179,3 +179,4 @@ img.addEventListener('click', function () {
         document.onmousemove = null;
     }
 }
+
