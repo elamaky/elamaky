@@ -166,4 +166,3 @@ socket.on('display-image', (imageSource) => {
         document.onmouseup = null;
         document.onmousemove = null;
     }
-}
