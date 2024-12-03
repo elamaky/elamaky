@@ -63,11 +63,13 @@ document.getElementById('addImage').addEventListener('click', function() {
             img.style.width = "200px";  
             img.style.height = "200px"; 
             img.style.position = "absolute"; 
-            img.style.zIndex = "1000";  
+            img.style.zIndex = "1000"; 
+            img.classList.add('draggable', 'resizable');  
             img.style.border = "none"; // Ukloni border po defaultu
             img.style.display = 'block'; // Dodajemo 'block' kako bi slika bila vidljiva
             img.style.pointerEvents = "none"; // Onemogućava interakciju sa slikom za korisnike
             document.body.appendChild(img);
+            enableDragAndResize(img);
             
             // Emitovanje slike svim korisnicima
             socket.emit('add-image', imageSource);
