@@ -47,7 +47,6 @@ setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u 
 
 // Socket.io događaji
 io.on('connection', (socket) => {
-    // Generisanje jedinstvenog broja za gosta
     const uniqueNumber = generateUniqueNumber();
     const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
     guests[socket.id] = nickname; // Dodajemo korisnika u guest list
@@ -61,16 +60,16 @@ io.on('connection', (socket) => {
     // Obrada prijave korisnika
     socket.on('userLoggedIn', async (username) => {
         if (authorizedUsers.has(username)) {
-            guests[socket.id] = username; // Ne dodajemo (Admin) oznaku
+            guests[socket.id] = username; // Admin
             console.log(`${username} je autentifikovan kao admin.`);
         } else {
-            guests[socket.id] = username; // Ako je običan gost
+            guests[socket.id] = username; // Običan gost
             console.log(`${username} se prijavio kao gost.`);
         }
         io.emit('updateGuestList', Object.values(guests));
     });
 
-    // Poziv funkcija koje koriste socket i io
+    // Inicijalizacija funkcija iz privateChat.js
     sendImage(socket, io);
     chatMessage(socket, io, guests); // Prosleđivanje guest lista za chat poruke
     clearChat(socket, io);
