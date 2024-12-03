@@ -69,6 +69,13 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
+     // Funkcija za slanje slike
+    socket.on('send-image', (imageUrl) => {
+        console.log(`Primljen URL slike od korisnika ${socket.id}: ${imageUrl}`);
+        io.emit('receive-image', imageUrl); // Emitovanje slike svim korisnicima
+    });
+
+
     // Funkcije iz modula poruke.js
     setSocket(socket, io);  // Inicijalizacija socket-a i io objekta
     chatMessage(guests);     // Pokretanje funkcije za slanje poruka
@@ -105,13 +112,6 @@ function generateUniqueNumber() {
     assignedNumbers.add(number);
     return number;
 }
-
-// Server kod
-socket.on('send-image', (imageUrl) => {
-    console.log(`Primljen URL slike od ${socket.id}: ${imageUrl}`);
-    io.emit('receive-image', imageUrl); // Emitovanje slike svim korisnicima
-});
-
 
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
