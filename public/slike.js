@@ -37,11 +37,11 @@ socket.on('chat-cleared', function() {
     const chatWindow = document.getElementById('messageArea');
     chatWindow.innerHTML = ""; // Briše sve unutar chata
 });
-    
-    // Emituj događaj serveru za brisanje chata
-    socket.emit('clear-chat'); 
-});
 
+// Emituj događaj serveru za brisanje chata
+socket.emit('clear-chat');
+
+// Dodavanje slike na stranicu
 document.getElementById('addImage').addEventListener('click', function() {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
