@@ -69,11 +69,11 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-    // Integracija sa slikemodulom
-    slikemodul.setSocket(socket, io);
-    slikemodul.sendImage();
-    slikemodul.chatMessage(guests);
-    slikemodul.clearChat();
+     // Pozivanje funkcija iz slikemodul.js
+    slikemodul.setSocket(socket, io);  // Povezivanje socket-a sa funkcijama
+    slikemodul.sendImage();  // Pozivanje funkcije za slanje slika
+    slikemodul.chatMessage(guests);  // Pozivanje funkcije za slanje poruka
+    slikemodul.clearChat();  // Pozivanje funkcije za brisanje chata
 
     // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
