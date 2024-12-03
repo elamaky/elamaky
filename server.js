@@ -8,7 +8,7 @@ const { saveIpData, getIpData } = require('./ip'); // Uvozimo ip.js
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const { ensureRadioGalaksijaAtTop } = require('./sitnice');
 const konobaricaModul = require('./konobaricamodul');
-const { sendImage, chatMessage, clearChat, startPrivateChat, endPrivateChat, sendPrivateMessage } = require('./privateChat');
+const slikemodul = require('./slikemodul');
 const pingService = require('./ping');
 require('dotenv').config();
 
@@ -69,14 +69,13 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-    // Inicijalizacija funkcija iz privateChat.js
-    sendImage(socket, io);
-    chatMessage(socket, io, guests); // Prosleđivanje guest lista za chat poruke
-    clearChat(socket, io);
-    startPrivateChat(socket);
-    endPrivateChat(socket);
-    sendPrivateMessage(socket);
+     slikemodul.setSocket(socket, io);
+    slikemodul.sendImage();
+    slikemodul.chatMessage(guests);
+    slikemodul.clearChat();
+});
 
+    
     // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
