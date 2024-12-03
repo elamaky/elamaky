@@ -59,15 +59,18 @@ document.getElementById('addImage').addEventListener('click', function() {
         if (validFormats.includes(fileExtension)) {
             const img = document.createElement('img');
             img.src = imageSource;  
+            console.log("Slika URL:", img.src);
             img.style.width = "200px";  
             img.style.height = "200px"; 
             img.style.position = "absolute"; 
             img.style.zIndex = "1000";  
-            img.classList.add('draggable', 'resizable');  
             img.style.border = "none"; // Ukloni border po defaultu
+            img.style.display = 'block'; // Dodajemo 'block' kako bi slika bila vidljiva
+            img.style.pointerEvents = "none"; // Onemogućava interakciju sa slikom za korisnike
             document.body.appendChild(img);
-            enableDragAndResize(img);
-            console.log("Slika je dodata preko URL-a.");
+            
+            // Emitovanje slike svim korisnicima
+            socket.emit('add-image', imageSource);
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
         }
@@ -76,43 +79,20 @@ document.getElementById('addImage').addEventListener('click', function() {
     }
 });
 
-function enableDragAndResize(img) {
-    let isResizing = false;
-    let resizeSide = null;
-    
-    img.addEventListener('mouseenter', function () {
-        img.style.border = "2px dashed red"; // Prikazi granicu kada je kursor iznad slike
-    });
-    
-    img.addEventListener('mouseleave', function () {
-        img.style.border = "none"; // Sakrij granicu kada kursor nije iznad slike
-    });
-
-   // Oznaka za sliku
-img.addEventListener('click', function () {
-    if (!img.querySelector('.close-button')) {
-        img.style.border = "2px dashed red"; // Prikazi granicu kada klikneš na sliku
-
-        const closeButton = document.createElement('div');
-        closeButton.innerHTML = 'X';
-        closeButton.classList.add('close-button');
-        closeButton.style.position = 'absolute';
-        closeButton.style.top = '5px'; // Povećaj razmak od vrha
-        closeButton.style.right = '5px'; // Povećaj razmak od desne strane
-        closeButton.style.background = 'red';
-        closeButton.style.color = 'white';
-        closeButton.style.cursor = 'pointer';
-        closeButton.style.fontSize = '25px'; // Povećaj font veličinu
-        closeButton.style.padding = '5px';
-        closeButton.style.zIndex = '2000';
-        closeButton.style.borderRadius = '3px'; // Zaokruženi ivici
-
-        closeButton.addEventListener('click', function () {
-            img.remove();
-        });
-        img.appendChild(closeButton);
-    }
+// Kada server emituj sliku, klijent treba da je prikaže
+socket.on('display-image', (imageSource) => {
+    const img = document.createElement('img');
+    img.src = imageSource;  
+    img.style.width = "200px";  
+    img.style.height = "200px"; 
+    img.style.position = "absolute"; 
+    img.style.zIndex = "1000";  
+    img.style.border = "none"; 
+    img.style.display = 'block'; 
+    img.style.pointerEvents = "none"; // Onemogućava interakciju sa slikom za druge korisnike
+    document.body.appendChild(img);
 });
+
 
     img.addEventListener('mousedown', function (e) {
         const rect = img.getBoundingClientRect();
