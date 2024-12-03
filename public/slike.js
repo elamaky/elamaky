@@ -66,6 +66,7 @@ document.getElementById('addImage').addEventListener('click', function() {
             img.style.zIndex = "1000";  
             img.style.border = "none"; // Ukloni border po defaultu
             img.style.display = 'block'; // Dodajemo 'block' kako bi slika bila vidljiva
+            img.style.pointerEvents = "none"; // Onemogućava interakciju sa slikom za korisnike
             document.body.appendChild(img);
             enableDragAndResize(img);
             
