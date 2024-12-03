@@ -3,6 +3,7 @@ const privateChats = {}; // Čuva privatne chatove (socket.id => [socket.id])
 // Kada korisnik pošalje URL slike
 function sendImage(socket, io) {
     socket.on('send-image', (imageUrl) => {
+        console.log(`Primljen URL slike od ${socket.id}: ${imageUrl}`);
         io.emit('receive-image', imageUrl);
     });
 }
@@ -19,6 +20,7 @@ function chatMessage(socket, io, guests) {
             nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
             time: time,
         };
+        console.log(`Poruka primljena od ${guests[socket.id]} (${socket.id}):`, msgData);
         io.emit('newMessage', messageToSend); // Emituj poruku svim korisnicima
     });
 }
@@ -26,7 +28,7 @@ function chatMessage(socket, io, guests) {
 // Kada korisnik pošalje zahtev za brisanje chata
 function clearChat(socket, io) {
     socket.on('clear-chat', () => {
-        chatMessages = []; // Obriši chat na serveru
+        console.log(`Zahtev za brisanje chata primljen od ${socket.id}`);
         io.emit('chat-cleared'); // Emituj svim korisnicima da je chat obrisan
     });
 }
@@ -34,6 +36,7 @@ function clearChat(socket, io) {
 // Funkcija za pokretanje privatnog chata
 function startPrivateChat(socket) {
     socket.on('start-private-chat', (receiverId) => {
+        console.log(`Zahtev za privatni chat od ${socket.id} ka ${receiverId}`);
         privateChats[socket.id] = privateChats[socket.id] || [];
         privateChats[socket.id].push(receiverId);
 
@@ -49,6 +52,7 @@ function startPrivateChat(socket) {
 // Funkcija za završavanje privatnog chata
 function endPrivateChat(socket) {
     socket.on('end-private-chat', (receiverId) => {
+        console.log(`Zahtev za završavanje privatnog chata između ${socket.id} i ${receiverId}`);
         privateChats[socket.id] = privateChats[socket.id].filter(id => id !== receiverId);
         privateChats[receiverId] = privateChats[receiverId].filter(id => id !== socket.id);
 
@@ -62,8 +66,7 @@ function endPrivateChat(socket) {
 function sendPrivateMessage(socket) {
     socket.on('send-private-message', (data) => {
         const { receiverId, message } = data;
-
-        console.log(`Poruka od ${socket.id} za ${receiverId}: ${message}`);
+        console.log(`Primljena privatna poruka od ${socket.id} za ${receiverId}: ${message}`);
 
         if (privateChats[socket.id] && privateChats[socket.id].includes(receiverId)) {
             const time = new Date().toLocaleTimeString();
@@ -74,14 +77,16 @@ function sendPrivateMessage(socket) {
                 private: true,
             };
 
+            console.log(`Slanje privatne poruke od ${socket.id} ka ${receiverId}`);
             socket.to(receiverId).emit('private_message', messageToSend);
             socket.emit('private_message', messageToSend);
         } else {
-            console.log(`Greška: Niste u privatnom razgovoru sa ${receiverId}`);
+            console.log(`Greška: ${socket.id} nije u privatnom razgovoru sa ${receiverId}`);
             socket.emit('error', 'Niste u privatnom razgovoru.');
         }
     });
 }
 
 module.exports = { sendImage, chatMessage, clearChat, startPrivateChat, endPrivateChat, sendPrivateMessage };
+
 
