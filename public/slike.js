@@ -82,7 +82,7 @@ if (imageSource) {
     } else {
         alert("Niste uneli URL slike.");
     }
-});
+);
 
 function enableDragAndResize(img) {
     let isResizing = false;
