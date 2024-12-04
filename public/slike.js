@@ -51,23 +51,28 @@ socket.on('chat-cleared', function() {
 
 // Na klijentu (svi korisnici) - slušamo na događaj 'display-image'
 socket.on('display-image', (imageUrl) => {
+    console.log("Primljen URL slike:", imageUrl); // Logujemo URL slike koji je primljen
     addImageToDOM(imageUrl); // Dodaj sliku u DOM
 });
 
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
+    console.log("Korisnik unosi URL slike:", imageSource); // Logujemo uneti URL
 
     if (imageSource) {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
 
+        console.log("Proveravam format slike:", fileExtension); // Logujemo format slike
+
         if (validFormats.includes(fileExtension)) {
             // Emituj URL slike serveru
+            console.log("Emitujem URL slike serveru:", imageSource);
             socket.emit('image broadcast', imageSource);
 
             const img = document.createElement('img');
             img.src = imageSource;
-            console.log("Slika URL:", img.src);
+            console.log("Slika URL:", img.src); // Logujemo URL slike koji se dodaje u DOM
             img.style.width = "200px";
             img.style.height = "200px";
             img.style.position = "absolute";
@@ -80,9 +85,11 @@ document.getElementById('addImage').addEventListener('click', function () {
             console.log("Slika je dodata preko URL-a.");
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
+            console.log("Nepodržan format slike:", fileExtension); // Logujemo ako je format nepodržan
         }
     } else {
         alert("Niste uneli URL slike.");
+        console.log("Korisnik nije uneo URL slike"); // Logujemo ako korisnik nije uneo URL
     }
 });
 
