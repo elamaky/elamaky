@@ -61,6 +61,9 @@ document.getElementById('addImage').addEventListener('click', function () {
         const fileExtension = imageSource.split('.').pop().toLowerCase();
 
         if (validFormats.includes(fileExtension)) {
+            // Emituj URL slike serveru
+            socket.emit('image broadcast', imageSource);
+
             const img = document.createElement('img');
             img.src = imageSource;
             console.log("Slika URL:", img.src);
@@ -81,6 +84,7 @@ document.getElementById('addImage').addEventListener('click', function () {
         alert("Niste uneli URL slike.");
     }
 });
+
 
 function enableDragAndResize(img) {
     let isResizing = false;
