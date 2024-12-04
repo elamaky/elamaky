@@ -48,6 +48,27 @@ socket.on('chat-cleared', function() {
     chatWindow.innerHTML = ""; // Briše sve unutar chata
 });
 
+let isLoggedIn = false; // Status autentifikacije
+
+document.getElementById('openModal').addEventListener('click', function() {
+    if (!isLoggedIn) {
+        const password = prompt("Unesite lozinku:");
+
+        const allowedNicks = ["Radio Galaksija", "ZI ZU", "__X__", "___F117___"];
+        const currentNick = "Radio Galaksija"; // Ovo treba da bude aktuelni korisnički nick.
+
+        if (allowedNicks.includes(currentNick) || password === "123galaksija") {
+            isLoggedIn = true; // Postavljamo status na login
+            document.getElementById('functionModal').style.display = "block";
+        } else {
+            alert("Nemate dozvolu da otvorite ovaj panel.");
+        }
+    } else {
+        document.getElementById('functionModal').style.display = "block"; // Otvaramo modal ako je korisnik već prijavljen
+    }
+});
+
+// Dodavanje slike
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
@@ -63,18 +84,12 @@ document.getElementById('addImage').addEventListener('click', function () {
             socket.on('display-image', (imageUrl) => {
                 addImageToDOM(imageUrl);  // Prikaz nove slike koju je server poslao
             });
-
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
         }
     } else {
         alert("Niste uneli URL slike.");
     }
-});
-
-// Prikaz svih prethodnih slika kad se poveže klijent
-socket.on('initial-images', (images) => {
-    images.forEach(addImageToDOM);  // Dodaj sve slike koje su već dodate
 });
 
 // Funkcija za dodavanje slike u DOM
@@ -88,34 +103,16 @@ function addImageToDOM(imageUrl) {
     img.classList.add('draggable', 'resizable');
     img.style.border = "none";
     document.body.appendChild(img);
-    enableDragAndResize(img);  // Ako postoji funkcija za povlačenje i promenu veličine
-}
-
-function updateImagePositionAndSize() {
-    socket.emit('update-image', {
-        id: imageId,  // Korisnički jedinstveni ID slike
-        left: img.style.left,
-        top: img.style.top,
-        width: img.style.width,
-        height: img.style.height
-    });
-}
-
-socket.on('sync-image', (data) => {
-    if (data.id === imageId) {
-        img.style.left = data.left;
-        img.style.top = data.top;
-        img.style.width = data.width;
-        img.style.height = data.height;
+    
+    // Ako je korisnik ulogovan, dozvoljavamo da pomera i menja veličinu slike
+    if (isLoggedIn) {
+        enableDragAndResize(img);  // Omogućiti povlačenje i promenu veličine slike
+    } else {
+        img.style.pointerEvents = "none"; // Onemogućiti interakciju sa slikom za neautentifikovane korisnike
     }
-});
-
-
-
-if (isOwner) {
-    enableDragAndResize(img, imageId);
 }
 
+// Funkcija za omogućavanje povlačenja i promena dimenzija slike
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
@@ -176,6 +173,14 @@ function enableDragAndResize(img) {
                 resizeSide = null;
                 document.onmousemove = null;
                 document.onmouseup = null;
+
+                // Emitovanje novih dimenzija i pozicije
+                socket.emit('update-image', {
+                    left: img.style.left,
+                    top: img.style.top,
+                    width: img.style.width,
+                    height: img.style.height
+                });
             };
         } else {
             dragMouseDown(e);
@@ -193,6 +198,14 @@ function enableDragAndResize(img) {
             img.style.left = (img.offsetLeft - (pos3 - e.clientX)) + 'px';
             pos3 = e.clientX;
             pos4 = e.clientY;
+
+            // Emitovanje novih dimenzija i pozicije
+            socket.emit('update-image', {
+                left: img.style.left,
+                top: img.style.top,
+                width: img.style.width,
+                height: img.style.height
+            });
         };
     }
 
@@ -201,3 +214,14 @@ function enableDragAndResize(img) {
         document.onmousemove = null;
     }
 }
+
+// Sinhronizovanje svih slika
+socket.on('sync-image', (data) => {
+    const img = document.querySelector(`img[src="${data.src}"]`);
+    if (img) {
+        img.style.left = data.left;
+        img.style.top = data.top;
+        img.style.width = data.width;
+        img.style.height = data.height;
+    }
+});
