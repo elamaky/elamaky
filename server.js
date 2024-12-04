@@ -69,11 +69,15 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-     // Kada korisnik doda sliku, server emituje svim klijentima
-    socket.on('add-image', (imageSource) => {
-        // Emitujemo URL slike svim klijentima
-        io.emit('display-image', imageSource);
-    });
+   // Kada korisnik doda sliku, server emituje svim klijentima
+socket.on('add-image', (imageSource) => {
+    console.log("Primljen URL slike sa klijenta:", imageSource); // Logujemo URL slike koji je primljen
+
+    // Emitujemo URL slike svim klijentima
+    io.emit('display-image', imageSource);
+    console.log("Emitovanje URL slike svim klijentima:", imageSource); // Logujemo URL slike koji se emituje svim klijentima
+});
+
 
 
     // Funkcije iz modula poruke.js
