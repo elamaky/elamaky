@@ -49,9 +49,6 @@ socket.on('chat-cleared', function() {
 });
 
 
-// Povezivanje sa serverom putem Socket.io
-const socket = io(); // Pretpostavlja se da Socket.io radi
-
 // Dodavanje slike preko URL-a
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
