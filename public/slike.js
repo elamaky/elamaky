@@ -48,7 +48,6 @@ socket.on('chat-cleared', function() {
     chatWindow.innerHTML = ""; // Briše sve unutar chata
 });
 
-let isLoggedIn = false; // Status autentifikacije
 
 document.getElementById('openModal').addEventListener('click', function() {
     if (!isLoggedIn) {
