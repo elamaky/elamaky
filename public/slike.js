@@ -48,7 +48,6 @@ socket.on('chat-cleared', function() {
     chatWindow.innerHTML = ""; // Briše sve unutar chata
 });
 
-
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
@@ -69,19 +68,26 @@ document.getElementById('addImage').addEventListener('click', function () {
 
 // Slušanje za primanje slike od servera i dodavanje u DOM
 socket.on('image broadcast', (imageUrl) => {
-    const img = document.createElement('img');
-    img.src = imageUrl;
-    img.style.width = "200px";
-    img.style.height = "200px";
-    img.style.position = "absolute";
-    img.style.zIndex = "1000";
-    img.classList.add('draggable', 'resizable');
-    img.style.border = "none";
-    img.style.display = 'block';
-    document.body.appendChild(img);
-    enableDragAndResize(img); // Pretpostavljam da funkcija omogućava pomeranje i promena veličine slike
-});
+    if (imageUrl) {
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.style.width = "200px";
+        img.style.height = "200px";
+        img.style.position = "absolute";
+        img.style.zIndex = "1000";
+        img.classList.add('draggable', 'resizable');
+        img.style.border = "none";
+        img.style.display = 'block';
+        
+        // Dodavanje slike u body
+        document.body.appendChild(img);
 
+        // Omogućavanje pomeranja i promene veličine slike
+        enableDragAndResize(img); 
+    } else {
+        console.log("Nema validne URL slike.");
+    }
+});
 
 
 function enableDragAndResize(img) {
