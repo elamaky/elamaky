@@ -64,7 +64,7 @@ document.getElementById('addImage').addEventListener('click', function () {
                 addImageToDOM(imageUrl);  // Prikaz nove slike koju je server poslao
             });
 
-            // Prikaz svih prethodnih slika kad se poveže klijent
+            // Osluškujemo 'initial-images' događaj kada se klijent poveže
             socket.on('initial-images', (images) => {
                 images.forEach(addImageToDOM);  // Dodaj sve slike koje su već dodate
             });
@@ -72,7 +72,7 @@ document.getElementById('addImage').addEventListener('click', function () {
             // Funkcija za dodavanje slike u DOM
             function addImageToDOM(imageUrl) {
                 const img = document.createElement('img');
-                img.src = imageUrl;  // Ovde je trebalo koristiti imageUrl, a ne imageSource
+                img.src = imageUrl;
                 img.style.width = "200px";
                 img.style.height = "200px";
                 img.style.position = "absolute";
