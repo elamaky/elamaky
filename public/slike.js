@@ -56,16 +56,16 @@ document.getElementById('addImage').addEventListener('click', function() {
     if (imageSource) {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
-        
-      validFormats.includes(fileExtension) {
+
+        if (validFormats.includes(fileExtension)) {
             const img = document.createElement('img');
-            img.src = imageSource;  
+            img.src = imageSource;
             console.log("Slika URL:", img.src);
-            img.style.width = "200px";  
-            img.style.height = "200px"; 
-            img.style.position = "absolute"; 
-            img.style.zIndex = "1000";  
-            img.classList.add('draggable', 'resizable');  
+            img.style.width = "200px";
+            img.style.height = "200px";
+            img.style.position = "absolute";
+            img.style.zIndex = "1000";
+            img.classList.add('draggable', 'resizable');
             img.style.border = "none"; // Ukloni border po defaultu
             img.style.display = 'block'; // Dodajemo 'block' kako bi slika bila vidljiva
             img.style.pointerEvents = "none"; // Onemogućava interakciju sa slikom za korisnike
@@ -84,16 +84,16 @@ document.getElementById('addImage').addEventListener('click', function() {
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
-    
-    img.addEventListener('mouseenter', function () {
+
+    img.addEventListener('mouseenter', function() {
         img.style.border = "2px dashed red"; // Prikazi granicu kada je kursor iznad slike
     });
-    
-    img.addEventListener('mouseleave', function () {
+
+    img.addEventListener('mouseleave', function() {
         img.style.border = "none"; // Sakrij granicu kada kursor nije iznad slike
     });
 
-    img.addEventListener('mousedown', function (e) {
+    img.addEventListener('mousedown', function(e) {
         const rect = img.getBoundingClientRect();
         const borderSize = 10;
 
@@ -114,7 +114,7 @@ function enableDragAndResize(img) {
             const startX = e.clientX;
             const startY = e.clientY;
 
-            document.onmousemove = function (e) {
+            document.onmousemove = function(e) {
                 if (isResizing) {
                     if (resizeSide === 'right') {
                         img.style.width = initialWidth + (e.clientX - startX) + 'px';
@@ -136,7 +136,7 @@ function enableDragAndResize(img) {
                 }
             };
 
-            document.onmouseup = function () {
+            document.onmouseup = function() {
                 isResizing = false;
                 resizeSide = null;
                 document.onmousemove = null;
@@ -153,7 +153,7 @@ function enableDragAndResize(img) {
         let pos4 = e.clientY;
 
         document.onmouseup = closeDragElement;
-        document.onmousemove = function (e) {
+        document.onmousemove = function(e) {
             img.style.top = (img.offsetTop - (pos4 - e.clientY)) + 'px';
             img.style.left = (img.offsetLeft - (pos3 - e.clientX)) + 'px';
             pos3 = e.clientX;
@@ -171,11 +171,11 @@ function enableDragAndResize(img) {
 socket.on('receive-image', (imageUrl) => {
     const img = document.createElement('img');
     img.src = imageUrl;
-    img.style.width = "200px";  
-    img.style.height = "200px"; 
-    img.style.position = "absolute"; 
-    img.style.zIndex = "1000";  
-    img.classList.add('draggable', 'resizable');  
+    img.style.width = "200px";
+    img.style.height = "200px";
+    img.style.position = "absolute";
+    img.style.zIndex = "1000";
+    img.classList.add('draggable', 'resizable');
     img.style.border = "none"; // Ukloni border po defaultu
     img.style.display = 'block'; // Dodajemo 'block' kako bi slika bila vidljiva
     document.body.appendChild(img);
