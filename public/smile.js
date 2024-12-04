@@ -26,6 +26,8 @@ const smileModalHTML = `
             <span class="smile" onclick="addSmile('😢')">😢</span>
             <span class="smile" onclick="addSmile('😡')">😡</span>
             <span class="smile" onclick="addSmile('🤔')">🤔</span>
+            <span class="smile" onclick="addSmile('☕')">☕</span>
+            
             <span class="smile" onclick="addSmile('👍')">👍</span>
             <span class="smile" onclick="addSmile('👎')">👎</span>
             <span class="smile" onclick="addSmile('💋')">💋</span> <!-- Poljubac sa usnama -->
