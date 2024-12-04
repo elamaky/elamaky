@@ -48,14 +48,8 @@ socket.on('chat-cleared', function() {
     chatWindow.innerHTML = ""; // Briše sve unutar chata
 });
 
-
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
-
-    // Osluškujemo 'display-image' događaj sa servera
-    socket.on('display-image', (imageUrl) => {
-        addImageToDOM(imageUrl);
-    });
 
     if (imageSource) {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
@@ -65,6 +59,12 @@ document.getElementById('addImage').addEventListener('click', function () {
             // Emitujemo URL slike serveru pod imenom 'add-image'
             socket.emit('add-image', imageSource);
 
+            // Osluškujemo 'display-image' događaj sa servera
+            socket.on('display-image', (imageUrl) => {
+                addImageToDOM(imageUrl);  // Prikaz nove slike koju je server poslao
+            });
+
+            // Prikaz slike odmah nakon što je dodata sa URL-a
             const img = document.createElement('img');
             img.src = imageSource;
             console.log("Slika URL:", img.src);
@@ -85,6 +85,23 @@ document.getElementById('addImage').addEventListener('click', function () {
         alert("Niste uneli URL slike.");
     }
 });
+
+// Prikaz svih prethodnih slika kad se poveže klijent
+socket.on('initial-images', (images) => {
+    images.forEach(addImageToDOM);  // Dodaj sve slike koje su već dodate
+});
+
+// Funkcija za dodavanje slike u DOM
+function addImageToDOM(imageUrl) {
+    const img = document.createElement('img');
+    img.src = imageUrl;
+    img.style.width = "200px";
+    img.style.height = "200px";
+    img.classList.add('draggable', 'resizable');
+    document.body.appendChild(img);
+    enableDragAndResize(img);  // Ako postoji funkcija za povlačenje i promenu veličine
+}
+
 
 
 function enableDragAndResize(img) {
