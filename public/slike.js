@@ -91,6 +91,31 @@ function addImageToDOM(imageUrl) {
     enableDragAndResize(img);  // Ako postoji funkcija za povlačenje i promenu veličine
 }
 
+function updateImagePositionAndSize() {
+    socket.emit('update-image', {
+        id: imageId,  // Korisnički jedinstveni ID slike
+        left: img.style.left,
+        top: img.style.top,
+        width: img.style.width,
+        height: img.style.height
+    });
+}
+
+socket.on('sync-image', (data) => {
+    if (data.id === imageId) {
+        img.style.left = data.left;
+        img.style.top = data.top;
+        img.style.width = data.width;
+        img.style.height = data.height;
+    }
+});
+
+
+
+if (isOwner) {
+    enableDragAndResize(img, imageId);
+}
+
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
