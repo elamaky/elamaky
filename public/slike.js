@@ -103,7 +103,7 @@ function addImageToDOM(imageUrl) {
     if (isAuthorized) {
         enableDragAndResize(img);  // Ako postoji funkcija za povlačenje i promenu veličine
     }
-}
+
 
 function enableDragAndResize(img) {
     let isResizing = false;
