@@ -49,12 +49,13 @@ socket.on('chat-cleared', function() {
 });
 
 
+// Globalno registrovanje socket.on događaja
+socket.on('image broadcast', (imageUrl) => {
+    addImageToDOM(imageUrl);
+});
+
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
-
-    socket.on('image broadcast', (imageUrl) => {
-        addImageToDOM(imageUrl);
-    });
 
     if (imageSource) {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
