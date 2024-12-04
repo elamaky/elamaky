@@ -149,7 +149,7 @@ img.addEventListener('click', function () {
         }
     });
 
-    function dragMouseDown(e) {
+   function dragMouseDown(e) {
     e.preventDefault();
     let pos3 = e.clientX;
     let pos4 = e.clientY;
@@ -166,3 +166,4 @@ img.addEventListener('click', function () {
 function closeDragElement() {
     document.onmouseup = null;
     document.onmousemove = null;
+}
