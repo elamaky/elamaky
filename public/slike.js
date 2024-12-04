@@ -64,26 +64,25 @@ document.getElementById('addImage').addEventListener('click', function () {
                 addImageToDOM(imageUrl);  // Prikaz nove slike koju je server poslao
             });
 
-           
+            // Prikaz svih prethodnih slika kad se poveže klijent
+            socket.on('initial-images', (images) => {
+                images.forEach(addImageToDOM);  // Dodaj sve slike koje su već dodate
+            });
 
-// Prikaz svih prethodnih slika kad se poveže klijent
-socket.on('initial-images', (images) => {
-    images.forEach(addImageToDOM);  // Dodaj sve slike koje su već dodate
-});
-
-// Funkcija za dodavanje slike u DOM
-function addImageToDOM(imageUrl) {
-    const img = document.createElement('img');
-            img.src = imageSource;
-            img.style.width = "200px";
-            img.style.height = "200px";
-            img.style.position = "absolute";
-            img.style.zIndex = "1000";
-            img.classList.add('draggable', 'resizable');
-            img.style.border = "none";
-            document.body.appendChild(img);
-            enableDragAndResize(img);
-            console.log("Slika je dodata preko URL-a.");
+            // Funkcija za dodavanje slike u DOM
+            function addImageToDOM(imageUrl) {
+                const img = document.createElement('img');
+                img.src = imageUrl;  // Ovde je trebalo koristiti imageUrl, a ne imageSource
+                img.style.width = "200px";
+                img.style.height = "200px";
+                img.style.position = "absolute";
+                img.style.zIndex = "1000";
+                img.classList.add('draggable', 'resizable');
+                img.style.border = "none";
+                document.body.appendChild(img);
+                enableDragAndResize(img);
+                console.log("Slika je dodata preko URL-a.");
+            }
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
         }
@@ -91,6 +90,7 @@ function addImageToDOM(imageUrl) {
         alert("Niste uneli URL slike.");
     }
 });
+
 
 
 
