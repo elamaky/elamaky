@@ -49,39 +49,96 @@ socket.on('chat-cleared', function() {
 });
 
 
-// Na klijentu (svi korisnici) - slušamo na događaj 'display-image'
-socket.on('display-image', (imageUrl) => {
-    console.log("Primalac sliku sa URL-om:", imageUrl);  // Logujemo URL primljene slike
-    addImageToDOM(imageUrl);  // Dodajemo sliku u DOM
+// Na klijentu, kada korisnik doda sliku
+document.getElementById('addImage').addEventListener('click', function () {
+    const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
+
+    if (imageSource) {
+        const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
+        const fileExtension = imageSource.split('.').pop().toLowerCase();
+
+        if (validFormats.includes(fileExtension)) {
+            // Emituj URL slike serveru
+            console.log('Emitujem URL slike serveru:', imageSource);
+            socket.emit('image broadcast', imageSource);
+
+            // Proveri da li već postoji slika sa istim URL-om u DOM-u
+            const existingImages = document.querySelectorAll('img');
+            let imageExists = false;
+            
+            existingImages.forEach(img => {
+                if (img.src === imageSource) {
+                    imageExists = true;
+                }
+            });
+
+            if (!imageExists) {
+                // Ako slika ne postoji, dodaj je u DOM
+                const img = document.createElement('img');
+                img.src = imageSource;
+                img.style.width = "200px";
+                img.style.height = "200px";
+                img.style.position = "absolute";
+                img.style.zIndex = "1000";
+                img.classList.add('draggable', 'resizable');
+                img.style.border = "none";
+                img.style.display = 'block';
+                document.body.appendChild(img);
+                enableDragAndResize(img);
+                console.log("Slika je dodata preko URL-a.");
+            } else {
+                console.log("Slika već postoji u DOM-u.");
+            }
+        } else {
+            alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
+        }
+    } else {
+        alert("Niste uneli URL slike.");
+    }
 });
 
-// Funkcija koja dodaje sliku u DOM
-function addImageToDOM(imageUrl) {
-    const img = document.createElement('img');
-    img.src = imageUrl;
-    img.style.width = "200px";
-    img.style.height = "200px";
-    img.style.position = "absolute";
-    img.style.zIndex = "1000";
-    img.classList.add('draggable', 'resizable');
-    img.style.border = "none";
-    img.style.display = 'block';
+// Na klijentu (svi korisnici) - slušamo na događaj 'display-image'
+socket.on('display-image', (imageUrl) => {
+    console.log('Primalac sliku sa URL-om:', imageUrl);
 
-    // Dodavanje slike u body
-    document.body.appendChild(img);
-    enableDragAndResize(img);
-    console.log("Slika je dodata u DOM sa URL-om:", imageUrl);
-}
+    // Proveri da li slika već postoji u DOM-u
+    const existingImages = document.querySelectorAll('img');
+    let imageExists = false;
+    
+    existingImages.forEach(img => {
+        if (img.src === imageUrl) {
+            imageExists = true;
+        }
+    });
 
-// Aktiviraj funkcionalnosti za drag i resize
+    if (!imageExists) {
+        // Dodaj sliku u DOM samo ako već nije tu
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.style.width = "200px";
+        img.style.height = "200px";
+        img.style.position = "absolute";
+        img.style.zIndex = "1000";
+        img.classList.add('draggable', 'resizable');
+        img.style.border = "none";
+        img.style.display = 'block';
+        document.body.appendChild(img);
+        enableDragAndResize(img);
+        console.log("Slika je dodata u DOM sa URL-om:", imageUrl);
+    } else {
+        console.log("Slika već postoji u DOM-u.");
+    }
+});
+
+// Funkcija za omogućavanje pomeranja i promene dimenzija slike
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
-    
+
     img.addEventListener('mouseenter', function () {
         img.style.border = "2px dashed red"; // Prikazi granicu kada je kursor iznad slike
     });
-    
+
     img.addEventListener('mouseleave', function () {
         img.style.border = "none"; // Sakrij granicu kada kursor nije iznad slike
     });
@@ -159,42 +216,3 @@ function enableDragAndResize(img) {
         document.onmousemove = null;
     }
 }
-
-// Kod za dodavanje slike sa klijenta
-document.getElementById('addImage').addEventListener('click', function () {
-    const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
-
-    console.log("Korisnik unosi URL slike:", imageSource); // Logujemo uneti URL
-
-    if (imageSource) {
-        const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
-        const fileExtension = imageSource.split('.').pop().toLowerCase();
-
-        console.log("Proveravam format slike:", fileExtension); // Logujemo format slike
-
-        if (validFormats.includes(fileExtension)) {
-            console.log("Emitujem URL slike serveru:", imageSource);
-            socket.emit('add-image', imageSource); // Emitovanje slike serveru
-
-            const img = document.createElement('img');
-            img.src = imageSource;
-            console.log("Slika URL:", img.src); // Logujemo URL slike
-            img.style.width = "200px";
-            img.style.height = "200px";
-            img.style.position = "absolute";
-            img.style.zIndex = "1000";
-            img.classList.add('draggable', 'resizable');
-            img.style.border = "none";
-            img.style.display = 'block';
-            document.body.appendChild(img);
-            enableDragAndResize(img);
-            console.log("Slika je dodata preko URL-a.");
-        } else {
-            alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
-            console.log("Nepodržan format slike:", fileExtension); // Logujemo ako je format nepodržan
-        }
-    } else {
-        alert("Niste uneli URL slike.");
-        console.log("Korisnik nije uneo URL slike"); // Logujemo ako korisnik nije uneo URL
-    }
-});
