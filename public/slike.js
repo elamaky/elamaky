@@ -76,7 +76,7 @@ document.getElementById('addImage').addEventListener('click', function() {
             
 
                 // Ostali kod za resize, drag, itd.
-            });
+            };
 
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
