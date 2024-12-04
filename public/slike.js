@@ -64,19 +64,18 @@ document.getElementById('addImage').addEventListener('click', function () {
                 addImageToDOM(imageUrl);  // Prikaz nove slike koju je server poslao
             });
 
-            // Prikaz slike odmah nakon što je dodata sa URL-a
-            const img = document.createElement('img');
-            img.src = imageSource;
-            console.log("Slika URL:", img.src);
-            img.style.width = "200px";
-            img.style.height = "200px";
-            img.style.position = "absolute";
-            img.style.zIndex = "1000";
-            img.classList.add('draggable', 'resizable');
-            img.style.border = "none";
-            document.body.appendChild(img);
-            enableDragAndResize(img);
-            console.log("Slika je dodata preko URL-a.");
+            // Funkcija za dodavanje slike u DOM
+function addImageToDOM(imageUrl) {
+    const img = document.createElement('img');
+    img.src = imageUrl;
+     img.style.zIndex = "1000";
+    img.style.width = "200px";
+    img.style.height = "200px";
+    img.classList.add('draggable', 'resizable');
+    img.style.border = "none";
+    document.body.appendChild(img);
+    enableDragAndResize(img);  // Ako postoji funkcija za povlačenje i promenu veličine
+}
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
         }
@@ -89,7 +88,6 @@ document.getElementById('addImage').addEventListener('click', function () {
 socket.on('initial-images', (images) => {
     images.forEach(addImageToDOM);  // Dodaj sve slike koje su već dodate
 });
-
 
 function enableDragAndResize(img) {
     let isResizing = false;
