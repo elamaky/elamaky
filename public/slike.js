@@ -49,28 +49,66 @@ socket.on('chat-cleared', function() {
 });
 
 
-// Funkcija za omogućavanje pomeranja i promene veličine slike (samo za tebe)
+document.getElementById('addImage').addEventListener('click', function() {
+    const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
+
+    if (imageSource) {
+        const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
+        const fileExtension = imageSource.split('.').pop().toLowerCase();
+        
+        if (validFormats.includes(fileExtension)) {
+            const img = document.createElement('img');
+            img.src = imageSource;  
+            console.log("Slika URL:", img.src);
+            img.style.width = "200px";  
+            img.style.height = "200px"; 
+            img.style.position = "absolute"; 
+            img.style.zIndex = "1000";  
+            img.style.border = "none"; // Ukloni border po defaultu
+            img.style.display = 'block'; // Dodajemo 'block' kako bi slika bila vidljiva
+            document.body.appendChild(img);
+            enableDragAndResize(img);
+            
+            // Emitovanje slike svim korisnicima
+            socket.emit('add-image', imageSource);
+        } else {
+            alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
+        }
+    } else {
+        alert("Niste uneli URL slike.");
+    }
+});
+
+// Kada server emituj sliku, klijent treba da je prikaže
+socket.on('display-image', (imageSource) => {
+    const img = document.createElement('img');
+    img.src = imageSource;  
+    img.style.width = "200px";  
+    img.style.height = "200px"; 
+    img.style.position = "absolute"; 
+    img.style.zIndex = "1000";  
+    img.style.border = "none"; 
+    img.style.display = 'block'; 
+    img.style.pointerEvents = "none"; // Onemogućava interakciju sa slikom za druge korisnike
+    document.body.appendChild(img);
+});
+
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
-
+    
     img.addEventListener('mouseenter', function () {
-        if (img.getAttribute('data-editable') === 'true') {
-            img.style.border = "2px dashed red"; // Prikazi granicu kada je kursor iznad slike
-        }
+        img.style.border = "2px dashed red"; // Prikazi granicu kada je kursor iznad slike
     });
-
+    
     img.addEventListener('mouseleave', function () {
         img.style.border = "none"; // Sakrij granicu kada kursor nije iznad slike
     });
 
     img.addEventListener('mousedown', function (e) {
-        if (img.getAttribute('data-editable') !== 'true') return;
-
         const rect = img.getBoundingClientRect();
         const borderSize = 10;
 
-        // Provera da li klik počinje na ivicama za promenu veličine
         if (e.clientX >= rect.left && e.clientX <= rect.left + borderSize) {
             resizeSide = 'left';
         } else if (e.clientX >= rect.right - borderSize && e.clientX <= rect.right) {
@@ -117,11 +155,11 @@ function enableDragAndResize(img) {
                 document.onmouseup = null;
             };
         } else {
-            dragMouseDown(e, img);
+            dragMouseDown(e);
         }
     });
 
-    function dragMouseDown(e, img) {
+    function dragMouseDown(e) {
         e.preventDefault();
         let pos3 = e.clientX;
         let pos4 = e.clientY;
@@ -139,18 +177,4 @@ function enableDragAndResize(img) {
         document.onmouseup = null;
         document.onmousemove = null;
     }
-}
-
-// Prikaz slike (npr. kada stigne od servera)
-function displayImage(imageSource) {
-    const img = document.createElement('img');
-    img.src = imageSource;
-    img.style.width = "200px";
-    img.style.height = "200px";
-    img.style.position = "absolute";
-    img.style.zIndex = "1000";
-    img.style.border = "none"; // Ukloni border po defaultu
-    img.style.display = 'block'; // Dodajemo 'block' kako bi slika bila vidljiva
-    img.setAttribute('data-editable', 'false'); // Svi ostali korisnici ne mogu uređivati
-    document.body.appendChild(img);
 }
