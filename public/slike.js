@@ -49,7 +49,7 @@ socket.on('chat-cleared', function() {
 });
 
 
-// Osluškujemo događaj 'display-image' van event listener-a, kako bi svi klijenti dobili slike
+// Osiguraj se da samo jedan event handler postoji
 socket.on('display-image', (imageUrl) => {
     addImageToDOM(imageUrl);
 });
@@ -65,10 +65,9 @@ document.getElementById('addImage').addEventListener('click', function () {
             // Emituj URL slike serveru
             socket.emit('add-image', imageSource);
 
-            // Prikazivanje slike na svom računaru odmah
+            // Prikazivanje slike odmah na svom računaru
             const img = document.createElement('img');
             img.src = imageSource;
-            console.log("Slika URL:", img.src);
             img.style.width = "200px";
             img.style.height = "200px";
             img.style.position = "absolute";
