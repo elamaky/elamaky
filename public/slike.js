@@ -84,7 +84,7 @@ document.getElementById('addImage').addEventListener('click', function () {
     } else {
         alert("Niste uneli URL slike.");
     }
-
+});
 
     function enableDragAndResize(img) {
     let isResizing = false;
