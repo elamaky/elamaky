@@ -57,7 +57,7 @@ document.getElementById('addImage').addEventListener('click', function() {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
         
-      validFormats.includes(fileExtension)) {
+      validFormats.includes(fileExtension) {
             const img = document.createElement('img');
             img.src = imageSource;  
             console.log("Slika URL:", img.src);
