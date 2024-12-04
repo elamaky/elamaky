@@ -49,27 +49,28 @@ socket.on('chat-cleared', function() {
 });
 
 
-document.getElementById('addImage').addEventListener('click', function() {
+document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
-     socket.on('image broadcast', (imageUrl) => {
-            addImageToDOM(imageUrl);
+    socket.on('image broadcast', (imageUrl) => {
+        addImageToDOM(imageUrl);
+    });
 
     if (imageSource) {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
-        
+
         if (validFormats.includes(fileExtension)) {
             const img = document.createElement('img');
-            img.src = imageSource;  
+            img.src = imageSource;
             console.log("Slika URL:", img.src);
-            img.style.width = "200px";  
-            img.style.height = "200px"; 
-            img.style.position = "absolute"; 
-            img.style.zIndex = "1000";  
-            img.classList.add('draggable', 'resizable');  
-            img.style.border = "none"; // Ukloni border po defaultu
-            img.style.display = 'block'; // Dodajemo 'block' kako bi slika bila vidljiva
+            img.style.width = "200px";
+            img.style.height = "200px";
+            img.style.position = "absolute";
+            img.style.zIndex = "1000";
+            img.classList.add('draggable', 'resizable');
+            img.style.border = "none";
+            img.style.display = 'block';
             document.body.appendChild(img);
             enableDragAndResize(img);
             console.log("Slika je dodata preko URL-a.");
@@ -84,13 +85,13 @@ document.getElementById('addImage').addEventListener('click', function() {
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
-    
+
     img.addEventListener('mouseenter', function () {
-        img.style.border = "2px dashed red"; // Prikazi granicu kada je kursor iznad slike
+        img.style.border = "2px dashed red";
     });
-    
+
     img.addEventListener('mouseleave', function () {
-        img.style.border = "none"; // Sakrij granicu kada kursor nije iznad slike
+        img.style.border = "none";
     });
 
     img.addEventListener('mousedown', function (e) {
