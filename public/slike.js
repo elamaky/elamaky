@@ -73,6 +73,15 @@ document.getElementById('addImage').addEventListener('click', function() {
             
             // Emitovanje slike svim korisnicima
             socket.emit('add-image', imageSource);
+            
+            // Dodavanje event listenera unutar funkcije, gde je img već definisana
+            img.addEventListener('mousedown', function (e) {
+                const rect = img.getBoundingClientRect();
+                const borderSize = 10;
+                
+                // Ostali kod za resize, drag, itd.
+            });
+
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
         }
@@ -95,12 +104,8 @@ socket.on('display-image', (imageSource) => {
     document.body.appendChild(img);
 });
 
-
-    img.addEventListener('mousedown', function (e) {
-        const rect = img.getBoundingClientRect();
-        const borderSize = 10;
-
-        if (e.clientX >= rect.left && e.clientX <= rect.left + borderSize) {
+    
+if (e.clientX >= rect.left && e.clientX <= rect.left + borderSize) {
             resizeSide = 'left';
         } else if (e.clientX >= rect.right - borderSize && e.clientX <= rect.right) {
             resizeSide = 'right';
