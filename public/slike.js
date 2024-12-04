@@ -49,14 +49,9 @@ socket.on('chat-cleared', function() {
 });
 
 
-// Na klijentu (svi korisnici) - slušamo na događaj 'display-image'
-socket.on('display-image', (imageUrl) => {
-    console.log("Primljen URL slike:", imageUrl); // Logujemo URL slike koji je primljen
-    addImageToDOM(imageUrl); // Dodaj sliku u DOM
-});
-
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
+
     console.log("Korisnik unosi URL slike:", imageSource); // Logujemo uneti URL
 
     if (imageSource) {
@@ -66,9 +61,9 @@ document.getElementById('addImage').addEventListener('click', function () {
         console.log("Proveravam format slike:", fileExtension); // Logujemo format slike
 
         if (validFormats.includes(fileExtension)) {
-            // Emituj URL slike serveru
+            // Emituj URL slike serveru sa pravim događajem
             console.log("Emitujem URL slike serveru:", imageSource);
-            socket.emit('image broadcast', imageSource);
+            socket.emit('add-image', imageSource); // Ovdje šaljemo 'add-image', a ne 'image broadcast'
 
             const img = document.createElement('img');
             img.src = imageSource;
@@ -92,6 +87,7 @@ document.getElementById('addImage').addEventListener('click', function () {
         console.log("Korisnik nije uneo URL slike"); // Logujemo ako korisnik nije uneo URL
     }
 });
+
 
 
 function enableDragAndResize(img) {
