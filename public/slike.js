@@ -90,12 +90,16 @@ function addImageToDOM(imageUrl) {
     
     // Ako korisnik nije ovlašćen, onemogućiti interakciju
     if (!isAuthorized) {
-        img.style.pointerEvents = "none";  // Onemogućava interakciju
+        img.style.pointerEvents = "none";  // Onemogućava interakciju, ali slika će biti vidljiva
     }
 
     // Dodajemo sliku u DOM
     document.body.appendChild(img);
-    enableDragAndResize(img);  // Ako postoji funkcija za povlačenje i promenu veličine
+    
+    // Ako je korisnik ovlašćen, omogućavamo funkcionalnosti za povlačenje/promenu veličine
+    if (isAuthorized) {
+        enableDragAndResize(img);  // Ako postoji funkcija za povlačenje i promenu veličine
+    }
 }
 
 function enableDragAndResize(img) {
