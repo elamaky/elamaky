@@ -69,60 +69,21 @@ function addImageToDOM(imageUrl) {
 
     // Dodavanje slike u body
     document.body.appendChild(img);
+    enableDragAndResize(img);
     console.log("Slika je dodata u DOM sa URL-om:", imageUrl);
 }
 
-// Kod za dodavanje slike sa klijenta
-document.getElementById('addImage').addEventListener('click', function () {
-    const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
-
-    console.log("Korisnik unosi URL slike:", imageSource); // Logujemo uneti URL
-
-    if (imageSource) {
-        const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
-        const fileExtension = imageSource.split('.').pop().toLowerCase();
-
-        console.log("Proveravam format slike:", fileExtension); // Logujemo format slike
-
-        if (validFormats.includes(fileExtension)) {
-            console.log("Emitujem URL slike serveru:", imageSource);
-            socket.emit('add-image', imageSource); // Emitovanje slike serveru
-
-            const img = document.createElement('img');
-            img.src = imageSource;
-            console.log("Slika URL:", img.src); // Logujemo URL slike
-            img.style.width = "200px";
-            img.style.height = "200px";
-            img.style.position = "absolute";
-            img.style.zIndex = "1000";
-            img.classList.add('draggable', 'resizable');
-            img.style.border = "none";
-            img.style.display = 'block';
-            document.body.appendChild(img);
-            enableDragAndResize(img);
-            console.log("Slika je dodata preko URL-a.");
-        } else {
-            alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
-            console.log("Nepodržan format slike:", fileExtension); // Logujemo ako je format nepodržan
-        }
-    } else {
-        alert("Niste uneli URL slike.");
-        console.log("Korisnik nije uneo URL slike"); // Logujemo ako korisnik nije uneo URL
-    }
-});
-
-
-
+// Aktiviraj funkcionalnosti za drag i resize
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
-
+    
     img.addEventListener('mouseenter', function () {
-        img.style.border = "2px dashed red";
+        img.style.border = "2px dashed red"; // Prikazi granicu kada je kursor iznad slike
     });
-
+    
     img.addEventListener('mouseleave', function () {
-        img.style.border = "none";
+        img.style.border = "none"; // Sakrij granicu kada kursor nije iznad slike
     });
 
     img.addEventListener('mousedown', function (e) {
@@ -198,3 +159,42 @@ function enableDragAndResize(img) {
         document.onmousemove = null;
     }
 }
+
+// Kod za dodavanje slike sa klijenta
+document.getElementById('addImage').addEventListener('click', function () {
+    const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
+
+    console.log("Korisnik unosi URL slike:", imageSource); // Logujemo uneti URL
+
+    if (imageSource) {
+        const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
+        const fileExtension = imageSource.split('.').pop().toLowerCase();
+
+        console.log("Proveravam format slike:", fileExtension); // Logujemo format slike
+
+        if (validFormats.includes(fileExtension)) {
+            console.log("Emitujem URL slike serveru:", imageSource);
+            socket.emit('add-image', imageSource); // Emitovanje slike serveru
+
+            const img = document.createElement('img');
+            img.src = imageSource;
+            console.log("Slika URL:", img.src); // Logujemo URL slike
+            img.style.width = "200px";
+            img.style.height = "200px";
+            img.style.position = "absolute";
+            img.style.zIndex = "1000";
+            img.classList.add('draggable', 'resizable');
+            img.style.border = "none";
+            img.style.display = 'block';
+            document.body.appendChild(img);
+            enableDragAndResize(img);
+            console.log("Slika je dodata preko URL-a.");
+        } else {
+            alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
+            console.log("Nepodržan format slike:", fileExtension); // Logujemo ako je format nepodržan
+        }
+    } else {
+        alert("Niste uneli URL slike.");
+        console.log("Korisnik nije uneo URL slike"); // Logujemo ako korisnik nije uneo URL
+    }
+});
