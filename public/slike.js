@@ -74,11 +74,7 @@ document.getElementById('addImage').addEventListener('click', function() {
             // Emitovanje slike svim korisnicima
             socket.emit('add-image', imageSource);
             
-            // Dodavanje event listenera unutar funkcije, gde je img već definisana
-            img.addEventListener('mousedown', function (e) {
-                const rect = img.getBoundingClientRect();
-                const borderSize = 10;
-                
+
                 // Ostali kod za resize, drag, itd.
             });
 
@@ -105,7 +101,30 @@ socket.on('display-image', (imageSource) => {
 });
 
     
-if (e.clientX >= rect.left && e.clientX <= rect.left + borderSize) {
+function enableDragAndResize(img) {
+    let isResizing = false;
+    let resizeSide = null;
+    
+    img.addEventListener('mouseenter', function () {
+        img.style.border = "2px dashed red"; // Prikazi granicu kada je kursor iznad slike
+    });
+    
+    img.addEventListener('mouseleave', function () {
+        img.style.border = "none"; // Sakrij granicu kada kursor nije iznad slike
+    });
+
+   // Oznaka za sliku
+img.addEventListener('click', function () {
+    if (!img.querySelector('.close-button')) {
+        img.style.border = "2px dashed red"; // Prikazi granicu kada klikneš na sliku
+
+       
+
+    img.addEventListener('mousedown', function (e) {
+        const rect = img.getBoundingClientRect();
+        const borderSize = 10;
+
+        if (e.clientX >= rect.left && e.clientX <= rect.left + borderSize) {
             resizeSide = 'left';
         } else if (e.clientX >= rect.right - borderSize && e.clientX <= rect.right) {
             resizeSide = 'right';
@@ -173,3 +192,4 @@ if (e.clientX >= rect.left && e.clientX <= rect.left + borderSize) {
         document.onmouseup = null;
         document.onmousemove = null;
     }
+}
