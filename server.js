@@ -70,13 +70,22 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
+// Emitovanje inicijalnih slika
 socket.emit('initial-images', imageList);
 
-    // Osluškujemo kad klijent doda novu sliku
-    socket.on('add-image', (imageSource) => {
-        console.log("Primljen URL slike:", imageSource);
-        imageList.push(imageSource); // Sačuvajte URL slike
-        io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
+// Osluškujemo kad klijent doda novu sliku
+socket.on('add-image', (imageSource) => {
+    console.log("Primljen URL slike:", imageSource);
+    imageList.push(imageSource); // Sačuvajte URL slike
+    io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
+});
+
+// Osluškujemo promene slike (pomeranje, dimenzije)
+socket.on('update-image', (data) => {
+    io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
+});
+
+        
 });
 
 
