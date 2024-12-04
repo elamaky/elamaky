@@ -49,9 +49,9 @@ socket.on('chat-cleared', function() {
 });
 
 
-// Globalno registrovanje socket.on događaja
-socket.on('image broadcast', (imageUrl) => {
-    addImageToDOM(imageUrl);
+// Na klijentu (svi korisnici) - slušamo na događaj 'display-image'
+socket.on('display-image', (imageUrl) => {
+    addImageToDOM(imageUrl); // Dodaj sliku u DOM
 });
 
 document.getElementById('addImage').addEventListener('click', function () {
