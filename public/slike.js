@@ -52,7 +52,6 @@ socket.on('chat-cleared', function() {
 // Emituj događaj serveru za brisanje chata
 socket.emit('clear-chat');
 
-// Dodavanje slike na stranicu
 document.getElementById('addImage').addEventListener('click', function() {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
