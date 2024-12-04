@@ -57,17 +57,15 @@ document.getElementById('addImage').addEventListener('click', function () {
         const fileExtension = imageSource.split('.').pop().toLowerCase();
 
         if (validFormats.includes(fileExtension)) {
-            const img = document.createElement('img');
-            img.src = imageSource;
-            img.style.width = "200px";
-            img.style.height = "200px";
-            img.style.position = "absolute";
-            img.style.zIndex = "1000";
-            img.classList.add('draggable', 'resizable');
-            img.style.border = "none"; // Ukloni border po defaultu
+            // Kreiraj sliku
+            const img = createImageElement(imageSource);
             document.body.appendChild(img);
             enableDragAndResize(img);
             console.log("Slika je dodata preko URL-a.");
+
+            // Ovde prosledi informaciju o slici na server
+            // sendToServer(imageSource);
+            // Na serveru se može odešaljati objekat koji sadrži URL slike i druge relevantne informacije
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
         }
@@ -75,6 +73,18 @@ document.getElementById('addImage').addEventListener('click', function () {
         alert("Niste uneli URL slike.");
     }
 });
+
+function createImageElement(src) {
+    const img = document.createElement('img');
+    img.src = src;
+    img.style.width = "200px";  
+    img.style.height = "200px"; 
+    img.style.position = "absolute"; 
+    img.style.zIndex = "1000";  
+    img.classList.add('draggable', 'resizable');  
+    img.style.border = "none"; // Ukloni border po defaultu
+    return img;
+}
 
 function enableDragAndResize(img) {
     let isResizing = false;
@@ -88,7 +98,6 @@ function enableDragAndResize(img) {
         img.style.border = "none"; // Sakrij granicu kada kursor nije iznad slike
     });
 
-    // Oznaka za sliku
     img.addEventListener('click', function () {
         if (!img.querySelector('.close-button')) {
             img.style.border = "2px dashed red"; // Prikazi granicu kada klikneš na sliku
@@ -105,6 +114,8 @@ function enableDragAndResize(img) {
             closeButton.addEventListener('click', function (e) {
                 e.stopPropagation(); // Sprečite da se klik na dugme pokrene click događaj za sliku
                 img.remove(); // Uklonite sliku kada se klikne na dugme
+                // Ovde možete poslati informaciju na server da se slika obriše
+                // sendRemoveImageToServer(img.src);
             });
         }
 
@@ -171,7 +182,6 @@ function dragMouseDown(e) {
 
     document.onmouseup = closeDragElement;
     document.onmousemove = function (e) {
-        e.preventDefault();
         img.style.top = (img.offsetTop - (pos4 - e.clientY)) + 'px';
         img.style.left = (img.offsetLeft - (pos3 - e.clientX)) + 'px';
         pos3 = e.clientX;
@@ -183,3 +193,12 @@ function closeDragElement() {
     document.onmouseup = null;
     document.onmousemove = null;
 }
+
+// Ovde bi trebalo dodati funkcije za komuniciranje sa serverom
+// function sendToServer(imageSource) {
+//     // Implementacija slanja podataka na server
+// }
+
+// function sendRemoveImageToServer(imageSrc) {
+//     // Implementacija slanja podataka o uklanjanju slike sa servera
+// }
