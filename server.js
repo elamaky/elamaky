@@ -115,7 +115,6 @@ socket.on('update-image', (data) => {
             socket.emit('userNotFound', nicknameToBan);
         }
     });
-});
 
 // Funkcija za generisanje jedinstvenog broja
 function generateUniqueNumber() {
