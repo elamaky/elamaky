@@ -1,174 +1,124 @@
-let isLoggedIn = false; // Status autentifikacije
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+const { connectDB } = require('./mongo');
+const { register, login } = require('./prijava');
+const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodula
+const { saveIpData, getIpData } = require('./ip'); // Uvozimo ip.js
+const uuidRouter = require('./uuidmodul'); // Putanja do modula
+const { ensureRadioGalaksijaAtTop } = require('./sitnice');
+const konobaricaModul = require('./konobaricamodul');
+const { setSocket, chatMessage, clearChat } = require('./poruke');
+const pingService = require('./ping');
+require('dotenv').config();
 
-document.getElementById('openModal').addEventListener('click', function() {
-    if (!isLoggedIn) {
-        const password = prompt("Unesite lozinku:");
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 
-        const allowedNicks = ["Radio Galaksija", "ZI ZU", "__X__", "___F117___"];
-        const currentNick = "Radio Galaksija"; // Ovo treba da bude aktuelni korisnički nick.
+connectDB(); // Povezivanje na bazu podataka
+konobaricaModul(io);
 
-        if (allowedNicks.includes(currentNick) || password === "123galaksija") {
-            isLoggedIn = true; // Postavljamo status na login
-            document.getElementById('functionModal').style.display = "block";
+// Middleware za parsiranje JSON podataka i serviranje statičkih fajlova
+app.use(express.json());
+app.use(express.static(__dirname + '/public'));
+app.use('/guests', uuidRouter); // Dodavanje ruta u aplikaciju
+app.set('trust proxy', true);
+
+// Rute za registraciju i prijavu
+app.post('/register', (req, res) => register(req, res, io));
+app.post('/login', (req, res) => login(req, res, io));
+
+// Početna ruta
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/public/index.html');
+});
+
+// Lista autorizovanih korisnika i banovanih korisnika
+const authorizedUsers = new Set(['Radio Galaksija', 'ZI ZU', '__X__']);
+const bannedUsers = new Set();
+
+// Skladištenje informacija o gostima
+const guests = {};
+const assignedNumbers = new Set(); // Set za generisane brojeve
+
+// Dodavanje socket događaja iz banmodula
+setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
+
+// Socket.io događaji
+io.on('connection', (socket) => {
+    const uniqueNumber = generateUniqueNumber();
+    const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
+    guests[socket.id] = nickname; // Dodajemo korisnika u guest list
+    console.log(`${nickname} se povezao.`);
+
+    // Emitovanje događaja da bi ostali korisnici videli novog gosta
+    const updatedGuests = ensureRadioGalaksijaAtTop(guests);
+    socket.broadcast.emit('newGuest', nickname);
+    io.emit('updateGuestList', Object.values(guests));
+
+    // Obrada prijave korisnika
+    socket.on('userLoggedIn', async (username) => {
+        if (authorizedUsers.has(username)) {
+            guests[socket.id] = username; // Admin
+            console.log(`${username} je autentifikovan kao admin.`);
         } else {
-            alert("Nemate dozvolu da otvorite ovaj panel.");
+            guests[socket.id] = username; // Običan gost
+            console.log(`${username} se prijavio kao gost.`);
         }
-    } else {
-        document.getElementById('functionModal').style.display = "block"; // Otvaramo modal ako je korisnik već prijavljen
-    }
-});
-
-// Dodaj funkcionalnost za zatvaranje prozora kada se klikne na "X"
-document.getElementById('closeModal').addEventListener('click', function() {
-    document.getElementById('functionModal').style.display = "none";
-});
-
-// Zatvori prozor kada se klikne van njega
-window.onclick = function(event) {
-    const modal = document.getElementById('functionModal');
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
-};
-
-// Brisanje sadržaja chata
-document.getElementById('clearChat').addEventListener('click', function() {
-    const chatWindow = document.getElementById('messageArea');
-    chatWindow.innerHTML = ""; // Briše sve unutar chata
-    console.log("Chat je obrisan.");
-
-    // Emituj događaj serveru za brisanje chata
-    socket.emit('clear-chat'); 
-});
-
-// Slušanje na 'chat-cleared' događaj
-socket.on('chat-cleared', function() {
-    console.log('Chat je obrisan sa servera.');
-    const chatWindow = document.getElementById('messageArea');
-    chatWindow.innerHTML = ""; // Briše sve unutar chata
-});
-
-
-// Osiguraj se da samo jedan event handler postoji
-socket.on('display-image', (imageUrl) => {
-    addImageToDOM(imageUrl);
-});
-
-document.getElementById('addImage').addEventListener('click', function () {
-    const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
-
-    if (imageSource) {
-        const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
-        const fileExtension = imageSource.split('.').pop().toLowerCase();
-
-        if (validFormats.includes(fileExtension)) {
-            // Emituj URL slike serveru
-            socket.emit('add-image', imageSource);
-
-            // Prikazivanje slike odmah na svom računaru
-            const img = document.createElement('img');
-            img.src = imageSource;
-            img.style.width = "200px";
-            img.style.height = "200px";
-            img.style.position = "absolute";
-            img.style.zIndex = "1000";
-            img.classList.add('draggable', 'resizable');
-            img.style.border = "none";
-            img.style.display = 'block';
-            document.body.appendChild(img);
-            enableDragAndResize(img);
-            console.log("Slika je dodata preko URL-a.");
-        } else {
-            alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
-        }
-    } else {
-        alert("Niste uneli URL slike.");
-    }
-});
-
-
-function enableDragAndResize(img) {
-    let isResizing = false;
-    let resizeSide = null;
-
-    img.addEventListener('mouseenter', function () {
-        img.style.border = "2px dashed red";
+        io.emit('updateGuestList', Object.values(guests));
     });
 
-    img.addEventListener('mouseleave', function () {
-        img.style.border = "none";
+   // Kada korisnik doda sliku, server emituje svim klijentima
+socket.on('add-image', (imageSource) => {
+    console.log("Primljen URL slike sa klijenta:", imageSource); // Logujemo URL slike koji je primljen
+
+    // Emitujemo URL slike svim klijentima
+    io.emit('display-image', imageSource);
+    console.log("Emitovanje URL slike svim klijentima:", imageSource); // Logujemo URL slike koji se emituje svim klijentima
+});
+
+
+
+    // Funkcije iz modula poruke.js
+    setSocket(socket, io);  // Inicijalizacija socket-a i io objekta
+    chatMessage(guests);     // Pokretanje funkcije za slanje poruka
+    clearChat();            // Pokretanje funkcije za brisanje chata
+
+    // Obrada diskonekcije korisnika
+    socket.on('disconnect', () => {
+        console.log(`${guests[socket.id]} se odjavio.`);
+        delete guests[socket.id]; // Uklanjanje gosta iz liste
+        io.emit('updateGuestList', Object.values(guests));
     });
 
-    img.addEventListener('mousedown', function (e) {
-        const rect = img.getBoundingClientRect();
-        const borderSize = 10;
+   // Mogućnost banovanja korisnika prema nickname-u
+    socket.on('banUser', (nicknameToBan) => {
+        const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
 
-        if (e.clientX >= rect.left && e.clientX <= rect.left + borderSize) {
-            resizeSide = 'left';
-        } else if (e.clientX >= rect.right - borderSize && e.clientX <= rect.right) {
-            resizeSide = 'right';
-        } else if (e.clientY >= rect.top && e.clientY <= rect.top + borderSize) {
-            resizeSide = 'top';
-        } else if (e.clientY >= rect.bottom - borderSize && e.clientY <= rect.bottom) {
-            resizeSide = 'bottom';
-        }
-
-        if (resizeSide) {
-            isResizing = true;
-            const initialWidth = img.offsetWidth;
-            const initialHeight = img.offsetHeight;
-            const startX = e.clientX;
-            const startY = e.clientY;
-
-            document.onmousemove = function (e) {
-                if (isResizing) {
-                    if (resizeSide === 'right') {
-                        img.style.width = initialWidth + (e.clientX - startX) + 'px';
-                    } else if (resizeSide === 'bottom') {
-                        img.style.height = initialHeight + (e.clientY - startY) + 'px';
-                    } else if (resizeSide === 'left') {
-                        const newWidth = initialWidth - (e.clientX - startX);
-                        if (newWidth > 10) {
-                            img.style.width = newWidth + 'px';
-                            img.style.left = rect.left + (e.clientX - startX) + 'px';
-                        }
-                    } else if (resizeSide === 'top') {
-                        const newHeight = initialHeight - (e.clientY - startY);
-                        if (newHeight > 10) {
-                            img.style.height = newHeight + 'px';
-                            img.style.top = rect.top + (e.clientY - startY) + 'px';
-                        }
-                    }
-                }
-            };
-
-            document.onmouseup = function () {
-                isResizing = false;
-                resizeSide = null;
-                document.onmousemove = null;
-                document.onmouseup = null;
-            };
+        if (socketIdToBan) {
+            io.to(socketIdToBan).emit('banned');
+            io.sockets.sockets[socketIdToBan].disconnect();
+            console.log(`Korisnik ${nicknameToBan} (ID: ${socketIdToBan}) je banovan.`);
         } else {
-            dragMouseDown(e);
+            console.log(`Korisnik ${nicknameToBan} nije pronađen.`);
+            socket.emit('userNotFound', nicknameToBan);
         }
     });
+});
 
-    function dragMouseDown(e) {
-        e.preventDefault();
-        let pos3 = e.clientX;
-        let pos4 = e.clientY;
-
-        document.onmouseup = closeDragElement;
-        document.onmousemove = function (e) {
-            img.style.top = (img.offsetTop - (pos4 - e.clientY)) + 'px';
-            img.style.left = (img.offsetLeft - (pos3 - e.clientX)) + 'px';
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-        };
-    }
-
-    function closeDragElement() {
-        document.onmouseup = null;
-        document.onmousemove = null;
-    }
+// Funkcija za generisanje jedinstvenog broja
+function generateUniqueNumber() {
+    let number;
+    do {
+        number = Math.floor(Math.random() * 8889) + 1111; // Brojevi između 1111 i 9999
+    } while (assignedNumbers.has(number));
+    assignedNumbers.add(number);
+    return number;
 }
+
+// Pokretanje servera na definisanom portu
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server je pokrenut na portu ${PORT}`);
+});
