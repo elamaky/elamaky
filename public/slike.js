@@ -166,5 +166,3 @@ img.addEventListener('click', function () {
 function closeDragElement() {
     document.onmouseup = null;
     document.onmousemove = null;
-}
-        
