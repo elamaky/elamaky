@@ -57,9 +57,10 @@ document.getElementById('addImage').addEventListener('click', function() {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
         
-        if (validFormats.includes(fileExtension)) {
+      validFormats.includes(fileExtension)) {
             const img = document.createElement('img');
             img.src = imageSource;  
+            console.log("Slika URL:", img.src);
             img.style.width = "200px";  
             img.style.height = "200px"; 
             img.style.position = "absolute"; 
@@ -67,12 +68,9 @@ document.getElementById('addImage').addEventListener('click', function() {
             img.classList.add('draggable', 'resizable');  
             img.style.border = "none"; // Ukloni border po defaultu
             img.style.display = 'block'; // Dodajemo 'block' kako bi slika bila vidljiva
-            
-            // Emitovanje URL-a slike svim korisnicima
-            socket.emit('send-image', imageSource); // Slanje slike serveru
-            
+            img.style.pointerEvents = "none"; // Onemogućava interakciju sa slikom za korisnike
             document.body.appendChild(img);
-            enableDragAndResize(img);
+            enableDragAndResize(img); // Omogućava samo tebi da menjaš dimenzije i poziciju
             console.log("Slika je dodata preko URL-a.");
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
