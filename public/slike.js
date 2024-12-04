@@ -49,11 +49,28 @@ socket.on('chat-cleared', function() {
 });
 
 
-// Osiguraj se da samo jedan event handler postoji
+// Osluškivanje za 'display-image' događaj koji emituje server
 socket.on('display-image', (imageUrl) => {
-    addImageToDOM(imageUrl);
+    console.log('Primljena slika:', imageUrl); // Proveri da li se slika zapravo prima
+    addImageToDOM(imageUrl);  // Funkcija koja dodaje sliku u DOM
 });
 
+// Dodavanje slike u DOM
+function addImageToDOM(imageUrl) {
+    const img = document.createElement('img');
+    img.src = imageUrl;
+    img.style.width = "200px";
+    img.style.height = "200px";
+    img.style.position = "absolute";
+    img.style.zIndex = "1000";
+    img.classList.add('draggable', 'resizable');
+    img.style.border = "none";
+    img.style.display = 'block';
+    document.body.appendChild(img);
+    enableDragAndResize(img);  // Ovaj deo treba da omogući povlačenje i promenu veličine slike
+}
+
+// Osluškivanje dugmeta za dodavanje slike
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
@@ -76,7 +93,7 @@ document.getElementById('addImage').addEventListener('click', function () {
             img.style.border = "none";
             img.style.display = 'block';
             document.body.appendChild(img);
-            enableDragAndResize(img);
+            enableDragAndResize(img);  // Ovaj deo treba da omogući povlačenje i promenu veličine slike
             console.log("Slika je dodata preko URL-a.");
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
@@ -85,6 +102,7 @@ document.getElementById('addImage').addEventListener('click', function () {
         alert("Niste uneli URL slike.");
     }
 });
+
 
 
 function enableDragAndResize(img) {
