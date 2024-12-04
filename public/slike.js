@@ -49,22 +49,23 @@ socket.on('chat-cleared', function() {
 });
 
 
+// Osluškujemo događaj 'display-image' van event listener-a, kako bi svi klijenti dobili slike
+socket.on('display-image', (imageUrl) => {
+    addImageToDOM(imageUrl);
+});
+
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
-
-    // Osluškujemo 'display-image' događaj sa servera
-    socket.on('display-image', (imageUrl) => {
-        addImageToDOM(imageUrl);
-    });
 
     if (imageSource) {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
 
         if (validFormats.includes(fileExtension)) {
-            // Emitujemo URL slike serveru pod imenom 'add-image'
+            // Emituj URL slike serveru
             socket.emit('add-image', imageSource);
 
+            // Prikazivanje slike na svom računaru odmah
             const img = document.createElement('img');
             img.src = imageSource;
             console.log("Slika URL:", img.src);
