@@ -49,6 +49,30 @@ socket.on('chat-cleared', function() {
 });
 
 
+// Na klijentu (svi korisnici) - slušamo na događaj 'display-image'
+socket.on('display-image', (imageUrl) => {
+    console.log("Primalac sliku sa URL-om:", imageUrl);  // Logujemo URL primljene slike
+    addImageToDOM(imageUrl);  // Dodajemo sliku u DOM
+});
+
+// Funkcija koja dodaje sliku u DOM
+function addImageToDOM(imageUrl) {
+    const img = document.createElement('img');
+    img.src = imageUrl;
+    img.style.width = "200px";
+    img.style.height = "200px";
+    img.style.position = "absolute";
+    img.style.zIndex = "1000";
+    img.classList.add('draggable', 'resizable');
+    img.style.border = "none";
+    img.style.display = 'block';
+
+    // Dodavanje slike u body
+    document.body.appendChild(img);
+    console.log("Slika je dodata u DOM sa URL-om:", imageUrl);
+}
+
+// Kod za dodavanje slike sa klijenta
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
@@ -61,13 +85,12 @@ document.getElementById('addImage').addEventListener('click', function () {
         console.log("Proveravam format slike:", fileExtension); // Logujemo format slike
 
         if (validFormats.includes(fileExtension)) {
-            // Emituj URL slike serveru sa pravim događajem
             console.log("Emitujem URL slike serveru:", imageSource);
-            socket.emit('add-image', imageSource); // Ovdje šaljemo 'add-image', a ne 'image broadcast'
+            socket.emit('add-image', imageSource); // Emitovanje slike serveru
 
             const img = document.createElement('img');
             img.src = imageSource;
-            console.log("Slika URL:", img.src); // Logujemo URL slike koji se dodaje u DOM
+            console.log("Slika URL:", img.src); // Logujemo URL slike
             img.style.width = "200px";
             img.style.height = "200px";
             img.style.position = "absolute";
