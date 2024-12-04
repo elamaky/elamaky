@@ -54,8 +54,28 @@ socket.on('display-image', (imageUrl) => {
     addImageToDOM(imageUrl);
 });
 
+// Funkcija za dodavanje slike u DOM
+function addImageToDOM(imageUrl) {
+    const img = document.createElement('img');
+    img.src = imageUrl;
+    img.style.width = "200px";
+    img.style.height = "200px";
+    img.style.position = "absolute";
+    img.style.zIndex = "1000";
+    img.classList.add('draggable', 'resizable');
+    img.style.border = "none
+
+";
+    img.style.display = 'block';
+    document.body.appendChild(img);
+    enableDragAndResize(img);
+}
+
+// Event listener za dodavanje slike
 document.getElementById('addImage').addEventListener('click', function () {
-    const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
+    const imageSource = prompt("Unesite
+
+ URL slike (JPG, PNG, GIF):");
 
     if (imageSource) {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
@@ -66,19 +86,8 @@ document.getElementById('addImage').addEventListener('click', function () {
             socket.emit('add-image', imageSource);
 
             // Prikazivanje slike na svom računaru odmah
-            const img = document.createElement('img');
-            img.src = imageSource;
-            console.log("Slika URL:", img.src);
-            img.style.width = "200px";
-            img.style.height = "200px";
-            img.style.position = "absolute";
-            img.style.zIndex = "1000";
-            img.classList.add('draggable', 'resizable');
-            img.style.border = "none";
-            img.style.display = 'block';
-            document.body.appendChild(img);
-            enableDragAndResize(img);
-            console.log("Slika je dodata preko URL-a.");
+            addImageToDOM(imageSource); // Dodaj ovu liniju da odmah prikažeš sliku na svom računaru
+            console.log("Slika URL:", imageSource);
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
         }
@@ -86,7 +95,6 @@ document.getElementById('addImage').addEventListener('click', function () {
         alert("Niste uneli URL slike.");
     }
 });
-
 
 function enableDragAndResize(img) {
     let isResizing = false;
