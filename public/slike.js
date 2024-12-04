@@ -52,7 +52,8 @@ socket.on('chat-cleared', function() {
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
-    socket.on('image broadcast', (imageUrl) => {
+    // Osluškujemo 'display-image' događaj sa servera
+    socket.on('display-image', (imageUrl) => {
         addImageToDOM(imageUrl);
     });
 
@@ -61,8 +62,8 @@ document.getElementById('addImage').addEventListener('click', function () {
         const fileExtension = imageSource.split('.').pop().toLowerCase();
 
         if (validFormats.includes(fileExtension)) {
-            // Emituj URL slike serveru
-            socket.emit('image broadcast', imageSource);
+            // Emitujemo URL slike serveru pod imenom 'add-image'
+            socket.emit('add-image', imageSource);
 
             const img = document.createElement('img');
             img.src = imageSource;
