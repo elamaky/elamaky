@@ -54,8 +54,11 @@ socket.emit('clear-chat');
 
 document.getElementById('addImage').addEventListener('click', function() {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
+    socket.emit('new-image', imageSource);
+});
 
-    if (imageSource) {
+
+if (imageSource) {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
         
