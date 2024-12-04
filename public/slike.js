@@ -167,5 +167,4 @@ function closeDragElement() {
     document.onmouseup = null;
     document.onmousemove = null;
 }
-
-
+        
