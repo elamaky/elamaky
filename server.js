@@ -70,20 +70,29 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-    socket.emit('initial-images', imageList); // Emitujemo inicijalne slike
+socket.on('add-image', (imageSource) => {
+    console.log("Primljen URL slike:", imageSource);
+    
+    // Stvaramo objekat sa podacima slike
+    const newImageData = {
+        imageUrl: imageSource,
+        width: 200, // Defaultna širina
+        height: 200, // Defaultna visina
+        left: 0, // Defaultna leva pozicija
+        top: 0 // Defaultna gornja pozicija
+    };
+    
+    imageList.push(newImageData); // Sačuvajte podatke o slici
+    io.emit('display-image', newImageData); // Emitujte novoj slici svim klijentima
+});
 
-    // Osluškujemo kad klijent doda novu sliku
-    socket.on('add-image', (imageSource) => {
-        console.log("Primljen URL slike:", imageSource);
-        imageList.push(imageSource); // Sačuvajte URL slike
-        io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
-    });
+// Osluškujemo promene slike (pomeranje, dimenzije)
+socket.on('update-image', (data) => {
+    // Emitovanje promena svim klijentima
+    io.emit('sync-image', data);
+});
 
-    // Osluškujemo promene slike (pomeranje, dimenzije)
-    socket.on('update-image', (data) => {
-        io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
-    });
-
+    
     // Funkcije iz modula poruke.js
     setSocket(socket, io);  // Inicijalizacija socket-a i io objekta
     chatMessage(guests);     // Pokretanje funkcije za slanje poruka
