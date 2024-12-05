@@ -70,36 +70,21 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-socket.on('add-image', (imageData) => {
-  // Dodajemo sliku na serveru (ovo može biti u memoriji ili bazi podataka)
-  images.push(imageData);
-  
-  // Prosleđujemo ovu sliku svim klijentima
-  io.emit('add-image', imageData);
-});
+    socket.emit('initial-images', imageList); // Emitujemo inicijalne slike
 
-socket.on('update-image', (updatedData) => {
-  // Ažuriramo sliku na serveru
-  const image = images.find(img => img.imageUrl === updatedData.imageUrl);
-  if (image) {
-    image.position = updatedData.position;
-    image.dimensions = updatedData.dimensions;
-  }
+    // Osluškujemo kad klijent doda novu sliku
+    socket.on('add-image', (imageSource) => {
+        console.log("Primljen URL slike:", imageSource);
+        imageList.push(imageSource); // Sačuvajte URL slike
+        io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
+    });
 
-  // Prosleđujemo promene svim klijentima
-  io.emit('update-image', updatedData);
-});
+    // Osluškujemo promene slike (pomeranje, dimenzije)
+    socket.on('update-image', (data) => {
+        io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
+    });
 
-socket.on('delete-image', (imageUrl) => {
-  // Uklanjamo sliku sa servera
-  images = images.filter(img => img.imageUrl !== imageUrl);
-  
-  // Prosleđujemo svim klijentima da uklone sliku
-  io.emit('delete-image', imageUrl);
-});
-
-
-  // Funkcije iz modula poruke.js
+    // Funkcije iz modula poruke.js
     setSocket(socket, io);  // Inicijalizacija socket-a i io objekta
     chatMessage(guests);     // Pokretanje funkcije za slanje poruka
     clearChat();            // Pokretanje funkcije za brisanje chata
