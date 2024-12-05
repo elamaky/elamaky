@@ -72,6 +72,11 @@ document.getElementById('addImage').addEventListener('click', function () {
     }
 });
 
+// Prikaz svih prethodnih slika kad se poveže klijent
+socket.on('initial-images', (images) => {
+    images.forEach(addImageToDOM);  // Dodaj sve slike koje su već dodate
+});
+
 // Funkcija za dodavanje slike u DOM
 function addImageToDOM(imageUrl) {
     const img = document.createElement('img');
@@ -93,33 +98,6 @@ function addImageToDOM(imageUrl) {
 
     document.body.appendChild(img); // Učitaj sliku u DOM
 }
-
-// Osluškujemo događaje za sinhronizaciju slika sa servera
-
-// Kada se doda nova slika
-socket.on('add-image', (imageData) => {
-    addImageToDOM(imageData);  // Dodajemo sliku u DOM
-});
-
-// Kada se promeni pozicija ili dimenzije slike
-socket.on('update-image', (updatedData) => {
-    const img = document.querySelector(`img[src="${updatedData.imageUrl}"]`);
-    if (img) {
-        img.style.left = updatedData.position.x;
-        img.style.top = updatedData.position.y;
-        img.style.width = updatedData.dimensions.width;
-        img.style.height = updatedData.dimensions.height;
-    }
-});
-
-// Kada se obriše slika
-socket.on('delete-image', (imageUrl) => {
-    const img = document.querySelector(`img[src="${imageUrl}"]`);
-    if (img) {
-        img.remove();  // Uklonimo sliku iz DOM-a
-    }
-});
-
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
@@ -205,3 +183,18 @@ function enableDragAndResize(img) {
         document.onmousemove = null;
     }
 }
+socket.emit('update-image', {
+    imageUrl: img.src,
+    position: { x: img.style.left, y: img.style.top },
+    dimensions: { width: img.style.width, height: img.style.height }
+});
+
+socket.on('sync-image', (data) => {
+    const img = document.querySelector(`img[src="${data.imageUrl}"]`);
+    if (img) {
+        img.style.left = data.position.x;
+        img.style.top = data.position.y;
+        img.style.width = data.dimensions.width;
+        img.style.height = data.dimensions.height;
+    }
+});
