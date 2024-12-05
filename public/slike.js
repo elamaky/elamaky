@@ -160,6 +160,14 @@ function enableDragAndResize(img) {
                 resizeSide = null;
                 document.onmousemove = null;
                 document.onmouseup = null;
+
+                // Emituj promene na server kada završiš sa promenama slike
+                socket.emit('updateImage', {
+                    id: img.src, // ili drugi identifikator slike
+                    width: img.style.width,
+                    height: img.style.height,
+                    position: { x: img.style.left, y: img.style.top }
+                });
             };
         } else {
             dragMouseDown(e);
@@ -185,18 +193,14 @@ function enableDragAndResize(img) {
         document.onmousemove = null;
     }
 }
-socket.emit('update-image', {
-    imageUrl: img.src,
-    position: { x: img.style.left, y: img.style.top },
-    dimensions: { width: img.style.width, height: img.style.height }
-});
 
-socket.on('sync-image', (data) => {
-    const img = document.querySelector(`img[src="${data.imageUrl}"]`);
+// Osvežavanje svih klijenata sa novim promenama slike
+socket.on('imageUpdated', (data) => {
+    const img = document.querySelector(`img[src="${data.id}"]`);
     if (img) {
         img.style.left = data.position.x;
         img.style.top = data.position.y;
-        img.style.width = data.dimensions.width;
-        img.style.height = data.dimensions.height;
+        img.style.width = data.width;
+        img.style.height = data.height;
     }
 });
