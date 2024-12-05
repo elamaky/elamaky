@@ -88,27 +88,18 @@ function addImageToDOM(imageUrl) {
     img.classList.add('draggable', 'resizable');
     img.style.border = "none";
     document.body.appendChild(img);
-    enableDragAndResize(img);  // Ako postoji funkcija za povlačenje i promenu veličine
+
+    // Emitovanje inicijalnih pozicija i dimenzija slike
+    socket.emit('update-image', {
+        imageUrl: img.src,
+        position: { x: img.style.left, y: img.style.top },
+        dimensions: { width: img.style.width, height: img.style.height }
+    });
+
+    enableDragAndResize(img);  // Omogući povlačenje i promenu veličine
 }
 
-socket.emit('update-image', {
-    imageUrl: img.src, // Koristi img.src umesto imageSource
-    position: { x: img.style.left, y: img.style.top }, 
-    dimensions: { width: img.style.width, height: img.style.height }
-});
-
-
-socket.on('sync-image', (data) => {
-    const img = document.querySelector(`img[src="${data.imageUrl}"]`);
-    if (img) {
-        img.style.left = data.position.x;
-        img.style.top = data.position.y;
-        img.style.width = data.dimensions.width;
-        img.style.height = data.dimensions.height;
-    }
-});
-
-
+// Funkcija za omogućavanje povlačenja i promene veličine slike
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
@@ -186,6 +177,13 @@ function enableDragAndResize(img) {
             img.style.left = (img.offsetLeft - (pos3 - e.clientX)) + 'px';
             pos3 = e.clientX;
             pos4 = e.clientY;
+
+            // Emitovanje promena na server
+            socket.emit('update-image', {
+                imageUrl: img.src,
+                position: { x: img.style.left, y: img.style.top },
+                dimensions: { width: img.style.width, height: img.style.height }
+            });
         };
     }
 
@@ -194,3 +192,14 @@ function enableDragAndResize(img) {
         document.onmousemove = null;
     }
 }
+
+// Osluškujemo promene slike (pomeranje, dimenzije)
+socket.on('sync-image', (data) => {
+    const img = document.querySelector(`img[src="${data.imageUrl}"]`);
+    if (img) {
+        img.style.left = data.position.x;
+        img.style.top = data.position.y;
+        img.style.width = data.dimensions.width;
+        img.style.height = data.dimensions.height;
+    }
+});
