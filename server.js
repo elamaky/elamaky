@@ -11,7 +11,7 @@ const konobaricaModul = require('./konobaricamodul');
 const { setSocket, chatMessage, clearChat } = require('./poruke');
 const pingService = require('./ping');
 require('dotenv').config();
-const imageList = []; // Skladištenje URL-ova slika
+const currentImages = new Map(); // Da čuvamo trenutne slike sa njihovim pozicijama i dimenzijama
 
 
 const app = express();
@@ -71,18 +71,24 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-    socket.emit('initial-images', imageList); // Emitujemo inicijalne slike
-
-    // Osluškujemo kad klijent doda novu sliku
-    socket.on('add-image', (imageSource) => {
-        console.log("Primljen URL slike:", imageSource);
-        imageList.push(imageSource); // Sačuvajte URL slike
-        io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
+   // Osluškujemo događaj za dodavanje slike
+    socket.on('add-image', (imageUrl) => {
+        // Dodaj sliku u trenutne slike
+        currentImages.set(imageUrl, { position: { x: '0px', y: '0px' }, dimensions: { width: '200px', height: '200px' } });
+        
+        // Emituj događaj da svi klijenti dodaju novu sliku
+        io.emit('display-image', { imageUrl, position: currentImages.get(imageUrl).position, dimensions: currentImages.get(imageUrl).dimensions });
     });
 
-    // Osluškujemo promene slike (pomeranje, dimenzije)
+    // Osluškujemo događaj za ažuriranje slike
     socket.on('update-image', (data) => {
-        io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
+        // Ažuriraj poziciju i dimenzije
+        if (currentImages.has(data.imageUrl)) {
+            currentImages.set(data.imageUrl, { position: data.position, dimensions: data.dimensions });
+
+            // Emituj događaj koji će sinhronizovati sve klijente
+            socket.broadcast.emit('sync-image', data);
+        }
     });
 
     // Funkcije iz modula poruke.js
