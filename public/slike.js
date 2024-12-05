@@ -72,9 +72,30 @@ document.getElementById('addImage').addEventListener('click', function () {
     }
 });
 
-// Prikaz svih prethodnih slika kad se poveže klijent
-socket.on('initial-images', (images) => {
-    images.forEach(addImageToDOM);  // Dodaj sve slike koje su već dodate
+// Osluškujemo događaje za sinhronizaciju slika sa servera
+
+// Kada se doda nova slika
+socket.on('add-image', (imageData) => {
+    addImageToDOM(imageData);  // Dodajemo sliku u DOM
+});
+
+// Kada se promeni pozicija ili dimenzije slike
+socket.on('update-image', (updatedData) => {
+    const img = document.querySelector(`img[src="${updatedData.imageUrl}"]`);
+    if (img) {
+        img.style.left = updatedData.position.x;
+        img.style.top = updatedData.position.y;
+        img.style.width = updatedData.dimensions.width;
+        img.style.height = updatedData.dimensions.height;
+    }
+});
+
+// Kada se obriše slika
+socket.on('delete-image', (imageUrl) => {
+    const img = document.querySelector(`img[src="${imageUrl}"]`);
+    if (img) {
+        img.remove();  // Uklonimo sliku iz DOM-a
+    }
 });
 
 // Funkcija za dodavanje slike u DOM
@@ -98,6 +119,9 @@ function addImageToDOM(imageUrl) {
 
     document.body.appendChild(img); // Učitaj sliku u DOM
 }
+
+
+
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
