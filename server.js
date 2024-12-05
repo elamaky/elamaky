@@ -85,7 +85,6 @@ io.on('connection', (socket) => {
     socket.on('remove-image', (imageId) => {
         io.emit('remove-image', imageId); // Emitujte uklanjanje svim klijentima
     });
-});
 
     // Funkcije iz modula poruke.js
     setSocket(socket, io);  // Inicijalizacija socket-a i io objekta
