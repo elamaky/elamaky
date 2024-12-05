@@ -99,9 +99,7 @@ function addImageToDOM(imageUrl) {
     // Učitaj sliku u DOM
     document.body.appendChild(img);
 
-    // Emitujemo URL slike serveru pod imenom 'add-image'
-    socket.emit('add-image', imageUrl);
-}
+  }
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
