@@ -87,7 +87,8 @@ function addImageToDOM(imageUrl) {
     img.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
     img.classList.add('draggable', 'resizable');
     img.style.border = "none";
-    img.style.pointerEvents = "none"; // Onemogućava klikove
+    if (!isLoggedIn) {
+        img.style.pointerEvents = "none"; // Onemogućava klikove
     document.body.appendChild(img);
     enableDragAndResize(img); // Ako postoji funkcija za povlačenje i promenu veličine
 }
