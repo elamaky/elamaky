@@ -77,8 +77,8 @@ socket.on('initial-images', (images) => {
     images.forEach(addImageToDOM);  // Dodaj sve slike koje su već dodate
 });
 
-// Funkcija za dodavanje slike u DOM
 function addImageToDOM(imageUrl) {
+    // Kreiraj img element
     const img = document.createElement('img');
     img.src = imageUrl;
     img.style.width = "200px";
@@ -96,7 +96,11 @@ function addImageToDOM(imageUrl) {
         img.style.pointerEvents = "none"; // Onemogućava klikove
     }
 
-    document.body.appendChild(img); // Učitaj sliku u DOM
+    // Učitaj sliku u DOM
+    document.body.appendChild(img);
+
+    // Emitujemo URL slike serveru pod imenom 'add-image'
+    socket.emit('add-image', imageUrl);
 }
 function enableDragAndResize(img) {
     let isResizing = false;
