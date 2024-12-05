@@ -11,6 +11,7 @@ const konobaricaModul = require('./konobaricamodul');
 const { setSocket, chatMessage, clearChat } = require('./poruke');
 const pingService = require('./ping');
 require('dotenv').config();
+const imageList = []; // Skladištenje URL-ova slika
 
 
 const app = express();
