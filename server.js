@@ -11,7 +11,7 @@ const konobaricaModul = require('./konobaricamodul');
 const { setSocket, chatMessage, clearChat } = require('./poruke');
 const pingService = require('./ping');
 require('dotenv').config();
-const imageList = []; // Lista za čuvanje URL-ova slika
+
 
 const app = express();
 const server = http.createServer(app);
@@ -70,22 +70,25 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-  // Emitovanje nove slike svim klijentima
+   // Kada klijent doda novu sliku
     socket.on('add-image', (imageData) => {
         console.log("Nova slika dodata:", imageData);
-        io.emit('display-image', imageData); // Emitujemo novu sliku svim klijentima
+        // Emitujemo sliku svim klijentima, uključujući onog koji je poslao
+        io.emit('display-image', imageData);
     });
 
-    // Emitovanje promena slike (pozicija, dimenzije) svim klijentima
+    // Kada klijent promeni dimenzije ili poziciju slike
     socket.on('update-image', (data) => {
         console.log("Promena slike:", data);
-        io.emit('sync-image', data); // Emitujemo promene svim klijentima
+        // Emitujemo promene svim klijentima
+        io.emit('sync-image', data);
     });
 
-    // Uklanjanje slike
+    // Kada klijent ukloni sliku
     socket.on('remove-image', (imageId) => {
         console.log("Slika uklonjena:", imageId);
-        io.emit('delete-image', imageId); // Obaveštavamo klijente da uklone sliku
+        // Emitujemo događaj za uklanjanje slike svim klijentima
+        io.emit('delete-image', imageId);
     });
 
     // Funkcije iz modula poruke.js
