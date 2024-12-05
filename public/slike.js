@@ -88,14 +88,6 @@ function addImageToDOM(imageUrl) {
     img.classList.add('draggable', 'resizable');
     img.style.border = "none";
     document.body.appendChild(img);
-
-    // Emitovanje inicijalnih pozicija i dimenzija slike
-    socket.emit('update-image', {
-        imageUrl: img.src,
-        position: { x: img.style.left, y: img.style.top },
-        dimensions: { width: img.style.width, height: img.style.height }
-    });
-
     enableDragAndResize(img);  // Omogući povlačenje i promenu veličine
 }
 
