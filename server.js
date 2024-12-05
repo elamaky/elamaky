@@ -70,17 +70,19 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-  // Osluškujemo dodavanje nove slike
-    socket.on('add-image', (imageData) => {
-        console.log("Nova slika dodata:", imageData);
-        io.emit('display-image', imageData); // Emitujemo sliku svim klijentima
+ let images = []; // Čuva URL-ove svih slika
+
+ // Primi URL slike i emituj ga svim povezanim klijentima
+    socket.on('add-image', (imageUrl) => {
+        images.push(imageUrl); // Dodajemo URL slike u niz
+        io.emit('display-image', imageUrl); // Emitujemo URL slike svim klijentima
     });
 
-    // Osluškujemo promene na slici
+    // Sinkronizacija slika (pozicija i dimenzije)
     socket.on('update-image', (data) => {
-        console.log("Sinhronizacija slike:", data);
-        io.emit('sync-image', data); // Emitujemo promene svim klijentima
+        socket.broadcast.emit('sync-image', data); // Emituj sve promene ostalim klijentima
     });
+});
 
 
     // Funkcije iz modula poruke.js
