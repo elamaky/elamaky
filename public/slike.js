@@ -88,7 +88,6 @@ function addImageToDOM(imageUrl) {
     img.classList.add('draggable', 'resizable');
     img.style.border = "none";
     img.style.pointerEvents = "none"; // Onemogućava klikove
-    img.style.opacity = "0.5"; // Vizuelno naglašavanje da slika nije aktivna
     document.body.appendChild(img);
     enableDragAndResize(img); // Ako postoji funkcija za povlačenje i promenu veličine
 }
