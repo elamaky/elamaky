@@ -84,11 +84,13 @@ function addImageToDOM(imageUrl) {
     img.style.width = "200px";
     img.style.height = "200px";
     img.style.position = "absolute";
-    img.style.zIndex = "1000";  // Dodato za pravilno pozicioniranje slike
+    img.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
     img.classList.add('draggable', 'resizable');
     img.style.border = "none";
+    img.style.pointerEvents = "none"; // Onemogućava klikove
+    img.style.opacity = "0.5"; // Vizuelno naglašavanje da slika nije aktivna
     document.body.appendChild(img);
-    enableDragAndResize(img);  // Ako postoji funkcija za povlačenje i promenu veličine
+    enableDragAndResize(img); // Ako postoji funkcija za povlačenje i promenu veličine
 }
 
 function enableDragAndResize(img) {
