@@ -75,10 +75,22 @@ io.on('connection', (socket) => {
     socket.on('add-image', (imageUrl) => {
         // Dodaj sliku u trenutne slike
         currentImages.set(imageUrl, { position: { x: '0px', y: '0px' }, dimensions: { width: '200px', height: '200px' } });
-        
-        // Emituj događaj da svi klijenti dodaju novu sliku
-        io.emit('display-image', { imageUrl, position: currentImages.get(imageUrl).position, dimensions: currentImages.get(imageUrl).dimensions });
+
+
+         io.emit('initial-images', imageList); // Emitujemo inicijalne slike
+
+    // Osluškujemo kad klijent doda novu sliku
+    socket.on('add-image', (imageSource) => {
+        console.log("Primljen URL slike:", imageSource);
+        imageList.push(imageSource); // Sačuvajte URL slike
+        io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
     });
+
+    // Osluškujemo promene slike (pomeranje, dimenzije)
+    socket.on('update-image', (data) => {
+        io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
+    });
+
 
     // Osluškujemo događaj za ažuriranje slike
     socket.on('update-image', (data) => {
