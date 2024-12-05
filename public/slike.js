@@ -87,12 +87,17 @@ function addImageToDOM(imageUrl) {
     img.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
     img.classList.add('draggable', 'resizable');
     img.style.border = "none";
-    if (!isLoggedIn) {
+    
+    // Omogućavanje interakcije samo za prijavljene korisnike
+    if (isLoggedIn) {
+        img.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
+        enableDragAndResize(img); // Uključi funkcionalnost za povlačenje i promenu veličine
+    } else {
         img.style.pointerEvents = "none"; // Onemogućava klikove
-    document.body.appendChild(img);
-    enableDragAndResize(img); // Ako postoji funkcija za povlačenje i promenu veličine
-}
+    }
 
+    document.body.appendChild(img); // Učitaj sliku u DOM
+}
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
