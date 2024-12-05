@@ -72,6 +72,28 @@ document.getElementById('addImage').addEventListener('click', function () {
     }
 });
 
+// Funkcija za dodavanje slike u DOM
+function addImageToDOM(imageUrl) {
+    const img = document.createElement('img');
+    img.src = imageUrl;
+    img.style.width = "200px";
+    img.style.height = "200px";
+    img.style.position = "absolute";
+    img.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
+    img.classList.add('draggable', 'resizable');
+    img.style.border = "none";
+    
+    // Omogućavanje interakcije samo za prijavljene korisnike
+    if (isLoggedIn) {
+        img.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
+        enableDragAndResize(img); // Uključi funkcionalnost za povlačenje i promenu veličine
+    } else {
+        img.style.pointerEvents = "none"; // Onemogućava klikove
+    }
+
+    document.body.appendChild(img); // Učitaj sliku u DOM
+}
+
 // Osluškujemo događaje za sinhronizaciju slika sa servera
 
 // Kada se doda nova slika
@@ -97,28 +119,6 @@ socket.on('delete-image', (imageUrl) => {
         img.remove();  // Uklonimo sliku iz DOM-a
     }
 });
-
-// Funkcija za dodavanje slike u DOM
-function addImageToDOM(imageUrl) {
-    const img = document.createElement('img');
-    img.src = imageUrl;
-    img.style.width = "200px";
-    img.style.height = "200px";
-    img.style.position = "absolute";
-    img.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
-    img.classList.add('draggable', 'resizable');
-    img.style.border = "none";
-    
-    // Omogućavanje interakcije samo za prijavljene korisnike
-    if (isLoggedIn) {
-        img.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
-        enableDragAndResize(img); // Uključi funkcionalnost za povlačenje i promenu veličine
-    } else {
-        img.style.pointerEvents = "none"; // Onemogućava klikove
-    }
-
-    document.body.appendChild(img); // Učitaj sliku u DOM
-}
 
 function enableDragAndResize(img) {
     let isResizing = false;
@@ -172,12 +172,6 @@ function enableDragAndResize(img) {
                             img.style.top = rect.top + (e.clientY - startY) + 'px';
                         }
                     }
-                    // Emituj podatke o promenama slike
-                    socket.emit('update-image', {
-                        imageUrl: img.src,
-                        position: { x: img.style.left, y: img.style.top },
-                        dimensions: { width: img.style.width, height: img.style.height }
-                    });
                 }
             };
 
@@ -203,13 +197,6 @@ function enableDragAndResize(img) {
             img.style.left = (img.offsetLeft - (pos3 - e.clientX)) + 'px';
             pos3 = e.clientX;
             pos4 = e.clientY;
-            
-            // Emituj podatke o promenama slike
-            socket.emit('update-image', {
-                imageUrl: img.src,
-                position: { x: img.style.left, y: img.style.top },
-                dimensions: { width: img.style.width, height: img.style.height }
-            });
         };
     }
 
@@ -218,3 +205,18 @@ function enableDragAndResize(img) {
         document.onmousemove = null;
     }
 }
+socket.emit('update-image', {
+    imageUrl: img.src,
+    position: { x: img.style.left, y: img.style.top },
+    dimensions: { width: img.style.width, height: img.style.height }
+});
+
+socket.on('sync-image', (data) => {
+    const img = document.querySelector(`img[src="${data.imageUrl}"]`);
+    if (img) {
+        img.style.left = data.position.x;
+        img.style.top = data.position.y;
+        img.style.width = data.dimensions.width;
+        img.style.height = data.dimensions.height;
+    }
+});
