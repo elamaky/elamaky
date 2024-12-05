@@ -1,53 +1,3 @@
-let isLoggedIn = false; // Status autentifikacije
-
-document.getElementById('openModal').addEventListener('click', function() {
-    if (!isLoggedIn) {
-        const password = prompt("Unesite lozinku:");
-
-        const allowedNicks = ["Radio Galaksija", "ZI ZU", "__X__", "___F117___"];
-        const currentNick = "Radio Galaksija"; // Ovo treba da bude aktuelni korisnički nick.
-
-        if (allowedNicks.includes(currentNick) || password === "123galaksija") {
-            isLoggedIn = true; // Postavljamo status na login
-            document.getElementById('functionModal').style.display = "block";
-        } else {
-            alert("Nemate dozvolu da otvorite ovaj panel.");
-        }
-    } else {
-        document.getElementById('functionModal').style.display = "block"; // Otvaramo modal ako je korisnik već prijavljen
-    }
-});
-
-// Dodaj funkcionalnost za zatvaranje prozora kada se klikne na "X"
-document.getElementById('closeModal').addEventListener('click', function() {
-    document.getElementById('functionModal').style.display = "none";
-});
-
-// Zatvori prozor kada se klikne van njega
-window.onclick = function(event) {
-    const modal = document.getElementById('functionModal');
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
-};
-
-// Brisanje sadržaja chata
-document.getElementById('clearChat').addEventListener('click', function() {
-    const chatWindow = document.getElementById('messageArea');
-    chatWindow.innerHTML = ""; // Briše sve unutar chata
-    console.log("Chat je obrisan.");
-
-    // Emituj događaj serveru za brisanje chata
-    socket.emit('clear-chat'); 
-});
-
-// Slušanje na 'chat-cleared' događaj
-socket.on('chat-cleared', function() {
-    console.log('Chat je obrisan sa servera.');
-    const chatWindow = document.getElementById('messageArea');
-    chatWindow.innerHTML = ""; // Briše sve unutar chata
-});
-
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
@@ -58,6 +8,12 @@ document.getElementById('addImage').addEventListener('click', function () {
         if (validFormats.includes(fileExtension)) {
             // Emitujemo URL slike serveru pod imenom 'add-image'
             socket.emit('add-image', imageSource);
+
+            // Osluškujemo 'display-image' događaj sa servera
+            socket.on('display-image', (imageUrl) => {
+                addImageToDOM(imageUrl);  // Prikaz nove slike koju je server poslao
+            });
+
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
         }
@@ -66,31 +22,18 @@ document.getElementById('addImage').addEventListener('click', function () {
     }
 });
 
-// Prikaz svih slika sa njihovim početnim podacima (pozicija, dimenzije)
-socket.on('display-image', (image) => {
-    addImageToDOM(image);  // Prikaz nove slike sa početnim pozicijama i dimenzijama
+// Prikaz svih prethodnih slika kad se poveže klijent
+socket.on('initial-images', (images) => {
+    images.forEach(addImageToDOM);  // Dodaj sve slike koje su već dodate
 });
 
-// Osluškivanje za promene slike
-socket.on('sync-image', (data) => {
-    const img = document.querySelector(`img[src="${data.url}"]`);
-    if (img) {
-        img.style.left = `${data.x}px`;
-        img.style.top = `${data.y}px`;
-        img.style.width = `${data.width}px`;
-        img.style.height = `${data.height}px`;
-    }
-});
-
-// Funkcija za dodavanje slike u DOM sa početnim vrednostima
-function addImageToDOM(image) {
+// Funkcija za dodavanje slike u DOM
+function addImageToDOM(imageUrl) {
     const img = document.createElement('img');
-    img.src = image.url;
-    img.style.width = `${image.width}px`;
-    img.style.height = `${image.height}px`;
+    img.src = imageUrl;
+    img.style.width = "200px";
+    img.style.height = "200px";
     img.style.position = "absolute";
-    img.style.left = `${image.x}px`;
-    img.style.top = `${image.y}px`;
     img.style.zIndex = "1000";  // Dodato za pravilno pozicioniranje slike
     img.classList.add('draggable', 'resizable');
     img.style.border = "none";
@@ -175,15 +118,6 @@ function enableDragAndResize(img) {
             img.style.left = (img.offsetLeft - (pos3 - e.clientX)) + 'px';
             pos3 = e.clientX;
             pos4 = e.clientY;
-
-            // Emituj promene pozicije slike
-            socket.emit('update-image', {
-                url: img.src,
-                x: img.offsetLeft,
-                y: img.offsetTop,
-                width: img.offsetWidth,
-                height: img.offsetHeight
-            });
         };
     }
 
