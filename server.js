@@ -12,7 +12,7 @@ const { setSocket, chatMessage, clearChat } = require('./poruke');
 const pingService = require('./ping');
 require('dotenv').config();
 const currentImages = new Map(); // Da čuvamo trenutne slike sa njihovim pozicijama i dimenzijama
-
+const imageList = []; // Skladištenje URL-ova slika
 
 const app = express();
 const server = http.createServer(app);
