@@ -70,26 +70,18 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-   // Kada klijent doda novu sliku
+  // Osluškujemo dodavanje nove slike
     socket.on('add-image', (imageData) => {
         console.log("Nova slika dodata:", imageData);
-        // Emitujemo sliku svim klijentima, uključujući onog koji je poslao
-        io.emit('display-image', imageData);
+        io.emit('display-image', imageData); // Emitujemo sliku svim klijentima
     });
 
-    // Kada klijent promeni dimenzije ili poziciju slike
+    // Osluškujemo promene na slici
     socket.on('update-image', (data) => {
-        console.log("Promena slike:", data);
-        // Emitujemo promene svim klijentima
-        io.emit('sync-image', data);
+        console.log("Sinhronizacija slike:", data);
+        io.emit('sync-image', data); // Emitujemo promene svim klijentima
     });
 
-    // Kada klijent ukloni sliku
-    socket.on('remove-image', (imageId) => {
-        console.log("Slika uklonjena:", imageId);
-        // Emitujemo događaj za uklanjanje slike svim klijentima
-        io.emit('delete-image', imageId);
-    });
 
     // Funkcije iz modula poruke.js
     setSocket(socket, io);  // Inicijalizacija socket-a i io objekta
