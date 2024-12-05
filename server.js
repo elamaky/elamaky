@@ -70,19 +70,32 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-    socket.emit('initial-images', imageList); // Emitujemo inicijalne slike
+// Kada korisnik doda sliku
+socket.on('add-image', (imageSource) => {
+    console.log("Primljen URL slike:", imageSource);
+    const image = {
+        url: imageSource,
+        x: 0, // default pozicija X
+        y: 0, // default pozicija Y
+        width: 200, // default širina
+        height: 200, // default visina
+    };
+    imageList.push(image); // Sačuvaj sliku sa njenim početnim podacima
+    io.emit('display-image', image); // Emituj sve slike sa njihovim početnim podacima
+});
 
-    // Osluškujemo kad klijent doda novu sliku
-    socket.on('add-image', (imageSource) => {
-        console.log("Primljen URL slike:", imageSource);
-        imageList.push(imageSource); // Sačuvajte URL slike
-        io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
-    });
-
-    // Osluškujemo promene slike (pomeranje, dimenzije)
-    socket.on('update-image', (data) => {
-        io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
-    });
+// Kada se desi promena slike (pomeranje ili dimenzije)
+socket.on('update-image', (data) => {
+    const imageIndex = imageList.findIndex(img => img.url === data.url);
+    if (imageIndex !== -1) {
+        // Ažuriraj podatke slike u listi
+        imageList[imageIndex].x = data.x;
+        imageList[imageIndex].y = data.y;
+        imageList[imageIndex].width = data.width;
+        imageList[imageIndex].height = data.height;
+    }
+    io.emit('sync-image', data);  // Emituj promene svim korisnicima
+});
 
     // Funkcije iz modula poruke.js
     setSocket(socket, io);  // Inicijalizacija socket-a i io objekta
