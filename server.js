@@ -71,31 +71,19 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-// Osluškujemo događaj za dodavanje slike
-socket.on('add-image', (imageUrl) => {
-    console.log("Primljen URL slike:", imageUrl);
+    socket.emit('initial-images', imageList); // Emitujemo inicijalne slike
 
-    // Dodaj sliku u trenutne slike
-    currentImages.set(imageUrl, { position: { x: '0px', y: '0px' }, dimensions: { width: '200px', height: '200px' } });
-    imageList.push(imageUrl); // Sačuvajte URL slike
+    // Osluškujemo kad klijent doda novu sliku
+    socket.on('add-image', (imageSource) => {
+        console.log("Primljen URL slike:", imageSource);
+        imageList.push(imageSource); // Sačuvajte URL slike
+        io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
+    });
 
-    // Emitujemo inicijalne slike
-    io.emit('initial-images', imageList); 
-    
-    // Emitujte sliku svim klijentima
-    io.emit('display-image', imageUrl);
-});
-
-// Osluškujemo promene slike (pomeranje, dimenzije)
-socket.on('update-image', (data) => {
-    // Ažuriraj poziciju i dimenzije
-    if (currentImages.has(data.imageUrl)) {
-        currentImages.set(data.imageUrl, { position: data.position, dimensions: data.dimensions });
-
-        // Emituj događaj koji će sinhronizovati sve klijente
-        socket.broadcast.emit('sync-image', data);
-    }
-});
+    // Osluškujemo promene slike (pomeranje, dimenzije)
+    socket.on('update-image', (data) => {
+        io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
+    });
 
     // Funkcije iz modula poruke.js
     setSocket(socket, io);  // Inicijalizacija socket-a i io objekta
