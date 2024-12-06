@@ -45,7 +45,15 @@ const assignedNumbers = new Set(); // Set za generisane brojeve
 // Dodavanje socket događaja iz banmodula
 setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
 
-// Socket.io događaji
+const io = require('socket.io')(PORT, {
+    cors: {
+        origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : "*", // Dozvoljeni domeni iz okruženja
+        methods: ["GET", "POST"], // Ograničite HTTP metode
+        allowedHeaders: ["Authorization", "Content-Type"], // Specifikujte dozvoljene zaglavlja
+        credentials: true // Omogućite kolačiće ako je potrebno
+    }
+});
+
 io.on('connection', (socket) => {
     const uniqueNumber = generateUniqueNumber();
     const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
@@ -69,15 +77,6 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-const io = require('socket.io')(PORT, {
-    cors: {
-        origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : "*", // Dozvoljeni domeni iz okruženja
-        methods: ["GET", "POST"], // Ograničite HTTP metode
-        allowedHeaders: ["Authorization", "Content-Type"], // Specifikujte dozvoljene zaglavlja
-        credentials: true // Omogućite kolačiće ako je potrebno
-    }
-});
-
     // Kada klijent doda novu sliku
     socket.on('add-image', (imageSource) => {
         console.log("Primljen URL slike:", imageSource);
@@ -99,7 +98,6 @@ const io = require('socket.io')(PORT, {
         io.emit('imageRemoved', imageId);
     });
 
-    
     // Funkcije iz modula poruke.js
     setSocket(socket, io);  // Inicijalizacija socket-a i io objekta
     chatMessage(guests);     // Pokretanje funkcije za slanje poruka
@@ -112,7 +110,7 @@ const io = require('socket.io')(PORT, {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-   // Mogućnost banovanja korisnika prema nickname-u
+    // Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
         const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
 
@@ -139,6 +137,7 @@ function generateUniqueNumber() {
 
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
+const server = require('http').createServer(app); // Ovaj deo mora biti postavljen
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server je pokrenut na portu ${PORT}`);
 });
