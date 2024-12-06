@@ -79,20 +79,19 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-   // Kada klijent doda novu sliku
-    socket.on('add-image', (data) => {
-        console.log('Nova slika dodata:', data);
+  
+    socket.emit('initial-images', imageList); // Emitujemo inicijalne slike
 
-        // Emituj novu sliku svim klijentima osim pošiljaoca
-        socket.broadcast.emit('display-image', data);
+    // Osluškujemo kad klijent doda novu sliku
+    socket.on('add-image', (imageSource) => {
+        console.log("Primljen URL slike:", imageSource);
+        imageList.push(imageSource); // Sačuvajte URL slike
+        io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
     });
 
-    // Kada klijent ažurira sliku (pozicija ili dimenzije)
+    // Osluškujemo promene slike (pomeranje, dimenzije)
     socket.on('update-image', (data) => {
-        console.log('Ažurirana slika:', data);
-
-        // Emituj ažuriranja slike svim klijentima osim pošiljaoca
-        socket.broadcast.emit('sync-image', data);
+        io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
     });
 
    
