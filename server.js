@@ -119,7 +119,6 @@ io.on('connection', (socket) => {
             socket.emit('userNotFound', nicknameToBan);
         }
     });
-});
 
 // Funkcija za generisanje jedinstvenog broja
 function generateUniqueNumber() {
