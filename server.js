@@ -15,6 +15,8 @@ require('dotenv').config();
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
+io.origins(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : "*");
+
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
@@ -45,14 +47,7 @@ const assignedNumbers = new Set(); // Set za generisane brojeve
 // Dodavanje socket događaja iz banmodula
 setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
 
-const io = require('socket.io')(PORT, {
-    cors: {
-        origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : "*", // Dozvoljeni domeni iz okruženja
-        methods: ["GET", "POST"], // Ograničite HTTP metode
-        allowedHeaders: ["Authorization", "Content-Type"], // Specifikujte dozvoljene zaglavlja
-        credentials: true // Omogućite kolačiće ako je potrebno
-    }
-});
+// Pretpostavljam da je `io` već definisan u prvom delu koda, pa ga ne treba ponovo dodeliti.
 
 io.on('connection', (socket) => {
     const uniqueNumber = generateUniqueNumber();
@@ -136,7 +131,6 @@ function generateUniqueNumber() {
 }
 
 // Pokretanje servera na definisanom portu
-const PORT = process.env.PORT || 3000;
 const server = require('http').createServer(app); // Ovaj deo mora biti postavljen
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server je pokrenut na portu ${PORT}`);
