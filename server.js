@@ -51,6 +51,9 @@ const assignedNumbers = new Set(); // Set za generisane brojeve
 // Dodavanje socket događaja iz banmodula
 setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
 
+// Skladište za slike
+let images = [];
+
 io.on('connection', (socket) => {
     const uniqueNumber = generateUniqueNumber();
     const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
@@ -74,25 +77,23 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-    // Slušanje za dodavanje slike
-    socket.on('add-image', (imageSource) => {
-        // Emitujte događaj svim klijentima da dodaju sliku
-        socket.broadcast.emit('add-image', imageSource);
+   // Kada klijent doda novu sliku
+    socket.on('add-image', (data) => {
+        console.log('Nova slika dodata:', data);
+
+        // Emituj novu sliku svim klijentima osim pošiljaoca
+        socket.broadcast.emit('display-image', data);
     });
 
-    // Slušanje za promene slike
-    socket.on('updateImage', (data) => {
-        // Emitujte ažurirane informacije svim klijentima
-        socket.broadcast.emit('update-image', data);
+    // Kada klijent ažurira sliku (pozicija ili dimenzije)
+    socket.on('update-image', (data) => {
+        console.log('Ažurirana slika:', data);
+
+        // Emituj ažuriranja slike svim klijentima osim pošiljaoca
+        socket.broadcast.emit('sync-image', data);
     });
 
-    // Slušanje za uklanjanje slike
-    socket.on('remove-image', (imageSource) => {
-        // Emitujte događaj svim klijentima da uklone sliku
-        socket.broadcast.emit('remove-image', imageSource);
-    });
-
-
+   
     // Funkcije iz modula poruke.js
     setSocket(socket, io);  // Inicijalizacija socket-a i io objekta
     chatMessage(guests);     // Pokretanje funkcije za slanje poruka
