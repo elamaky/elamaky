@@ -185,4 +185,3 @@ function enableDragAndResize(img) {
         document.onmouseup = null;
         document.onmousemove = null;
     }
-}
