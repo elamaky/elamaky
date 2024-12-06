@@ -72,11 +72,6 @@ document.getElementById('addImage').addEventListener('click', function () {
     }
 });
 
-// Prikaz svih prethodnih slika kad se poveže klijent
-socket.on('initial-images', (images) => {
-    images.forEach(addImageToDOM);  // Dodaj sve slike koje su već dodate
-});
-
 // Funkcija za dodavanje slike u DOM
 function addImageToDOM(imageUrl) {
     const img = document.createElement('img');
@@ -98,6 +93,8 @@ function addImageToDOM(imageUrl) {
 
     document.body.appendChild(img); // Učitaj sliku u DOM
 }
+
+// Funkcija za omogućavanje povlačenja i promene dimenzija
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
@@ -150,6 +147,13 @@ function enableDragAndResize(img) {
                             img.style.top = rect.top + (e.clientY - startY) + 'px';
                         }
                     }
+
+                    // Emitovanje pozicije i dimenzija slike na server nakon promene
+                    socket.emit('update-image', {
+                        imageUrl: img.src,
+                        position: { x: img.style.left, y: img.style.top },
+                        dimensions: { width: img.style.width, height: img.style.height }
+                    });
                 }
             };
 
@@ -175,6 +179,13 @@ function enableDragAndResize(img) {
             img.style.left = (img.offsetLeft - (pos3 - e.clientX)) + 'px';
             pos3 = e.clientX;
             pos4 = e.clientY;
+
+            // Emitovanje pozicije slike na server nakon pomeranja
+            socket.emit('update-image', {
+                imageUrl: img.src,
+                position: { x: img.style.left, y: img.style.top },
+                dimensions: { width: img.style.width, height: img.style.height }
+            });
         };
     }
 
@@ -183,12 +194,8 @@ function enableDragAndResize(img) {
         document.onmousemove = null;
     }
 }
-socket.emit('update-image', {
-    imageUrl: img.src,
-    position: { x: img.style.left, y: img.style.top },
-    dimensions: { width: img.style.width, height: img.style.height }
-});
 
+// Osluškivanje događaja sa servera za sinhronizaciju slike
 socket.on('sync-image', (data) => {
     const img = document.querySelector(`img[src="${data.imageUrl}"]`);
     if (img) {
