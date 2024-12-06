@@ -76,8 +76,7 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-  
- // Osluškujemo kada klijent doda novu sliku
+  // Osluškujemo kada klijent doda novu sliku
     socket.on('add-image', (imageSource) => {
         io.emit('display-image', imageSource);  // Emituj sliku svim povezanim klijentima
     });
@@ -91,10 +90,8 @@ io.on('connection', (socket) => {
     socket.on('update-image', (data) => {
         io.emit('sync-image', data);  // Emituj promene svim klijentima
     });
-});
 
-
-   // Funkcije iz modula poruke.js
+    // Pokretanje dodatnih funkcija kada je socket povezan
     setSocket(socket, io);  // Inicijalizacija socket-a i io objekta
     chatMessage(guests);     // Pokretanje funkcije za slanje poruka
     clearChat();            // Pokretanje funkcije za brisanje chata
@@ -105,6 +102,7 @@ io.on('connection', (socket) => {
         delete guests[socket.id]; // Uklanjanje gosta iz liste
         io.emit('updateGuestList', Object.values(guests));
     });
+});
 
     // Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
