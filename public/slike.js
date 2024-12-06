@@ -48,9 +48,6 @@ socket.on('chat-cleared', function() {
     chatWindow.innerHTML = ""; // Briše sve unutar chata
 });
 
-// path: public/js/images.js
-
-const socket = io(); // Socket.io inicijalizacija
 
 // Dodavanje slike u DOM
 function addImageToDOM(imageUrl, position = { x: 0, y: 0 }, dimensions = { width: "200px", height: "200px" }) {
