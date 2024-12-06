@@ -85,10 +85,9 @@ io.on('connection', (socket) => {
         io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
     });
 
-   socket.on('update-image', (data) => {
-    console.log("Primljeni podaci za promenu slike:", data);
-    io.emit('sync-image', data);
-});
+ socket.on('update-image', (data) => {
+        socket.broadcast.emit('sync-image', data); // Emitujemo promene svim klijentima osim onog koji je poslao
+    });
 
 
     // Funkcije iz modula poruke.js
