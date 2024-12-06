@@ -11,7 +11,6 @@ const konobaricaModul = require('./konobaricamodul');
 const { setSocket, chatMessage, clearChat } = require('./poruke');
 const pingService = require('./ping');
 require('dotenv').config();
-const imageList = []; // Skladištenje URL-ova slika
 
 const app = express();
 const server = http.createServer(app);
@@ -70,20 +69,37 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-    socket.emit('initial-images', imageList); // Emitujemo inicijalne slike
-
-    // Osluškujemo kad klijent doda novu sliku
-    socket.on('add-image', (imageSource) => {
-        console.log("Primljen URL slike:", imageSource);
-        imageList.push(imageSource); // Sačuvajte URL slike
-        io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
-    });
-
-   socket.on('updateImage', (data) => {
-    socket.broadcast.emit('imageUpdated', data); // Emituje svim osim onom ko je poslao
+const io = require('socket.io')(PORT, {
+    cors: {
+        origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : "*", // Dozvoljeni domeni iz okruženja
+        methods: ["GET", "POST"], // Ograničite HTTP metode
+        allowedHeaders: ["Authorization", "Content-Type"], // Specifikujte dozvoljene zaglavlja
+        credentials: true // Omogućite kolačiće ako je potrebno
+    }
 });
 
+    // Kada klijent doda novu sliku
+    socket.on('add-image', (imageSource) => {
+        console.log("Primljen URL slike:", imageSource);
+        // Emitujte sliku svim klijentima uključujući pošiljaoca
+        io.emit('display-image', imageSource);
+    });
 
+    // Kada klijent ažurira poziciju ili dimenzije slike
+    socket.on('updateImage', (data) => {
+        console.log("Ažuriranje slike:", data);
+        // Emitujte ažurirane podatke svim klijentima osim pošiljaoca
+        socket.broadcast.emit('imageUpdated', data);
+    });
+
+    // Kada klijent ukloni sliku
+    socket.on('remove-image', (imageId) => {
+        console.log("Uklanjanje slike:", imageId);
+        // Emitujte događaj svim klijentima
+        io.emit('imageRemoved', imageId);
+    });
+
+    
     // Funkcije iz modula poruke.js
     setSocket(socket, io);  // Inicijalizacija socket-a i io objekta
     chatMessage(guests);     // Pokretanje funkcije za slanje poruka
