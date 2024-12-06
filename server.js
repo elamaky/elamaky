@@ -11,8 +11,7 @@ const konobaricaModul = require('./konobaricamodul');
 const { setSocket, chatMessage, clearChat } = require('./poruke');
 const pingService = require('./ping');
 require('dotenv').config();
-
-
+const imageList = []; // Skladištenje URL-ova slika
 
 const app = express();
 const server = http.createServer(app);
@@ -53,6 +52,7 @@ const assignedNumbers = new Set(); // Set za generisane brojeve
 // Dodavanje socket događaja iz banmodula
 setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
 
+// Socket.io događaji
 io.on('connection', (socket) => {
     const uniqueNumber = generateUniqueNumber();
     const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
@@ -76,7 +76,7 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-  // Osluškujemo kada klijent doda novu sliku
+    // Osluškujemo kada klijent doda novu sliku
     socket.on('add-image', (imageSource) => {
         io.emit('display-image', imageSource);  // Emituj sliku svim povezanim klijentima
     });
@@ -91,7 +91,7 @@ io.on('connection', (socket) => {
         io.emit('sync-image', data);  // Emituj promene svim klijentima
     });
 
-    // Pokretanje dodatnih funkcija kada je socket povezan
+    // Funkcije iz modula poruke.js
     setSocket(socket, io);  // Inicijalizacija socket-a i io objekta
     chatMessage(guests);     // Pokretanje funkcije za slanje poruka
     clearChat();            // Pokretanje funkcije za brisanje chata
@@ -102,9 +102,8 @@ io.on('connection', (socket) => {
         delete guests[socket.id]; // Uklanjanje gosta iz liste
         io.emit('updateGuestList', Object.values(guests));
     });
-});
 
-    // Mogućnost banovanja korisnika prema nickname-u
+   // Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
         const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
 
@@ -117,6 +116,7 @@ io.on('connection', (socket) => {
             socket.emit('userNotFound', nicknameToBan);
         }
     });
+});
 
 // Funkcija za generisanje jedinstvenog broja
 function generateUniqueNumber() {
