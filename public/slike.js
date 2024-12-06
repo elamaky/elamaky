@@ -48,10 +48,6 @@ socket.on('chat-cleared', function() {
     chatWindow.innerHTML = ""; // Briše sve unutar chata
 });
 
-
-// Instanciranje socket konekcije
-const socket = io('<your-server-url>');
-
 // Prikaži samo trenutno stanje na klijentu
 let currentImages = [];
 
