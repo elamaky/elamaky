@@ -15,8 +15,9 @@ require('dotenv').config();
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
-io.origins(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : "*");
 
+// CORS podešavanje
+io.origins(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : "*");
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
@@ -131,7 +132,7 @@ function generateUniqueNumber() {
 }
 
 // Pokretanje servera na definisanom portu
-const server = require('http').createServer(app); // Ovaj deo mora biti postavljen
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server je pokrenut na portu ${PORT}`);
 });
