@@ -52,8 +52,6 @@ const assignedNumbers = new Set(); // Set za generisane brojeve
 // Dodavanje socket događaja iz banmodula
 setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
 
-// Pretpostavljam da je `io` već definisan u prvom delu koda, pa ga ne treba ponovo dodeliti.
-
 io.on('connection', (socket) => {
     const uniqueNumber = generateUniqueNumber();
     const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
@@ -77,19 +75,20 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-  socket.emit('initial-images', imageList); // Emitujemo inicijalne slike
+socket.emit('initial-images', imageList); // Emitujemo inicijalne slike
 
-    // Osluškujemo kad klijent doda novu sliku
-    socket.on('add-image', (imageSource) => {
-        console.log("Primljen URL slike:", imageSource);
-        imageList.push(imageSource); // Sačuvajte URL slike
-        io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
-      // Osluškujemo promene slike (pomeranje, dimenzije)
-    socket.on('update-image', (data) => {
-        io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
-       io.broadcast.emit('imageUpdated', data);
-    });
+// Osluškujemo kad klijent doda novu sliku
+socket.on('add-image', (imageSource) => {
+    console.log("Primljen URL slike:", imageSource);
+    imageList.push(imageSource); // Sačuvajte URL slike
+    io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
+});
 
+// Osluškujemo promene slike (pomeranje, dimenzije)
+socket.on('update-image', (data) => {
+    io.emit('sync-image', data); // Emitovanje promena svim klijentima
+    socket.broadcast.emit('imageUpdated', data);
+});
     // Kada klijent ukloni sliku
     socket.on('remove-image', (imageId) => {
         console.log("Uklanjanje slike:", imageId);
