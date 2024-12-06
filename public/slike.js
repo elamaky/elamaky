@@ -48,19 +48,17 @@ socket.on('chat-cleared', function() {
     chatWindow.innerHTML = ""; // Briše sve unutar chata
 });
 
-// Osluškujemo inicijalne slike koje je server poslao
-socket.on('initial-images', (imageList) => {
-    imageList.forEach(imageUrl => {
-        addImageToDOM(imageUrl); // Funkcija za dodavanje slike u DOM
-    });
-});
-
 // Osluškujemo kada server pošalje novu sliku
 socket.on('display-image', (imageSource) => {
-    addImageToDOM(imageSource); // Dodajte novu sliku u DOM
+    addImageToDOM(imageSource);  // Dodajte novu sliku u DOM
 });
 
-// Osluškujemo promene slike (pomeranje, dimenzije) i sinhronizujemo ih
+// Osluškujemo kada server pošalje naredbu za uklanjanje slike
+socket.on('remove-image', (imageSource) => {
+    removeImageFromDOM(imageSource);  // Uklonite sliku iz DOM-a
+});
+
+// Osluškujemo promene slike (pomeranje, dimenzije)
 socket.on('sync-image', (data) => {
     const img = document.querySelector(`img[src="${data.imageUrl}"]`);
     if (img) {
@@ -89,6 +87,15 @@ document.getElementById('addImage').addEventListener('click', function () {
         alert("Niste uneli URL slike.");
     }
 });
+
+// Funkcija za uklanjanje slike iz DOM-a
+function removeImageFromDOM(imageSource) {
+    const img = document.querySelector(`img[src="${imageSource}"]`);
+    if (img) {
+        img.remove();
+    }
+}
+
 
 // Funkcija za dodavanje slike u DOM
 function addImageToDOM(imageUrl) {
