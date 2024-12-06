@@ -167,11 +167,11 @@ function enableDragAndResize(img) {
         };
     }
 
-    function closeDragElement() {
-        document.onmouseup = null;
-        document.onmousemove = null;
-    }
+function closeDragElement() {
+    document.onmouseup = null;
+    document.onmousemove = null;
 }
+
 socket.emit('update-image', {
     imageUrl: img.src,
     position: { x: img.style.left, y: img.style.top },
@@ -187,3 +187,4 @@ socket.on('sync-image', (data) => {
         img.style.height = data.dimensions.height;
     }
 });
+
