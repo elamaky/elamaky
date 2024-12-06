@@ -63,6 +63,9 @@ document.getElementById('addImage').addEventListener('click', function () {
             socket.on('display-image', (imageUrl) => {
                 addImageToDOM(imageUrl);  // Prikaz nove slike koju je server poslao
             });
+        }
+    }
+});
 
 // Funkcija za dodavanje slike u DOM
 function addImageToDOM(imageUrl) {
@@ -74,7 +77,7 @@ function addImageToDOM(imageUrl) {
     img.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
     img.classList.add('draggable', 'resizable');
     img.style.border = "none";
-    
+
     // Omogućavanje interakcije samo za prijavljene korisnike
     if (isLoggedIn) {
         img.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
@@ -84,22 +87,24 @@ function addImageToDOM(imageUrl) {
     }
 
     document.body.appendChild(img); // Učitaj sliku u DOM
-    }
-socket.emit('update-image', {
-    imageUrl: img.src,
-    position: { x: img.style.left, y: img.style.top },
-    dimensions: { width: img.style.width, height: img.style.height }
-});
 
-socket.on('sync-image', (data) => {
-    const img = document.querySelector(`img[src="${data.imageUrl}"]`);
-    if (img) {
-        img.style.left = data.position.x;
-        img.style.top = data.position.y;
-        img.style.width = data.dimensions.width;
-        img.style.height = data.dimensions.height;
-    }
-});
+    // Emitujemo ažurirane informacije o slici
+    socket.emit('update-image', {
+        imageUrl: img.src,
+        position: { x: img.style.left, y: img.style.top },
+        dimensions: { width: img.style.width, height: img.style.height }
+    });
+
+    socket.on('sync-image', (data) => {
+        const img = document.querySelector(`img[src="${data.imageUrl}"]`);
+        if (img) {
+            img.style.left = data.position.x;
+            img.style.top = data.position.y;
+            img.style.width = data.dimensions.width;
+            img.style.height = data.dimensions.height;
+        }
+    });
+}
 
 function enableDragAndResize(img) {
     let isResizing = false;
@@ -117,6 +122,7 @@ function enableDragAndResize(img) {
         const rect = img.getBoundingClientRect();
         const borderSize = 10;
 
+        // Proverite koji deo slike se povlači ili menja
         if (e.clientX >= rect.left && e.clientX <= rect.left + borderSize) {
             resizeSide = 'left';
         } else if (e.clientX >= rect.right - borderSize && e.clientX <= rect.right) {
@@ -185,3 +191,4 @@ function enableDragAndResize(img) {
         document.onmouseup = null;
         document.onmousemove = null;
     }
+}
