@@ -194,16 +194,14 @@ function enableDragAndResize(img) {
         let pos3 = e.clientX;
         let pos4 = e.clientY;
 
-        document.onmouseup = closeDragElement;
-        document.onmousemove = function (e) {
-            img.style.top = (img.offsetTop - (pos4 - e.clientY)) + 'px';
-            img.style.left = (img.offsetLeft - (pos3 - e.clientX)) + 'px';
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-        };
-    }
+      function dragMouseMove(e) {
+    img.style.top = (img.offsetTop - (pos4 - e.clientY)) + 'px';
+    img.style.left = (img.offsetLeft - (pos3 - e.clientX)) + 'px';
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+}
 
-    function closeDragElement() {
-        document.onmouseup = null;
-        document.onmousemove = null;
-    }
+function closeDragElement() {
+    document.onmouseup = null;
+    document.onmousemove = null;
+}
