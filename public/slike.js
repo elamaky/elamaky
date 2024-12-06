@@ -48,6 +48,30 @@ socket.on('chat-cleared', function() {
     chatWindow.innerHTML = ""; // Briše sve unutar chata
 });
 
+// Osluškujemo inicijalne slike koje je server poslao
+socket.on('initial-images', (imageList) => {
+    imageList.forEach(imageUrl => {
+        addImageToDOM(imageUrl); // Funkcija za dodavanje slike u DOM
+    });
+});
+
+// Osluškujemo kada server pošalje novu sliku
+socket.on('display-image', (imageSource) => {
+    addImageToDOM(imageSource); // Dodajte novu sliku u DOM
+});
+
+// Osluškujemo promene slike (pomeranje, dimenzije) i sinhronizujemo ih
+socket.on('sync-image', (data) => {
+    const img = document.querySelector(`img[src="${data.imageUrl}"]`);
+    if (img) {
+        img.style.left = data.position.x;
+        img.style.top = data.position.y;
+        img.style.width = data.dimensions.width;
+        img.style.height = data.dimensions.height;
+    }
+});
+
+// Dodavanje slike preko URL-a
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
@@ -58,12 +82,6 @@ document.getElementById('addImage').addEventListener('click', function () {
         if (validFormats.includes(fileExtension)) {
             // Emitujemo URL slike serveru pod imenom 'add-image'
             socket.emit('add-image', imageSource);
-
-            // Osluškujemo 'display-image' događaj sa servera
-            socket.on('display-image', (imageUrl) => {
-                addImageToDOM(imageUrl);  // Prikaz nove slike koju je server poslao
-            });
-
         } else {
             alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
         }
