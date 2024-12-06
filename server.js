@@ -77,22 +77,22 @@ io.on('connection', (socket) => {
     });
 
   
-    socket.emit('initial-images', imageList); // Emitujemo inicijalne slike
+socket.emit('initial-images', imageList); // Emitujemo inicijalne slike
 
-    // Osluškujemo kad klijent doda novu sliku
-    socket.on('add-image', (imageSource) => {
-        console.log("Primljen URL slike:", imageSource);
-        imageList.push(imageSource); // Sačuvajte URL slike
-        io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
-    });
+// Osluškujemo kad klijent doda novu sliku
+socket.on('add-image', (imageSource) => {
+    console.log("Primljen URL slike:", imageSource);
+    imageList.push(imageSource); // Sačuvajte URL slike
+    io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
+});
 
-    // Osluškujemo promene slike (pomeranje, dimenzije)
-    socket.on('update-image', (data) => {
-        io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
-    });
+// Osluškujemo promene slike (pomeranje, dimenzije)
+socket.on('update-image', (data) => {
+    io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
+});
 
-   
-    // Funkcije iz modula poruke.js
+
+   // Funkcije iz modula poruke.js
     setSocket(socket, io);  // Inicijalizacija socket-a i io objekta
     chatMessage(guests);     // Pokretanje funkcije za slanje poruka
     clearChat();            // Pokretanje funkcije za brisanje chata
