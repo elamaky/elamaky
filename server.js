@@ -14,10 +14,13 @@ require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
-
-// CORS podešavanje
-io.origins(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : "*");
+const io = require('socket.io')(server, {
+    cors: {
+        origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : '*',
+        methods: ["GET", "POST"],
+        credentials: true
+    }
+});
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
