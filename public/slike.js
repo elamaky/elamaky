@@ -87,8 +87,19 @@ function addImageToDOM(imageUrl) {
     img.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
     img.classList.add('draggable', 'resizable');
     img.style.border = "none";
-    
-    // Omogućavanje interakcije samo za prijavljene korisnike
+    img.setAttribute('data-id', Date.now()); // Dodaj jedinstveni ID
+    document.body.appendChild(img);
+    img.addEventListener('mouseup', () => {
+        socket.emit('update-image', {
+            id: img.getAttribute('data-id'), // Šalje ID slike
+            imageUrl: img.src,
+            position: { x: img.style.left, y: img.style.top },
+            dimensions: { width: img.style.width, height: img.style.height }
+        });
+    });
+}
+
+     // Omogućavanje interakcije samo za prijavljene korisnike
     if (isLoggedIn) {
         img.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
         enableDragAndResize(img); // Uključi funkcionalnost za povlačenje i promenu veličine
@@ -96,8 +107,6 @@ function addImageToDOM(imageUrl) {
         img.style.pointerEvents = "none"; // Onemogućava klikove
     }
 
-    document.body.appendChild(img); // Učitaj sliku u DOM
-}
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
