@@ -205,14 +205,23 @@ socket.emit('update-image', {
 });
 
 socket.on('sync-image', (data) => {
-    const img = document.querySelector(`img[src="${data.imageUrl}"]`);
+    const img = document.querySelector(`img[data-id="${data.id}"]`);
     if (img) {
-        console.log("Pronađena slika:", img);
+        console.log("Pronađena slika za sinhronizaciju:", img);
         img.style.left = data.position.x;
         img.style.top = data.position.y;
         img.style.width = data.dimensions.width;
         img.style.height = data.dimensions.height;
     } else {
-        console.log("Slika nije pronađena!");
+        console.log("Slika nije pronađena! Kreiramo novu.");
+        // Kreiraj novu sliku ako nije pronađena
+        addImageToDOM(data.imageUrl);
+        const newImg = document.querySelector(`img[src="${data.imageUrl}"]`);
+        if (newImg) {
+            newImg.style.left = data.position.x;
+            newImg.style.top = data.position.y;
+            newImg.style.width = data.dimensions.width;
+            newImg.style.height = data.dimensions.height;
+        }
     }
 });
