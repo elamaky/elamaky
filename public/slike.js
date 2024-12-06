@@ -63,9 +63,11 @@ document.getElementById('addImage').addEventListener('click', function () {
             socket.on('display-image', (imageUrl) => {
                 addImageToDOM(imageUrl);  // Prikaz nove slike koju je server poslao
             });
+        }
+    }
+});
 
-       
-    function addImageToDOM(imageUrl) {
+function addImageToDOM(imageUrl) {
     const img = document.createElement('img');
     img.src = imageUrl;
     img.style.width = "200px";
@@ -85,8 +87,8 @@ document.getElementById('addImage').addEventListener('click', function () {
 
     // Učitaj sliku u DOM
     document.body.appendChild(img);
+}
 
-  }
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
@@ -167,24 +169,24 @@ function enableDragAndResize(img) {
         };
     }
 
-function closeDragElement() {
-    document.onmouseup = null;
-    document.onmousemove = null;
-}
-
-socket.emit('update-image', {
-    imageUrl: img.src,
-    position: { x: img.style.left, y: img.style.top },
-    dimensions: { width: img.style.width, height: img.style.height }
-});
-
-socket.on('sync-image', (data) => {
-    const img = document.querySelector(`img[src="${data.imageUrl}"]`);
-    if (img) {
-        img.style.left = data.position.x;
-        img.style.top = data.position.y;
-        img.style.width = data.dimensions.width;
-        img.style.height = data.dimensions.height;
+    function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
     }
-});
 
+    socket.emit('update-image', {
+        imageUrl: img.src,
+        position: { x: img.style.left, y: img.style.top },
+        dimensions: { width: img.style.width, height: img.style.height }
+    });
+
+    socket.on('sync-image', (data) => {
+        const img = document.querySelector(`img[src="${data.imageUrl}"]`);
+        if (img) {
+            img.style.left = data.position.x;
+            img.style.top = data.position.y;
+            img.style.width = data.dimensions.width;
+            img.style.height = data.dimensions.height;
+        }
+    });
+}
