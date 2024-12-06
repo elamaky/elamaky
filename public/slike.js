@@ -86,6 +86,19 @@ function addImageToDOM(imageUrl) {
     img.setAttribute('data-id', Date.now()); // Generišemo jedinstveni ID za sliku
     document.body.appendChild(img);
 
+    // Emitovanje podataka o slici odmah nakon što je dodata u DOM
+    socket.emit('update-image', {
+        imageUrl: img.src,
+        position: {
+            x: img.style.left || '200px',
+            y: img.style.top || '200px'
+        },
+        dimensions: {
+            width: img.style.width || '200px',
+            height: img.style.height || '200px'
+        }
+    });
+
     // Dodaj event listener za ažuriranje pozicije i dimenzija slike
     img.addEventListener('mouseup', () => {
         socket.emit('update-image', {
@@ -103,6 +116,7 @@ function addImageToDOM(imageUrl) {
         img.style.pointerEvents = "none"; // Onemogućavamo interakciju
     }
 }
+
 
 
 
@@ -192,17 +206,6 @@ function enableDragAndResize(img) {
     }
 }
 
-socket.emit('update-image', {
-    imageUrl: img.src,
-    position: {
-        x: img.style.left || '200px', // Dodano
-        y: img.style.top || '200px'   // Dodano
-    },
-    dimensions: {
-        width: img.style.width || '200px',  // Primer default vrednosti
-        height: img.style.height || '200px' // Primer default vrednosti
-    }
-});
 
 socket.on('sync-image', (data) => {
     const img = document.querySelector(`img[data-id="${data.id}"]`);
