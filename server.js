@@ -85,10 +85,11 @@ io.on('connection', (socket) => {
         io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
     });
 
-    // Osluškujemo promene slike (pomeranje, dimenzije)
-    socket.on('update-image', (data) => {
-        io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
-    });
+   socket.on('update-image', (data) => {
+    console.log("Primljeni podaci za promenu slike:", data);
+    io.emit('sync-image', data);
+});
+
 
     // Funkcije iz modula poruke.js
     setSocket(socket, io);  // Inicijalizacija socket-a i io objekta
