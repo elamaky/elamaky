@@ -183,18 +183,28 @@ function enableDragAndResize(img) {
         document.onmousemove = null;
     }
 }
+
 socket.emit('update-image', {
     imageUrl: img.src,
-    position: { x: img.style.left, y: img.style.top },
-    dimensions: { width: img.style.width, height: img.style.height }
+    position: {
+        x: img.style.left || '200px', // Dodano
+        y: img.style.top || '200px'   // Dodano
+    },
+    dimensions: {
+        width: img.style.width || '200px',  // Primer default vrednosti
+        height: img.style.height || '200px' // Primer default vrednosti
+    }
 });
 
 socket.on('sync-image', (data) => {
     const img = document.querySelector(`img[src="${data.imageUrl}"]`);
     if (img) {
+        console.log("Pronađena slika:", img);
         img.style.left = data.position.x;
         img.style.top = data.position.y;
         img.style.width = data.dimensions.width;
         img.style.height = data.dimensions.height;
+    } else {
+        console.log("Slika nije pronađena!");
     }
 });
