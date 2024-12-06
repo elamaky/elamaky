@@ -72,40 +72,39 @@ document.getElementById('addImage').addEventListener('click', function () {
     }
 });
 
-// Prikaz svih prethodnih slika kad se poveže klijent
-socket.on('initial-images', (images) => {
-    images.forEach(addImageToDOM);  // Dodaj sve slike koje su već dodate
-});
-
-// Funkcija za dodavanje slike u DOM
 function addImageToDOM(imageUrl) {
     const img = document.createElement('img');
     img.src = imageUrl;
     img.style.width = "200px";
     img.style.height = "200px";
     img.style.position = "absolute";
-    img.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
+    img.style.left = "300px"; // Default pozicija
+    img.style.top = "300px";  // Default pozicija
+    img.style.zIndex = "1000"; // Ispravno pozicioniranje
     img.classList.add('draggable', 'resizable');
     img.style.border = "none";
-    img.setAttribute('data-id', Date.now()); // Dodaj jedinstveni ID
+    img.setAttribute('data-id', Date.now()); // Generišemo jedinstveni ID za sliku
     document.body.appendChild(img);
+
+    // Dodaj event listener za ažuriranje pozicije i dimenzija slike
     img.addEventListener('mouseup', () => {
         socket.emit('update-image', {
-            id: img.getAttribute('data-id'), // Šalje ID slike
+            id: img.getAttribute('data-id'), // Identifikator slike
             imageUrl: img.src,
             position: { x: img.style.left, y: img.style.top },
             dimensions: { width: img.style.width, height: img.style.height }
         });
     });
+
+    // Omogućavamo interakciju ako je korisnik prijavljen
+    if (isLoggedIn) {
+        enableDragAndResize(img); // Uključi povlačenje i promenu veličine
+    } else {
+        img.style.pointerEvents = "none"; // Onemogućavamo interakciju
+    }
 }
 
-     // Omogućavanje interakcije samo za prijavljene korisnike
-    if (isLoggedIn) {
-        img.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
-        enableDragAndResize(img); // Uključi funkcionalnost za povlačenje i promenu veličine
-    } else {
-        img.style.pointerEvents = "none"; // Onemogućava klikove
-    }
+
 
 function enableDragAndResize(img) {
     let isResizing = false;
