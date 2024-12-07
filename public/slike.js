@@ -48,8 +48,8 @@ function addImageToDOM(imageData) {
     img.style.width = `${imageData.dimensions.width}200px`; // Postavljanje širine
     img.style.height = `${imageData.dimensions.height}200px`; // Postavljanje visine
     img.style.position = "absolute";
-    img.style.left = `${imageData.position.x}px`; // Postavljanje horizontalne pozicije
-    img.style.top = `${imageData.position.y}px`; // Postavljanje vertikalne pozicije
+    img.style.left = `${imageData.position.x}200px`; // Postavljanje horizontalne pozicije
+    img.style.top = `${imageData.position.y}200px`; // Postavljanje vertikalne pozicije
     img.style.zIndex = "1000";
     img.classList.add('draggable', 'resizable');
 
