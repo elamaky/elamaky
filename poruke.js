@@ -54,11 +54,8 @@ currentImages.push({
       // Emitujemo sliku svim klijentima
         io.emit('display-image', {
             imageUrl: imageUrl,
-            position: {
-                x: Math.random() * (window.innerWidth - 200), // Nasumična pozicija
-                y: Math.random() * (window.innerHeight - 200) // Nasumična pozicija
-            },
-            dimensions: {
+           position: { x: 400, y: 400 }, 
+           dimensions: {
                 width: 200, // Početne dimenzije
                 height: 200 // Početne dimenzije
             }
