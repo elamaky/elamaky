@@ -1,3 +1,4 @@
+// Inicijalizacija 'socket' i 'io' objekata
 let io; // Inicijalizujemo io
 let socket; // Inicijalizujemo socket
 let currentImages = []; // Čuva samo trenutne slike
@@ -39,7 +40,7 @@ function handleAddImage() {
 
         console.log('Slika sa URL-om:', imageUrl, 'pozicija:', position, 'dimenzije:', dimensions);
 
-          // Dodajemo sliku u listu trenutnih slika sa pozicijom i dimenzijama
+        // Dodajemo sliku u listu trenutnih slika sa pozicijom i dimenzijama
         currentImages.push({
             imageUrl: imageUrl,
             position: {
@@ -50,36 +51,21 @@ function handleAddImage() {
                 width: 200,
                 height: 200
             }
-        }); // <-- Ovdje nedostaje zatvarajuća zagrada
-    });
-} // <-- Zatvarajuća zagrada za handleAddImage
+        });
 
-// Emitujemo sliku svim klijentima
-io.emit('display-image', {
-    imageUrl: imageUrl,
-    position: position,
-    dimensions: dimensions
-});
-console.log('Slika emitovana svim klijentima:', imageUrl);
-
-
-// Funkcija za obradu promena slike (pomeranje, dimenzije)
-function handleUpdateImage() {
-    socket.on('update-image', (data) => {
-        console.log('Primljen zahtev za update slike:', data);
-
-        // Validacija podataka
-        if (!data || !data.imageUrl || !data.position || !data.dimensions) {
-            socket.emit('error', 'Invalid update data');
-            console.error('Greška: Nedostaju podaci za update slike.');
-            return;
-        }
-
-        console.log('Slika ažurirana. URL:', data.imageUrl, 'pozicija:', data.position, 'dimenzije:', data.dimensions);
-
-        // Emitovanje promjena svim klijentima
-        io.emit('sync-image', data);
-        console.log('Promene slike emitovane svim klijentima:', data);
+        // Emitujemo sliku svim klijentima
+        io.emit('display-image', {
+            imageUrl: imageUrl,
+            position: {
+                x: Math.random() * (window.innerWidth - 200), // Nasumična pozicija
+                y: Math.random() * (window.innerHeight - 200) // Nasumična pozicija
+            },
+            dimensions: {
+                width: 200, // Početne dimenzije
+                height: 200 // Početne dimenzije
+            }
+        });
+        console.log('Slika emitovana svim klijentima:', imageUrl);
     });
 }
 
