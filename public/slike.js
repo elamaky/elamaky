@@ -2,6 +2,24 @@
 let currentImage; // Promenljiva za trenutnu sliku
 let allImages = []; // Niz za sve slike
 
+// Prikazivanje slika kada se poveže sa serverom
+socket.on('initial-images', (currentImages) => {
+    currentImages.forEach(image => {
+        addImageToDOM(image.imageUrl, image.position, image.dimensions);
+    });
+});
+
+// Prikazivanje novih slika
+socket.on('display-image', (imageData) => {
+    addImageToDOM(imageData.imageUrl, imageData.position, imageData.dimensions);
+});
+
+// Sinhronizacija promena slike
+socket.on('sync-image', (data) => {
+    updateImageInDOM(data);
+});
+
+
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
