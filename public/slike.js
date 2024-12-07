@@ -51,7 +51,15 @@ function addImageToDOM(imageUrl) {
     }
 
     document.body.appendChild(img); // Učitaj sliku u DOM
+
+    // Sada možeš sigurno emitovati događaj, jer je slika dodata u DOM
+    socket.emit('update-image', {
+        imageUrl: img.src,
+        position: { x: img.style.left, y: img.style.top },
+        dimensions: { width: img.style.width, height: img.style.height }
+    });
 }
+
 function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
@@ -137,12 +145,6 @@ function enableDragAndResize(img) {
         document.onmousemove = null;
     }
 }
-socket.emit('update-image', {
-    imageUrl: img.src,
-    position: { x: img.style.left, y: img.style.top },
-    dimensions: { width: img.style.width, height: img.style.height }
-});
-
 socket.on('sync-image', (data) => {
     const img = document.querySelector(`img[src="${data.imageUrl}"]`);
     if (img) {
