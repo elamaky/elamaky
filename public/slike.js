@@ -11,15 +11,16 @@ document.getElementById('addImage').addEventListener('click', () => {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
 
-        // Validacija formata slike
-        if (validFormats.includes(fileExtension)) {
-            const imageData = {
-                imageUrl: imageSource,
-                position: { x: 0, y: 0 }, // Početna pozicija
-                dimensions: { width: 200, height: 200 } // Početne dimenzije
-            };
+       // Validacija formata slike
+if (validFormats.includes(fileExtension)) {
+    const imageData = {
+        imageUrl: imageSource,
+        position: { x: left, y: bottom }, // Početna pozicija
+        dimensions: { width: 200, height: 200 } // Početne dimenzije
+    };
+}
 
-            // Emitujemo dodatak slike serveru
+         // Emitujemo dodatak slike serveru
             socket.emit('add-image', imageData);
         } else {
             alert("Neispravan format slike! Molimo vas da unesete URL slike u JPG, PNG, ili GIF formatu.");
@@ -41,11 +42,11 @@ socket.on('initial-images', (images) => {
 function addImageToDOM(imageData) {
     const img = document.createElement('img');
     img.src = imageData.imageUrl;
-    img.style.width = `${imageData.dimensions.width}200px`; // Postavljanje širine
-    img.style.height = `${imageData.dimensions.height}200px`; // Postavljanje visine
+    img.style.width = `${imageData.dimensions.width}px`; // Postavljanje širine
+    img.style.height = `${imageData.dimensions.height}px`; // Postavljanje visine
     img.style.position = "absolute";
-    img.style.left = `${imageData.position.x}100px`; // Postavljanje horizontalne pozicije
-    img.style.top = `${imageData.position.y}100px`; // Postavljanje vertikalne pozicije
+    img.style.left = `${imageData.position.x}px`; // Postavljanje horizontalne pozicije
+    img.style.top = `${imageData.position.y}px`; // Postavljanje vertikalne pozicije
     img.style.zIndex = "1000";
     img.classList.add('draggable', 'resizable');
 
