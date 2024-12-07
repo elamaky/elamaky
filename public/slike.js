@@ -10,8 +10,20 @@ document.getElementById('addImage').addEventListener('click', function () {
         const fileExtension = imageSource.split('.').pop().toLowerCase();
 
         if (validFormats.includes(fileExtension)) {
-            // Emitujemo URL slike serveru pod imenom 'add-image'
-            socket.emit('add-image', imageSource);
+            // Definišemo poziciju na 0,0 i dimenzije na 200x200px
+            const imageData = {
+                imageUrl: imageSource,
+                position: {
+                    x: 0, // Pozicija x
+                    y: 0  // Pozicija y
+                },
+                dimensions: {
+                    width: 200, // Širina
+                    height: 200  // Visina
+                }
+            };
+            // Emitujemo URL slike, poziciju i dimenzije serveru pod imenom 'add-image'
+            socket.emit('add-image', imageData);
         } else {
             alert("Neispravan format slike! Molimo vas da unesete URL slike u JPG, PNG, ili GIF formatu.");
         }
