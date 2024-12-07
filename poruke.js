@@ -1,34 +1,35 @@
-let io; // Inicijalizujemo io
-let socket; // Inicijalizujemo socket
-let images = []; // Lista za slike
+let io; // Inicijalizacija io
+let socket; // Inicijalizacija socket
+let images = []; // Lista svih slika
 
-// Funkcija za setovanje socket-a i io objekta
+// Funkcija za postavljanje socket i io objekata
 function setSocket(serverSocket, serverIo) {
     socket = serverSocket;
     io = serverIo;
 
-    // Dodavanje slike
+    // Dodavanje nove slike
     socket.on('addImage', (imageData) => {
-        images.push(imageData); // Dodaje sliku
-        io.emit('updateImages', images); // Šalje ažurirani spisak svim klijentima
+        images.push(imageData); // Dodaje sliku u listu
+        io.emit('updateImages', images); // Ažurira sve klijente
     });
 
-    // Uklanjanje slike
+    // Brisanje slike
     socket.on('removeImage', (imageIndex) => {
-        if (images[imageIndex]) {
-            images.splice(imageIndex, 1); // Uklanja sliku
-            io.emit('updateImages', images); // Šalje ažurirani spisak
-        }
+        images.splice(imageIndex, 1); // Uklanja sliku iz liste
+        io.emit('updateImages', images); // Ažurira sve klijente
     });
 
-    // Ažuriranje slike
+    // Ažuriranje slike (dimenzija ili pozicije)
     socket.on('updateImage', ({ index, updatedData }) => {
         if (images[index]) {
-            images[index] = updatedData; // Ažuriraj podatke slike
-            io.emit('updateImages', images); // Obavesti sve klijente
+            images[index] = updatedData; // Ažurira podatke slike
+            io.emit('updateImages', images); // Ažurira sve klijente
         }
     });
 }
+
+   
+
 
 // Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
