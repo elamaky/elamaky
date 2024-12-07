@@ -1,47 +1,33 @@
 // Inicijalizacija 'socket' i 'io' objekata
 let io; // Inicijalizujemo io
 let socket; // Inicijalizujemo socket
-let currentImages = []; // Čuva samo trenutne slike
-const imageList = []; // Skladištenje URL-ova slika
+let images = []; // Lista za slike
 
 // Funkcija za setovanje socket-a i io objekta
 function setSocket(serverSocket, serverIo) {
     socket = serverSocket;
     io = serverIo;
 
-// Emitujemo sve slike svim korisnicima prilikom povezivanja
-    socket.emit('initial-images', imageList);  // Pošaljite sve slike korisniku
 
-    // Osluškujemo kad klijent doda novu sliku
-    socket.on('add-image', (imageSource) => {
-        console.log("Primljen URL slike:", imageSource);
-        
-        if (!imageSource) {
-            console.error('Greška: Nevalidan URL slike');
-            return;
-        }
-
-        // Dodajemo URL slike u listu
-        imageList.push(imageSource);
-
-        // Emitujemo sliku svim klijentima (ne samo onom koji je dodao)
-        io.emit('display-image', imageSource); 
+ socket.on('addImage', (imageData) => {
+        images.push(imageData); // Dodaje sliku
+        io.emit('updateImages', images); // Šalje ažurirani spisak svim klijentima
     });
 
-    // Osluškujemo promene slike (pomeranje, dimenzije)
-    socket.on('update-image', (data) => {
-        if (!data || !data.imageUrl || !data.position || !data.dimensions) {
-            console.error('Greška: Nedostaju podaci za promene slike.');
-            return;
-        }
-
-        // Emitujemo ažurirane informacije svim klijentima
-        io.emit('sync-image', data);
+    socket.on('removeImage', (imageIndex) => {
+        images.splice(imageIndex, 1); // Uklanja sliku
+        io.emit('updateImages', images); // Šalje ažurirani spisak
     });
-}
+});
+
+socket.on('updateImage', ({ index, updatedData }) => {
+    if (images[index]) {
+        images[index] = updatedData; // Ažuriraj podatke slike
+        io.emit('updateImages', images); // Obavesti sve klijente
+    }
+});
 
 
-    
 // Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
     socket.on('chatMessage', (msgData) => {
