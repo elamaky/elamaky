@@ -32,7 +32,6 @@ function setSocket(serverSocket, serverIo) {
 
         io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
     });
-}
 
     clearChat(); // Pozivamo clearChat radi registrovanja događaja
     chatMessage(); // Pozivamo chatMessage radi registrovanja događaja
