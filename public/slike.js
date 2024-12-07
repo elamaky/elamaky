@@ -1,5 +1,3 @@
-const socket = io();
-
 const imageContainer = document.createElement('div');
 imageContainer.id = 'imageContainer';
 document.body.appendChild(imageContainer);
