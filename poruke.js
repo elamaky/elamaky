@@ -1,6 +1,6 @@
 let io; // Inicijalizujemo io
 let socket; // Inicijalizujemo socket
-const imageList = []; // Skladištenje URL-ova slika
+let currentImages = [];  // Čuva samo trenutne slike
 
 // Funkcija za setovanje socket-a i io objekta
 function setSocket(serverSocket, serverIo) {
@@ -8,7 +8,7 @@ function setSocket(serverSocket, serverIo) {
     io = serverIo;
 
     // Emitujemo inicijalne slike prilikom povezivanja
-    socket.emit('initial-images', imageList);
+    socket.emit('initial-images', currentImages);  // Pošaljemo samo trenutno stanje
 
     // Osluškujemo kada klijent doda novu sliku
     socket.on('add-image', (imageSource) => {
@@ -19,7 +19,7 @@ function setSocket(serverSocket, serverIo) {
         }
 
         console.log("Primljen URL slike:", imageSource);
-        imageList.push(imageSource); // Dodajemo URL slike u listu
+        currentImages.push(imageSource); // Dodajemo URL slike u listu trenutnih slika
         io.emit('display-image', imageSource); // Emitujemo sliku svim klijentima
     });
 
@@ -32,6 +32,7 @@ function setSocket(serverSocket, serverIo) {
 
         io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
     });
+}
 
     clearChat(); // Pozivamo clearChat radi registrovanja događaja
     chatMessage(); // Pozivamo chatMessage radi registrovanja događaja
