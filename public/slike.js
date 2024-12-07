@@ -14,15 +14,15 @@ socket.on('updateImages', (images) => {
     images.forEach((img, index) => addImageToDOM(img, index));
 });
 
-// Dodavanje slike
+// Dodavanje slike sa default vrednostima
 document.getElementById('addImage').addEventListener('click', () => {
     const imageUrl = prompt('Unesite URL slike:');
-    const width = prompt('Širina slike (px):', '100');
-    const height = prompt('Visina slike (px):', '100');
-    const x = prompt('X pozicija (px):', '0');
-    const y = prompt('Y pozicija (px):', '0');
+    const defaultWidth = 200;
+    const defaultHeight = 200;
+    const defaultX = 0;
+    const defaultY = window.innerHeight - defaultHeight; // Podesi poziciju na donji deo ekrana
 
-    const imageData = { url: imageUrl, width, height, x, y };
+    const imageData = { url: imageUrl, width: defaultWidth, height: defaultHeight, x: defaultX, y: defaultY };
     socket.emit('addImage', imageData);
 });
 
@@ -126,6 +126,7 @@ function addImageToDOM(imageData, index) {
 
     imageContainer.appendChild(wrapper);
 }
+
 
 
 
