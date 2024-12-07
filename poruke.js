@@ -40,25 +40,18 @@ function handleAddImage() {
 
         console.log('Slika sa URL-om:', imageUrl, 'pozicija:', position, 'dimenzije:', dimensions);
 
-// Dodajemo sliku u listu trenutnih slika sa pozicijom i dimenzijama
-currentImages.push({
-    imageUrl: imageUrl,
-    position: { x: 400, y: 400 }, 
-    dimensions: {
-        width: 200,
-        height: 200
-    }
-});
+        // Dodajemo sliku u listu trenutnih slika sa pozicijom i dimenzijama
+        currentImages.push({
+            imageUrl: imageUrl,
+            position: position,  // Koristimo poziciju iz imageData
+            dimensions: dimensions // Koristimo dimenzije iz imageData
+        });
 
-
-      // Emitujemo sliku svim klijentima
+        // Emitujemo sliku svim klijentima
         io.emit('display-image', {
             imageUrl: imageUrl,
-           position: { x: 400, y: 400 }, 
-           dimensions: {
-                width: 200, // Početne dimenzije
-                height: 200 // Početne dimenzije
-            }
+            position: position,  // Koristimo poziciju iz imageData
+            dimensions: dimensions // Koristimo dimenzije iz imageData
         });
         console.log('Slika emitovana svim klijentima:', imageUrl);
     });
@@ -71,6 +64,7 @@ function handleUpdateImage() {
 
         // Validacija podataka
         if (!imageUrl || !position || !dimensions) {
+            socket.emit('error', 'Nedostaju podaci za promene slike.');
             console.error('Greška: Nedostaju podaci za promene slike.');
             return;
         }
@@ -79,6 +73,9 @@ function handleUpdateImage() {
         const imageIndex = currentImages.findIndex(image => image.imageUrl === imageUrl);
         if (imageIndex !== -1) {
             currentImages[imageIndex] = { imageUrl, position, dimensions };
+        } else {
+            console.error('Greška: Slika nije pronađena.');
+            return;
         }
 
         // Emitujemo ažuriranu sliku svim klijentima
@@ -86,6 +83,8 @@ function handleUpdateImage() {
         console.log('Slika ažurirana svim klijentima:', imageUrl);
     });
 }
+
+
 
 // Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
