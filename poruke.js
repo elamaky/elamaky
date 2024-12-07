@@ -1,6 +1,7 @@
 let io; // Inicijalizacija io
 let socket; // Inicijalizacija socket
 let images = []; // Lista svih slika
+const imageList = []; // Skladištenje URL-ova slika
 
 // Funkcija za postavljanje socket i io objekata
 function setSocket(serverSocket, serverIo) {
