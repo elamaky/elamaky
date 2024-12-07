@@ -129,18 +129,26 @@ function enableDragAndResize(img) {
         document.onmousemove = null;
     }
 }
+// Emitovanje ažuriranja slike
 socket.emit('update-image', {
     imageUrl: img.src,
-    position: { x: img.style.left, y: img.style.top },
-    dimensions: { width: img.style.width, height: img.style.height }
+    position: { 
+        x: parseFloat(img.style.left) || 0, // Ako nema stila, uzmi 0
+        y: parseFloat(img.style.top) || 0 
+    },
+    dimensions: { 
+        width: parseFloat(img.style.width) || img.width,  // Možeš koristiti img.width ako nije eksplicitno postavljen stil
+        height: parseFloat(img.style.height) || img.height // Isto za visinu
+    }
 });
 
+// Sinhronizacija slike
 socket.on('sync-image', (data) => {
     const img = document.querySelector(`img[src="${data.imageUrl}"]`);
     if (img) {
-        img.style.left = data.position.x;
-        img.style.top = data.position.y;
-        img.style.width = data.dimensions.width;
-        img.style.height = data.dimensions.height;
+        img.style.left = `${data.position.x}px`;  // Dodaj px ako je potrebno
+        img.style.top = `${data.position.y}px`;  // Dodaj px
+        img.style.width = `${data.dimensions.width}px`;  // Dodaj px
+        img.style.height = `${data.dimensions.height}px`;  // Dodaj px
     }
 });
