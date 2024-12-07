@@ -1,7 +1,6 @@
 let io; // Inicijalizujemo io
 let socket; // Inicijalizujemo socket
 let currentImages = []; // Čuva samo trenutne slike
-const imageList = []; // Skladištenje URL-ova slika
 
 // Funkcija za setovanje socket-a i io objekta
 function setSocket(serverSocket, serverIo) {
@@ -13,9 +12,11 @@ function setSocket(serverSocket, serverIo) {
     console.log('Inicijalne slike poslata:', currentImages); // Logujemo trenutno stanje slika
 
     // Osluškujemo kad klijent doda novu sliku
-    socket.on('add-image', (imageSource, position, dimensions) => {
-        if (!imageSource) {
-            // Emitujemo grešku ako je URL slike nevalidan
+    socket.on('add-image', (imageData) => {
+        const { imageUrl, position, dimensions } = imageData; // Destrukturiranje podataka
+
+        // Validacija podataka
+        if (!imageUrl) {
             socket.emit('error', 'Invalid image URL');
             console.error('Greška: Nevalidan URL slike.');
             return;
@@ -26,28 +27,29 @@ function setSocket(serverSocket, serverIo) {
             return;
         }
 
-        console.log('Slika sa URL-om:', imageSource, 'pozicija:', position, 'dimenzije:', dimensions);
+        console.log('Slika sa URL-om:', imageUrl, 'pozicija:', position, 'dimenzije:', dimensions);
 
         // Dodajemo sliku u listu trenutnih slika sa pozicijom i dimenzijama
         currentImages.push({
-            imageUrl: imageSource,
+            imageUrl: imageUrl,
             position: position,
             dimensions: dimensions
         });
 
         // Emitujemo sliku svim klijentima
         io.emit('display-image', {
-            imageUrl: imageSource,
+            imageUrl: imageUrl,
             position: position,
             dimensions: dimensions
         });
-        console.log('Slika emitovana svim klijentima:', imageSource);
+        console.log('Slika emitovana svim klijentima:', imageUrl);
     });
 
     // Osluškujemo promene slike (pomeranje, dimenzije)
     socket.on('update-image', (data) => {
         console.log('Primljen zahtev za update slike:', data);
 
+        // Validacija podataka
         if (!data || !data.imageUrl || !data.position || !data.dimensions) {
             socket.emit('error', 'Invalid update data');
             console.error('Greška: Nedostaju podaci za update slike.');
@@ -91,4 +93,3 @@ function clearChat() {
 
 // Eksportovanje funkcija
 module.exports = { setSocket, chatMessage, clearChat };
-
