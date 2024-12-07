@@ -1,36 +1,83 @@
-let io; // Inicijalizacija io
-let socket; // Inicijalizacija socket
-let images = []; // Lista svih slika
+let io; // Inicijalizujemo io
+let socket; // Inicijalizujemo socket
+let currentImages = [];  // Čuva samo trenutne slike
 const imageList = []; // Skladištenje URL-ova slika
 
-// Funkcija za postavljanje socket i io objekata
+// Funkcija za setovanje socket-a i io objekta
 function setSocket(serverSocket, serverIo) {
     socket = serverSocket;
     io = serverIo;
 
-    // Dodavanje nove slike
-    socket.on('addImage', (imageData) => {
-        images.push(imageData); // Dodaje sliku u listu
-        io.emit('updateImages', images); // Ažurira sve klijente
+    socket.emit('initial-images', imageList); // Emitujemo inicijalne slike
+
+    // Osluškujemo kad klijent doda novu sliku
+   socket.on('add-image', (imageSource, position, dimensions) => {
+        console.log("Primljen URL slike:", imageSource);
+        imageList.push(imageSource); // Sačuvajte URL slike
+        io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
     });
 
-    // Brisanje slike
-    socket.on('removeImage', (imageIndex) => {
-        images.splice(imageIndex, 1); // Uklanja sliku iz liste
-        io.emit('updateImages', images); // Ažurira sve klijente
+    // Osluškujemo promene slike (pomeranje, dimenzije)
+    socket.on('update-image', (data) => {
+        io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
     });
 
-    // Ažuriranje slike (dimenzija ili pozicije)
-    socket.on('updateImage', ({ index, updatedData }) => {
-        if (images[index]) {
-            images[index] = updatedData; // Ažurira podatke slike
-            io.emit('updateImages', images); // Ažurira sve klijente
-        }
+// Emitujemo inicijalne slike prilikom povezivanja
+socket.emit('initial-images', currentImages);  // Pošaljemo samo trenutno stanje
+console.log('Inicijalne slike poslata:', currentImages);  // Logujemo trenutno stanje slika
+
+  if (!imageSource) {
+        // Emitujemo grešku ako je URL slike nevalidan
+        socket.emit('error', 'Invalid image URL');
+        console.error('Greška: Nevalidan URL slike.');
+        return;
+    }
+
+    if (!position || !dimensions) {
+        console.error('Greška: Pozicija ili dimenzije slike nisu prosleđene.');
+        return;
+    }
+
+    console.log('Slika sa URL-om:', imageSource, 'pozicija:', position, 'dimenzije:', dimensions);
+
+    // Dodajemo sliku u listu trenutnih slika sa pozicijom i dimenzijama
+    currentImages.push({
+        imageUrl: imageSource,
+        position: position,
+        dimensions: dimensions
     });
+    
+    // Emitujemo sliku svim klijentima
+    io.emit('display-image', {
+        imageUrl: imageSource,
+        position: position,
+        dimensions: dimensions
+    });
+    console.log('Slika emitovana svim klijentima:', imageSource);
+});
+
+// Osluškujemo promene slike (pomeranje, dimenzije)
+socket.on('update-image', (data) => {
+    console.log('Primljen zahtev za update slike:', data);
+    
+    if (!data || !data.imageUrl || !data.position || !data.dimensions) {
+        socket.emit('error', 'Invalid update data');
+        console.error('Greška: Nedostaju podaci za update slike.');
+        return;
+    }
+
+    console.log('Slika ažurirana. URL:', data.imageUrl, 'pozicija:', data.position, 'dimenzije:', data.dimensions);
+
+    // Emitovanje promjena svim klijentima
+    io.emit('sync-image', data);
+    console.log('Promene slike emitovane svim klijentima:', data);
+});
+
+
+    
+    clearChat(); // Pozivamo clearChat radi registrovanja događaja
+    chatMessage(); // Pozivamo chatMessage radi registrovanja događaja
 }
-
-   
-
 
 // Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
@@ -41,8 +88,8 @@ function chatMessage(guests) {
             bold: msgData.bold,
             italic: msgData.italic,
             color: msgData.color,
-            nickname: guests[socket.id] || 'Nepoznat korisnik', // Dodaje fallback za nickname
-            time: time,
+            nickname: guests[socket.id],
+            time: time
         };
         io.emit('chatMessage', messageToSend);
     });
