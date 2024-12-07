@@ -15,12 +15,14 @@ socket.on('updateImages', (images) => {
 });
 
 // Funkcija za dodavanje slike u DOM
-function addImageToDOM(imageUrl) {
+function addImageToDOM(imageData, index) {
     const img = document.createElement('img');
-    img.src = imageUrl;
-    img.style.width = "200px";
-    img.style.height = "200px";
-    img.style.position = "absolute";
+    img.src = imageData.url;
+    img.style.width = `${imageData.width}px`;
+    img.style.height = `${imageData.height}px`;
+    img.style.position = 'absolute';
+    img.style.left = `${imageData.x}px`;
+    img.style.top = `${imageData.y}px`;
     img.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
     img.classList.add('draggable', 'resizable');
     img.style.border = "none";
@@ -33,28 +35,6 @@ function addImageToDOM(imageUrl) {
         img.style.pointerEvents = "none"; // Onemogućava klikove
     }
 
-    document.body.appendChild(img); // Učitaj sliku u DOM
-
-
-socket.emit('addImage', imageData);
-});
-
-// Uklanjanje slike
-function removeImage(index) {
-    socket.emit('removeImage', index);
-}
-
-// Dodavanje slike u DOM
-function addImageToDOM(imageData, index) {
-    const img = document.createElement('img');
-    img.src = imageData.url;
-    img.style.width = `${imageData.width}px`;
-    img.style.height = `${imageData.height}px`;
-    img.style.position = 'absolute';
-    img.style.left = `${imageData.x}px`;
-    img.style.top = `${imageData.y}px`;
-
-    // Dodavanje slike u kontejner
     const wrapper = document.createElement('div');
     wrapper.style.position = 'relative';
     wrapper.style.display = 'inline-block';
@@ -140,7 +120,7 @@ function addImageToDOM(imageData, index) {
     imageContainer.appendChild(wrapper);
 }
 
-
-
-
-
+// Uklanjanje slike
+function removeImage(index) {
+    socket.emit('removeImage', index);
+}
