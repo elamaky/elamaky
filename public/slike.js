@@ -4,25 +4,26 @@ document.body.appendChild(imageContainer);
 
 // Inicijalno učitavanje slika
 socket.on('initialImages', (images) => {
-    imageContainer.innerHTML = '';
-    images.forEach((img, index) => addImageToDOM(img, index));
+    imageContainer.innerHTML = ''; // Čisti prethodne slike
+    images.forEach((img, index) => addImageToDOM(img, index)); // Prikazuje sve slike
 });
 
 // Ažuriranje slika u realnom vremenu
 socket.on('updateImages', (images) => {
-    imageContainer.innerHTML = '';
-    images.forEach((img, index) => addImageToDOM(img, index));
+    imageContainer.innerHTML = ''; // Čisti prethodne slike
+    images.forEach((img, index) => addImageToDOM(img, index)); // Prikazuje sve slike
 });
 
-// Dodavanje slike sa default vrednostima
+// Dodavanje slike
 document.getElementById('addImage').addEventListener('click', () => {
     const imageUrl = prompt('Unesite URL slike:');
-    const defaultWidth = 200;
-    const defaultHeight = 200;
-    const defaultX = 0;
-    const defaultY = window.innerHeight - defaultHeight; // Podesi poziciju na donji deo ekrana
-
-    const imageData = { url: imageUrl, width: defaultWidth, height: defaultHeight, x: defaultX, y: defaultY };
+    const imageData = { 
+        url: imageUrl, 
+        width: 200,  // Početne dimenzije
+        height: 200, 
+        x: 0,        // Početna pozicija X
+        y: window.innerHeight - 200 // Početna pozicija Y (dno stranice)
+    };
     socket.emit('addImage', imageData);
 });
 
@@ -38,27 +39,27 @@ function addImageToDOM(imageData, index) {
     img.style.width = `${imageData.width}px`;
     img.style.height = `${imageData.height}px`;
     img.style.position = 'absolute';
-    img.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
     img.style.left = `${imageData.x}px`;
     img.style.top = `${imageData.y}px`;
 
+    // Dodavanje slike u kontejner
     const wrapper = document.createElement('div');
     wrapper.style.position = 'relative';
     wrapper.style.display = 'inline-block';
 
-    // Dodavanje skrivenog dugmeta za uklanjanje
+    // Dugme za uklanjanje slike (s skrivenim prikazom)
     const removeBtn = document.createElement('button');
     removeBtn.innerText = 'Ukloni';
-    removeBtn.style.display = 'none'; // Skriveno dugme za uklanjanje
+    removeBtn.style.display = 'none';
     removeBtn.onclick = () => removeImage(index);
     wrapper.appendChild(removeBtn);
 
-    // Pokazivanje dugmeta za uklanjanje kada se slika klikne
+    // Klikom na sliku otkriva dugme za uklanjanje
     img.addEventListener('click', () => {
-        removeBtn.style.display = removeBtn.style.display === 'none' ? 'block' : 'none'; // Toggles visibility
+        removeBtn.style.display = removeBtn.style.display === 'none' ? 'block' : 'none';
     });
 
-    // Funkcija za promenu dimenzija povlačenjem ivica
+    // Funkcija za promenu dimenzija slike povlačenjem
     const makeResizable = (el) => {
         const resizeHandle = document.createElement('div');
         resizeHandle.style.position = 'absolute';
@@ -95,9 +96,9 @@ function addImageToDOM(imageData, index) {
         };
     };
 
-    makeResizable(wrapper); // Aktiviraj povlačenje za promenu dimenzija
+    makeResizable(wrapper);
 
-    // Funkcija za promenu pozicije slike povlačenjem
+    // Funkcija za premestanje slike (drag)
     let isDragging = false;
     let offsetX, offsetY;
 
@@ -126,6 +127,7 @@ function addImageToDOM(imageData, index) {
 
     imageContainer.appendChild(wrapper);
 }
+
 
 
 
