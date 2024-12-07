@@ -14,17 +14,29 @@ socket.on('updateImages', (images) => {
     images.forEach((img, index) => addImageToDOM(img, index)); // Prikazuje sve slike
 });
 
-// Dodavanje slike
-document.getElementById('addImage').addEventListener('click', () => {
-    const imageUrl = prompt('Unesite URL slike:');
-    const imageData = { 
-        url: imageUrl, 
-        width: 200,  // Početne dimenzije
-        height: 200, 
-        x: 0,        // Početna pozicija X
-        y: window.innerHeight - 200 // Početna pozicija Y (dno stranice)
-    };
-    socket.emit('addImage', imageData);
+// Funkcija za dodavanje slike u DOM
+function addImageToDOM(imageUrl) {
+    const img = document.createElement('img');
+    img.src = imageUrl;
+    img.style.width = "200px";
+    img.style.height = "200px";
+    img.style.position = "absolute";
+    img.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
+    img.classList.add('draggable', 'resizable');
+    img.style.border = "none";
+    
+    // Omogućavanje interakcije samo za prijavljene korisnike
+    if (isLoggedIn) {
+        img.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
+        enableDragAndResize(img); // Uključi funkcionalnost za povlačenje i promenu veličine
+    } else {
+        img.style.pointerEvents = "none"; // Onemogućava klikove
+    }
+
+    document.body.appendChild(img); // Učitaj sliku u DOM
+
+
+socket.emit('addImage', imageData);
 });
 
 // Uklanjanje slike
