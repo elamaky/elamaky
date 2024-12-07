@@ -18,7 +18,7 @@ if (validFormats.includes(fileExtension)) {
         position: { x: left, y: bottom }, // Početna pozicija
         dimensions: { width: 200, height: 200 } // Početne dimenzije
     };
-}
+
 
          // Emitujemo dodatak slike serveru
             socket.emit('add-image', imageData);
