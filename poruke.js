@@ -9,21 +9,39 @@ function setSocket(serverSocket, serverIo) {
     socket = serverSocket;
     io = serverIo;
 
-    socket.emit('initial-images', imageList); // Emitujemo inicijalne slike
+// Emitujemo sve slike svim korisnicima prilikom povezivanja
+    socket.emit('initial-images', imageList);  // Pošaljite sve slike korisniku
 
     // Osluškujemo kad klijent doda novu sliku
     socket.on('add-image', (imageSource) => {
         console.log("Primljen URL slike:", imageSource);
-        imageList.push(imageSource); // Sačuvajte URL slike
-        io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
+        
+        if (!imageSource) {
+            console.error('Greška: Nevalidan URL slike');
+            return;
+        }
+
+        // Dodajemo URL slike u listu
+        imageList.push(imageSource);
+
+        // Emitujemo sliku svim klijentima (ne samo onom koji je dodao)
+        io.emit('display-image', imageSource); 
     });
 
     // Osluškujemo promene slike (pomeranje, dimenzije)
     socket.on('update-image', (data) => {
-        io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
+        if (!data || !data.imageUrl || !data.position || !data.dimensions) {
+            console.error('Greška: Nedostaju podaci za promene slike.');
+            return;
+        }
+
+        // Emitujemo ažurirane informacije svim klijentima
+        io.emit('sync-image', data);
     });
 }
 
+
+    
 // Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
     socket.on('chatMessage', (msgData) => {
