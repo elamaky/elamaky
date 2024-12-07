@@ -19,7 +19,6 @@ socket.on('sync-image', (data) => {
     updateImageInDOM(data);
 });
 
-
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
@@ -81,10 +80,6 @@ function addImageToDOM(imageUrl, position = { x: 50, y: 50 }, dimensions = { wid
         dimensions: { width: parseFloat(currentImage.style.width), height: parseFloat(currentImage.style.height) }
     });
 }
-
-
-
-
 
 function enableDragAndResize(img) {
     let isResizing = false;
@@ -183,14 +178,12 @@ function onImageMoveOrResize(image) {
 
 // Kada se promeni dimenzija ili pozicija slike, pozivamo funkciju
 currentImage.addEventListener('dragend', function () {
-    onImageMoveOrResize(image);
+    onImageMoveOrResize(currentImage);
 });
 
 currentImage.addEventListener('resize', function () {
-    onImageMoveOrResize(image);
+    onImageMoveOrResize(currentImage);
 });
-
-
 
 socket.on('sync-image', (data) => {
     const syncedImage = document.querySelector(`img[src="${data.imageUrl}"]`); // Izvor slike
