@@ -172,6 +172,26 @@ function enableDragAndResize(img) {
     }
 }
 
+// Funkcija koja omogućava pomeranje ili promenu dimenzija slike
+function onImageMoveOrResize(image) {
+    const newPosition = { x: image.style.left, y: image.style.top };
+    const newDimensions = { width: image.style.width, height: image.style.height };
+    
+    // Pozivamo funkciju da pošalje promene serveru
+    updateImagePositionAndSize(image, newPosition, newDimensions);
+}
+
+// Kada se promeni dimenzija ili pozicija slike, pozivamo funkciju
+image.addEventListener('dragend', function () {
+    onImageMoveOrResize(image);
+});
+
+image.addEventListener('resize', function () {
+    onImageMoveOrResize(image);
+});
+
+
+
 socket.on('sync-image', (data) => {
     const syncedImage = document.querySelector(`img[src="${data.imageUrl}"]`); // Izvor slike
     if (syncedImage) {
