@@ -1,4 +1,3 @@
-// Inicijalizacija 'socket' i 'io' objekata
 let io; // Inicijalizujemo io
 let socket; // Inicijalizujemo socket
 let images = []; // Lista za slike
@@ -8,25 +7,28 @@ function setSocket(serverSocket, serverIo) {
     socket = serverSocket;
     io = serverIo;
 
-
- socket.on('addImage', (imageData) => {
+    // Dodavanje slike
+    socket.on('addImage', (imageData) => {
         images.push(imageData); // Dodaje sliku
         io.emit('updateImages', images); // Šalje ažurirani spisak svim klijentima
     });
 
+    // Uklanjanje slike
     socket.on('removeImage', (imageIndex) => {
-        images.splice(imageIndex, 1); // Uklanja sliku
-        io.emit('updateImages', images); // Šalje ažurirani spisak
+        if (images[imageIndex]) {
+            images.splice(imageIndex, 1); // Uklanja sliku
+            io.emit('updateImages', images); // Šalje ažurirani spisak
+        }
     });
-});
 
-socket.on('updateImage', ({ index, updatedData }) => {
-    if (images[index]) {
-        images[index] = updatedData; // Ažuriraj podatke slike
-        io.emit('updateImages', images); // Obavesti sve klijente
-    }
-});
-
+    // Ažuriranje slike
+    socket.on('updateImage', ({ index, updatedData }) => {
+        if (images[index]) {
+            images[index] = updatedData; // Ažuriraj podatke slike
+            io.emit('updateImages', images); // Obavesti sve klijente
+        }
+    });
+}
 
 // Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
@@ -37,8 +39,8 @@ function chatMessage(guests) {
             bold: msgData.bold,
             italic: msgData.italic,
             color: msgData.color,
-            nickname: guests[socket.id], // Dodajte provere za guests
-            time: time
+            nickname: guests[socket.id] || 'Nepoznat korisnik', // Dodaje fallback za nickname
+            time: time,
         };
         io.emit('chatMessage', messageToSend);
     });
@@ -54,4 +56,3 @@ function clearChat() {
 
 // Eksportovanje funkcija
 module.exports = { setSocket, chatMessage, clearChat };
-
