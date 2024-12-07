@@ -9,7 +9,7 @@ function setSocket(serverSocket, serverIo) {
     socket = serverSocket;
     io = serverIo;
 
-  socket.emit('initial-images', imageList); // Emitujemo inicijalne slike
+    socket.emit('initial-images', imageList); // Emitujemo inicijalne slike
 
     // Osluškujemo kad klijent doda novu sliku
     socket.on('add-image', (imageSource) => {
@@ -22,9 +22,9 @@ function setSocket(serverSocket, serverIo) {
     socket.on('update-image', (data) => {
         io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
     });
-     
+}
 
-    // Funkcija za obradu slanja poruka u četu
+// Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
     socket.on('chatMessage', (msgData) => {
         const time = new Date().toLocaleTimeString();
@@ -50,3 +50,4 @@ function clearChat() {
 
 // Eksportovanje funkcija
 module.exports = { setSocket, chatMessage, clearChat };
+
