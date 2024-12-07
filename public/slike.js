@@ -21,12 +21,13 @@ document.getElementById('addImage').addEventListener('click', function () {
     }
 }); 
 
-// Prikaz svih prethodnih slika kad se poveže klijent
+// Osluškujemo 'initial-images' za inicijalne slike
 socket.on('initial-images', (images) => {
-    images.forEach(addImageToDOM);  // Dodaj sve slike koje su već dodate
+    images.forEach(addImageToDOM);  // Dodaj sve trenutne slike
 });
 
-  // Funkcija za dodavanje slike u DOM
+
+   // Funkcija za dodavanje slike u DOM
     function addImageToDOM(imageUrl) {
     currentImage = document.createElement('img'); // Zamenjeno img sa currentImage
     currentImage.src = imageUrl;
