@@ -18,11 +18,11 @@ socket.on('updateImages', (images) => {
 function addImageToDOM(imageData, index) {
     const img = document.createElement('img');
     img.src = imageData.url;
-    img.style.width = `${imageData.width}px`;
-    img.style.height = `${imageData.height}px`;
+    img.style.width = `${imageData.width}200px`;
+    img.style.height = `${imageData.height}200px`;
     img.style.position = 'absolute';
-    img.style.left = `${imageData.x}px`;
-    img.style.top = `${imageData.y}px`;
+    img.style.left = `${imageData.x}200px`;
+    img.style.top = `${imageData.y}200px`;
     img.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
     img.classList.add('draggable', 'resizable');
     img.style.border = "none";
