@@ -1,6 +1,6 @@
-// Globalne promenljive
 let currentImage; // Promenljiva za trenutnu sliku
 let allImages = []; // Niz za sve slike
+let img;  // Globalna promenljiva za sliku
 
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
