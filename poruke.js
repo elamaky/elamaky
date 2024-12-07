@@ -39,18 +39,20 @@ function handleAddImage() {
 
         console.log('Slika sa URL-om:', imageUrl, 'pozicija:', position, 'dimenzije:', dimensions);
 
-      // Dodajemo sliku u listu trenutnih slika sa pozicijom i dimenzijama
-currentImages.push({
-    imageUrl: imageUrl,
-    position: {
-        x: Math.random() * (window.innerWidth - 200), // Nasumično pozicioniranje u širini ekrana
-        y: Math.random() * (window.innerHeight - 200) // Nasumično pozicioniranje u visini ekrana
-    },
-    dimensions: {
-        width: 200,
-        height: 200
-    }
-});
+          // Dodajemo sliku u listu trenutnih slika sa pozicijom i dimenzijama
+        currentImages.push({
+            imageUrl: imageUrl,
+            position: {
+                x: Math.random() * (window.innerWidth - 200), // Nasumično pozicioniranje u širini ekrana
+                y: Math.random() * (window.innerHeight - 200) // Nasumično pozicioniranje u visini ekrana
+            },
+            dimensions: {
+                width: 200,
+                height: 200
+            }
+        }); // <-- Ovdje nedostaje zatvarajuća zagrada
+    });
+} // <-- Zatvarajuća zagrada za handleAddImage
 
 // Emitujemo sliku svim klijentima
 io.emit('display-image', {
