@@ -63,3 +63,4 @@ function clearChat() {
 
 // Eksportovanje funkcija
 module.exports = { setSocket, chatMessage, clearChat };
+
