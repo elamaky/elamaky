@@ -45,20 +45,20 @@ socket.on('initial-images', (images) => {
 });
 
 // Funkcija za dodavanje slike u DOM
-function addImageToDOM(imageUrl) {
+function addImageToDOM(imageUrl, position = { x: 50, y: 50 }, dimensions = { width: 200, height: 200 }) {
     currentImage = document.createElement('img');
     currentImage.src = imageUrl;
-    
+
     // Postavljanje dimenzija slike
-    currentImage.style.width = "200px";
-    currentImage.style.height = "200px";
+    currentImage.style.width = `${dimensions.width}px`;
+    currentImage.style.height = `${dimensions.height}px`;
     
-    // Pozicioniranje slike u centar ekrana
+    // Pozicioniranje slike u centar ekrana (početne pozicije)
     currentImage.style.position = "absolute";
-    currentImage.style.top = "50%";
-    currentImage.style.left = "50%";
+    currentImage.style.left = `${position.x}%`;
+    currentImage.style.top = `${position.y}%`;
     currentImage.style.transform = "translate(-50%, -50%)"; // Centriranje slike
-    
+
     currentImage.style.zIndex = "1000"; // Pravilno pozicioniranje slike
     currentImage.classList.add('draggable', 'resizable');
     currentImage.style.border = "none";
@@ -73,18 +73,18 @@ function addImageToDOM(imageUrl) {
 
     // Dodajemo sliku u DOM
     document.body.appendChild(currentImage);
-}
-
-
-
 
     // Emitovanje ažuriranja slike posle dodavanja
     socket.emit('update-image', {
         imageUrl: currentImage.src,
-        position: { x: currentImage.style.left, y: currentImage.style.top },
-        dimensions: { width: currentImage.style.width, height: currentImage.style.height }
+        position: { x: parseFloat(currentImage.style.left), y: parseFloat(currentImage.style.top) },
+        dimensions: { width: parseFloat(currentImage.style.width), height: parseFloat(currentImage.style.height) }
     });
 }
+
+
+
+
 
 function enableDragAndResize(img) {
     let isResizing = false;
