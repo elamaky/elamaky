@@ -1,7 +1,3 @@
-// Globalne promenljive
-let currentImage; // Promenljiva za trenutnu sliku
-let allImages = []; // Niz za sve slike
-
 // Obrada događaja za dodavanje slike
 document.getElementById('addImage').addEventListener('click', () => {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
@@ -13,14 +9,18 @@ document.getElementById('addImage').addEventListener('click', () => {
 
         // Validacija formata slike
         if (validFormats.includes(fileExtension)) {
+            // Proveravamo da li slika već postoji da bismo izbegli dupliranje
+            if (allImages.some(image => image.imageUrl === imageSource)) {
+                alert("Ova slika je već dodata!");
+                return; // Izlazimo bez dodavanja
+            }
+
             const imageData = {
                 imageUrl: imageSource,
                 position: { x: '10px', y: '10px' }, // Početna pozicija
-                dimensions: {} // Ovdje ostavljamo prazno jer se uzimaju iz addImage
+                dimensions: { width: 200, height: 200 } // Postavljamo dimenzije za inicijalnu sliku
             };
 
-            // Ovde možete dodati kod koji koristi imageData
-            
             // Emitujemo dodatak slike serveru
             socket.emit('add-image', imageData);
             
@@ -34,7 +34,6 @@ document.getElementById('addImage').addEventListener('click', () => {
     }
 });
 
-
 // Prikaz nove slike kada server pošalje 'display-image' događaj
 socket.on('display-image', (imageData) => {
     addImageToDOM(imageData); // Prikaz nove slike
@@ -42,18 +41,24 @@ socket.on('display-image', (imageData) => {
 
 // Prikaz svih prethodnih slika prilikom povezivanja klijenta
 socket.on('initial-images', (images) => {
-    images.forEach(addImageToDOM); // Dodaj sve prethodne slike
+    images.forEach(image => {
+        // Proverite da li slika već postoji pre nego što je dodate
+        if (!allImages.some(existingImage => existingImage.imageUrl === image.imageUrl)) {
+            allImages.push(image); // Dodajemo sliku u niz
+            addImageToDOM(image); // Prikaz slike
+        }
+    });
 });
 
 // Funkcija za dodavanje slike u DOM
 function addImageToDOM(imageData) {
     const img = document.createElement('img');
     img.src = imageData.imageUrl;
-    img.style.width = `${imageData.dimensions.width}200px`; // Postavljanje širine
-    img.style.height = `${imageData.dimensions.height}200px`; // Postavljanje visine
+    img.style.width = `${imageData.dimensions.width}px`; // Postavljanje širine
+    img.style.height = `${imageData.dimensions.height}px`; // Postavljanje visine
     img.style.position = "absolute";
-    img.style.left = `${imageData.position.x}10px`; // Postavljanje horizontalne pozicije
-    img.style.bottom = `${imageData.position.y}10px`; // Postavljanje vertikalne pozicije
+    img.style.left = `${imageData.position.x}`; // Postavljanje horizontalne pozicije
+    img.style.top = `${imageData.position.y}`; // Postavljanje vertikalne pozicije
     img.style.zIndex = "1000";
     img.classList.add('draggable', 'resizable');
 
@@ -68,7 +73,7 @@ function addImageToDOM(imageData) {
 
     // Emitovanje inicijalnih podataka slike
     emitImageUpdate(img);
-}
+}           
 
 // Funkcija za emitovanje ažuriranja slike
 function emitImageUpdate(img) {
