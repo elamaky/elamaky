@@ -7,18 +7,29 @@ function setSocket(serverSocket, serverIo) {
     socket = serverSocket;
     io = serverIo;
 
-    // U ovoj funkciji, socket će biti definisan
-    socket.emit('initial-images', imageList); // Emitujemo inicijalne slike
+    // Emitujemo inicijalne slike prilikom povezivanja
+    socket.emit('initial-images', imageList);
 
-    // Osluškujemo kad klijent doda novu sliku
+    // Osluškujemo kada klijent doda novu sliku
     socket.on('add-image', (imageSource) => {
+        if (!imageSource) {
+            // Emitujemo grešku ako je URL slike nevalidan
+            socket.emit('error', 'Invalid image URL');
+            return;
+        }
+
         console.log("Primljen URL slike:", imageSource);
-        imageList.push(imageSource); // Sačuvajte URL slike
-        io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
+        imageList.push(imageSource); // Dodajemo URL slike u listu
+        io.emit('display-image', imageSource); // Emitujemo sliku svim klijentima
     });
 
     // Osluškujemo promene slike (pomeranje, dimenzije)
     socket.on('update-image', (data) => {
+        if (!data) {
+            socket.emit('error', 'Invalid update data');
+            return;
+        }
+
         io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
     });
 
