@@ -11,25 +11,29 @@ document.getElementById('addImage').addEventListener('click', () => {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
 
-// Validacija formata slike
-if (validFormats.includes(fileExtension)) {
-    const imageData = {
-        imageUrl: imageSource,
-        position: { x:10px left, y:10px bottom }, // Početna pozicija
-        dimensions: {} // Ovdje ostavljamo prazno jer se uzimaju iz addImage
-    };
+        // Validacija formata slike
+        if (validFormats.includes(fileExtension)) {
+            const imageData = {
+                imageUrl: imageSource,
+                position: { x: '10px', y: '10px' }, // Početna pozicija
+                dimensions: {} // Ovdje ostavljamo prazno jer se uzimaju iz addImage
+            };
 
-    // Ovde možete dodati kod koji koristi imageData
-}
-
-
-         // Emitujemo dodatak slike serveru
+            // Ovde možete dodati kod koji koristi imageData
+            
+            // Emitujemo dodatak slike serveru
             socket.emit('add-image', imageData);
+            
+            // Dodajemo sliku u niz
+            allImages.push(imageData);
         } else {
             alert("Neispravan format slike! Molimo vas da unesete URL slike u JPG, PNG, ili GIF formatu.");
         }
-    
+    } else {
+        alert("Niste uneli URL slike.");
+    }
 });
+
 
 // Prikaz nove slike kada server pošalje 'display-image' događaj
 socket.on('display-image', (imageData) => {
