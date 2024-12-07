@@ -45,7 +45,7 @@ socket.on('initial-images', (images) => {
 
 // Funkcija za dodavanje slike u DOM
 function addImageToDOM(imageUrl, position = { x: 50, y: 50 }, dimensions = { width: 200, height: 200 }) {
-    currentImage = document.createElement('img');
+    const currentImage = document.createElement('img');
     currentImage.src = imageUrl;
 
     // Postavljanje dimenzija slike
@@ -72,6 +72,15 @@ function addImageToDOM(imageUrl, position = { x: 50, y: 50 }, dimensions = { wid
 
     // Dodajemo sliku u DOM
     document.body.appendChild(currentImage);
+
+    // Dodavanje event listener-a nakon što je slika dodana u DOM
+    currentImage.addEventListener('dragend', function () {
+        onImageMoveOrResize(currentImage);
+    });
+
+    currentImage.addEventListener('resize', function () {
+        onImageMoveOrResize(currentImage);
+    });
 
     // Emitovanje ažuriranja slike posle dodavanja
     socket.emit('update-image', {
