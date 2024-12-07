@@ -182,11 +182,11 @@ function onImageMoveOrResize(image) {
 }
 
 // Kada se promeni dimenzija ili pozicija slike, pozivamo funkciju
-image.addEventListener('dragend', function () {
+img.addEventListener('dragend', function () {
     onImageMoveOrResize(image);
 });
 
-image.addEventListener('resize', function () {
+img.addEventListener('resize', function () {
     onImageMoveOrResize(image);
 });
 
