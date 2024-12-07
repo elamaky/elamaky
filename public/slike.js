@@ -11,13 +11,13 @@ document.getElementById('addImage').addEventListener('click', () => {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
 
-        // Validacija formata slike
-        if (validFormats.includes(fileExtension)) {
-            const imageData = {
-                imageUrl: imageSource,
-                position: { x: '200px', y: '200px' }, // Početna pozicija
-                dimensions: {} // Ovdje ostavljamo prazno jer se uzimaju iz addImage
-            };
+      // Validacija formata slike
+if (validFormats.includes(fileExtension)) {
+    const imageData = {
+        imageUrl: imageSource,
+        position: { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight }, // Pozicija bira korisnik (random za test)
+        dimensions: { width: 200, height: 200 } // Početne dimenzije 200x200
+    };
 
             // Emitujemo dodatak slike serveru
             socket.emit('add-image', imageData);
@@ -43,8 +43,8 @@ socket.on('initial-images', (images) => {
 function addImageToDOM(imageData) {
     const img = document.createElement('img');
     img.src = imageData.imageUrl;
-    img.style.width = `${imageData.dimensions.width || 200}px`; // Postavljanje širine
-    img.style.height = `${imageData.dimensions.height || 200}px`; // Postavljanje visine
+    img.style.width = `${imageData.dimensions.width || }px`; // Postavljanje širine
+    img.style.height = `${imageData.dimensions.height || }px`; // Postavljanje visine
     img.style.position = "absolute";
     img.style.left = `${imageData.position.x}`; // Postavljanje horizontalne pozicije
     img.style.top = `${imageData.position.y}`; // Postavljanje vertikalne pozicije
