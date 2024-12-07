@@ -41,27 +41,6 @@ function addImageToDOM(imageData, index) {
     img.style.left = `${imageData.x}px`;
     img.style.top = `${imageData.y}px`;
 
-    const removeBtn = document.createElement('button');
-    removeBtn.innerText = 'Ukloni';
-    removeBtn.onclick = () => removeImage(index);
-
-    const wrapper = document.createElement('div');
-    wrapper.appendChild(img);
-    wrapper.appendChild(removeBtn);
-
-    imageContainer.appendChild(wrapper);
-}
-
-
-function addImageToDOM(imageData, index) {
-    const img = document.createElement('img');
-    img.src = imageData.url;
-    img.style.width = `${imageData.width}px`;
-    img.style.height = `${imageData.height}px`;
-    img.style.position = 'absolute';
-    img.style.left = `${imageData.x}px`;
-    img.style.top = `${imageData.y}px`;
-
     const wrapper = document.createElement('div');
     wrapper.style.position = 'relative';
     wrapper.style.display = 'inline-block';
@@ -106,4 +85,5 @@ function addImageToDOM(imageData, index) {
 
     imageContainer.appendChild(wrapper);
 }
+
 
