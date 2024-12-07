@@ -69,6 +69,29 @@ function handleAddImage() {
     });
 }
 
+// Funkcija za obradu promena slike (pomeranje, dimenzije)
+function handleUpdateImage() {
+    socket.on('update-image', (imageData) => {
+        const { imageUrl, position, dimensions } = imageData;
+
+        // Validacija podataka
+        if (!imageUrl || !position || !dimensions) {
+            console.error('Greška: Nedostaju podaci za promene slike.');
+            return;
+        }
+
+        // Ažuriramo sliku u listi trenutnih slika
+        const imageIndex = currentImages.findIndex(image => image.imageUrl === imageUrl);
+        if (imageIndex !== -1) {
+            currentImages[imageIndex] = { imageUrl, position, dimensions };
+        }
+
+        // Emitujemo ažuriranu sliku svim klijentima
+        io.emit('sync-image', { imageUrl, position, dimensions });
+        console.log('Slika ažurirana svim klijentima:', imageUrl);
+    });
+}
+
 // Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
     socket.on('chatMessage', (msgData) => {
