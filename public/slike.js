@@ -18,21 +18,8 @@ document.getElementById('addImage').addEventListener('click', function () {
                 addImageToDOM(imageUrl);  // Prikaz nove slike koju je server poslao
             });
 
-        } else {
-            alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
-        }
-    } else {
-        alert("Niste uneli URL slike.");
-    }
-});
-
-// Prikaz svih prethodnih slika kad se poveže klijent
-socket.on('initial-images', (images) => {
-    images.forEach(addImageToDOM);  // Dodaj sve slike koje su već dodate
-});
-
-// Funkcija za dodavanje slike u DOM
-function addImageToDOM(imageUrl) {
+      // Funkcija za dodavanje slike u DOM
+    function addImageToDOM(imageUrl) {
     currentImage = document.createElement('img'); // Zamenjeno img sa currentImage
     currentImage.src = imageUrl;
     currentImage.style.width = "200px";
