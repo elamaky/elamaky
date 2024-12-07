@@ -1,156 +1,111 @@
-let currentImage; // Promenljiva za trenutnu sliku
-let allImages = []; // Niz za sve slike
-let img;  // Globalna promenljiva za sliku
+const socket = io();
 
-document.getElementById('addImage').addEventListener('click', function () {
-    const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
+const imageContainer = document.createElement('div');
+imageContainer.id = 'imageContainer';
+document.body.appendChild(imageContainer);
 
-    if (imageSource) {
-        const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
-        const fileExtension = imageSource.split('.').pop().toLowerCase();
-
-        if (validFormats.includes(fileExtension)) {
-            // Emitujemo URL slike serveru pod imenom 'add-image'
-            socket.emit('add-image', imageSource);
-
-            // Osluškujemo 'display-image' događaj sa servera
-            socket.on('display-image', (imageUrl) => {
-                addImageToDOM(imageUrl);  // Prikaz nove slike koju je server poslao
-            });
-
-        } else {
-            alert("Nepodržan format slike. Podržani formati su: JPG, PNG, GIF.");
-        }
-    } else {
-        alert("Niste uneli URL slike.");
-    }
+// Inicijalno učitavanje slika
+socket.on('initialImages', (images) => {
+    imageContainer.innerHTML = '';
+    images.forEach((img, index) => addImageToDOM(img, index));
 });
 
-// Prikaz svih prethodnih slika kad se poveže klijent
-socket.on('initial-images', (images) => {
-    images.forEach(addImageToDOM);  // Dodaj sve slike koje su već dodate
+// Ažuriranje slika u realnom vremenu
+socket.on('updateImages', (images) => {
+    imageContainer.innerHTML = '';
+    images.forEach((img, index) => addImageToDOM(img, index));
 });
 
-// Funkcija za dodavanje slike u DOM
-function addImageToDOM(imageUrl) {
+// Dodavanje slike
+document.getElementById('addImage').addEventListener('click', () => {
+    const imageUrl = prompt('Unesite URL slike:');
+    const width = prompt('Širina slike (px):', '100');
+    const height = prompt('Visina slike (px):', '100');
+    const x = prompt('X pozicija (px):', '0');
+    const y = prompt('Y pozicija (px):', '0');
+
+    const imageData = { url: imageUrl, width, height, x, y };
+    socket.emit('addImage', imageData);
+});
+
+// Uklanjanje slike
+function removeImage(index) {
+    socket.emit('removeImage', index);
+}
+
+// Dodavanje slike u DOM
+function addImageToDOM(imageData, index) {
     const img = document.createElement('img');
-    img.src = imageUrl;
-    img.style.width = "200px";
-    img.style.height = "200px";
-    img.style.position = "absolute";
-    img.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
-    img.classList.add('draggable', 'resizable');
-    img.style.border = "none";
-    
-    // Omogućavanje interakcije samo za prijavljene korisnike
-    if (isLoggedIn) {
-        img.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
-        enableDragAndResize(img); // Uključi funkcionalnost za povlačenje i promenu veličine
-    } else {
-        img.style.pointerEvents = "none"; // Onemogućava klikove
-    }
+    img.src = imageData.url;
+    img.style.width = `${imageData.width}px`;
+    img.style.height = `${imageData.height}px`;
+    img.style.position = 'absolute';
+    img.style.left = `${imageData.x}px`;
+    img.style.top = `${imageData.y}px`;
 
-    document.body.appendChild(img); // Učitaj sliku u DOM
+    const removeBtn = document.createElement('button');
+    removeBtn.innerText = 'Ukloni';
+    removeBtn.onclick = () => removeImage(index);
 
-    // Sada možeš sigurno emitovati događaj, jer je slika dodata u DOM
-    socket.emit('update-image', {
-        imageUrl: img.src,
-        position: { x: img.style.left, y: img.style.top },
-        dimensions: { width: img.style.width, height: img.style.height }
-    });
+    const wrapper = document.createElement('div');
+    wrapper.appendChild(img);
+    wrapper.appendChild(removeBtn);
+
+    imageContainer.appendChild(wrapper);
 }
 
-function enableDragAndResize(img) {
-    let isResizing = false;
-    let resizeSide = null;
 
-    img.addEventListener('mouseenter', function () {
-        img.style.border = "2px dashed red";
-    });
+function addImageToDOM(imageData, index) {
+    const img = document.createElement('img');
+    img.src = imageData.url;
+    img.style.width = `${imageData.width}px`;
+    img.style.height = `${imageData.height}px`;
+    img.style.position = 'absolute';
+    img.style.left = `${imageData.x}px`;
+    img.style.top = `${imageData.y}px`;
 
-    img.addEventListener('mouseleave', function () {
-        img.style.border = "none";
-    });
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'relative';
+    wrapper.style.display = 'inline-block';
 
-    img.addEventListener('mousedown', function (e) {
-        const rect = img.getBoundingClientRect();
-        const borderSize = 10;
-
-        if (e.clientX >= rect.left && e.clientX <= rect.left + borderSize) {
-            resizeSide = 'left';
-        } else if (e.clientX >= rect.right - borderSize && e.clientX <= rect.right) {
-            resizeSide = 'right';
-        } else if (e.clientY >= rect.top && e.clientY <= rect.top + borderSize) {
-            resizeSide = 'top';
-        } else if (e.clientY >= rect.bottom - borderSize && e.clientY <= rect.bottom) {
-            resizeSide = 'bottom';
-        }
-
-        if (resizeSide) {
-            isResizing = true;
-            const initialWidth = img.offsetWidth;
-            const initialHeight = img.offsetHeight;
-            const startX = e.clientX;
-            const startY = e.clientY;
-
-            document.onmousemove = function (e) {
-                if (isResizing) {
-                    if (resizeSide === 'right') {
-                        img.style.width = initialWidth + (e.clientX - startX) + 'px';
-                    } else if (resizeSide === 'bottom') {
-                        img.style.height = initialHeight + (e.clientY - startY) + 'px';
-                    } else if (resizeSide === 'left') {
-                        const newWidth = initialWidth - (e.clientX - startX);
-                        if (newWidth > 10) {
-                            img.style.width = newWidth + 'px';
-                            img.style.left = rect.left + (e.clientX - startX) + 'px';
-                        }
-                    } else if (resizeSide === 'top') {
-                        const newHeight = initialHeight - (e.clientY - startY);
-                        if (newHeight > 10) {
-                            img.style.height = newHeight + 'px';
-                            img.style.top = rect.top + (e.clientY - startY) + 'px';
-                        }
-                    }
-                }
-            };
-
-            document.onmouseup = function () {
-                isResizing = false;
-                resizeSide = null;
-                document.onmousemove = null;
-                document.onmouseup = null;
-            };
-        } else {
-            dragMouseDown(e);
-        }
-    });
-
-    function dragMouseDown(e) {
-        e.preventDefault();
-        let pos3 = e.clientX;
-        let pos4 = e.clientY;
-
-        document.onmouseup = closeDragElement;
-        document.onmousemove = function (e) {
-            img.style.top = (img.offsetTop - (pos4 - e.clientY)) + 'px';
-            img.style.left = (img.offsetLeft - (pos3 - e.clientX)) + 'px';
-            pos3 = e.clientX;
-            pos4 = e.clientY;
+    // Kontrola dimenzija
+    const resizeBtn = document.createElement('button');
+    resizeBtn.innerText = 'Promeni dimenzije';
+    resizeBtn.onclick = () => {
+        const newWidth = prompt('Nova širina (px):', imageData.width);
+        const newHeight = prompt('Nova visina (px):', imageData.height);
+        const updatedData = {
+            ...imageData,
+            width: newWidth,
+            height: newHeight,
         };
-    }
+        socket.emit('updateImage', { index, updatedData });
+    };
 
-    function closeDragElement() {
-        document.onmouseup = null;
-        document.onmousemove = null;
-    }
+    // Kontrola pozicije
+    const moveBtn = document.createElement('button');
+    moveBtn.innerText = 'Promeni poziciju';
+    moveBtn.onclick = () => {
+        const newX = prompt('Nova X pozicija (px):', imageData.x);
+        const newY = prompt('Nova Y pozicija (px):', imageData.y);
+        const updatedData = {
+            ...imageData,
+            x: newX,
+            y: newY,
+        };
+        socket.emit('updateImage', { index, updatedData });
+    };
+
+    // Dugme za uklanjanje slike
+    const removeBtn = document.createElement('button');
+    removeBtn.innerText = 'Ukloni';
+    removeBtn.onclick = () => removeImage(index);
+
+    wrapper.appendChild(img);
+    wrapper.appendChild(resizeBtn);
+    wrapper.appendChild(moveBtn);
+    wrapper.appendChild(removeBtn);
+
+    imageContainer.appendChild(wrapper);
 }
-socket.on('sync-image', (data) => {
-    const img = document.querySelector(`img[src="${data.imageUrl}"]`);
-    if (img) {
-        img.style.left = data.position.x;
-        img.style.top = data.position.y;
-        img.style.width = data.dimensions.width;
-        img.style.height = data.dimensions.height;
-    }
-});
+
