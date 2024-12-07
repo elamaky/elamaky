@@ -46,45 +46,86 @@ function addImageToDOM(imageData, index) {
     wrapper.style.position = 'relative';
     wrapper.style.display = 'inline-block';
 
-    // Kontrola dimenzija
-    const resizeBtn = document.createElement('button');
-    resizeBtn.innerText = 'Promeni dimenzije';
-    resizeBtn.onclick = () => {
-        const newWidth = prompt('Nova širina (px):', imageData.width);
-        const newHeight = prompt('Nova visina (px):', imageData.height);
-        const updatedData = {
-            ...imageData,
-            width: newWidth,
-            height: newHeight,
-        };
-        socket.emit('updateImage', { index, updatedData });
-    };
-
-    // Kontrola pozicije
-    const moveBtn = document.createElement('button');
-    moveBtn.innerText = 'Promeni poziciju';
-    moveBtn.onclick = () => {
-        const newX = prompt('Nova X pozicija (px):', imageData.x);
-        const newY = prompt('Nova Y pozicija (px):', imageData.y);
-        const updatedData = {
-            ...imageData,
-            x: newX,
-            y: newY,
-        };
-        socket.emit('updateImage', { index, updatedData });
-    };
-
-    // Dugme za uklanjanje slike
+    // Dodavanje skrivenog dugmeta za uklanjanje
     const removeBtn = document.createElement('button');
     removeBtn.innerText = 'Ukloni';
+    removeBtn.style.display = 'none'; // Skriveno dugme za uklanjanje
     removeBtn.onclick = () => removeImage(index);
-
-    wrapper.appendChild(img);
-    wrapper.appendChild(resizeBtn);
-    wrapper.appendChild(moveBtn);
     wrapper.appendChild(removeBtn);
+
+    // Pokazivanje dugmeta za uklanjanje kada se slika klikne
+    img.addEventListener('click', () => {
+        removeBtn.style.display = removeBtn.style.display === 'none' ? 'block' : 'none'; // Toggles visibility
+    });
+
+    // Funkcija za promenu dimenzija povlačenjem ivica
+    const makeResizable = (el) => {
+        const resizeHandle = document.createElement('div');
+        resizeHandle.style.position = 'absolute';
+        resizeHandle.style.bottom = '0';
+        resizeHandle.style.right = '0';
+        resizeHandle.style.width = '10px';
+        resizeHandle.style.height = '10px';
+        resizeHandle.style.backgroundColor = 'red';
+        resizeHandle.style.cursor = 'se-resize';
+        el.appendChild(resizeHandle);
+
+        let isResizing = false;
+
+        resizeHandle.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            isResizing = true;
+            document.addEventListener('mousemove', handleResize);
+            document.addEventListener('mouseup', () => {
+                isResizing = false;
+                document.removeEventListener('mousemove', handleResize);
+            });
+        });
+
+        const handleResize = (e) => {
+            if (isResizing) {
+                const width = e.pageX - el.offsetLeft;
+                const height = e.pageY - el.offsetTop;
+                img.style.width = `${width}px`;
+                img.style.height = `${height}px`;
+                imageData.width = width;
+                imageData.height = height;
+                socket.emit('updateImage', { index, updatedData: imageData });
+            }
+        };
+    };
+
+    makeResizable(wrapper); // Aktiviraj povlačenje za promenu dimenzija
+
+    // Funkcija za promenu pozicije slike povlačenjem
+    let isDragging = false;
+    let offsetX, offsetY;
+
+    img.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        offsetX = e.clientX - img.offsetLeft;
+        offsetY = e.clientY - img.offsetTop;
+        document.addEventListener('mousemove', handleDrag);
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            document.removeEventListener('mousemove', handleDrag);
+        });
+    });
+
+    const handleDrag = (e) => {
+        if (isDragging) {
+            const x = e.clientX - offsetX;
+            const y = e.clientY - offsetY;
+            img.style.left = `${x}px`;
+            img.style.top = `${y}px`;
+            imageData.x = x;
+            imageData.y = y;
+            socket.emit('updateImage', { index, updatedData: imageData });
+        }
+    };
 
     imageContainer.appendChild(wrapper);
 }
+
 
 
