@@ -1,36 +1,31 @@
 // Globalne promenljive
 let currentImage; // Promenljiva za trenutnu sliku
+let allImages = []; // Niz za sve slike
 
 // Obrada događaja za dodavanje slike
 document.getElementById('addImage').addEventListener('click', () => {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
-    // Proveravamo da li je unet URL slike
     if (imageSource) {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
 
-        // Validacija formata slike
         if (validFormats.includes(fileExtension)) {
-            // Proveravamo da li slika već postoji da bismo izbegli dupliranje
             if (allImages.some(image => image.imageUrl === imageSource)) {
                 alert("Ova slika je već dodata!");
-                return; // Izlazimo bez dodavanja
+                return;
             }
 
             const imageData = {
                 imageUrl: imageSource,
-                position: { x: '10px', y: '10px' }, // Početna pozicija
-                dimensions: { width: 200, height: 200 } // Postavljamo dimenzije za inicijalnu sliku
+                position: { x: '200px', y: '200px' },
+                dimensions: { width: 200, height: 200 }
             };
 
-            // Emitujemo dodatak slike serveru
             socket.emit('add-image', imageData);
-            
-            // Dodajemo sliku u niz
             allImages.push(imageData);
         } else {
-            alert("Neispravan format slike! Molimo vas da unesete URL slike u JPG, PNG, ili GIF formatu.");
+            alert("Neispravan format slike! Molimo unesite URL slike u JPG, PNG, ili GIF formatu.");
         }
     } else {
         alert("Niste uneli URL slike.");
@@ -38,20 +33,8 @@ document.getElementById('addImage').addEventListener('click', () => {
 });
 
 // Prikaz nove slike kada server pošalje 'display-image' događaj
-socket.on('display-image', (imageData) => {
-    addImageToDOM(imageData); // Prikaz nove slike
-});
+socket.on('display-image', addImageToDOM);
 
-// Prikaz svih prethodnih slika prilikom povezivanja klijenta
-socket.on('initial-images', (images) => {
-    images.forEach(image => {
-        // Proverite da li slika već postoji pre nego što je dodate
-        if (!allImages.some(existingImage => existingImage.imageUrl === image.imageUrl)) {
-            allImages.push(image); // Dodajemo sliku u niz
-            addImageToDOM(image); // Prikaz slike
-        }
-    });
-});
 
 // Funkcija za dodavanje slike u DOM
 function addImageToDOM(imageData) {
