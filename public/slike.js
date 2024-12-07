@@ -38,6 +38,7 @@ function addImageToDOM(imageData, index) {
     img.style.width = `${imageData.width}px`;
     img.style.height = `${imageData.height}px`;
     img.style.position = 'absolute';
+    img.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
     img.style.left = `${imageData.x}px`;
     img.style.top = `${imageData.y}px`;
 
