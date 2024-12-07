@@ -2,13 +2,7 @@ const imageContainer = document.createElement('div');
 imageContainer.id = 'imageContainer';
 document.body.appendChild(imageContainer);
 
-// Inicijalno učitavanje slika
-socket.on('initialImages', (images) => {
-    imageContainer.innerHTML = ''; // Čisti prethodne slike
-    images.forEach((img, index) => addImageToDOM(img, index)); // Prikazuje sve slike
-});
-
-// Ažuriranje slika u realnom vremenu
+// Ažuriranje slika u realnom vremenu (ako ih ima)
 socket.on('updateImages', (images) => {
     imageContainer.innerHTML = ''; // Čisti prethodne slike
     images.forEach((img, index) => addImageToDOM(img, index)); // Prikazuje sve slike
@@ -25,10 +19,6 @@ function addImageToDOM(imageData, index) {
     img.style.top = `${imageData.y}px`;
     img.style.zIndex = '1000';
 
-    // Postavljanje početne pozicije slike
-    img.style.left = `${Math.random() * window.innerWidth * 0.5 + 100}px`;  // Početna pozicija na random mestu unutar 50% širine
-    img.style.top = `${Math.random() * window.innerHeight * 0.5 + 100}px`;  // Početna pozicija na random mestu unutar 50% visine
-
     // Omogućavanje interakcije samo za prijavljene korisnike
     if (isLoggedIn) {
         img.style.pointerEvents = "auto";
@@ -36,14 +26,8 @@ function addImageToDOM(imageData, index) {
         img.style.pointerEvents = "none"; // Onemogućava klikove
     }
 
-    // Omogućavanje resize funkcionalnosti
-    const hammer = new Hammer(img);
-
-    hammer.get('pinch').set({ enable: true });  // Omogućavanje "pinch" gesta za resize
-    hammer.on('pinch', (e) => {
-        img.style.width = `${imageData.width * e.scale}px`;  // Menjanje širine
-        img.style.height = `${imageData.height * e.scale}px`;  // Menjanje visine
-    });
+    // Pozivanje funkcije za promenu dimenzija slike
+    makeResizable(img);
 
     // Funkcija za premestanje slike (drag)
     let isDragging = false;
@@ -72,12 +56,43 @@ function addImageToDOM(imageData, index) {
         }
     };
 
-    // Funkcija za uklanjanje slike
-    img.addEventListener('dblclick', () => {
-        imageContainer.removeChild(img);
-        socket.emit('removeImage', index);  // Emituj događaj za uklanjanje slike sa servera
-    });
-
     // Dodaj sliku u DOM
     imageContainer.appendChild(img);
 }
+
+// Funkcija za omogućavanje resize slika povlačenjem
+const makeResizable = (el) => {
+    const resizeHandle = document.createElement('div');
+    resizeHandle.style.position = 'absolute';
+    resizeHandle.style.bottom = '0';
+    resizeHandle.style.right = '0';
+    resizeHandle.style.width = '10px';
+    resizeHandle.style.height = '10px';
+    resizeHandle.style.backgroundColor = 'red';
+    resizeHandle.style.cursor = 'se-resize';
+    el.appendChild(resizeHandle);
+
+    let isResizing = false;
+
+    resizeHandle.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        isResizing = true;
+        document.addEventListener('mousemove', handleResize);
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            document.removeEventListener('mousemove', handleResize);
+        });
+    });
+
+    const handleResize = (e) => {
+        if (isResizing) {
+            const width = e.pageX - el.offsetLeft;
+            const height = e.pageY - el.offsetTop;
+            el.style.width = `${width}px`;
+            el.style.height = `${height}px`;
+            imageData.width = width;
+            imageData.height = height;
+            socket.emit('updateImage', { index, updatedData: imageData });
+        }
+    };
+};
