@@ -46,8 +46,8 @@ function addImageToDOM(imageData) {
     img.style.width = `${imageData.dimensions.width}px`; // Postavljanje širine
     img.style.height = `${imageData.dimensions.height}px`; // Postavljanje visine
     img.style.position = "absolute";
-    img.style.left = `${imageData.position.x}px`; // Postavljanje horizontalne pozicije
-    img.style.top = `${imageData.position.y}px`; // Postavljanje vertikalne pozicije
+    img.style.left = `${Math.min(imageData.position.x, window.innerWidth - imageData.dimensions.width)}px`;
+    img.style.top = `${Math.min(imageData.position.y, window.innerHeight - imageData.dimensions.height)}px`;
     img.style.zIndex = "1000";
     img.classList.add('draggable', 'resizable');
 
