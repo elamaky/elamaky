@@ -14,6 +14,23 @@ socket.on('updateImages', (images) => {
     images.forEach((img, index) => addImageToDOM(img, index)); // Prikazuje sve slike
 });
 
+// Dugme za dodavanje slike
+document.getElementById('addImage').addEventListener('click', () => {
+    // Unesi URL slike sa podrazumevanim vrednostima
+    const imageUrl = prompt('Unesite URL slike:');
+    if (!imageUrl) return; // Ako nije unet URL, prekida se dalje
+
+    const imageData = {
+        url: imageUrl,
+        width: 500, // Podrazumevana širina
+        height: 500, // Podrazumevana visina
+        x: 400, // Podrazumevana pozicija X
+        y: 0, // Podrazumevana pozicija Y
+    };
+    
+    socket.emit('addImage', imageData);
+});
+
 // Funkcija za dodavanje slike u DOM
 function addImageToDOM(imageData, index) {
     const img = document.createElement('img');
@@ -26,7 +43,7 @@ function addImageToDOM(imageData, index) {
     img.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
     img.classList.add('draggable', 'resizable');
     img.style.border = "none";
-    
+
     // Omogućavanje interakcije samo za prijavljene korisnike
     if (isLoggedIn) {
         img.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
@@ -125,17 +142,3 @@ function removeImage(index) {
     socket.emit('removeImage', index);
 }
 
-// Funkcija za dodavanje slike na stranici pomoću dugmeta
-document.getElementById('addImage').addEventListener('click', () => {
-    const imageUrl = prompt('Unesite URL slike:');
-    if (imageUrl) {
-        const imageData = {
-            url: imageUrl,
-            width: 200,  // Početna širina
-            height: 200, // Početna visina
-            x: 300,        // Početna pozicija X
-            y: 300         // Početna pozicija Y
-        };
-        socket.emit('addImage', imageData);  // Šalje podatke serveru za dodavanje slike
-    }
-});
