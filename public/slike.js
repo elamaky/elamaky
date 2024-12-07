@@ -15,7 +15,7 @@ document.getElementById('addImage').addEventListener('click', () => {
 if (validFormats.includes(fileExtension)) {
     const imageData = {
         imageUrl: imageSource,
-        position: { x: left, y: bottom }, // Početna pozicija
+        position: { x:10px left, y:10px bottom }, // Početna pozicija
         dimensions: {} // Ovdje ostavljamo prazno jer se uzimaju iz addImage
     };
 
@@ -48,8 +48,8 @@ function addImageToDOM(imageData) {
     img.style.width = `${imageData.dimensions.width}200px`; // Postavljanje širine
     img.style.height = `${imageData.dimensions.height}200px`; // Postavljanje visine
     img.style.position = "absolute";
-    img.style.left = `${imageData.position.x}200px`; // Postavljanje horizontalne pozicije
-    img.style.top = `${imageData.position.y}200px`; // Postavljanje vertikalne pozicije
+    img.style.left = `${imageData.position.x}10px`; // Postavljanje horizontalne pozicije
+    img.style.bottom = `${imageData.position.y}10px`; // Postavljanje vertikalne pozicije
     img.style.zIndex = "1000";
     img.classList.add('draggable', 'resizable');
 
