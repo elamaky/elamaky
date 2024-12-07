@@ -1,21 +1,32 @@
 let io; // Inicijalizujemo io
 let socket; // Inicijalizujemo socket
 let currentImages = [];  // Čuva samo trenutne slike
+const imageList = []; // Skladištenje URL-ova slika
 
 // Funkcija za setovanje socket-a i io objekta
 function setSocket(serverSocket, serverIo) {
     socket = serverSocket;
     io = serverIo;
 
+    socket.emit('initial-images', imageList); // Emitujemo inicijalne slike
+
+    // Osluškujemo kad klijent doda novu sliku
+   socket.on('add-image', (imageSource, position, dimensions) => {
+        console.log("Primljen URL slike:", imageSource);
+        imageList.push(imageSource); // Sačuvajte URL slike
+        io.emit('display-image', imageSource); // Emitujte sliku svim klijentima
+    });
+
+    // Osluškujemo promene slike (pomeranje, dimenzije)
+    socket.on('update-image', (data) => {
+        io.emit('sync-image', data);  // Emitovanje promjena svim klijentima
+    });
+
 // Emitujemo inicijalne slike prilikom povezivanja
 socket.emit('initial-images', currentImages);  // Pošaljemo samo trenutno stanje
 console.log('Inicijalne slike poslata:', currentImages);  // Logujemo trenutno stanje slika
 
-// Osluškujemo kada klijent doda novu sliku
-socket.on('add-image', (imageSource, position, dimensions) => {
-    console.log(`Primljen zahtev za dodavanje slike sa URL-om: ${imageSource}`);
-    
-    if (!imageSource) {
+  if (!imageSource) {
         // Emitujemo grešku ako je URL slike nevalidan
         socket.emit('error', 'Invalid image URL');
         console.error('Greška: Nevalidan URL slike.');
