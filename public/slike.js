@@ -17,6 +17,9 @@ document.getElementById('addImage').addEventListener('click', function () {
             socket.on('display-image', (imageUrl) => {
                 addImageToDOM(imageUrl);  // Prikaz nove slike koju je server poslao
             });
+        }
+    }
+}); 
 
       // Funkcija za dodavanje slike u DOM
     function addImageToDOM(imageUrl) {
