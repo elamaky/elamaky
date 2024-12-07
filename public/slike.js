@@ -32,9 +32,13 @@ socket.on('initial-images', (images) => {
 function addImageToDOM(imageUrl) {
     const img = document.createElement('img');
     img.src = imageUrl;
+
+    // Postavljanje dimenzija i pozicije kao što je traženo
     img.style.width = "200px";
     img.style.height = "200px";
     img.style.position = "absolute";
+    img.style.left = "0px"; // Početno pozicioniranje na 0px sa leve strane
+    img.style.top = "0px"; // Početno pozicioniranje na 0px od vrha
     img.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
     img.classList.add('draggable', 'resizable');
 
@@ -52,12 +56,12 @@ function addImageToDOM(imageUrl) {
     socket.emit('update-image', {
         imageUrl: img.src,
         position: {
-            x: parseFloat(img.style.left) || 0, // Ako nema stila, uzmi 0
+            x: parseFloat(img.style.left) || 0, 
             y: parseFloat(img.style.top) || 0
         },
         dimensions: {
-            width: parseFloat(img.style.width) || img.width, // Možeš koristiti img.width ako nije eksplicitno postavljen stil
-            height: parseFloat(img.style.height) || img.height // Isto za visinu
+            width: parseFloat(img.style.width) || img.width,
+            height: parseFloat(img.style.height) || img.height
         }
     });
 }
