@@ -13,7 +13,7 @@ document.getElementById('addImage').addEventListener('click', () => {
         if (validFormats.includes(fileExtension)) {
             const imageData = {
                 imageUrl: imageSource,
-                position: { x: 100, y: 100 }, // Početna pozicija na ekranu
+                position: { x: 300, y: ,5 }, // Početna pozicija na ekranu
                 dimensions: { width: 300, height: 300 } // Početne dimenzije slike
             };
 
