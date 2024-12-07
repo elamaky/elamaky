@@ -19,6 +19,11 @@ socket.on('sync-image', (data) => {
     updateImageInDOM(data);
 });
 
+// Osluškujemo 'display-image' događaj sa servera (ova linija ide izvan addImage funkcije)
+socket.on('display-image', (imageData) => {
+    addImageToDOM(imageData.imageUrl, imageData.position, imageData.dimensions);
+});
+
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
@@ -29,23 +34,20 @@ document.getElementById('addImage').addEventListener('click', function () {
         if (validFormats.includes(fileExtension)) {
             // Emitujemo URL slike serveru pod imenom 'add-image'
             socket.emit('add-image', imageSource);
-
-            // Osluškujemo 'display-image' događaj sa servera
-            socket.on('display-image', (imageUrl) => {
-                addImageToDOM(imageUrl);  // Prikaz nove slike koju je server poslao
-            });
         }
     }
-}); 
+});
 
 // Osluškujemo 'initial-images' za inicijalne slike
 socket.on('initial-images', (images) => {
-    images.forEach(addImageToDOM);  // Dodaj sve trenutne slike
+    images.forEach(image => {
+        addImageToDOM(image.imageUrl, image.position, image.dimensions);
+    });
 });
 
 // Funkcija za dodavanje slike u DOM
 function addImageToDOM(imageUrl, position = { x: 50, y: 50 }, dimensions = { width: 200, height: 200 }) {
-    const currentImage = document.createElement('img');
+    currentImage = document.createElement('img');
     currentImage.src = imageUrl;
 
     // Postavljanje dimenzija slike
@@ -54,8 +56,8 @@ function addImageToDOM(imageUrl, position = { x: 50, y: 50 }, dimensions = { wid
     
     // Pozicioniranje slike u centar ekrana (početne pozicije)
     currentImage.style.position = "absolute";
-    currentImage.style.left = `${position.x}%`;
-    currentImage.style.top = `${position.y}%`;
+    currentImage.style.left = `${position.x}px`;  // Koristi px umesto %
+    currentImage.style.top = `${position.y}px`;   // Koristi px umesto %
     currentImage.style.transform = "translate(-50%, -50%)"; // Centriranje slike
 
     currentImage.style.zIndex = "1000"; // Pravilno pozicioniranje slike
@@ -72,15 +74,6 @@ function addImageToDOM(imageUrl, position = { x: 50, y: 50 }, dimensions = { wid
 
     // Dodajemo sliku u DOM
     document.body.appendChild(currentImage);
-
-    // Dodavanje event listener-a nakon što je slika dodana u DOM
-    currentImage.addEventListener('dragend', function () {
-        onImageMoveOrResize(currentImage);
-    });
-
-    currentImage.addEventListener('resize', function () {
-        onImageMoveOrResize(currentImage);
-    });
 
     // Emitovanje ažuriranja slike posle dodavanja
     socket.emit('update-image', {
@@ -186,13 +179,12 @@ function onImageMoveOrResize(image) {
 }
 
 // Kada se promeni dimenzija ili pozicija slike, pozivamo funkciju
-currentImage.addEventListener('dragend', function () {
+currentImage.addEventListener('dragend', function () {  // Koristi `currentImage` jer je ona ta koja se dodaje u DOM
     onImageMoveOrResize(currentImage);
 });
 
-currentImage.addEventListener('resize', function () {
-    onImageMoveOrResize(currentImage);
-});
+// Ukloni događaj `resize` jer ne postoji nativni događaj za slike u HTML-u
+// Umesto toga koristi kod unutar `enableDragAndResize` koji već pokreće promene dimenzija
 
 socket.on('sync-image', (data) => {
     const syncedImage = document.querySelector(`img[src="${data.imageUrl}"]`); // Izvor slike
