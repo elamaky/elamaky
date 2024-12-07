@@ -12,6 +12,16 @@ function setSocket(serverSocket, serverIo) {
     console.log('Inicijalne slike poslata:', currentImages); // Logujemo trenutno stanje slika
 
     // Osluškujemo kad klijent doda novu sliku
+    handleAddImage();
+
+    // Osluškujemo promene slike (pomeranje, dimenzije)
+    handleUpdateImage();
+
+    clearChat(); // Pozivamo clearChat radi registrovanja događaja
+}
+
+// Funkcija za obradu dodavanja novih slika
+function handleAddImage() {
     socket.on('add-image', (imageData) => {
         const { imageUrl, position, dimensions } = imageData; // Destrukturiranje podataka
 
@@ -44,8 +54,10 @@ function setSocket(serverSocket, serverIo) {
         });
         console.log('Slika emitovana svim klijentima:', imageUrl);
     });
+}
 
-    // Osluškujemo promene slike (pomeranje, dimenzije)
+// Funkcija za obradu promena slike (pomeranje, dimenzije)
+function handleUpdateImage() {
     socket.on('update-image', (data) => {
         console.log('Primljen zahtev za update slike:', data);
 
@@ -62,9 +74,6 @@ function setSocket(serverSocket, serverIo) {
         io.emit('sync-image', data);
         console.log('Promene slike emitovane svim klijentima:', data);
     });
-
-    clearChat(); // Pozivamo clearChat radi registrovanja događaja
-    chatMessage(); // Pozivamo chatMessage radi registrovanja događaja
 }
 
 // Funkcija za obradu slanja poruka u četu
@@ -76,7 +85,7 @@ function chatMessage(guests) {
             bold: msgData.bold,
             italic: msgData.italic,
             color: msgData.color,
-            nickname: guests[socket.id],
+            nickname: guests[socket.id], // Dodajte provere za guests
             time: time
         };
         io.emit('chatMessage', messageToSend);
