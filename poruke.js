@@ -39,22 +39,27 @@ function handleAddImage() {
 
         console.log('Slika sa URL-om:', imageUrl, 'pozicija:', position, 'dimenzije:', dimensions);
 
-        // Dodajemo sliku u listu trenutnih slika sa pozicijom i dimenzijama
-        currentImages.push({
-            imageUrl: imageUrl,
-            position: position,
-            dimensions: dimensions
-        });
+      // Dodajemo sliku u listu trenutnih slika sa pozicijom i dimenzijama
+currentImages.push({
+    imageUrl: imageUrl,
+    position: {
+        x: Math.random() * (window.innerWidth - 200), // Nasumično pozicioniranje u širini ekrana
+        y: Math.random() * (window.innerHeight - 200) // Nasumično pozicioniranje u visini ekrana
+    },
+    dimensions: {
+        width: 200,
+        height: 200
+    }
+});
 
-        // Emitujemo sliku svim klijentima
-        io.emit('display-image', {
-            imageUrl: imageUrl,
-            position: position,
-            dimensions: dimensions
-        });
-        console.log('Slika emitovana svim klijentima:', imageUrl);
-    });
-}
+// Emitujemo sliku svim klijentima
+io.emit('display-image', {
+    imageUrl: imageUrl,
+    position: position,
+    dimensions: dimensions
+});
+console.log('Slika emitovana svim klijentima:', imageUrl);
+
 
 // Funkcija za obradu promena slike (pomeranje, dimenzije)
 function handleUpdateImage() {
