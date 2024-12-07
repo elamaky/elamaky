@@ -28,7 +28,7 @@ if (validFormats.includes(fileExtension)) {
         } else {
             alert("Neispravan format slike! Molimo vas da unesete URL slike u JPG, PNG, ili GIF formatu.");
         }
-    }
+    
 });
 
 // Prikaz nove slike kada server pošalje 'display-image' događaj
