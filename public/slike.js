@@ -11,13 +11,16 @@ document.getElementById('addImage').addEventListener('click', () => {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
 
-       // Validacija formata slike
+// Validacija formata slike
 if (validFormats.includes(fileExtension)) {
     const imageData = {
         imageUrl: imageSource,
         position: { x: left, y: bottom }, // Početna pozicija
-        dimensions: { width: 200, height: 200 } // Početne dimenzije
+        dimensions: {} // Ovdje ostavljamo prazno jer se uzimaju iz addImage
     };
+
+    // Ovde možete dodati kod koji koristi imageData
+}
 
 
          // Emitujemo dodatak slike serveru
@@ -42,8 +45,8 @@ socket.on('initial-images', (images) => {
 function addImageToDOM(imageData) {
     const img = document.createElement('img');
     img.src = imageData.imageUrl;
-    img.style.width = `${imageData.dimensions.width}px`; // Postavljanje širine
-    img.style.height = `${imageData.dimensions.height}px`; // Postavljanje visine
+    img.style.width = `${imageData.dimensions.width}200px`; // Postavljanje širine
+    img.style.height = `${imageData.dimensions.height}200px`; // Postavljanje visine
     img.style.position = "absolute";
     img.style.left = `${imageData.position.x}px`; // Postavljanje horizontalne pozicije
     img.style.top = `${imageData.position.y}px`; // Postavljanje vertikalne pozicije
