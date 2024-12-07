@@ -11,23 +11,23 @@ document.getElementById('addImage').addEventListener('click', () => {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
 
-// Validacija formata slike
-if (validFormats.includes(fileExtension)) {
-    const imageData = {
-        imageUrl: imageSource,
-        position: { x: left, y: bottom }, // Početna pozicija
-        dimensions: {} // Ovdje ostavljamo prazno jer se uzimaju iz addImage
-    };
+        // Validacija formata slike
+        if (validFormats.includes(fileExtension)) {
+            const imageData = {
+                imageUrl: imageSource,
+                position: { x: '200px', y: '200px' }, // Početna pozicija
+                dimensions: {} // Ovdje ostavljamo prazno jer se uzimaju iz addImage
+            };
 
-    // Ovde možete dodati kod koji koristi imageData
-}
-
-
-         // Emitujemo dodatak slike serveru
+            // Emitujemo dodatak slike serveru
             socket.emit('add-image', imageData);
         } else {
             alert("Neispravan format slike! Molimo vas da unesete URL slike u JPG, PNG, ili GIF formatu.");
         }
+    } else {
+        alert("Niste uneli URL slike.");
+    }
+});
 
 // Prikaz nove slike kada server pošalje 'display-image' događaj
 socket.on('display-image', (imageData) => {
@@ -43,16 +43,16 @@ socket.on('initial-images', (images) => {
 function addImageToDOM(imageData) {
     const img = document.createElement('img');
     img.src = imageData.imageUrl;
-    img.style.width = `${imageData.dimensions.width}200px`; // Postavljanje širine
-    img.style.height = `${imageData.dimensions.height}200px`; // Postavljanje visine
+    img.style.width = `${imageData.dimensions.width || 200}px`; // Postavljanje širine
+    img.style.height = `${imageData.dimensions.height || 200}px`; // Postavljanje visine
     img.style.position = "absolute";
-    img.style.left = `${imageData.position.x}px`; // Postavljanje horizontalne pozicije
-    img.style.top = `${imageData.position.y}px`; // Postavljanje vertikalne pozicije
+    img.style.left = `${imageData.position.x}`; // Postavljanje horizontalne pozicije
+    img.style.top = `${imageData.position.y}`; // Postavljanje vertikalne pozicije
     img.style.zIndex = "1000";
     img.classList.add('draggable', 'resizable');
 
     // Omogućavanje interakcije samo ako je korisnik prijavljen
-    img.style.pointerEvents = isLoggedIn ? "auto" : "none"; 
+    img.style.pointerEvents = isLoggedIn ? "auto" : "none";
 
     if (isLoggedIn) {
         enableDragAndResize(img); // Aktiviramo funkcionalnost za povlačenje i promenu veličine
@@ -95,7 +95,7 @@ function enableDragAndResize(img) {
 
     img.addEventListener('mousedown', (e) => {
         const rect = img.getBoundingClientRect();
-        const borderSize = 10; // Opcija za odredjivanje mesta za promenu veličine
+        const borderSize = 10; // Opcija za određivanje mesta za promenu veličine
 
         // Određivanje na kojoj strani se vrši promena veličine
         if (e.clientX >= rect.left && e.clientX <= rect.left + borderSize) {
