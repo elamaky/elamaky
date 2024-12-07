@@ -124,3 +124,18 @@ function addImageToDOM(imageData, index) {
 function removeImage(index) {
     socket.emit('removeImage', index);
 }
+
+// Funkcija za dodavanje slike na stranici pomoću dugmeta
+document.getElementById('addImage').addEventListener('click', () => {
+    const imageUrl = prompt('Unesite URL slike:');
+    if (imageUrl) {
+        const imageData = {
+            url: imageUrl,
+            width: 200,  // Početna širina
+            height: 200, // Početna visina
+            x: 0,        // Početna pozicija X
+            y: 0         // Početna pozicija Y
+        };
+        socket.emit('addImage', imageData);  // Šalje podatke serveru za dodavanje slike
+    }
+});
