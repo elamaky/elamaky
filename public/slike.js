@@ -1,7 +1,6 @@
 // Globalne promenljive
 let currentImage; // Promenljiva za trenutnu sliku
 let allImages = []; // Niz za sve slike
-let isLoggedIn = true; // Flag za prijavljenog korisnika
 
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
