@@ -15,7 +15,7 @@ document.getElementById('addImage').addEventListener('click', () => {
 if (validFormats.includes(fileExtension)) {
     const imageData = {
         imageUrl: imageSource,
-        position: { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight }, // Pozicija bira korisnik (random za test)
+        position: { x: 400, y: 400 }, // Pozicija 400x400
         dimensions: { width: 200, height: 200 } // Početne dimenzije 200x200
     };
 
