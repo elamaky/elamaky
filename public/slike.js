@@ -82,12 +82,7 @@ function addImageToDOM(imageUrl, position, dimensions) {
         }
     });
 
-    document.body.appendChild(deleteButton);
-    document.body.appendChild(newImage);
-}
-
-
-    // Omogućavanje interakcije samo za prijavljene korisnike
+     // Omogućavanje interakcije samo za prijavljene korisnike
     if (isLoggedIn) {
         newImage.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
         enableDragAndResize(newImage); // Uključi funkcionalnost za povlačenje i promenu veličine
