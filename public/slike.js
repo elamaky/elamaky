@@ -17,23 +17,27 @@ document.getElementById('addImage').addEventListener('click', function () {
             socket.on('display-image', (imageUrl) => {
                 addImageToDOM(imageUrl);  // Prikaz nove slike koju je server poslao
             });
+        } else {
+            alert('Format slike nije podržan. Podržani formati su: JPG, PNG, GIF.');
         }
+    } else {
+        alert('URL slike nije unet.');
     }
-}); 
+});
 
-      // Funkcija za dodavanje slike u DOM
-    function addImageToDOM(imageUrl) {
-    currentImage = document.createElement('img'); // Zamenjeno img sa currentImage
+// Funkcija za dodavanje slike u DOM
+function addImageToDOM(imageUrl) {
+    currentImage = document.createElement('img');
     currentImage.src = imageUrl;
-    currentImage.style.width = "200";
-    currentImage.style.height = "200";
+    currentImage.style.width = "200px"; // Dodano 'px'
+    currentImage.style.height = "200px"; // Dodano 'px'
     currentImage.style.position = "absolute";
-    currentImage.style.top = "500"; // Pozicija od vrha
-    currentImage.style.left = "100"; // Pozicija od leve ivice
+    currentImage.style.top = "500px"; // Dodano 'px'
+    currentImage.style.left = "100px"; // Dodano 'px'
     currentImage.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
     currentImage.classList.add('draggable', 'resizable');
     currentImage.style.border = "none";
-    
+
     // Omogućavanje interakcije samo za prijavljene korisnike
     if (isLoggedIn) {
         currentImage.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
