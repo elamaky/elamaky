@@ -68,10 +68,8 @@ function addImageToDOM(imageUrl, position, dimensions) {
     selectedImage.style.border = "2px solid blue"; // Primer stila za označavanje selektovane slike
 
     deleteButton.style.display = "block"; // Pokaži dugme
-});
 
-
-    // Kada se klikne na dugme, slika se uklanja
+ // Kada se klikne na dugme, slika se uklanja
     deleteButton.addEventListener('click', function () {
         newImage.remove(); // Ukloni sliku sa DOM-a
         deleteButton.remove(); // Ukloni dugme iz DOM-a
