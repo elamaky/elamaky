@@ -36,6 +36,9 @@ socket.on('initial-images', (images) => {
     });
 });
 
+socket.emit('add-image', imageSource, { x: 100, y: 300 }, { width: 200, height: 200 });
+
+
 // Funkcija za dodavanje slike u DOM
 function addImageToDOM(imageUrl, position, dimensions) {
     const newImage = document.createElement('img');
