@@ -69,12 +69,7 @@ function addImageToDOM(imageUrl, position, dimensions) {
         socket.emit('remove-image', imageUrl); // Emituj događaj za uklanjanje slike sa servera
     });
 
-    // Sakrij dugme kada se ne interaguje sa slikom
-    newImage.addEventListener('mouseleave', function () {
-        deleteButton.style.display = "none"; // Sakrij dugme kada ne interaguješ sa slikom
-    });
-
-// Omogućavanje interakcije samo za prijavljene korisnike
+   // Omogućavanje interakcije samo za prijavljene korisnike
     if (isLoggedIn) {
         newImage.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
         enableDragAndResize(newImage); // Uključi funkcionalnost za povlačenje i promenu veličine
