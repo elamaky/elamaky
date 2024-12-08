@@ -37,8 +37,8 @@ function addImageToDOM(imageUrl) {
     currentImage.style.width = "200px"; // Dodano 'px'
     currentImage.style.height = "200px"; // Dodano 'px'
     currentImage.style.position = "absolute";
-    currentImage.style.top = "500px"; // Dodano 'px'
-    currentImage.style.left = "100px"; // Dodano 'px'
+    currentImage.style.bottom = "50px"; // Dodano 'px'
+    currentImage.style.left = "50px"; // Dodano 'px'
     currentImage.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
     currentImage.classList.add('draggable', 'resizable');
     currentImage.style.border = "none";
