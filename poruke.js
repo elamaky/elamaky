@@ -1,10 +1,6 @@
-const queryString = require('query-string'); // Importovanje query-string
-
-       let io; // Inicijalizujemo io
+let io; // Inicijalizujemo io
 let socket; // Inicijalizujemo socket
-
 const currentImages = []; // Skladištenje URL-ova slika, pozicija i dimenzije
-
 
 // Funkcija za setovanje socket-a i io objekta
 function setSocket(serverSocket, serverIo) {
