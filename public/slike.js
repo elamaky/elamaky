@@ -7,6 +7,15 @@ document.getElementById('addImage').addEventListener('click', function () {
     const position = { x: 100, y: 300 }; // Primer pozicije
     const dimensions = { width: 200, height: 200 }; // Primer dimenzija
 
+    function updateImageOnServer(imageUrl, position, dimensions) {
+    socket.emit('update-image', {
+        imageUrl: imageUrl,
+        position: position,
+        dimensions: dimensions
+    });
+}
+
+
     if (imageSource) {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
@@ -154,6 +163,10 @@ function enableDragAndResize(img) {
         img.style.border = "none";
     });
 }
+
+// Kada se izvrše promene na slici
+updateImageOnServer(imageUrl, newPosition, newDimensions);
+
  socket.on('sync-image', (data) => {
     const syncedImage = document.querySelector(`img[src="${data.imageUrl}"]`); // Izvor slike
     if (syncedImage) {
