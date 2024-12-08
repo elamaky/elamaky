@@ -1,6 +1,5 @@
 let io; // Inicijalizujemo io
 let socket; // Inicijalizujemo socket
-let currentImages = []; // Čuva samo trenutne slike
 const imageList = []; // Skladištenje URL-ova slika
 const currentImages = []; // Skladištenje URL-ova slika
 
