@@ -87,10 +87,6 @@ function addImageToDOM(imageUrl, position, dimensions) {
             alert("Nijedna slika nije selektovana!");
         }
     });
-
-    document.body.appendChild(deleteButton);
-    document.body.appendChild(newImage);
-}
  // Omogućavanje interakcije samo za prijavljene korisnike
     if (isLoggedIn) {
         newImage.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
@@ -98,6 +94,8 @@ function addImageToDOM(imageUrl, position, dimensions) {
     } else {
         newImage.style.pointerEvents = "none"; // Onemogućava klikove
     }
+     document.body.appendChild(deleteButton);
+    document.body.appendChild(newImage);
 
    // Emitovanje ažuriranja slike posle dodavanja
     emitImageUpdate(newImage);
