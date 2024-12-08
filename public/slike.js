@@ -1,15 +1,17 @@
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
-    const position = { x: 100, y: 300 }; // Primer pozicije
-    const dimensions = { width: 200, height: 200 }; // Primer dimenzija
-
-     updateImageOnServer(imageSource, position, dimensions);
     
-    if (imageSource) {
-        const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
-        const fileExtension = imageSource.split('.').pop().toLowerCase();
+    if (imageSource) { // Ako je URL slike unet
+        const position = { x: 100, y: 300 }; // Primer pozicije
+        const dimensions = { width: 200, height: 200 }; // Primer dimenzija
 
-        if (validFormats.includes(fileExtension)) {
+        updateImageOnServer(imageSource, position, dimensions); // Pozivamo funkciju za ažuriranje slike na serveru
+    } else {
+        alert('URL slike nije unet.');
+    }
+});
+
+     if (validFormats.includes(fileExtension)) {
             // Emitujemo URL slike sa pozicijom i dimenzijama serveru pod imenom 'add-image'
             socket.emit('add-image', imageSource, position, dimensions);
         } else {
@@ -97,25 +99,6 @@ function addImageToDOM(imageUrl, position, dimensions) {
 
     }
     
-// Emitovanje ažuriranja slike posle dodavanja
-    emitImageUpdate(newImage);
-
-function emitImageUpdate(img) {
-    const params = {
-        width: img.offsetWidth,
-        height: img.offsetHeight,
-        x: img.offsetLeft,
-        y: img.offsetTop
-    };
-    
-    // Emitovanje parametara slike, uključujući URL sa parametrima
-    socket.emit('update-image', {
-        imageUrl: img.src,
-        position: { x: img.offsetLeft, y: img.offsetTop },
-        dimensions: { width: img.offsetWidth, height: img.offsetHeight }
-    });
-}
-
 function enableDragAndResize(img) {
     // Omogućavamo Interact.js drag i resize funkcionalnost za sliku
     interact(img)
