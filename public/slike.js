@@ -172,8 +172,8 @@ function enableDragAndResize(img) {
             let newLeft = img.offsetLeft - (pos3 - e.clientX);
 
             // Ograničavanje pozicije slike da ostane unutar ekrana
-            newTop = Math.min(Math.max(newTop, 0), window.innerHeight - img.offsetHeight);
-            newLeft = Math.min(Math.max(newLeft, 0), window.innerWidth - img.offsetWidth);
+            newTop = Math.min(Math.max(newTop, 0), window.innerHeight - img.offsetHeight); // Gornja i donja granica
+            newLeft = Math.min(Math.max(newLeft, 0), window.innerWidth - img.offsetWidth); // Levokrajna i desna granica
 
             img.style.top = newTop + 'px';
             img.style.left = newLeft + 'px';
@@ -192,12 +192,7 @@ function enableDragAndResize(img) {
     }
 }
     
-
-
-
-      
-
-socket.on('sync-image', (data) => {
+    socket.on('sync-image', (data) => {
     const syncedImage = document.querySelector(`img[src="${data.imageUrl}"]`); // Izvor slike
     if (syncedImage) {
         syncedImage.style.left = data.position.x;
@@ -206,4 +201,3 @@ socket.on('sync-image', (data) => {
         syncedImage.style.height = data.dimensions.height;
     }
 });
-
