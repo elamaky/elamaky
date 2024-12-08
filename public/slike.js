@@ -25,11 +25,11 @@ document.getElementById('addImage').addEventListener('click', function () {
     function addImageToDOM(imageUrl) {
     currentImage = document.createElement('img'); // Zamenjeno img sa currentImage
     currentImage.src = imageUrl;
-    currentImage.style.width = "200px";
-    currentImage.style.height = "200px";
+    currentImage.style.width = "200";
+    currentImage.style.height = "200";
     currentImage.style.position = "absolute";
-    currentImage.style.top = "500px"; // Pozicija od vrha
-    currentImage.style.left = "100px"; // Pozicija od leve ivice
+    currentImage.style.top = "500"; // Pozicija od vrha
+    currentImage.style.left = "100"; // Pozicija od leve ivice
     currentImage.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
     currentImage.classList.add('draggable', 'resizable');
     currentImage.style.border = "none";
