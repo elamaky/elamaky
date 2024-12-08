@@ -101,7 +101,6 @@ function addImageToDOM(imageUrl, position, dimensions) {
 
    // Emitovanje ažuriranja slike posle dodavanja
     emitImageUpdate(newImage);
-}
 
 function emitImageUpdate(img) {
     const params = {
