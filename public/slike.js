@@ -51,7 +51,7 @@ function addImageToDOM(imageUrl, position, dimensions) {
 
     // Selektovanje slike
     function selectImage(image) {
-        if (selectedImage) {
+        if (selectedImage && selectedImage !== image) {
             selectedImage.style.border = "none"; // Ukloni indikator sa prethodne selekcije
         }
         selectedImage = image;
@@ -71,7 +71,7 @@ function addImageToDOM(imageUrl, position, dimensions) {
     deleteButton.style.bottom = "10px";
     deleteButton.style.right = "10px";
     deleteButton.style.zIndex = "1001";
-   
+
     deleteButton.addEventListener('click', function () {
         if (selectedImage) {
             selectedImage.remove(); // Ukloni selektovanu sliku
@@ -81,6 +81,11 @@ function addImageToDOM(imageUrl, position, dimensions) {
             alert("Nijedna slika nije selektovana!");
         }
     });
+
+    document.body.appendChild(deleteButton);
+    document.body.appendChild(newImage);
+}
+
 
     // Omogućavanje interakcije samo za prijavljene korisnike
     if (isLoggedIn) {
