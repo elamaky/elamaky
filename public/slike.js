@@ -1,7 +1,6 @@
 // Globalne promenljive
 let currentImage; // Promenljiva za trenutnu sliku
 let allImages = []; // Niz za sve slike
-const socket = io(); // Pretpostavljam da koristite socket.io
 
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
