@@ -21,25 +21,28 @@ document.getElementById('addImage').addEventListener('click', function () {
 });
 
 // Osluškujemo 'display-image' događaj sa servera
-socket.on('display-image', (imageUrl) => {
-    addImageToDOM(imageUrl); // Prikaz nove slike koju je server poslao
+socket.on('display-image', (data) => {
+    // Slika sada uključuje URL sa parametrima za poziciju i dimenzije
+    addImageToDOM(data.imageUrl, data.position, data.dimensions);
 });
 
 // Prikaz svih prethodnih slika kad se poveže klijent
 socket.on('initial-images', (images) => {
-    images.forEach(addImageToDOM); // Dodaj sve slike koje su već dodate
+    images.forEach((imageData) => {
+        addImageToDOM(imageData.imageUrl, imageData.position, imageData.dimensions);
+    });
 });
 
 // Funkcija za dodavanje slike u DOM
-function addImageToDOM(imageUrl) {
+function addImageToDOM(imageUrl, position, dimensions) {
     const newImage = document.createElement('img');
-    newImage.src = imageUrl;
-    newImage.style.width = "200px"; // Dodato 'px'
-    newImage.style.height = "200px"; // Dodato 'px'
+    newImage.src = imageUrl; // Postavi izvor slike
+    newImage.style.width = dimensions.width + 'px'; // Koristi dimenzije iz parametara
+    newImage.style.height = dimensions.height + 'px'; // Koristi dimenzije iz parametara
     newImage.style.position = "absolute";
-    newImage.style.bottom = "50px"; // Dodato 'px'
-    newImage.style.left = "50px"; // Dodato 'px'
-    newImage.style.zIndex = "1000"; // Dodato za pravilno pozicioniranje slike
+    newImage.style.left = position.x + 'px'; // Pozicija slika iz parametara
+    newImage.style.top = position.y + 'px'; // Pozicija slika iz parametara
+    newImage.style.zIndex = "1000"; // Dodaj z-index za pozicioniranje slike
     newImage.classList.add('draggable', 'resizable');
     newImage.style.border = "none";
 
@@ -58,10 +61,18 @@ function addImageToDOM(imageUrl) {
 }
 
 function emitImageUpdate(img) {
+    const params = {
+        width: img.offsetWidth,
+        height: img.offsetHeight,
+        x: img.offsetLeft,
+        y: img.offsetTop
+    };
+    
+    // Emitovanje parametara slike, uključujući URL sa parametrima
     socket.emit('update-image', {
         imageUrl: img.src,
-        position: { x: img.style.left, y: img.style.top },
-        dimensions: { width: img.style.width, height: img.style.height }
+        position: { x: img.offsetLeft, y: img.offsetTop },
+        dimensions: { width: img.offsetWidth, height: img.offsetHeight }
     });
 }
 
@@ -167,3 +178,4 @@ socket.on('sync-image', (data) => {
         syncedImage.style.height = data.dimensions.height;
     }
 });
+
