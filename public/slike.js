@@ -105,89 +105,65 @@ function enableDragAndResize(img) {
         }
 
         if (resizeSide) {
-            initiateResize(e, img, resizeSide);
+            isResizing = true;
+            const initialWidth = img.offsetWidth;
+            const initialHeight = img.offsetHeight;
+            const startX = e.clientX;
+            const startY = e.clientY;
+
+            document.onmousemove = function (e) {
+                if (isResizing) {
+                    if (resizeSide === 'right') {
+                        img.style.width = initialWidth + (e.clientX - startX) + 'px';
+                    } else if (resizeSide === 'bottom') {
+                        img.style.height = initialHeight + (e.clientY - startY) + 'px';
+                    } else if (resizeSide === 'left') {
+                        const newWidth = initialWidth - (e.clientX - startX);
+                        if (newWidth > 10) {
+                            img.style.width = newWidth + 'px';
+                            img.style.left = rect.left + (e.clientX - startX) + 'px';
+                        }
+                    } else if (resizeSide === 'top') {
+                        const newHeight = initialHeight - (e.clientY - startY);
+                        if (newHeight > 10) {
+                            img.style.height = newHeight + 'px';
+                            img.style.top = rect.top + (e.clientY - startY) + 'px';
+                        }
+                    }
+                }
+            };
+
+            document.onmouseup = function () {
+                isResizing = false;
+                resizeSide = null;
+                document.onmousemove = null;
+                document.onmouseup = null;
+            };
         } else {
-            initiateDrag(e, img);
+            dragMouseDown(e);
         }
     });
 
-    // Funkcija za inicijalizaciju resize-a
-    function initiateResize(e, img, side) {
-        isResizing = true;
-        const initialWidth = img.offsetWidth;
-        const initialHeight = img.offsetHeight;
-        const startX = e.clientX;
-        const startY = e.clientY;
-
-        document.onmousemove = function (e) {
-            if (isResizing) {
-                const rect = img.getBoundingClientRect();
-                if (side === 'right') {
-                    let newWidth = initialWidth + (e.clientX - startX);
-                    newWidth = Math.min(newWidth, window.innerWidth - rect.left); // Ograniči širinu
-                    img.style.width = newWidth + 'px';
-                } else if (side === 'bottom') {
-                    let newHeight = initialHeight + (e.clientY - startY);
-                    newHeight = Math.min(newHeight, window.innerHeight - rect.top); // Ograniči visinu
-                    img.style.height = newHeight + 'px';
-                } else if (side === 'left') {
-                    let newWidth = initialWidth - (e.clientX - startX);
-                    if (newWidth > 10) {
-                        img.style.width = newWidth + 'px';
-                        img.style.left = rect.left + (e.clientX - startX) + 'px';
-                    }
-                } else if (side === 'top') {
-                    let newHeight = initialHeight - (e.clientY - startY);
-                    if (newHeight > 10) {
-                        img.style.height = newHeight + 'px';
-                        img.style.top = rect.top + (e.clientY - startY) + 'px';
-                    }
-                }
-                emitImageUpdate(img); // Emitovanje ažuriranja svaki put kad se slika promeni
-            }
-        };
-
-        document.onmouseup = function () {
-            isResizing = false;
-            resizeSide = null;
-            document.onmousemove = null;
-            document.onmouseup = null;
-        };
-    }
-
-    // Funkcija za inicijalizaciju drag-a (pomeranje slike)
-    function initiateDrag(e, img) {
+    function dragMouseDown(e) {
         e.preventDefault();
         let pos3 = e.clientX;
         let pos4 = e.clientY;
 
         document.onmouseup = closeDragElement;
         document.onmousemove = function (e) {
-            // Računanje nove pozicije slike
-            let newTop = img.offsetTop - (pos4 - e.clientY);
-            let newLeft = img.offsetLeft - (pos3 - e.clientX);
-
-            // Ograničavanje pozicije slike da ostane unutar ekrana
-            newTop = Math.min(Math.max(newTop, 0), window.innerHeight - img.offsetHeight); // Gornja i donja granica
-            newLeft = Math.min(Math.max(newLeft, 0), window.innerWidth - img.offsetWidth); // Levokrajna i desna granica
-
-            img.style.top = newTop + 'px';
-            img.style.left = newLeft + 'px';
-
+            img.style.top = (img.offsetTop - (pos4 - e.clientY)) + 'px';
+            img.style.left = (img.offsetLeft - (pos3 - e.clientX)) + 'px';
             pos3 = e.clientX;
             pos4 = e.clientY;
-
-            emitImageUpdate(img); // Emitovanje ažuriranja svaki put kad se slika pomeri
         };
     }
 
-    // Funkcija za zatvaranje drag-a
     function closeDragElement() {
         document.onmouseup = null;
         document.onmousemove = null;
     }
 }
-    
+
     socket.on('sync-image', (data) => {
     const syncedImage = document.querySelector(`img[src="${data.imageUrl}"]`); // Izvor slike
     if (syncedImage) {
