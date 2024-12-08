@@ -1,8 +1,9 @@
+const queryString = require('query-string'); // Importovanje query-string
+
 let io; // Inicijalizujemo io
 let socket; // Inicijalizujemo socket
 const imageList = []; // Skladištenje URL-ova slika
 const currentImages = []; // Skladištenje URL-ova slika
-
 
 // Funkcija za setovanje socket-a i io objekta
 function setSocket(serverSocket, serverIo) {
@@ -17,7 +18,6 @@ function setSocket(serverSocket, serverIo) {
     // Osluškujemo kad klijent doda novu sliku
     socket.on('add-image', (imageSource, position, dimensions) => {
         if (!imageSource) {
-            // Emitujemo grešku ako je URL slike nevalidan
             socket.emit('error', 'Invalid image URL');
             console.error('Greška: Nevalidan URL slike.');
             return;
@@ -30,20 +30,29 @@ function setSocket(serverSocket, serverIo) {
 
         console.log('Slika sa URL-om:', imageSource, 'pozicija:', position, 'dimenzije:', dimensions);
 
-        // Dodajemo sliku u listu trenutnih slika sa pozicijom i dimenzijama
+        // Formiramo URL sa parametrima za poziciju i dimenzije slike
+        const params = {
+            width: dimensions.width,
+            height: dimensions.height,
+            x: position.x,
+            y: position.y
+        };
+        const formattedUrl = `${imageSource}?${queryString.stringify(params)}`;
+
+        // Dodajemo sliku u listu trenutnih slika sa novim URL-om
         currentImages.push({
-            imageUrl: imageSource,
+            imageUrl: formattedUrl,
             position: position,
             dimensions: dimensions
         });
 
         // Emitujemo sliku svim klijentima
         io.emit('display-image', {
-            imageUrl: imageSource,
+            imageUrl: formattedUrl,
             position: position,
             dimensions: dimensions
         });
-        console.log('Slika emitovana svim klijentima:', imageSource);
+        console.log('Slika emitovana svim klijentima:', formattedUrl);
     });
 
     // Osluškujemo promene slike (pomeranje, dimenzije)
@@ -93,3 +102,4 @@ function clearChat() {
 
 // Eksportovanje funkcija
 module.exports = { setSocket, chatMessage, clearChat };
+
