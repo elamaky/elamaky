@@ -41,9 +41,13 @@ function addImageToDOM(imageUrl, position, dimensions) {
     newImage.src = imageUrl; // Postavi izvor slike
     newImage.style.width = dimensions.width + 'px'; // Koristi dimenzije iz parametara
     newImage.style.height = dimensions.height + 'px'; // Koristi dimenzije iz parametara
+    dimensions.width = Math.min(dimensions.width, window.innerWidth - position.x);
+    dimensions.height = Math.min(dimensions.height, window.innerHeight - position.y);
     newImage.style.position = "absolute";
     newImage.style.left = position.x + 'px'; // Pozicija slika iz parametara
     newImage.style.top = position.y + 'px'; // Pozicija slika iz parametara
+    position.x = Math.min(Math.max(position.x, 0), window.innerWidth - dimensions.width);
+    position.y = Math.min(Math.max(position.y, 0), window.innerHeight - dimensions.height);
     newImage.style.zIndex = "1000"; // Dodaj z-index za pozicioniranje slike
     newImage.classList.add('draggable', 'resizable');
     newImage.style.border = "none";
