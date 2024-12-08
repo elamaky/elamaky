@@ -36,7 +36,6 @@ socket.on('initial-images', (images) => {
 });
 
 let selectedImage = null; // Globalna promenljiva za selektovanu sliku
-
 function addImageToDOM(imageUrl, position, dimensions) {
     const newImage = document.createElement('img');
     newImage.src = imageUrl;
@@ -64,6 +63,13 @@ function addImageToDOM(imageUrl, position, dimensions) {
         selectImage(newImage);
     });
 
+    // Održavanje selekcije (indikator ostaje bez obzira na interakciju miša)
+    document.addEventListener('click', function (event) {
+        if (!event.target.classList.contains('draggable') && selectedImage) {
+            selectedImage.style.border = "2px solid red"; // Održavaj okvir
+        }
+    });
+
     // Dugme za brisanje slike
     const deleteButton = document.createElement('button');
     deleteButton.innerText = "Ukloni Sliku";
@@ -85,9 +91,7 @@ function addImageToDOM(imageUrl, position, dimensions) {
     document.body.appendChild(deleteButton);
     document.body.appendChild(newImage);
 }
-
-    
-   // Omogućavanje interakcije samo za prijavljene korisnike
+ // Omogućavanje interakcije samo za prijavljene korisnike
     if (isLoggedIn) {
         newImage.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
         enableDragAndResize(newImage); // Uključi funkcionalnost za povlačenje i promenu veličine
@@ -97,6 +101,7 @@ function addImageToDOM(imageUrl, position, dimensions) {
 
    // Emitovanje ažuriranja slike posle dodavanja
     emitImageUpdate(newImage);
+}
 
 function emitImageUpdate(img) {
     const params = {
