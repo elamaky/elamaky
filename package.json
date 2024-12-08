@@ -31,7 +31,7 @@
     "node-persist": "^3.0.0",
     "socket.io": "^4.8.1",
     "uuid": "^8.0.0",
-    "moment-timezone": "^0.5.34",
+    "moment-timezone": "latest",
     "ws": "^8.18.0"
 
 
