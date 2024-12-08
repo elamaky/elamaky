@@ -16,7 +16,7 @@ document.getElementById('addImage').addEventListener('click', function () {
             socket.emit('add-image', imageSource, position, dimensions);
         } else {
             alert('Format slike nije podržan. Podržani formati su: JPG, PNG, GIF.');
-        }
+        
     } else {
         alert('URL slike nije unet.');
     }
