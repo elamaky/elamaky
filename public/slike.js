@@ -97,7 +97,9 @@ function addImageToDOM(imageUrl, position, dimensions) {
      document.body.appendChild(deleteButton);
     document.body.appendChild(newImage);
 
-   // Emitovanje ažuriranja slike posle dodavanja
+    }
+    
+// Emitovanje ažuriranja slike posle dodavanja
     emitImageUpdate(newImage);
 
 function emitImageUpdate(img) {
