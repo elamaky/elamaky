@@ -82,7 +82,10 @@ function addImageToDOM(imageUrl, position, dimensions) {
         }
     });
 
-     // Omogućavanje interakcije samo za prijavljene korisnike
+     document.body.appendChild(newImage); // Učitaj sliku u DOM
+    document.body.appendChild(deleteButton); // Učitaj dugme u DOM
+    
+   // Omogućavanje interakcije samo za prijavljene korisnike
     if (isLoggedIn) {
         newImage.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
         enableDragAndResize(newImage); // Uključi funkcionalnost za povlačenje i promenu veličine
@@ -90,10 +93,7 @@ function addImageToDOM(imageUrl, position, dimensions) {
         newImage.style.pointerEvents = "none"; // Onemogućava klikove
     }
 
-    document.body.appendChild(newImage); // Učitaj sliku u DOM
-    document.body.appendChild(deleteButton); // Učitaj dugme u DOM
-    
-    // Emitovanje ažuriranja slike posle dodavanja
+   // Emitovanje ažuriranja slike posle dodavanja
     emitImageUpdate(newImage);
 }
 
