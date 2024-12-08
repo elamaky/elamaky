@@ -1,13 +1,11 @@
-// Globalne promenljive
-let currentImage; // Promenljiva za trenutnu sliku
-let allImages = []; // Niz za sve slike
-
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
     const position = { x: 100, y: 300 }; // Primer pozicije
     const dimensions = { width: 200, height: 200 }; // Primer dimenzija
 
-        if (imageSource) {
+     updateImageOnServer(imageSource, position, dimensions);
+    
+    if (imageSource) {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
 
@@ -38,7 +36,6 @@ socket.on('initial-images', (images) => {
 let selectedImage = null; // Globalna promenljiva za selektovanu sliku
 function addImageToDOM(imageUrl, position, dimensions) {
     const newImage = document.createElement('img');
-    updateImageOnServer(imageSource, position, dimensions);
     newImage.src = imageUrl;
     newImage.style.width = dimensions.width + 'px';
     newImage.style.height = dimensions.height + 'px';
