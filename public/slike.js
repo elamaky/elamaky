@@ -7,14 +7,13 @@ document.getElementById('addImage').addEventListener('click', function () {
     const position = { x: 100, y: 300 }; // Primer pozicije
     const dimensions = { width: 200, height: 200 }; // Primer dimenzija
 
-
-       if (imageSource) {
+    if (imageSource) {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
 
         if (validFormats.includes(fileExtension)) {
-            // Emitujemo URL slike serveru pod imenom 'add-image'
-            socket.emit('add-image', imageSource);
+            // Emitujemo URL slike sa pozicijom i dimenzijama serveru pod imenom 'add-image'
+            socket.emit('add-image', imageSource, position, dimensions);
         } else {
             alert('Format slike nije podržan. Podržani formati su: JPG, PNG, GIF.');
         }
@@ -36,9 +35,6 @@ socket.on('initial-images', (images) => {
     });
 });
 
-socket.emit('add-image', imageSource, { x: 100, y: 300 }, { width: 200, height: 200 });
-
-
 // Funkcija za dodavanje slike u DOM
 function addImageToDOM(imageUrl, position, dimensions) {
     const newImage = document.createElement('img');
@@ -52,7 +48,7 @@ function addImageToDOM(imageUrl, position, dimensions) {
     newImage.classList.add('draggable', 'resizable');
     newImage.style.border = "none";
 
-    // Omogućavanje interakcije samo za prijavljene korisnike
+// Omogućavanje interakcije samo za prijavljene korisnike
     if (isLoggedIn) {
         newImage.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
         enableDragAndResize(newImage); // Uključi funkcionalnost za povlačenje i promenu veličine
