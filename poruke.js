@@ -33,16 +33,15 @@ function setSocket(serverSocket, serverIo) {
             dimensions: dimensions
         });
     });
+
+    // Kada server primi 'update-image' događaj od klijenta
+    socket.on('update-image', (data) => {
+        // Emituj promene svim ostalim klijentima
+        socket.broadcast.emit('sync-image', data);
+    });
 }
 
-// Kada server primi 'update-image' događaj od klijenta
-socket.on('update-image', (data) => {
-    // Emituj promene svim ostalim klijentima
-    socket.broadcast.emit('sync-image', data);
-});
-
-
-  // Funkcija za obradu slanja poruka u četu
+ // Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
     socket.on('chatMessage', (msgData) => {
         const time = new Date().toLocaleTimeString();
