@@ -11,16 +11,11 @@ document.getElementById('addImage').addEventListener('click', function () {
     }
 });
 
-     if (validFormats.includes(fileExtension)) {
-            // Emitujemo URL slike sa pozicijom i dimenzijama serveru pod imenom 'add-image'
-            socket.emit('add-image', imageSource, position, dimensions);
-        } else {
-            alert('Format slike nije podržan. Podržani formati su: JPG, PNG, GIF.');
-        
-    } else {
-        alert('URL slike nije unet.');
-    }
-});
+    if (validFormats.includes(fileExtension)) {
+    // Emitujemo URL slike sa pozicijom i dimenzijama serveru pod imenom 'add-image'
+    socket.emit('add-image', imageSource, position, dimensions);
+}
+
 
 // Osluškujemo 'display-image' događaj sa servera
 socket.on('display-image', (data) => {
