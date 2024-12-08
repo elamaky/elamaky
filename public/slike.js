@@ -48,6 +48,32 @@ function addImageToDOM(imageUrl, position, dimensions) {
     newImage.classList.add('draggable', 'resizable');
     newImage.style.border = "none";
 
+    // Dugme za brisanje koje se pojavljuje kad klikneš na sliku
+    const deleteButton = document.createElement('button');
+    deleteButton.innerText = "Ukloni";
+    deleteButton.style.position = "absolute";
+    deleteButton.style.top = "5px"; // Malo iznad slike
+    deleteButton.style.left = "5px"; // Malo sa leve strane slike
+    deleteButton.style.zIndex = "1001"; // Osiguraj da dugme bude iznad slike
+    deleteButton.style.display = "none"; // Početno sakrivanje dugmeta
+
+    // Kada se klikne na sliku, dugme se pojavljuje
+    newImage.addEventListener('click', function () {
+        deleteButton.style.display = "block"; // Pokaži dugme
+    });
+
+    // Kada se klikne na dugme, slika se uklanja
+    deleteButton.addEventListener('click', function () {
+        newImage.remove(); // Ukloni sliku sa DOM-a
+        deleteButton.remove(); // Ukloni dugme iz DOM-a
+        socket.emit('remove-image', imageUrl); // Emituj događaj za uklanjanje slike sa servera
+    });
+
+    // Sakrij dugme kada se ne interaguje sa slikom
+    newImage.addEventListener('mouseleave', function () {
+        deleteButton.style.display = "none"; // Sakrij dugme kada ne interaguješ sa slikom
+    });
+
 // Omogućavanje interakcije samo za prijavljene korisnike
     if (isLoggedIn) {
         newImage.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
@@ -57,6 +83,7 @@ function addImageToDOM(imageUrl, position, dimensions) {
     }
 
     document.body.appendChild(newImage); // Učitaj sliku u DOM
+    document.body.appendChild(deleteButton); // Učitaj dugme u DOM
     
     // Emitovanje ažuriranja slike posle dodavanja
     emitImageUpdate(newImage);
