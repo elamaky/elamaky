@@ -1,17 +1,15 @@
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
-    
+
     if (imageSource) { // Ako je URL slike unet
         const position = { x: 100, y: 300 }; // Primer pozicije
         const dimensions = { width: 200, height: 200 }; // Primer dimenzija
 
-        updateImageOnServer(imageSource, position, dimensions); // Pozivamo funkciju za ažuriranje slike na serveru
-    } else {
-        alert('URL slike nije unet.');
-    }
-});
+        // Provera formata slike
+        const fileExtension = imageSource.split('.').pop().toLowerCase(); // Uzima ekstenziju fajla
+        const validFormats = ['jpg', 'png', 'gif'];
 
-     if (validFormats.includes(fileExtension)) {
+        if (validFormats.includes(fileExtension)) {
             // Emitujemo URL slike sa pozicijom i dimenzijama serveru pod imenom 'add-image'
             socket.emit('add-image', imageSource, position, dimensions);
         } else {
@@ -21,6 +19,7 @@ document.getElementById('addImage').addEventListener('click', function () {
         alert('URL slike nije unet.');
     }
 });
+
 
 // Osluškujemo 'display-image' događaj sa servera
 socket.on('display-image', (data) => {
