@@ -35,6 +35,8 @@ socket.on('initial-images', (images) => {
     });
 });
 
+let selectedImage = null; // Globalna promenljiva za selektovanu sliku
+
 function addImageToDOM(imageUrl, position, dimensions) {
     const newImage = document.createElement('img');
     newImage.src = imageUrl;
@@ -46,8 +48,6 @@ function addImageToDOM(imageUrl, position, dimensions) {
     newImage.style.zIndex = "1000";
     newImage.classList.add('draggable', 'resizable');
     newImage.style.border = "none";
-
-    let selectedImage = null;
 
     // Selektovanje slike
     function selectImage(image) {
@@ -82,8 +82,10 @@ function addImageToDOM(imageUrl, position, dimensions) {
         }
     });
 
-     document.body.appendChild(newImage); // Učitaj sliku u DOM
-    document.body.appendChild(deleteButton); // Učitaj dugme u DOM
+    document.body.appendChild(deleteButton);
+    document.body.appendChild(newImage);
+}
+
     
    // Omogućavanje interakcije samo za prijavljene korisnike
     if (isLoggedIn) {
