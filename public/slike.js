@@ -1,6 +1,5 @@
 // Globalne promenljive
 let currentImage; // Promenljiva za trenutnu sliku
-let newImage;
 let allImages = []; // Niz za sve slike
 
 document.getElementById('addImage').addEventListener('click', function () {
