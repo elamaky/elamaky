@@ -4,8 +4,11 @@ let allImages = []; // Niz za sve slike
 
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
+    const position = { x: 100, y: 300 }; // Primer pozicije
+    const dimensions = { width: 200, height: 200 }; // Primer dimenzija
 
-    if (imageSource) {
+
+       if (imageSource) {
         const validFormats = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = imageSource.split('.').pop().toLowerCase();
 
