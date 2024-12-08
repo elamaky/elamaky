@@ -40,7 +40,7 @@ function setSocket(serverSocket, serverIo) {
 
     clearChat(); // Pozivamo clearChat radi registrovanja događaja
     chatMessage(); // Pozivamo chatMessage radi registrovanja događaja
-}
+
 
 // Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
