@@ -48,9 +48,10 @@ function addImageToDOM(imageUrl, position, dimensions) {
     newImage.classList.add('draggable', 'resizable');
     newImage.style.border = "none";
 
-    // Dugme za brisanje koje se pojavljuje kad klikneš na sliku
+    let selectedImage = null;
+   // Dugme za brisanje koje se pojavljuje kad klikneš na sliku
     const deleteButton = document.createElement('button');
-    deleteButton.innerText = "Ukloni";
+    deleteButton.innerText = "UkloniSliku";
     deleteButton.style.position = "absolute";
     deleteButton.style.top = "5px"; // Malo iznad slike
     deleteButton.style.left = "5px"; // Malo sa leve strane slike
@@ -61,6 +62,14 @@ function addImageToDOM(imageUrl, position, dimensions) {
     newImage.addEventListener('click', function () {
         deleteButton.style.display = "block"; // Pokaži dugme
     });
+
+        // Postavi novu selektovanu sliku
+    selectedImage = newImage;
+    selectedImage.style.border = "2px solid blue"; // Primer stila za označavanje selektovane slike
+
+    deleteButton.style.display = "block"; // Pokaži dugme
+});
+
 
     // Kada se klikne na dugme, slika se uklanja
     deleteButton.addEventListener('click', function () {
