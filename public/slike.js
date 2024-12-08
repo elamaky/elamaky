@@ -63,11 +63,12 @@ function addImageToDOM(imageUrl, position, dimensions) {
         deleteButton.style.display = "block"; // Pokaži dugme
     });
 
-        // Postavi novu selektovanu sliku
-    selectedImage = newImage;
-    selectedImage.style.border = "2px solid blue"; // Primer stila za označavanje selektovane slike
+       // Kada se desnim klikne na sliku, selektuj je
+newImage.addEventListener('contextmenu', function (event) {
+    event.preventDefault(); // Sprečava prikazivanje kontekstualnog menija
+    selectImage(newImage);
+});
 
-    deleteButton.style.display = "block"; // Pokaži dugme
 
  // Kada se klikne na dugme, slika se uklanja
     deleteButton.addEventListener('click', function () {
