@@ -1,6 +1,6 @@
 let io;
 let socket;
-const newImage = [];
+let newImage = [];  
 
 // Funkcija za setovanje socket-a i io objekta
 function setSocket(serverSocket, serverIo) {
