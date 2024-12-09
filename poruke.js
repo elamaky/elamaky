@@ -7,9 +7,11 @@ function setSocket(serverSocket, serverIo) {
     socket = serverSocket;
     io = serverIo;
 
-    // Emitujemo inicijalne slike
-    console.log('Inicijalne slike:', newImage);
-    socket.emit('initial-images', newImage);
+    // Emitujemo sve slike kada se novi klijent poveže
+    socket.on('connect', () => {
+        console.log('Novi korisnik povezan');
+        socket.emit('initial-images', newImage);
+    });
 
     // Osluškujemo kada klijent doda novu sliku
     socket.on('add-image', (imageSource, position, dimensions) => {
@@ -36,15 +38,33 @@ function setSocket(serverSocket, serverIo) {
         });
     });
 
-   // Kada server primi 'update-image' događaj od klijenta
-socket.on('update-image', (data) => {
-    console.log('Primljeni podaci za update slike:', data);
-    // Emituj promene svim ostalim klijentima
-    io.emit('sync-image', data);
-    console.log('Podaci emitovani drugim klijentima:', data); 
-});
-    
-    }
+    // Kada server primi 'update-image' događaj od klijenta
+    socket.on('update-image', (data) => {
+        console.log('Primljeni podaci za update slike:', data);
+
+        // Ažuriramo sliku u `newImage` listi
+        const image = newImage.find(img => img.imageUrl === data.imageUrl);
+        if (image) {
+            image.position = data.position;
+            image.dimensions = data.dimensions;
+        }
+
+        // Emitujemo promene svim ostalim klijentima
+        io.emit('sync-image', data);
+        console.log('Podaci emitovani drugim klijentima:', data);
+    });
+
+    // Debug: ispisujemo listu svih slika prilikom ažuriranja
+    socket.on('get-all-images', () => {
+        console.log('Trenutne slike:', newImage);
+        socket.emit('all-images', newImage);
+    });
+}
+
+module.exports = {
+    setSocket
+};
+
 
  // Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
