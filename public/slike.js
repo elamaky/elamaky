@@ -1,3 +1,5 @@
+let selectedImage = null; // Deklaracija promenljive koja drži trenutno selektovanu sliku
+
 document.getElementById('addImage').addEventListener('click', function () {
     const imageSource = prompt("Unesite URL slike (JPG, PNG, GIF):");
 
@@ -100,7 +102,6 @@ function addImageToDOM(imageUrl, position, dimensions) {
         document.body.appendChild(newImage);
     }
 }
-
 
 // Funkcija za omogućavanje drag-and-resize funkcionalnosti za sliku
 function enableDragAndResize(img) {
