@@ -100,33 +100,105 @@ function addImageToDOM(imageUrl, position, dimensions) {
     
 // Funkcija za omogućavanje drag i resize funkcionalnosti
 function enableDragAndResize(img) {
-    interact(img)
-        .draggable({
-            // Opcije za drag funkcionalnost
-            onmove(event) {
-                // Pomeranje slike
-                img.style.left = (img.offsetLeft + event.dx) + 'px';
-                img.style.top = (img.offsetTop + event.dy) + 'px';
-                console.log(`Slika pomerena na: X: ${img.offsetLeft}, Y: ${img.offsetTop}`);
+    let isDragging = false;
+    let isResizing = false;
+    let offsetX, offsetY, startX, startY, startWidth, startHeight;
 
-                // Emitovanje ažuriranih pozicija slike
-                emitImageUpdate(img);
-            }
-        })
-        .resizable({
-            // Opcije za resize funkcionalnost
-            edges: { left: true, right: true, top: true, bottom: true },
-            onmove(event) {
-                // Promena dimenzija slike
-                img.style.width = event.rect.width + 'px';
-                img.style.height = event.rect.height + 'px';
-                console.log(`Dimenzije slike promenjene na: širina: ${event.rect.width}, visina: ${event.rect.height}`);
+    // Pomeranje slike (drag)
+    img.addEventListener('mousedown', function (e) {
+        if (e.target === img) {  // Aktivira se samo kada klikneš direktno na sliku
+            isDragging = true;
+            offsetX = e.clientX - img.offsetLeft;
+            offsetY = e.clientY - img.offsetTop;
+            document.addEventListener('mousemove', dragMove);
+            document.addEventListener('mouseup', stopDrag);
+        }
+    });
 
-                // Emitovanje ažuriranih dimenzija slike
-                emitImageUpdate(img);
+    function dragMove(e) {
+        if (isDragging) {
+            img.style.left = e.clientX - offsetX + 'px';
+            img.style.top = e.clientY - offsetY + 'px';
+            emitImageUpdate(img);
+        }
+    }
+
+    function stopDrag() {
+        isDragging = false;
+        document.removeEventListener('mousemove', dragMove);
+        document.removeEventListener('mouseup', stopDrag);
+    }
+
+    // Resize funkcionalnost sa četiri strane
+    const resizeHandles = [
+        { position: 'top-left', cursor: 'nwse-resize' },
+        { position: 'top-right', cursor: 'nesw-resize' },
+        { position: 'bottom-left', cursor: 'nesw-resize' },
+        { position: 'bottom-right', cursor: 'nwse-resize' }
+    ];
+
+    resizeHandles.forEach(handle => {
+        const div = document.createElement('div');
+        div.classList.add('resize-handle', handle.position);
+        img.parentElement.appendChild(div);
+        div.style.cursor = handle.cursor;
+        div.addEventListener('mousedown', (e) => startResize(e, handle.position));
+    });
+
+    function startResize(e, position) {
+        e.preventDefault();
+        isResizing = true;
+        startWidth = img.offsetWidth;
+        startHeight = img.offsetHeight;
+        startX = e.clientX;
+        startY = e.clientY;
+        document.addEventListener('mousemove', resizeMove);
+        document.addEventListener('mouseup', stopResize);
+    }
+
+    function resizeMove(e) {
+        if (isResizing) {
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+
+            if (e.target.classList.contains('top-left')) {
+                img.style.width = startWidth - dx + 'px';
+                img.style.height = startHeight - dy + 'px';
+                img.style.left = img.offsetLeft + dx + 'px';
+                img.style.top = img.offsetTop + dy + 'px';
+            } else if (e.target.classList.contains('top-right')) {
+                img.style.width = startWidth + dx + 'px';
+                img.style.height = startHeight - dy + 'px';
+                img.style.top = img.offsetTop + dy + 'px';
+            } else if (e.target.classList.contains('bottom-left')) {
+                img.style.width = startWidth - dx + 'px';
+                img.style.height = startHeight + dy + 'px';
+                img.style.left = img.offsetLeft + dx + 'px';
+            } else if (e.target.classList.contains('bottom-right')) {
+                img.style.width = startWidth + dx + 'px';
+                img.style.height = startHeight + dy + 'px';
             }
-        })
-        .styleCursor(false); // Onemogućava promenu kursora prilikom pomeranja slike
+
+            emitImageUpdate(img);
+        }
+    }
+
+    function stopResize() {
+        isResizing = false;
+        document.removeEventListener('mousemove', resizeMove);
+        document.removeEventListener('mouseup', stopResize);
+    }
+
+    // Emitovanje podataka o slici (pozicija i dimenzije)
+    function emitImageUpdate(img) {
+        const position = { x: img.offsetLeft, y: img.offsetTop }; // Pozicija slike
+        const dimensions = { width: img.offsetWidth, height: img.offsetHeight }; // Dimenzije slike
+        const imageUrl = img.src; // URL slike
+        console.log(`Emituju se podaci slike: URL: ${imageUrl}, pozicija: (${position.x}, ${position.y}), dimenzije: (${dimensions.width}, ${dimensions.height})`);
+        
+        // Pozivamo funkciju koja emituje podatke serveru (via socket ili bilo šta drugo)
+        updateImageOnServer(imageUrl, position, dimensions);
+    }
 
     // Dodavanje border-a kada korisnik pređe mišem preko slike
     img.addEventListener('mouseenter', function () {
@@ -141,16 +213,6 @@ function enableDragAndResize(img) {
     });
 }
 
-// Funkcija za emitovanje podataka o slici (pozicija i dimenzije)
-function emitImageUpdate(img) {
-    const position = { x: img.offsetLeft, y: img.offsetTop }; // Pozicija slike
-    const dimensions = { width: img.offsetWidth, height: img.offsetHeight }; // Dimenzije slike
-    const imageUrl = img.src; // URL slike
-    console.log(`Emituju se podaci slike: URL: ${imageUrl}, pozicija: (${position.x}, ${position.y}), dimenzije: (${dimensions.width}, ${dimensions.height})`);
-
-    // Pozivamo funkciju koja emituje podatke serveru
-    updateImageOnServer(imageUrl, position, dimensions);
-}
 
 // Funkcija za slanje podataka o slici serveru
 function updateImageOnServer(imageUrl, position, dimensions) {
