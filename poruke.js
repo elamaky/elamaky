@@ -47,7 +47,7 @@ function setSocket(serverSocket, serverIo) {
   socket.on('remove-image', (imageUrl) => {
     newImage = newImage.filter(img => img.imageUrl !== imageUrl); // Uklanjamo sliku
     io.emit('update-images', newImage); // Emitujemo novu listu svima
-});
+};
 
 // Funkcija za obradu slanja poruka u četu
 function chatMessage() {
