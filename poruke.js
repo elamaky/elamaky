@@ -1,6 +1,6 @@
 let io; // Inicijalizujemo io
 let socket; // Inicijalizujemo socket
-const currentImages = []; // Skladištenje URL-ova slika, pozicija i dimenzije
+const newImage = []; // Skladištenje URL-ova slika, pozicija i dimenzije
 
 // Funkcija za setovanje socket-a i io objekta
 function setSocket(serverSocket, serverIo) {
@@ -8,7 +8,8 @@ function setSocket(serverSocket, serverIo) {
     io = serverIo;
 
     // Emitujemo inicijalne slike
-    socket.emit('initial-images', currentImages);
+    console.log('Inicijalne slike:', newImage);
+    socket.emit('initial-images', newImage);
 
     // Osluškujemo kada klijent doda novu sliku
     socket.on('add-image', (imageSource, position, dimensions) => {
@@ -20,13 +21,14 @@ function setSocket(serverSocket, serverIo) {
         console.log('Dodata slika:', imageSource, 'Pozicija:', position, 'Dimenzije:', dimensions);
 
         // Dodajemo sliku u listu sa pozicijom i dimenzijama
-        currentImages.push({
+        newImage.push({
             imageUrl: imageSource,
             position: position,
             dimensions: dimensions
         });
 
         // Emitujemo sliku svim klijentima
+        console.log('Emitovanje slike svim klijentima:', newImage);
         io.emit('display-image', {
             imageUrl: imageSource,
             position: position,
@@ -36,10 +38,12 @@ function setSocket(serverSocket, serverIo) {
 
     // Kada server primi 'update-image' događaj od klijenta
     socket.on('update-image', (data) => {
+        console.log('Primljeni podaci za update slike:', data);
         // Emituj promene svim ostalim klijentima
         socket.broadcast.emit('sync-image', data);
     });
 }
+
 
  // Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
