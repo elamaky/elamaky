@@ -109,13 +109,11 @@ function enableDragAndResize(img) {
     // Dodavanje border-a kada korisnik pređe mišem preko slike
     img.addEventListener('mouseenter', function () {
         img.style.border = "2px dashed red";
-        
     });
 
     // Uklanjanje border-a kada korisnik skloni miša sa slike
     img.addEventListener('mouseleave', function () {
         img.style.border = "none";
-    
     });
 
     img.addEventListener('mousedown', function (e) {
@@ -158,17 +156,22 @@ function enableDragAndResize(img) {
                             img.style.top = rect.top + (e.clientY - startY) + 'px';
                         }
                     }
-                    
-                document.onmouseup = function () {
+                }
+            };
+
+            document.onmouseup = function () {
                 isResizing = false;
                 resizeSide = null;
                 document.onmousemove = null;
                 document.onmouseup = null;
+
+                // Emitujemo promene na server
+                emitImageUpdate(img);
             };
         } else {
             dragMouseDown(e);
         }
-    };
+    });
 
     function dragMouseDown(e) {
         e.preventDefault();
@@ -181,11 +184,15 @@ function enableDragAndResize(img) {
             img.style.left = (img.offsetLeft - (pos3 - e.clientX)) + 'px';
             pos3 = e.clientX;
             pos4 = e.clientY;
-
+        };
+    }
 
     function closeDragElement() {
         document.onmouseup = null;
         document.onmousemove = null;
+
+        // Emitujemo promene na server
+        emitImageUpdate(img);
     }
 }
 
@@ -203,7 +210,6 @@ function emitImageUpdate(img) {
 // Funkcija za slanje podataka o slici serveru
 function updateImageOnServer(imageUrl, position, dimensions) {
     console.log(`Slanje podataka serveru: URL: ${imageUrl}, pozicija: (${position.x}, ${position.y}), dimenzije: (${dimensions.width}, ${dimensions.height})`);
-    // Pretpostavljam da koristiš neki socket za komunikaciju sa serverom
     socket.emit('update-image', {
         imageUrl: imageUrl,
         position: position,
