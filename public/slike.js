@@ -198,9 +198,8 @@ function enableDragAndResize(img) {
     // Emitovanje ažuriranih pozicija slike
     emitImageUpdate(img);
 
-    // Onemogućava promenu kursora prilikom pomeranja slike
-    img.style.cursor = 'default'; 
-
+    .styleCursor(false); // Ovaj metod onemogućava promenu kursora prilikom pomeranja slike
+    
     // Dodavanje border-a kada korisnik pređe mišem preko slike
     img.addEventListener('mouseenter', function () {
         img.style.border = "2px dashed red";
@@ -244,5 +243,6 @@ socket.on('sync-image', (data) => {
         syncedImage.style.width = data.dimensions.width + 'px';
         syncedImage.style.height = data.dimensions.height + 'px';
         console.log(`Slika sinhronizovana: X: ${data.position.x}, Y: ${data.position.y}, širina: ${data.dimensions.width}, visina: ${data.dimensions.height}`);
-    
-};
+  }
+});   
+
