@@ -48,10 +48,7 @@ function addImageToDOM(imageUrl, position, dimensions) {
         newImage.classList.add('draggable', 'resizable');
         newImage.style.border = "none";
 
-    }
-}
-
-      // Selektovanje slike
+     // Selektovanje slike
     function selectImage(image) {
         if (selectedImage && selectedImage !== image) {
             selectedImage.style.border = "none"; // Ukloni indikator sa prethodne selekcije
