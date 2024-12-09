@@ -102,11 +102,13 @@ function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
 
+    // Dodavanje loga za border kada miš pređe preko slike
     img.addEventListener('mouseenter', function () {
         img.style.border = "2px dashed red";
         console.log("Miš prešao preko slike, border postavljen.");
     });
 
+    // Uklanjanje border-a kada miš sklonimo sa slike
     img.addEventListener('mouseleave', function () {
         img.style.border = "none";
         console.log("Miš sklonjen sa slike, border uklonjen.");
@@ -116,7 +118,7 @@ function enableDragAndResize(img) {
         const rect = img.getBoundingClientRect();
         const borderSize = 10;
 
-        // Logika za detekciju granica slike za resize
+        // Određivanje da li je korisnik u delu za resize
         if (e.clientX >= rect.left && e.clientX <= rect.left + borderSize) {
             resizeSide = 'left';
         } else if (e.clientX >= rect.right - borderSize && e.clientX <= rect.right) {
@@ -136,7 +138,6 @@ function enableDragAndResize(img) {
 
             document.onmousemove = function (e) {
                 if (isResizing) {
-                    // Logika za promenu dimenzija slike
                     if (resizeSide === 'right') {
                         img.style.width = initialWidth + (e.clientX - startX) + 'px';
                     } else if (resizeSide === 'bottom') {
@@ -154,7 +155,8 @@ function enableDragAndResize(img) {
                             img.style.top = rect.top + (e.clientY - startY) + 'px';
                         }
                     }
-                    // Emitovanje ažuriranih podataka
+
+                    // Emitovanje podataka o promenama dimenzija slike
                     emitImageUpdate(img);
                 }
             };
@@ -166,11 +168,11 @@ function enableDragAndResize(img) {
                 document.onmouseup = null;
             };
         } else {
-            // Pomeranje slike kada nije resize
             dragMouseDown(e);
         }
     });
 
+    // Funkcija za pomeranje slike
     function dragMouseDown(e) {
         e.preventDefault();
         let pos3 = e.clientX;
@@ -183,17 +185,18 @@ function enableDragAndResize(img) {
             pos3 = e.clientX;
             pos4 = e.clientY;
 
-            // Emitovanje ažuriranih podataka
+            // Emitovanje podataka o promenama pozicije slike
             emitImageUpdate(img);
         };
     }
 
+    // Funkcija koja zatvara drag element
     function closeDragElement() {
         document.onmouseup = null;
         document.onmousemove = null;
     }
 
-    // Funkcija za emitovanje podataka o slici (pozicija i dimenzije)
+    // Funkcija za emitovanje podataka slike serveru
     function emitImageUpdate(img) {
         const position = { x: img.offsetLeft, y: img.offsetTop }; // Pozicija slike
         const dimensions = { width: img.offsetWidth, height: img.offsetHeight }; // Dimenzije slike
@@ -203,20 +206,26 @@ function enableDragAndResize(img) {
         // Pozivamo funkciju koja emituje podatke serveru
         updateImageOnServer(imageUrl, position, dimensions);
     }
-}
 
-// Funkcija za slanje podataka serveru
-function updateImageOnServer(imageUrl, position, dimensions) {
-    const imageData = {
-        imageUrl: imageUrl,
-        position: position,
-        dimensions: dimensions
-    };
-
-    // Slanje podataka putem socket-a
-    socket.emit('imageUpdate', imageData);
-
-    console.log("Podaci poslati serveru:", imageData);
+    // Funkcija koja šalje podatke serveru
+    function updateImageOnServer(imageUrl, position, dimensions) {
+        // Ovde ide kod za slanje podataka serveru
+        // Na primer, korišćenje fetch API-ja za slanje podataka na server
+        fetch('your-server-endpoint', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                imageUrl: imageUrl,
+                position: position,
+                dimensions: dimensions
+            })
+        })
+        .then(response => response.json())
+        .then(data => console.log('Podaci uspešno poslati na server:', data))
+        .catch(error => console.error('Greška prilikom slanja podataka na server:', error));
+    }
 }
 
 
