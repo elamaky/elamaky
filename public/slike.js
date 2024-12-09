@@ -233,17 +233,22 @@ function enableDragAndResize(img) {
             dimensions: dimensions
         });
     }
-
-    // Funkcija za sinhronizaciju slike sa servera
-    socket.on('sync-image', (data) => {
+    
+socket.on('sync-image', (data) => {
+    if (data && data.dimensions) { // Proveravamo da li objekat data i data.dimensions postoje
         console.log(`Prijem sinhronizovanih podataka: URL: ${data.imageUrl}, pozicija: (${data.position.x}, ${data.position.y}), dimenzije: (${data.dimensions.width}, ${data.dimensions.height})`);
-        const syncedImage = document.querySelector(`img[src="${data.imageUrl}"]`); // Selektujemo sliku po URL-u
+        
+        const syncedImage = document.querySelector(`img[src="${data.imageUrl}"]`);
         if (syncedImage) {
             syncedImage.style.left = data.position.x + 'px';
             syncedImage.style.top = data.position.y + 'px';
             syncedImage.style.width = data.dimensions.width + 'px';
-            syncedImage.style.height = data.dimenzije.height + 'px';
+            syncedImage.style.height = data.dimensions.height + 'px';
             console.log(`Slika sinhronizovana: X: ${data.position.x}, Y: ${data.position.y}, širina: ${data.dimensions.width}, visina: ${data.dimensions.height}`);
         }
-    });
-}
+    } else {
+        console.error("Primljeni podaci nisu u ispravnom formatu.");
+    }
+});
+
+   
