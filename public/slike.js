@@ -20,7 +20,6 @@ document.getElementById('addImage').addEventListener('click', function () {
     }
 });
 
-
 // Osluškujemo 'display-image' događaj sa servera
 socket.on('display-image', (data) => {
     // Slika sada uključuje URL sa parametrima za poziciju i dimenzije
@@ -47,7 +46,7 @@ function addImageToDOM(imageUrl, position, dimensions) {
     newImage.classList.add('draggable', 'resizable');
     newImage.style.border = "none";
 
-    // Selektovanje slike
+      // Selektovanje slike
     function selectImage(image) {
         if (selectedImage && selectedImage !== image) {
             selectedImage.style.border = "none"; // Ukloni indikator sa prethodne selekcije
@@ -68,7 +67,7 @@ function addImageToDOM(imageUrl, position, dimensions) {
             selectedImage.style.border = "2px solid red"; // Održavaj okvir
         }
     });
-
+ 
     // Dugme za brisanje slike
     const deleteButton = document.createElement('button');
     deleteButton.innerText = "Ukloni Sliku";
