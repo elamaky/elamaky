@@ -43,8 +43,8 @@ socket.on('update-image', (data) => {
     socket.broadcast.emit('sync-image', data);
     console.log('Podaci emitovani drugim klijentima:', data); 
 });
-
-
+    
+    }
 
  // Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
