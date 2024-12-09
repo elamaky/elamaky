@@ -48,54 +48,59 @@ function addImageToDOM(imageUrl, position, dimensions) {
         newImage.classList.add('draggable', 'resizable');
         newImage.style.border = "none";
 
-     // Selektovanje slike
-    function selectImage(image) {
-        if (selectedImage && selectedImage !== image) {
-            selectedImage.style.border = "none"; // Ukloni indikator sa prethodne selekcije
+        // Selektovanje slike
+        function selectImage(image) {
+            if (selectedImage && selectedImage !== image) {
+                selectedImage.style.border = "none"; // Ukloni indikator sa prethodne selekcije
+            }
+            selectedImage = image;
+            selectedImage.style.border = "2px solid red"; // Dodaj indikator selekcije
         }
-        selectedImage = image;
-        selectedImage.style.border = "2px solid red"; // Dodaj indikator selekcije
-    }
 
-    // Desni klik za selekciju slike
-    newImage.addEventListener('contextmenu', function (event) {
-        event.preventDefault();
-        selectImage(newImage);
-    });
+        // Desni klik za selekciju slike
+        newImage.addEventListener('contextmenu', function (event) {
+            event.preventDefault();
+            selectImage(newImage);
+        });
 
-    // Održavanje selekcije (indikator ostaje bez obzira na interakciju miša)
-    document.addEventListener('click', function (event) {
-        if (!event.target.classList.contains('draggable') && selectedImage) {
-            selectedImage.style.border = "2px solid red"; // Održavaj okvir
-        }
-    });
- 
-    // Dugme za brisanje slike
-    const deleteButton = document.createElement('button');
-    deleteButton.innerText = "Ukloni Sliku";
-    deleteButton.style.position = "fixed";
-    deleteButton.style.bottom = "10px";
-    deleteButton.style.right = "10px";
-    deleteButton.style.zIndex = "1001";
+        // Održavanje selekcije (indikator ostaje bez obzira na interakciju miša)
+        document.addEventListener('click', function (event) {
+            if (!event.target.classList.contains('draggable') && selectedImage) {
+                selectedImage.style.border = "2px solid red"; // Održavaj okvir
+            }
+        });
 
-    deleteButton.addEventListener('click', function () {
-        if (selectedImage) {
-            selectedImage.remove(); // Ukloni selektovanu sliku
-            socket.emit('remove-image', selectedImage.src); // Emituj događaj za server
-            selectedImage = null; // Očisti selekciju
+        // Dugme za brisanje slike
+        const deleteButton = document.createElement('button');
+        deleteButton.innerText = "Ukloni Sliku";
+        deleteButton.style.position = "fixed";
+        deleteButton.style.bottom = "10px";
+        deleteButton.style.right = "10px";
+        deleteButton.style.zIndex = "1001";
+
+        deleteButton.addEventListener('click', function () {
+            if (selectedImage) {
+                selectedImage.remove(); // Ukloni selektovanu sliku
+                socket.emit('remove-image', selectedImage.src); // Emituj događaj za server
+                selectedImage = null; // Očisti selekciju
+            } else {
+                alert("Nijedna slika nije selektovana!");
+            }
+        });
+
+        // Omogućavanje interakcije samo za prijavljene korisnike
+        if (isLoggedIn) {
+            newImage.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
+            enableDragAndResize(newImage); // Uključi funkcionalnost za povlačenje i promenu veličine
         } else {
-            alert("Nijedna slika nije selektovana!");
+            newImage.style.pointerEvents = "none"; // Onemogućava klikove
         }
-    });
- // Omogućavanje interakcije samo za prijavljene korisnike
-    if (isLoggedIn) {
-        newImage.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
-        enableDragAndResize(newImage); // Uključi funkcionalnost za povlačenje i promenu veličine
-    } else {
-        newImage.style.pointerEvents = "none"; // Onemogućava klikove
+
+        document.body.appendChild(deleteButton);
+        document.body.appendChild(newImage);
     }
-     document.body.appendChild(deleteButton);
-    document.body.appendChild(newImage);
+}
+
 
 // Funkcija za omogućavanje drag-and-resize funkcionalnosti za sliku
 function enableDragAndResize(img) {
