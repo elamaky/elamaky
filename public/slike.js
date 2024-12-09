@@ -168,7 +168,7 @@ function enableDragAndResize(img) {
         } else {
             dragMouseDown(e);
         }
-    });
+    };
 
     function dragMouseDown(e) {
         e.preventDefault();
