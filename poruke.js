@@ -40,7 +40,7 @@ function setSocket(serverSocket, serverIo) {
 socket.on('update-image', (data) => {
     console.log('Primljeni podaci za update slike:', data);
     // Emituj promene svim ostalim klijentima
-    socket.broadcast.emit('sync-image', data);
+    io.emit('sync-image', data);
     console.log('Podaci emitovani drugim klijentima:', data); 
 });
     
