@@ -198,7 +198,7 @@ function enableDragAndResize(img) {
     // Emitovanje ažuriranih pozicija slike
     emitImageUpdate(img);
 
-    .styleCursor(false); // Ovaj metod onemogućava promenu kursora prilikom pomeranja slike
+    styleCursor(false); // Ovaj metod onemogućava promenu kursora prilikom pomeranja slike
     
     // Dodavanje border-a kada korisnik pređe mišem preko slike
     img.addEventListener('mouseenter', function () {
