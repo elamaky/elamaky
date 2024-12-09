@@ -103,34 +103,28 @@ function enableDragAndResize(img) {
     let resizeSide = null;
 
     img.addEventListener('mouseenter', function () {
-        console.log('Mouse entered image area');
         img.style.border = "2px dashed red";
+        console.log("Miš prešao preko slike, border postavljen.");
     });
 
     img.addEventListener('mouseleave', function () {
-        console.log('Mouse left image area');
         img.style.border = "none";
+        console.log("Miš sklonjen sa slike, border uklonjen.");
     });
 
     img.addEventListener('mousedown', function (e) {
-        console.log('Mouse down event triggered');
         const rect = img.getBoundingClientRect();
         const borderSize = 10;
 
-        console.log('Image dimensions:', rect);
-
+        // Logika za detekciju granica slike za resize
         if (e.clientX >= rect.left && e.clientX <= rect.left + borderSize) {
             resizeSide = 'left';
-            console.log('Resizing from left');
         } else if (e.clientX >= rect.right - borderSize && e.clientX <= rect.right) {
             resizeSide = 'right';
-            console.log('Resizing from right');
         } else if (e.clientY >= rect.top && e.clientY <= rect.top + borderSize) {
             resizeSide = 'top';
-            console.log('Resizing from top');
         } else if (e.clientY >= rect.bottom - borderSize && e.clientY <= rect.bottom) {
             resizeSide = 'bottom';
-            console.log('Resizing from bottom');
         }
 
         if (resizeSide) {
@@ -140,69 +134,91 @@ function enableDragAndResize(img) {
             const startX = e.clientX;
             const startY = e.clientY;
 
-            console.log('Initial dimensions:', { width: initialWidth, height: initialHeight });
-
             document.onmousemove = function (e) {
                 if (isResizing) {
-                    console.log('Mouse move event triggered during resize');
+                    // Logika za promenu dimenzija slike
                     if (resizeSide === 'right') {
                         img.style.width = initialWidth + (e.clientX - startX) + 'px';
-                        console.log('Resized width to:', img.style.width);
                     } else if (resizeSide === 'bottom') {
                         img.style.height = initialHeight + (e.clientY - startY) + 'px';
-                        console.log('Resized height to:', img.style.height);
                     } else if (resizeSide === 'left') {
                         const newWidth = initialWidth - (e.clientX - startX);
                         if (newWidth > 10) {
                             img.style.width = newWidth + 'px';
                             img.style.left = rect.left + (e.clientX - startX) + 'px';
-                            console.log('Resized width and moved left to:', newWidth, img.style.left);
                         }
                     } else if (resizeSide === 'top') {
                         const newHeight = initialHeight - (e.clientY - startY);
                         if (newHeight > 10) {
                             img.style.height = newHeight + 'px';
                             img.style.top = rect.top + (e.clientY - startY) + 'px';
-                            console.log('Resized height and moved top to:', newHeight, img.style.top);
                         }
                     }
+                    // Emitovanje ažuriranih podataka
+                    emitImageUpdate(img);
                 }
             };
 
             document.onmouseup = function () {
-                console.log('Mouse up event triggered, resizing finished');
                 isResizing = false;
                 resizeSide = null;
                 document.onmousemove = null;
                 document.onmouseup = null;
             };
         } else {
+            // Pomeranje slike kada nije resize
             dragMouseDown(e);
         }
     });
 
     function dragMouseDown(e) {
         e.preventDefault();
-        console.log('Mouse down event triggered for dragging');
         let pos3 = e.clientX;
         let pos4 = e.clientY;
 
         document.onmouseup = closeDragElement;
         document.onmousemove = function (e) {
-            console.log('Dragging mouse move event');
             img.style.top = (img.offsetTop - (pos4 - e.clientY)) + 'px';
             img.style.left = (img.offsetLeft - (pos3 - e.clientX)) + 'px';
             pos3 = e.clientX;
             pos4 = e.clientY;
+
+            // Emitovanje ažuriranih podataka
+            emitImageUpdate(img);
         };
     }
 
     function closeDragElement() {
-        console.log('Drag ended, mouse up event');
         document.onmouseup = null;
         document.onmousemove = null;
     }
+
+    // Funkcija za emitovanje podataka o slici (pozicija i dimenzije)
+    function emitImageUpdate(img) {
+        const position = { x: img.offsetLeft, y: img.offsetTop }; // Pozicija slike
+        const dimensions = { width: img.offsetWidth, height: img.offsetHeight }; // Dimenzije slike
+        const imageUrl = img.src; // URL slike
+        console.log(`Emituju se podaci slike: URL: ${imageUrl}, pozicija: (${position.x}, ${position.y}), dimenzije: (${dimensions.width}, ${dimensions.height})`);
+
+        // Pozivamo funkciju koja emituje podatke serveru
+        updateImageOnServer(imageUrl, position, dimensions);
+    }
 }
+
+// Funkcija za slanje podataka serveru
+function updateImageOnServer(imageUrl, position, dimensions) {
+    const imageData = {
+        imageUrl: imageUrl,
+        position: position,
+        dimensions: dimensions
+    };
+
+    // Slanje podataka putem socket-a
+    socket.emit('imageUpdate', imageData);
+
+    console.log("Podaci poslati serveru:", imageData);
+}
+
 
 function updateImageOnServer(imageUrl, position, dimensions) {
     console.log(`Slanje podataka serveru: URL: ${imageUrl}, pozicija: (${position.x}, ${position.y}), dimenzije: (${dimensions.width}, ${dimensions.height})`);
