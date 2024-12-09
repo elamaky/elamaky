@@ -101,16 +101,24 @@ function addImageToDOM(imageUrl, position, dimensions) {
 // Funkcija za omogućavanje drag i resize funkcionalnosti
 function enableDragAndResize(img) {
     let isDragging = false;
-    let isResizing = false;
+    let isResizingWidth = false;
+    let isResizingHeight = false;
     let offsetX, offsetY, startX, startY, startWidth, startHeight;
 
-    // Kreiranje div-a za prikaz dimenzija
-    const dimensionsDisplay = document.createElement('div');
-    dimensionsDisplay.style.position = 'absolute';
-    dimensionsDisplay.style.color = 'red';
-    dimensionsDisplay.style.fontSize = '14px';
-    dimensionsDisplay.style.zIndex = '10';
-    document.body.appendChild(dimensionsDisplay); // Prikazujemo ga na ekranu
+    // Kreiramo elemente za prikaz dimenzija
+    const widthDisplay = document.createElement('div');
+    const heightDisplay = document.createElement('div');
+
+    widthDisplay.style.position = 'absolute';
+    heightDisplay.style.position = 'absolute';
+    widthDisplay.style.color = 'green';
+    heightDisplay.style.color = 'blue';
+    widthDisplay.style.fontSize = '14px';
+    heightDisplay.style.fontSize = '14px';
+    widthDisplay.style.zIndex = '10';
+    heightDisplay.style.zIndex = '10';
+    document.body.appendChild(widthDisplay);
+    document.body.appendChild(heightDisplay);
 
     // Pomeranje slike (drag)
     img.addEventListener('mousedown', function (e) {
@@ -128,7 +136,6 @@ function enableDragAndResize(img) {
             img.style.left = e.clientX - offsetX + 'px';
             img.style.top = e.clientY - offsetY + 'px';
             emitImageUpdate(img);
-            updateDimensionsDisplay(img); // Ažuriranje prikaza dimenzija prilikom pomeranja
         }
     }
 
@@ -138,66 +145,57 @@ function enableDragAndResize(img) {
         document.removeEventListener('mouseup', stopDrag);
     }
 
-    // Resize funkcionalnost sa četiri strane
-    const resizeHandles = [
-        { position: 'top-left', cursor: 'nwse-resize' },
-        { position: 'top-right', cursor: 'nesw-resize' },
-        { position: 'bottom-left', cursor: 'nesw-resize' },
-        { position: 'bottom-right', cursor: 'nwse-resize' }
-    ];
+    // Resize funkcionalnost sa četiri strane (u ovom slučaju samo za širinu i visinu)
+    img.addEventListener('mousedown', function(e) {
+        const rect = img.getBoundingClientRect();
+        const distanceToRightEdge = e.clientX - rect.right;
+        const distanceToBottomEdge = e.clientY - rect.bottom;
 
-    resizeHandles.forEach(handle => {
-        const div = document.createElement('div');
-        div.classList.add('resize-handle', handle.position);
-        document.body.appendChild(div); // Dodajemo ručicu direktno u body
-        div.style.cursor = handle.cursor;
-        div.style.position = 'absolute';
-        div.style.zIndex = '5';  // Manji Z-index od slike
-        div.addEventListener('mousedown', (e) => startResize(e, handle.position));
+        // Detektuje da li je klik na desnoj ivici (za širenje)
+        if (Math.abs(distanceToRightEdge) < 5) {
+            isResizingWidth = true;
+            startX = e.clientX;
+            startWidth = img.offsetWidth;
+            document.addEventListener('mousemove', resizeWidthMove);
+            document.addEventListener('mouseup', stopResize);
+        }
+
+        // Detektuje da li je klik na donjoj ivici (za visinu)
+        if (Math.abs(distanceToBottomEdge) < 5) {
+            isResizingHeight = true;
+            startY = e.clientY;
+            startHeight = img.offsetHeight;
+            document.addEventListener('mousemove', resizeHeightMove);
+            document.addEventListener('mouseup', stopResize);
+        }
     });
 
-    function startResize(e, position) {
-        e.preventDefault();
-        isResizing = true;
-        startWidth = img.offsetWidth;
-        startHeight = img.offsetHeight;
-        startX = e.clientX;
-        startY = e.clientY;
-        document.addEventListener('mousemove', resizeMove);
-        document.addEventListener('mouseup', stopResize);
-    }
-
-    function resizeMove(e) {
-        if (isResizing) {
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-
-            if (e.target.classList.contains('top-left')) {
-                img.style.width = startWidth - dx + 'px';
-                img.style.height = startHeight - dy + 'px';
-                img.style.left = img.offsetLeft + dx + 'px';
-                img.style.top = img.offsetTop + dy + 'px';
-            } else if (e.target.classList.contains('top-right')) {
-                img.style.width = startWidth + dx + 'px';
-                img.style.height = startHeight - dy + 'px';
-                img.style.top = img.offsetTop + dy + 'px';
-            } else if (e.target.classList.contains('bottom-left')) {
-                img.style.width = startWidth - dx + 'px';
-                img.style.height = startHeight + dy + 'px';
-                img.style.left = img.offsetLeft + dx + 'px';
-            } else if (e.target.classList.contains('bottom-right')) {
-                img.style.width = startWidth + dx + 'px';
-                img.style.height = startHeight + dy + 'px';
-            }
-
+    // Funkcija za menjanje širine
+    function resizeWidthMove(e) {
+        if (isResizingWidth) {
+            const newWidth = startWidth + (e.clientX - startX);
+            img.style.width = newWidth + 'px';
             emitImageUpdate(img);
-            updateDimensionsDisplay(img); // Ažuriraj prikaz dimenzija dok se resize vrši
+            updateWidthDisplay(img);
         }
     }
 
+    // Funkcija za menjanje visine
+    function resizeHeightMove(e) {
+        if (isResizingHeight) {
+            const newHeight = startHeight + (e.clientY - startY);
+            img.style.height = newHeight + 'px';
+            emitImageUpdate(img);
+            updateHeightDisplay(img);
+        }
+    }
+
+    // Funkcija za prekidanje resize operacije
     function stopResize() {
-        isResizing = false;
-        document.removeEventListener('mousemove', resizeMove);
+        isResizingWidth = false;
+        isResizingHeight = false;
+        document.removeEventListener('mousemove', resizeWidthMove);
+        document.removeEventListener('mousemove', resizeHeightMove);
         document.removeEventListener('mouseup', stopResize);
     }
 
@@ -212,13 +210,20 @@ function enableDragAndResize(img) {
         updateImageOnServer(imageUrl, position, dimensions);
     }
 
-    // Funkcija za ažuriranje dimenzija u realnom vremenu dok se vrši resize
-    function updateDimensionsDisplay(img) {
+    // Funkcija za ažuriranje prikaza širine
+    function updateWidthDisplay(img) {
         const width = img.offsetWidth;
+        widthDisplay.textContent = `Širina: ${width}px`;
+        widthDisplay.style.left = (img.offsetLeft + img.offsetWidth / 2) + 'px';  // Pozicija je centrirana
+        widthDisplay.style.top = (img.offsetTop - 20) + 'px';  // Iznad slike
+    }
+
+    // Funkcija za ažuriranje prikaza visine
+    function updateHeightDisplay(img) {
         const height = img.offsetHeight;
-        dimensionsDisplay.textContent = `Širina: ${width}px, Visina: ${height}px`;
-        dimensionsDisplay.style.left = (img.offsetLeft + img.offsetWidth / 2) + 'px';
-        dimensionsDisplay.style.top = (img.offsetTop + img.offsetHeight + 10) + 'px'; // Ispod slike
+        heightDisplay.textContent = `Visina: ${height}px`;
+        heightDisplay.style.left = (img.offsetLeft + img.offsetWidth + 10) + 'px';  // Desno od slike
+        heightDisplay.style.top = (img.offsetTop + img.offsetHeight / 2) + 'px';  // Centrirano vertikalno
     }
 
     // Dodavanje border-a kada korisnik pređe mišem preko slike
@@ -233,7 +238,6 @@ function enableDragAndResize(img) {
         console.log("Miš sklonjen sa slike, border uklonjen.");
     });
 }
-
 
 // Funkcija za slanje podataka o slici serveru
 function updateImageOnServer(imageUrl, position, dimensions) {
