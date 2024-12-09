@@ -49,10 +49,13 @@ function setSocket(serverSocket, serverIo) {
             io.emit('update-images', newImage); // Emitujemo novu listu svima
         });
 
+        // Funkcija za obradu slanja poruka u chatu
+        chatMessage(socket); // Pozivamo chatMessage i prosleđujemo socket
+
     }); // Zatvaranje 'io.on' bloka
 
     // Funkcija za obradu slanja poruka u chatu
-    function chatMessage() {
+    function chatMessage(socket) {
         socket.on('chatMessage', (msgData) => {
             const time = new Date().toLocaleTimeString();
             const messageToSend = {
