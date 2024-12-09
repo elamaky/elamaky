@@ -19,11 +19,8 @@ function setSocket(serverSocket, serverIo) {
     // Osluškujemo kada klijent doda novu sliku
     socket.on('add-image', (imageSource, position, dimensions) => {
         if (!imageSource || !position || !dimensions) {
-            console.error('Greška: Nedostaju podaci slike');
-            return;
+            return; // Izlazimo ako nedostaju podaci
         }
-
-        console.log('Dodata slika:', imageSource, 'Pozicija:', position, 'Dimenzije:', dimensions);
 
         // Dodajemo sliku u listu sa pozicijom i dimenzijama
         newImage.push({
@@ -33,7 +30,6 @@ function setSocket(serverSocket, serverIo) {
         });
 
         // Emitujemo sliku svim klijentima
-        console.log('Emitovanje slike svim klijentima:', newImage);
         io.emit('display-image', {
             imageUrl: imageSource,
             position: position,
@@ -43,9 +39,6 @@ function setSocket(serverSocket, serverIo) {
 
     // Kada server primi 'update-image' događaj od klijenta
     socket.on('update-image', (data) => {
-        console.log('Primljeni podaci za update slike:', data);
-
-        // Ažuriramo sliku u `newImage` listi
         const image = newImage.find(img => img.imageUrl === data.imageUrl);
         if (image) {
             image.position = data.position;
@@ -54,7 +47,18 @@ function setSocket(serverSocket, serverIo) {
 
         // Emitujemo promene svim ostalim klijentima
         io.emit('sync-image', data);
-        console.log('Podaci emitovani drugim klijentima:', data);
+    });
+
+    // Osluškujemo kada klijent ukloni sliku
+    socket.on('remove-image', (imageUrl) => {
+        const index = newImage.findIndex(img => img.imageUrl === imageUrl);
+        if (index !== -1) {
+            // Uklonimo sliku iz liste
+            newImage.splice(index, 1);
+
+            // Emitujemo novu listu slika svim klijentima
+            io.emit('update-images', newImage);
+        }
     });
 }
 
@@ -77,11 +81,9 @@ function chatMessage() {
 // Funkcija za brisanje chata
 function clearChat() {
     socket.on('clear-chat', () => {
-        console.log(`Zahtev za brisanje chata primljen od ${socket.id}`);
         io.emit('chat-cleared'); // Emituj svim korisnicima da je chat obrisan
     });
 }
 
 // Eksportovanje funkcija
 module.exports = { setSocket, chatMessage, clearChat };
-
