@@ -172,10 +172,7 @@ function enableDragAndResize(img) {
 
         console.log(`Emituju se podaci slike: URL: ${imageUrl}, pozicija: (${position.x}, ${position.y}), dimenzije: (${dimensions.width}, ${dimensions.height})`);
 
-        // Pozivamo funkciju koja emituje podatke serveru
-        updateImageOnServer(imageUrl, position, dimensions);
-    }
-
+      
     function dragMouseDown(e) {
         e.preventDefault();
         let pos3 = e.clientX;
