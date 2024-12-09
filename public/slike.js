@@ -244,5 +244,5 @@ socket.on('sync-image', (data) => {
         syncedImage.style.width = data.dimensions.width + 'px';
         syncedImage.style.height = data.dimensions.height + 'px';
         console.log(`Slika sinhronizovana: X: ${data.position.x}, Y: ${data.position.y}, širina: ${data.dimensions.width}, visina: ${data.dimensions.height}`);
-    }
+    
 });
