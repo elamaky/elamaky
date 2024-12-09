@@ -10,7 +10,7 @@ function setSocket(serverSocket, serverIo) {
 
   io.on('connection', (socket) => {
     // Emitujemo sve slike kada se novi klijent poveže
-    socket.emit('initial-images', existingImages); // Ovdje šaljemo postojeće slike
+     socket.emit('initial-images', newImage); // Ovdje šaljemo postojeće slike
 });
 
     // Osluškujemo kada klijent doda novu sliku
