@@ -100,8 +100,6 @@ function addImageToDOM(imageUrl, position, dimensions) {
      document.body.appendChild(deleteButton);
     document.body.appendChild(newImage);
 
-    }
-    
 // Funkcija za omogućavanje drag-and-resize funkcionalnosti za sliku
 function enableDragAndResize(img) {
     let isResizing = false;
