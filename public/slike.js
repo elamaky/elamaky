@@ -35,6 +35,20 @@ socket.on('initial-images', (images) => {
     });
 });
 
+// Osluškujemo 'update-images' događaj sa servera
+socket.on('update-images', (updatedImages) => {
+    console.log('Nova lista slika:', updatedImages);
+
+    // Prvo uklanjamo sve slike sa stranice
+    document.querySelectorAll('img').forEach(img => img.remove());
+
+    // Zatim ponovo dodajemo sve slike iz nove liste
+    updatedImages.forEach((imageData) => {
+        addImageToDOM(imageData.imageUrl, imageData.position, imageData.dimensions);
+    });
+});
+
+
 // Funkcija za dodavanje slike na DOM
 function addImageToDOM(imageUrl, position, dimensions) {
     let existingImage = document.querySelector(`img[src="${imageUrl}"]`);
