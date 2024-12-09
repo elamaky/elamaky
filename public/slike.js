@@ -107,6 +107,7 @@ function enableDragAndResize(img) {
                 // Pomeranje slike
                 img.style.left = (img.offsetLeft + event.dx) + 'px';
                 img.style.top = (img.offsetTop + event.dy) + 'px';
+                console.log(`Slika pomerena na: X: ${img.offsetLeft}, Y: ${img.offsetTop}`);
 
                 // Emitovanje ažuriranih pozicija slike
                 emitImageUpdate(img);
@@ -119,6 +120,7 @@ function enableDragAndResize(img) {
                 // Promena dimenzija slike
                 img.style.width = event.rect.width + 'px';
                 img.style.height = event.rect.height + 'px';
+                console.log(`Dimenzije slike promenjene na: širina: ${event.rect.width}, visina: ${event.rect.height}`);
 
                 // Emitovanje ažuriranih dimenzija slike
                 emitImageUpdate(img);
@@ -129,11 +131,13 @@ function enableDragAndResize(img) {
     // Dodavanje border-a kada korisnik pređe mišem preko slike
     img.addEventListener('mouseenter', function () {
         img.style.border = "2px dashed red";
+        console.log("Miš prešao preko slike, border postavljen.");
     });
 
     // Uklanjanje border-a kada korisnik skloni miša sa slike
     img.addEventListener('mouseleave', function () {
         img.style.border = "none";
+        console.log("Miš sklonjen sa slike, border uklonjen.");
     });
 }
 
@@ -142,6 +146,7 @@ function emitImageUpdate(img) {
     const position = { x: img.offsetLeft, y: img.offsetTop }; // Pozicija slike
     const dimensions = { width: img.offsetWidth, height: img.offsetHeight }; // Dimenzije slike
     const imageUrl = img.src; // URL slike
+    console.log(`Emituju se podaci slike: URL: ${imageUrl}, pozicija: (${position.x}, ${position.y}), dimenzije: (${dimensions.width}, ${dimensions.height})`);
 
     // Pozivamo funkciju koja emituje podatke serveru
     updateImageOnServer(imageUrl, position, dimensions);
@@ -149,6 +154,7 @@ function emitImageUpdate(img) {
 
 // Funkcija za slanje podataka o slici serveru
 function updateImageOnServer(imageUrl, position, dimensions) {
+    console.log(`Slanje podataka serveru: URL: ${imageUrl}, pozicija: (${position.x}, ${position.y}), dimenzije: (${dimensions.width}, ${dimensions.height})`);
     socket.emit('update-image', {
         imageUrl: imageUrl,
         position: position,
@@ -158,11 +164,13 @@ function updateImageOnServer(imageUrl, position, dimensions) {
 
 // Funkcija za sinhronizaciju slike sa servera
 socket.on('sync-image', (data) => {
+    console.log(`Prijem sinhronizovanih podataka: URL: ${data.imageUrl}, pozicija: (${data.position.x}, ${data.position.y}), dimenzije: (${data.dimensions.width}, ${data.dimensions.height})`);
     const syncedImage = document.querySelector(`img[src="${data.imageUrl}"]`); // Selektujemo sliku po URL-u
     if (syncedImage) {
         syncedImage.style.left = data.position.x + 'px';
         syncedImage.style.top = data.position.y + 'px';
         syncedImage.style.width = data.dimensions.width + 'px';
         syncedImage.style.height = data.dimensions.height + 'px';
+        console.log(`Slika sinhronizovana: X: ${data.position.x}, Y: ${data.position.y}, širina: ${data.dimensions.width}, visina: ${data.dimensions.height}`);
     }
 });
