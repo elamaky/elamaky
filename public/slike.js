@@ -109,13 +109,13 @@ function enableDragAndResize(img) {
     // Dodavanje border-a kada korisnik pređe mišem preko slike
     img.addEventListener('mouseenter', function () {
         img.style.border = "2px dashed red";
-        console.log("Miš prešao preko slike, border postavljen.");
+        
     });
 
     // Uklanjanje border-a kada korisnik skloni miša sa slike
     img.addEventListener('mouseleave', function () {
         img.style.border = "none";
-        console.log("Miš sklonjen sa slike, border uklonjen.");
+    
     });
 
     img.addEventListener('mousedown', function (e) {
@@ -158,12 +158,8 @@ function enableDragAndResize(img) {
                             img.style.top = rect.top + (e.clientY - startY) + 'px';
                         }
                     }
-                    // Emitovanje podataka o slici kada se menja veličina
-                    emitImageUpdate(img);
-                }
-            };
-
-            document.onmouseup = function () {
+                    
+                document.onmouseup = function () {
                 isResizing = false;
                 resizeSide = null;
                 document.onmousemove = null;
@@ -186,10 +182,6 @@ function enableDragAndResize(img) {
             pos3 = e.clientX;
             pos4 = e.clientY;
 
-            // Emitovanje podataka o slici kada se pomera
-            emitImageUpdate(img);
-        };
-    }
 
     function closeDragElement() {
         document.onmouseup = null;
