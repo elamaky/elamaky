@@ -36,13 +36,14 @@ function setSocket(serverSocket, serverIo) {
         });
     });
 
-    // Kada server primi 'update-image' događaj od klijenta
-    socket.on('update-image', (data) => {
-        console.log('Primljeni podaci za update slike:', data);
-        // Emituj promene svim ostalim klijentima
-        socket.broadcast.emit('sync-image', data);
-    });
-}
+   // Kada server primi 'update-image' događaj od klijenta
+socket.on('update-image', (data) => {
+    console.log('Primljeni podaci za update slike:', data);
+    // Emituj promene svim ostalim klijentima
+    socket.broadcast.emit('sync-image', data);
+    console.log('Podaci emitovani drugim klijentima:', data); 
+});
+
 
 
  // Funkcija za obradu slanja poruka u četu
