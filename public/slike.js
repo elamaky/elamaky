@@ -102,23 +102,18 @@ function enableDragAndResize(img) {
     let isResizing = false;
     let resizeSide = null;
 
-    // Dodavanje loga za border kada miš pređe preko slike
     img.addEventListener('mouseenter', function () {
         img.style.border = "2px dashed red";
-        console.log("Miš prešao preko slike, border postavljen.");
     });
 
-    // Uklanjanje border-a kada miš sklonimo sa slike
     img.addEventListener('mouseleave', function () {
         img.style.border = "none";
-        console.log("Miš sklonjen sa slike, border uklonjen.");
     });
 
     img.addEventListener('mousedown', function (e) {
         const rect = img.getBoundingClientRect();
         const borderSize = 10;
 
-        // Određivanje da li je korisnik u delu za resize
         if (e.clientX >= rect.left && e.clientX <= rect.left + borderSize) {
             resizeSide = 'left';
         } else if (e.clientX >= rect.right - borderSize && e.clientX <= rect.right) {
@@ -155,9 +150,6 @@ function enableDragAndResize(img) {
                             img.style.top = rect.top + (e.clientY - startY) + 'px';
                         }
                     }
-
-                    // Emitovanje podataka o promenama dimenzija slike
-                    emitImageUpdate(img);
                 }
             };
 
@@ -172,7 +164,18 @@ function enableDragAndResize(img) {
         }
     });
 
-    // Funkcija za pomeranje slike
+    // Emitovanje ažuriranih dimenzija slike
+    function emitImageUpdate(img) {
+        const position = { x: img.offsetLeft, y: img.offsetTop };
+        const dimensions = { width: img.offsetWidth, height: img.offsetHeight };
+        const imageUrl = img.src;
+
+        console.log(`Emituju se podaci slike: URL: ${imageUrl}, pozicija: (${position.x}, ${position.y}), dimenzije: (${dimensions.width}, ${dimensions.height})`);
+
+        // Pozivamo funkciju koja emituje podatke serveru
+        updateImageOnServer(imageUrl, position, dimensions);
+    }
+
     function dragMouseDown(e) {
         e.preventDefault();
         let pos3 = e.clientX;
@@ -184,51 +187,44 @@ function enableDragAndResize(img) {
             img.style.left = (img.offsetLeft - (pos3 - e.clientX)) + 'px';
             pos3 = e.clientX;
             pos4 = e.clientY;
-
-            // Emitovanje podataka o promenama pozicije slike
-            emitImageUpdate(img);
         };
     }
 
-    // Funkcija koja zatvara drag element
-    function closeDragElement() {
-        document.onmouseup = null;
-        document.onmousemove = null;
-    }
-
-    // Funkcija za emitovanje podataka slike serveru
-    function emitImageUpdate(img) {
-        const position = { x: img.offsetLeft, y: img.offsetTop }; // Pozicija slike
-        const dimensions = { width: img.offsetWidth, height: img.offsetHeight }; // Dimenzije slike
-        const imageUrl = img.src; // URL slike
-        console.log(`Emituju se podaci slike: URL: ${imageUrl}, pozicija: (${position.x}, ${position.y}), dimenzije: (${dimensions.width}, ${dimensions.height})`);
-
-        // Pozivamo funkciju koja emituje podatke serveru
-        updateImageOnServer(imageUrl, position, dimensions);
-    }
-
-    // Funkcija koja šalje podatke serveru
-    function updateImageOnServer(imageUrl, position, dimensions) {
-        // Ovde ide kod za slanje podataka serveru
-        // Na primer, korišćenje fetch API-ja za slanje podataka na server
-        fetch('your-server-endpoint', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                imageUrl: imageUrl,
-                position: position,
-                dimensions: dimensions
-            })
-        })
-        .then(response => response.json())
-        .then(data => console.log('Podaci uspešno poslati na server:', data))
-        .catch(error => console.error('Greška prilikom slanja podataka na server:', error));
-    }
+   function closeDragElement() {
+    document.onmouseup = null;
+    document.onmousemove = null;
 }
 
+// Emitovanje ažuriranih pozicija slike
+emitImageUpdate(img);
 
+// Onemogućava promenu kursora prilikom pomeranja slike
+img.style.cursor = 'default'; 
+
+// Dodavanje border-a kada korisnik pređe mišem preko slike
+img.addEventListener('mouseenter', function () {
+    img.style.border = "2px dashed red";
+    console.log("Miš prešao preko slike, border postavljen.");
+});
+
+// Uklanjanje border-a kada korisnik skloni miša sa slike
+img.addEventListener('mouseleave', function () {
+    img.style.border = "none";
+    console.log("Miš sklonjen sa slike, border uklonjen.");
+});
+
+// Funkcija za emitovanje podataka o slici (pozicija i dimenzije)
+function emitImageUpdate(img) {
+    const position = { x: img.offsetLeft, y: img.offsetTop }; // Pozicija slike
+    const dimensions = { width: img.offsetWidth, height: img.offsetHeight }; // Dimenzije slike
+    const imageUrl = img.src; // URL slike
+    console.log(`Emituju se podaci slike: URL: ${imageUrl}, pozicija: (${position.x}, ${position.y}), dimenzije: (${dimensions.width}, ${dimensions.height})`);
+
+    // Pozivamo funkciju koja emituje podatke serveru
+    updateImageOnServer(imageUrl, position, dimensions);
+}
+
+// Funkcija za slanje podataka o slici serveru
 function updateImageOnServer(imageUrl, position, dimensions) {
     console.log(`Slanje podataka serveru: URL: ${imageUrl}, pozicija: (${position.x}, ${position.y}), dimenzije: (${dimensions.width}, ${dimensions.height})`);
     socket.emit('update-image', {
