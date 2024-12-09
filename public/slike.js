@@ -98,148 +98,91 @@ function addImageToDOM(imageUrl, position, dimensions) {
 
     }
     
-// Funkcija za omogućavanje drag i resize funkcionalnosti
 function enableDragAndResize(img) {
-    let isDragging = false;
-    let isResizingWidth = false;
-    let isResizingHeight = false;
-    let offsetX, offsetY, startX, startY, startWidth, startHeight;
+    let isResizing = false;
+    let resizeSide = null;
 
-    // Kreiramo elemente za prikaz dimenzija
-    const widthDisplay = document.createElement('div');
-    const heightDisplay = document.createElement('div');
-
-    widthDisplay.style.position = 'absolute';
-    heightDisplay.style.position = 'absolute';
-    widthDisplay.style.color = 'green';
-    heightDisplay.style.color = 'blue';
-    widthDisplay.style.fontSize = '14px';
-    heightDisplay.style.fontSize = '14px';
-    widthDisplay.style.zIndex = '10';
-    heightDisplay.style.zIndex = '10';
-    document.body.appendChild(widthDisplay);
-    document.body.appendChild(heightDisplay);
-
-    // Pomeranje slike (drag)
-    img.addEventListener('mousedown', function (e) {
-        if (e.target === img) {  // Aktivira se samo kada klikneš direktno na sliku
-            isDragging = true;
-            offsetX = e.clientX - img.offsetLeft;
-            offsetY = e.clientY - img.offsetTop;
-            document.addEventListener('mousemove', dragMove);
-            document.addEventListener('mouseup', stopDrag);
-        }
-    });
-
-    function dragMove(e) {
-        if (isDragging) {
-            img.style.left = e.clientX - offsetX + 'px';
-            img.style.top = e.clientY - offsetY + 'px';
-            emitImageUpdate(img);
-        }
-    }
-
-    function stopDrag() {
-        isDragging = false;
-        document.removeEventListener('mousemove', dragMove);
-        document.removeEventListener('mouseup', stopDrag);
-    }
-
-    // Resize funkcionalnost sa četiri strane (u ovom slučaju samo za širinu i visinu)
-    img.addEventListener('mousedown', function(e) {
-        const rect = img.getBoundingClientRect();
-        const distanceToRightEdge = e.clientX - rect.right;
-        const distanceToBottomEdge = e.clientY - rect.bottom;
-
-        // Detektuje da li je klik na desnoj ivici (za širenje)
-        if (Math.abs(distanceToRightEdge) < 5) {
-            isResizingWidth = true;
-            startX = e.clientX;
-            startWidth = img.offsetWidth;
-            document.addEventListener('mousemove', resizeWidthMove);
-            document.addEventListener('mouseup', stopResize);
-        }
-
-        // Detektuje da li je klik na donjoj ivici (za visinu)
-        if (Math.abs(distanceToBottomEdge) < 5) {
-            isResizingHeight = true;
-            startY = e.clientY;
-            startHeight = img.offsetHeight;
-            document.addEventListener('mousemove', resizeHeightMove);
-            document.addEventListener('mouseup', stopResize);
-        }
-    });
-
-    // Funkcija za menjanje širine
-    function resizeWidthMove(e) {
-        if (isResizingWidth) {
-            const newWidth = startWidth + (e.clientX - startX);
-            img.style.width = newWidth + 'px';
-            emitImageUpdate(img);
-            updateWidthDisplay(img);
-        }
-    }
-
-    // Funkcija za menjanje visine
-    function resizeHeightMove(e) {
-        if (isResizingHeight) {
-            const newHeight = startHeight + (e.clientY - startY);
-            img.style.height = newHeight + 'px';
-            emitImageUpdate(img);
-            updateHeightDisplay(img);
-        }
-    }
-
-    // Funkcija za prekidanje resize operacije
-    function stopResize() {
-        isResizingWidth = false;
-        isResizingHeight = false;
-        document.removeEventListener('mousemove', resizeWidthMove);
-        document.removeEventListener('mousemove', resizeHeightMove);
-        document.removeEventListener('mouseup', stopResize);
-    }
-
-    // Emitovanje podataka o slici (pozicija i dimenzije)
-    function emitImageUpdate(img) {
-        const position = { x: img.offsetLeft, y: img.offsetTop }; // Pozicija slike
-        const dimensions = { width: img.offsetWidth, height: img.offsetHeight }; // Dimenzije slike
-        const imageUrl = img.src; // URL slike
-        console.log(`Emituju se podaci slike: URL: ${imageUrl}, pozicija: (${position.x}, ${position.y}), dimenzije: (${dimensions.width}, ${dimensions.height})`);
-        
-        // Pozivamo funkciju koja emituje podatke serveru (via socket ili bilo šta drugo)
-        updateImageOnServer(imageUrl, position, dimensions);
-    }
-
-    // Funkcija za ažuriranje prikaza širine
-    function updateWidthDisplay(img) {
-        const width = img.offsetWidth;
-        widthDisplay.textContent = `Širina: ${width}px`;
-        widthDisplay.style.left = (img.offsetLeft + img.offsetWidth / 2) + 'px';  // Pozicija je centrirana
-        widthDisplay.style.top = (img.offsetTop - 20) + 'px';  // Iznad slike
-    }
-
-    // Funkcija za ažuriranje prikaza visine
-    function updateHeightDisplay(img) {
-        const height = img.offsetHeight;
-        heightDisplay.textContent = `Visina: ${height}px`;
-        heightDisplay.style.left = (img.offsetLeft + img.offsetWidth + 10) + 'px';  // Desno od slike
-        heightDisplay.style.top = (img.offsetTop + img.offsetHeight / 2) + 'px';  // Centrirano vertikalno
-    }
-
-    // Dodavanje border-a kada korisnik pređe mišem preko slike
     img.addEventListener('mouseenter', function () {
         img.style.border = "2px dashed red";
-        console.log("Miš prešao preko slike, border postavljen.");
     });
 
-    // Uklanjanje border-a kada korisnik skloni miša sa slike
     img.addEventListener('mouseleave', function () {
         img.style.border = "none";
-        console.log("Miš sklonjen sa slike, border uklonjen.");
     });
+
+    img.addEventListener('mousedown', function (e) {
+        const rect = img.getBoundingClientRect();
+        const borderSize = 10;
+
+        if (e.clientX >= rect.left && e.clientX <= rect.left + borderSize) {
+            resizeSide = 'left';
+        } else if (e.clientX >= rect.right - borderSize && e.clientX <= rect.right) {
+            resizeSide = 'right';
+        } else if (e.clientY >= rect.top && e.clientY <= rect.top + borderSize) {
+            resizeSide = 'top';
+        } else if (e.clientY >= rect.bottom - borderSize && e.clientY <= rect.bottom) {
+            resizeSide = 'bottom';
+        }
+
+        if (resizeSide) {
+            isResizing = true;
+            const initialWidth = img.offsetWidth;
+            const initialHeight = img.offsetHeight;
+            const startX = e.clientX;
+            const startY = e.clientY;
+
+            document.onmousemove = function (e) {
+                if (isResizing) {
+                    if (resizeSide === 'right') {
+                        img.style.width = initialWidth + (e.clientX - startX) + 'px';
+                    } else if (resizeSide === 'bottom') {
+                        img.style.height = initialHeight + (e.clientY - startY) + 'px';
+                    } else if (resizeSide === 'left') {
+                        const newWidth = initialWidth - (e.clientX - startX);
+                        if (newWidth > 10) {
+                            img.style.width = newWidth + 'px';
+                            img.style.left = rect.left + (e.clientX - startX) + 'px';
+                        }
+                    } else if (resizeSide === 'top') {
+                        const newHeight = initialHeight - (e.clientY - startY);
+                        if (newHeight > 10) {
+                            img.style.height = newHeight + 'px';
+                            img.style.top = rect.top + (e.clientY - startY) + 'px';
+                        }
+                    }
+                }
+            };
+
+            document.onmouseup = function () {
+                isResizing = false;
+                resizeSide = null;
+                document.onmousemove = null;
+                document.onmouseup = null;
+            };
+        } else {
+            dragMouseDown(e);
+        }
+    });
+
+    function dragMouseDown(e) {
+        e.preventDefault();
+        let pos3 = e.clientX;
+        let pos4 = e.clientY;
+
+        document.onmouseup = closeDragElement;
+        document.onmousemove = function (e) {
+            img.style.top = (img.offsetTop - (pos4 - e.clientY)) + 'px';
+            img.style.left = (img.offsetLeft - (pos3 - e.clientX)) + 'px';
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+        };
+    }
+
+    function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
 }
-
-
 // Funkcija za slanje podataka o slici serveru
 function updateImageOnServer(imageUrl, position, dimensions) {
     console.log(`Slanje podataka serveru: URL: ${imageUrl}, pozicija: (${position.x}, ${position.y}), dimenzije: (${dimensions.width}, ${dimensions.height})`);
