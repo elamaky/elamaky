@@ -36,11 +36,14 @@ function setSocket(serverSocket, serverIo) {
         io.emit('sync-image', data);
     });
 
-    socket.on('remove-image', (imageUrl) => {
-        newImage = newImage.filter(img => img.imageUrl !== imageUrl);
-        io.emit('update-images', newImage);
-    });
-}
+   socket.on('remove-image', (imageUrl) => {
+    const index = newImage.findIndex(img => img.imageUrl === imageUrl);
+    if (index !== -1) {
+        newImage.splice(index, 1); // Uklanjamo element sa specificiranim indeksom
+    }
+    io.emit('update-images', newImage); // Emitujemo ažuriranu listu
+});
+
 
 // Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
