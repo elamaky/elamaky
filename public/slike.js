@@ -104,6 +104,14 @@ function enableDragAndResize(img) {
     let isResizing = false;
     let offsetX, offsetY, startX, startY, startWidth, startHeight;
 
+    // Kreiranje div-a za prikaz dimenzija
+    const dimensionsDisplay = document.createElement('div');
+    dimensionsDisplay.style.position = 'absolute';
+    dimensionsDisplay.style.color = 'red';
+    dimensionsDisplay.style.fontSize = '14px';
+    dimensionsDisplay.style.zIndex = '10';
+    document.body.appendChild(dimensionsDisplay); // Prikazujemo ga na ekranu
+
     // Pomeranje slike (drag)
     img.addEventListener('mousedown', function (e) {
         if (e.target === img) {  // Aktivira se samo kada klikneš direktno na sliku
@@ -120,6 +128,7 @@ function enableDragAndResize(img) {
             img.style.left = e.clientX - offsetX + 'px';
             img.style.top = e.clientY - offsetY + 'px';
             emitImageUpdate(img);
+            updateDimensionsDisplay(img); // Ažuriranje prikaza dimenzija prilikom pomeranja
         }
     }
 
@@ -140,8 +149,10 @@ function enableDragAndResize(img) {
     resizeHandles.forEach(handle => {
         const div = document.createElement('div');
         div.classList.add('resize-handle', handle.position);
-        img.parentElement.appendChild(div);
+        document.body.appendChild(div); // Dodajemo ručicu direktno u body
         div.style.cursor = handle.cursor;
+        div.style.position = 'absolute';
+        div.style.zIndex = '5';  // Manji Z-index od slike
         div.addEventListener('mousedown', (e) => startResize(e, handle.position));
     });
 
@@ -180,6 +191,7 @@ function enableDragAndResize(img) {
             }
 
             emitImageUpdate(img);
+            updateDimensionsDisplay(img); // Ažuriraj prikaz dimenzija dok se resize vrši
         }
     }
 
@@ -198,6 +210,15 @@ function enableDragAndResize(img) {
         
         // Pozivamo funkciju koja emituje podatke serveru (via socket ili bilo šta drugo)
         updateImageOnServer(imageUrl, position, dimensions);
+    }
+
+    // Funkcija za ažuriranje dimenzija u realnom vremenu dok se vrši resize
+    function updateDimensionsDisplay(img) {
+        const width = img.offsetWidth;
+        const height = img.offsetHeight;
+        dimensionsDisplay.textContent = `Širina: ${width}px, Visina: ${height}px`;
+        dimensionsDisplay.style.left = (img.offsetLeft + img.offsetWidth / 2) + 'px';
+        dimensionsDisplay.style.top = (img.offsetTop + img.offsetHeight + 10) + 'px'; // Ispod slike
     }
 
     // Dodavanje border-a kada korisnik pređe mišem preko slike
