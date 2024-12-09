@@ -80,15 +80,17 @@ function addImageToDOM(imageUrl, position, dimensions) {
         deleteButton.style.right = "10px";
         deleteButton.style.zIndex = "1001";
 
-        deleteButton.addEventListener('click', function () {
-            if (selectedImage) {
-                selectedImage.remove(); // Ukloni selektovanu sliku
-                socket.emit('remove-image', selectedImage.src); // Emituj događaj za server
-                selectedImage = null; // Očisti selekciju
-            } else {
-                alert("Nijedna slika nije selektovana!");
-            }
-        });
+       deleteButton.addEventListener('click', function () {
+    if (selectedImage) {
+        const imageUrl = selectedImage.src;
+        selectedImage.remove(); // Ukloni selektovanu sliku sa DOM-a
+        socket.emit('remove-image', imageUrl); // Emituj događaj za server sa URL-om slike
+        selectedImage = null; // Očisti selekciju
+    } else {
+        alert("Nijedna slika nije selektovana!");
+    }
+});
+
 
         // Omogućavanje interakcije samo za prijavljene korisnike
         if (isLoggedIn) {
