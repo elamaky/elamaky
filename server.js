@@ -17,7 +17,7 @@ const io = socketIo(server);
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
-image(io);
+image.setSocket(io);
 
 // Middleware za parsiranje JSON podataka i serviranje statičkih fajlova
 app.use(express.json());
