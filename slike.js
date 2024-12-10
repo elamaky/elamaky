@@ -7,8 +7,8 @@ function setSocket(serverSocket, serverIo) {
     socket = serverSocket;
     io = serverIo;
 
-    io.on('connection', (clientSocket) => {
-        clientSocket.emit('initial-images', newImage);
+    io.on('connection', (socket) => {
+        socket.emit('initial-images', newImage);
     });
 
     socket.on('add-image', (imageSource, position, dimensions) => {
@@ -35,6 +35,7 @@ function setSocket(serverSocket, serverIo) {
         }
         io.emit('sync-image', data);
     });
+
 
     socket.on('remove-image', (imageUrl) => {
         const index = newImage.findIndex(img => img.imageUrl === imageUrl);
