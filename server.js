@@ -1,3 +1,4 @@
+
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -75,26 +76,11 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
- socket.on('chatMessage', (msgData) => {
-        const time = new Date().toLocaleTimeString();
-        const messageToSend = {
-            text: msgData.text,
-            bold: msgData.bold,
-            italic: msgData.italic,
-            color: msgData.color,
-            nickname: guests[socket.id],
-            time: time
-        };
-        io.emit('chatMessage', messageToSend);
-    });
+    // Funkcije iz modula poruke.js
+    setSocket(socket, io);  // Inicijalizacija socket-a i io objekta
+    chatMessage(guests);     // Pokretanje funkcije za slanje poruka
+    clearChat();            // Pokretanje funkcije za brisanje chata
 
-// Funkcija za brisanje chata
-function clearChat() {
-    socket.on('clear-chat', () => {
-        io.emit('chat-cleared');
-    });
-}
-    
 
   // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
