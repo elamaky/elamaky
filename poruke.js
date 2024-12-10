@@ -8,9 +8,8 @@ function setSocket(serverSocket, serverIo) {
     io = serverIo;
 
     // Emitujemo sve slike kada se novi klijent poveže
-    socket.on('connect', () => {
-        console.log('Novi korisnik povezan');
-        socket.emit('initial-images', newImage);
+    io.on('connect', () => {
+         socket.emit('initial-images', newImage);
     });
 
     // Osluškujemo kada klijent doda novu sliku
@@ -92,4 +91,3 @@ function clearChat() {
 
 // Eksportovanje funkcija
 module.exports = { setSocket, chatMessage, clearChat };
-
