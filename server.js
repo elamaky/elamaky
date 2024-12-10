@@ -10,7 +10,7 @@ const { ensureRadioGalaksijaAtTop } = require('./sitnice');
 const konobaricaModul = require('./konobaricamodul');
 const pingService = require('./ping');
 require('dotenv').config();
-const { setSocket } = require('./socketModule');
+const { setSocket } = require('./proba');
 
 const app = express();
 const server = http.createServer(app);
