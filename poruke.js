@@ -1,6 +1,6 @@
-let io; // Inicijalizujemo io
-let socket; // Inicijalizujemo socket
-const newImage = []; // Skladištenje URL-ova slika, pozicija i dimenzije
+let io;
+let socket;
+const newImage = [];
 
 // Funkcija za setovanje socket-a i io objekta
 function setSocket(serverSocket, serverIo) {
@@ -8,7 +8,7 @@ function setSocket(serverSocket, serverIo) {
     io = serverIo;
 
     io.on('connection', (socket) => {
-        socket.emit('initial-images', newImage); // Šaljemo postojeće slike
+        socket.emit('initial-images', newImage);
     });
 
     socket.on('add-image', (imageSource, position, dimensions) => {
@@ -36,14 +36,14 @@ function setSocket(serverSocket, serverIo) {
         io.emit('sync-image', data);
     });
 
-   socket.on('remove-image', (imageUrl) => {
-    const index = newImage.findIndex(img => img.imageUrl === imageUrl);
-    if (index !== -1) {
-        newImage.splice(index, 1); // Uklanjamo element sa specificiranim indeksom
-    }
-    io.emit('update-images', newImage); // Emitujemo ažuriranu listu
-});
-
+    socket.on('remove-image', (imageUrl) => {
+        const index = newImage.findIndex(img => img.imageUrl === imageUrl);
+        if (index !== -1) {
+            newImage.splice(index, 1);
+        }
+        io.emit('update-images', newImage);
+    });
+}
 
 // Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
@@ -68,5 +68,4 @@ function clearChat() {
     });
 }
 
-// Eksportovanje funkcija
 module.exports = { setSocket, chatMessage, clearChat };
