@@ -4,23 +4,16 @@ const socketIo = require('socket.io');
 const { connectDB } = require('./mongo');
 const { register, login } = require('./prijava');
 const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodula
-const { saveIpData, getIpData } = require('./ip'); // Uvozimo ip.js
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
-const { ensureRadioGalaksijaAtTop } = require('./sitnice');
-const konobaricaModul = require('./konobaricamodul');
+const { saveIpData, getIpData } = require('./ip'); // Uvozimo ip.js
+const konobaricaModul = require('./konobaricamodul'); // Uvoz konobaricamodul.js
 const pingService = require('./ping');
 require('dotenv').config();
 const { setSocket } = require('./proba');
 
 const app = express();
 const server = http.createServer(app);
-const io = require('socket.io')(server, {
-    cors: {
-        origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : '*',
-        methods: ["GET", "POST"],
-        credentials: true
-    }
-});
+const io = socketIo(server);
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
@@ -54,30 +47,29 @@ setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u 
 
 // Socket.io događaji
 io.on('connection', (socket) => {
+    // Generisanje jedinstvenog broja za gosta
     const uniqueNumber = generateUniqueNumber();
     const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
     guests[socket.id] = nickname; // Dodajemo korisnika u guest list
     console.log(`${nickname} se povezao.`);
 
     // Emitovanje događaja da bi ostali korisnici videli novog gosta
-    const updatedGuests = ensureRadioGalaksijaAtTop(guests);
     socket.broadcast.emit('newGuest', nickname);
     io.emit('updateGuestList', Object.values(guests));
 
     // Obrada prijave korisnika
     socket.on('userLoggedIn', async (username) => {
         if (authorizedUsers.has(username)) {
-            guests[socket.id] = username; // Admin
+            guests[socket.id] = username; // Ne dodajemo (Admin) oznaku
             console.log(`${username} je autentifikovan kao admin.`);
         } else {
-            guests[socket.id] = username; // Običan gost
+            guests[socket.id] = username; // Ako je običan gost
             console.log(`${username} se prijavio kao gost.`);
         }
         io.emit('updateGuestList', Object.values(guests));
     });
 
-  // Funkcija za obradu slanja poruka u četu
-function chatMessage(guests) {
+    // Obrada slanja poruka u četu
     socket.on('chatMessage', (msgData) => {
         const time = new Date().toLocaleTimeString();
         const messageToSend = {
@@ -85,12 +77,15 @@ function chatMessage(guests) {
             bold: msgData.bold,
             italic: msgData.italic,
             color: msgData.color,
-            nickname: guests[socket.id],
-            time: time
+            nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
+            time: time,
         };
+        // Spremi IP, poruku i nickname u fajl
+        saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
+        
         io.emit('chatMessage', messageToSend);
     });
-}
+
     // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
@@ -98,7 +93,7 @@ function chatMessage(guests) {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-   // Mogućnost banovanja korisnika prema nickname-u
+    // Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
         const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
 
@@ -111,17 +106,17 @@ function chatMessage(guests) {
             socket.emit('userNotFound', nicknameToBan);
         }
     });
-});
 
-// Funkcija za generisanje jedinstvenog broja
-function generateUniqueNumber() {
-    let number;
-    do {
-        number = Math.floor(Math.random() * 8889) + 1111; // Brojevi između 1111 i 9999
-    } while (assignedNumbers.has(number));
-    assignedNumbers.add(number);
-    return number;
-}
+    // Funkcija za generisanje jedinstvenog broja
+    function generateUniqueNumber() {
+        let number;
+        do {
+            number = Math.floor(Math.random() * 8889) + 1111; // Brojevi između 1111 i 9999
+        } while (assignedNumbers.has(number));
+        assignedNumbers.add(number);
+        return number;
+    }
+});
 
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
