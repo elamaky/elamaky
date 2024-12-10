@@ -105,7 +105,7 @@ io.on('connection', (socket) => {
             socket.emit('userNotFound', nicknameToBan);
         }
     });
-});
+);
 
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
