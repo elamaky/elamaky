@@ -46,24 +46,29 @@ function setSocket(serverSocket, serverIo) {
     });
 }
 
- socket.on('chatMessage', (msgData) => {
+// Funkcija za obradu slanja poruka u četu
+function chatMessage(guests) {
+    socket.on('chatMessage', (msgData) => {
         const time = new Date().toLocaleTimeString();
         const messageToSend = {
             text: msgData.text,
             bold: msgData.bold,
             italic: msgData.italic,
             color: msgData.color,
-            nickname: guests[socket.id],
+            nickname: guests[socket.id], // Dodajte provere za guests
             time: time
         };
         io.emit('chatMessage', messageToSend);
     });
+}
 
 // Funkcija za brisanje chata
 function clearChat() {
     socket.on('clear-chat', () => {
-        io.emit('chat-cleared');
+        console.log(`Zahtev za brisanje chata primljen od ${socket.id}`);
+        io.emit('chat-cleared'); // Emituj svim korisnicima da je chat obrisan
     });
 }
 
+// Eksportovanje funkcija
 module.exports = { setSocket, chatMessage, clearChat };
