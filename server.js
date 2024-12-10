@@ -72,14 +72,12 @@ io.on('connection', (socket) => {
     chatMessage(guests);     // Pokretanje funkcije za slanje poruka
     clearChat();            // Pokretanje funkcije za brisanje chata
 
-     };
-        // Spremi IP, poruku i nickname u fajl
-        saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
+    // Spremi IP, poruku i nickname u fajl
+    saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
         
-        io.emit('chatMessage', messageToSend);
-    });
+    io.emit('chatMessage', messageToSend);
 
- // Obrada slanja poruka u četu
+    // Obrada slanja poruka u četu
     socket.on('chatMessage', (msgData) => {
         const time = new Date().toLocaleTimeString();
         const messageToSend = {
@@ -93,16 +91,14 @@ io.on('connection', (socket) => {
         io.emit('chatMessage', messageToSend);
     });
 
-
-
-  // Obrada diskonekcije korisnika
+    // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id]; // Uklanjanje gosta iz liste
         io.emit('updateGuestList', Object.values(guests));
     });
 
-   // Mogućnost banovanja korisnika prema nickname-u
+    // Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
         const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
 
