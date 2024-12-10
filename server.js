@@ -6,9 +6,7 @@ const { register, login } = require('./prijava');
 const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodula
 const { saveIpData, getIpData } = require('./ip'); // Uvozimo ip.js
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
-const { ensureRadioGalaksijaAtTop } = require('./sitnice');
 const konobaricaModul = require('./konobaricamodul');
-const { setSocket, chatMessage, clearChat } = require('./poruke');
 const pingService = require('./ping');
 require('dotenv').config();
 
@@ -78,6 +76,20 @@ io.on('connection', (socket) => {
         // Spremi IP, poruku i nickname u fajl
         saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
         
+        io.emit('chatMessage', messageToSend);
+    });
+
+ // Obrada slanja poruka u četu
+    socket.on('chatMessage', (msgData) => {
+        const time = new Date().toLocaleTimeString();
+        const messageToSend = {
+            text: msgData.text,
+            bold: msgData.bold,
+            italic: msgData.italic,
+            color: msgData.color,
+            nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
+            time: time,
+        };
         io.emit('chatMessage', messageToSend);
     });
 
