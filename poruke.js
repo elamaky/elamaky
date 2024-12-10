@@ -1,7 +1,42 @@
-// Poruke.js
+let io; // Inicijalizujemo io
+let socket; // Inicijalizujemo socket
+const currentImages = []; // Skladištenje URL-ova slika, pozicija i dimenzije
 
-// Funkcija za obradu slanja poruka u četu
-function chatMessage(socket, io, guests) {
+// Funkcija za setovanje socket-a i io objekta
+function setSocket(serverSocket, serverIo) {
+    socket = serverSocket;
+    io = serverIo;
+
+    // Emitujemo inicijalne slike
+    socket.emit('initial-images', currentImages);
+
+    // Osluškujemo kada klijent doda novu sliku
+    socket.on('add-image', (imageSource, position, dimensions) => {
+        if (!imageSource || !position || !dimensions) {
+            console.error('Greška: Nedostaju podaci slike');
+            return;
+        }
+
+        console.log('Dodata slika:', imageSource, 'Pozicija:', position, 'Dimenzije:', dimensions);
+
+        // Dodajemo sliku u listu sa pozicijom i dimenzijama
+        currentImages.push({
+            imageUrl: imageSource,
+            position: position,
+            dimensions: dimensions
+        });
+
+        // Emitujemo sliku svim klijentima
+        io.emit('display-image', {
+            imageUrl: imageSource,
+            position: position,
+            dimensions: dimensions
+        });
+    });
+}
+
+  // Funkcija za obradu slanja poruka u četu
+function chatMessage(guests) {
     socket.on('chatMessage', (msgData) => {
         const time = new Date().toLocaleTimeString();
         const messageToSend = {
@@ -17,44 +52,12 @@ function chatMessage(socket, io, guests) {
 }
 
 // Funkcija za brisanje chata
-function clearChat(socket, io) {
+function clearChat() {
     socket.on('clear-chat', () => {
         console.log(`Zahtev za brisanje chata primljen od ${socket.id}`);
-        io.emit('chat-cleared');
+        io.emit('chat-cleared'); // Emituj svim korisnicima da je chat obrisan
     });
 }
 
-// Funkcija za slanje i upravljanje slikama
-function handleImages(socket, io) {
-    let newImage = [];
-
-    // Emitovanje početnih slika
-    socket.emit('initial-images', newImage);
-
-    // Dodavanje nove slike
-    socket.on('add-image', (imageSource, position, dimensions) => {
-        if (!imageSource || !position || !dimensions) return;
-
-        newImage.push({ imageUrl: imageSource, position, dimensions });
-        io.emit('display-image', { imageUrl: imageSource, position, dimensions });
-    });
-
-    // Ažuriranje slike
-    socket.on('update-image', (data) => {
-        const image = newImage.find(img => img.imageUrl === data.imageUrl);
-        if (image) {
-            image.position = data.position;
-            image.dimensions = data.dimensions;
-        }
-        io.emit('sync-image', data);
-    });
-
-    // Brisanje slike
-    socket.on('remove-image', (imageUrl) => {
-        const index = newImage.findIndex(img => img.imageUrl === imageUrl);
-        if (index !== -1) newImage.splice(index, 1);
-        io.emit('update-images', newImage);
-    });
-}
-
-module.exports = { chatMessage, clearChat, handleImages };
+// Eksportovanje funkcija
+module.exports = { setSocket, chatMessage, clearChat };
