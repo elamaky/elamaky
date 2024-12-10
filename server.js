@@ -79,19 +79,7 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-    // Obrada chat poruka (dodato da se uklope msgData i messageToSend)
-    socket.on('chatMessage', (msgData) => {
-        const time = new Date().toLocaleTimeString();
-        const messageToSend = {
-            text: msgData.text,
-            bold: msgData.bold,
-            italic: msgData.italic,
-            color: msgData.color,
-            nickname: guests[socket.id],
-            time: time
-        };
-
-        // Spremi IP, poruku i nickname u fajl
+      // Spremi IP, poruku i nickname u fajl
         saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
 
         io.emit('chatMessage', messageToSend);
