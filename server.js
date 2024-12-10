@@ -8,9 +8,9 @@ const { saveIpData, getIpData } = require('./ip'); // Uvozimo ip.js
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const { ensureRadioGalaksijaAtTop } = require('./sitnice');
 const konobaricaModul = require('./konobaricamodul');
-const { setSocket, chatMessage, clearChat } = require('./poruke');
 const pingService = require('./ping');
 require('dotenv').config();
+const { setSocket } = require('./socketModule');
 
 const app = express();
 const server = http.createServer(app);
@@ -24,6 +24,7 @@ const io = require('socket.io')(server, {
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
+setSocket(io, io);
 
 // Middleware za parsiranje JSON podataka i serviranje statičkih fajlova
 app.use(express.json());
@@ -75,11 +76,21 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-    // Funkcije iz modula poruke.js
-    setSocket(socket, io);  // Inicijalizacija socket-a i io objekta
-    chatMessage(guests);     // Pokretanje funkcije za slanje poruka
-    clearChat();            // Pokretanje funkcije za brisanje chata
-
+  // Funkcija za obradu slanja poruka u četu
+function chatMessage(guests) {
+    socket.on('chatMessage', (msgData) => {
+        const time = new Date().toLocaleTimeString();
+        const messageToSend = {
+            text: msgData.text,
+            bold: msgData.bold,
+            italic: msgData.italic,
+            color: msgData.color,
+            nickname: guests[socket.id],
+            time: time
+        };
+        io.emit('chatMessage', messageToSend);
+    });
+}
     // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
