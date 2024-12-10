@@ -49,20 +49,20 @@ function setSocket(serverSocket, serverIo) {
             io.emit('update-images', newImage);
         });
 
-        // Obrada poruka u četu
-        socket.on('chatMessage', (msgData) => {
-            const time = new Date().toLocaleTimeString();
-            const messageToSend = {
-                text: msgData.text,
-                bold: msgData.bold,
-                italic: msgData.italic,
-                color: msgData.color,
-                nickname: msgData.nickname || 'Guest', // Provera za nickname
-                time: time
-            };
-            io.emit('chatMessage', messageToSend);
-        });
-
+       function chatMessage(clientSocket, guests) {
+    clientSocket.on('chatMessage', (msgData) => {
+        const time = new Date().toLocaleTimeString();
+        const messageToSend = {
+            text: msgData.text,
+            bold: msgData.bold,
+            italic: msgData.italic,
+            color: msgData.color,
+            nickname: guests[clientSocket.id] || 'Guest',
+            time: time
+        };
+        io.emit('chatMessage', messageToSend);
+    });
+}
         // Brisanje chata
         socket.on('clear-chat', () => {
             console.log(`Zahtev za brisanje chata primljen od ${socket.id}`);
