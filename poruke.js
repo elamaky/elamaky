@@ -46,9 +46,7 @@ function setSocket(serverSocket, serverIo) {
     });
 }
 
-// Funkcija za obradu slanja poruka u četu
-function chatMessage(guests) {
-    socket.on('chatMessage', (msgData) => {
+ socket.on('chatMessage', (msgData) => {
         const time = new Date().toLocaleTimeString();
         const messageToSend = {
             text: msgData.text,
@@ -60,7 +58,6 @@ function chatMessage(guests) {
         };
         io.emit('chatMessage', messageToSend);
     });
-}
 
 // Funkcija za brisanje chata
 function clearChat() {
