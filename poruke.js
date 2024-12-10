@@ -11,12 +11,7 @@ function setSocket(serverSocket, serverIo) {
         // Emitujemo sve slike kada se novi klijent poveže
         socket.emit('initial-images', newImage); // Ovdje šaljemo postojeće slike
 
-        // Osluskivanje dodatnih događaja
-        chatMessage();
-        clearChat();
-    });
-
-    // Osluškujemo kada klijent doda novu sliku
+        // Osluškujemo kada klijent doda novu sliku
     socket.on('add-image', (imageSource, position, dimensions) => {
         if (!imageSource || !position || !dimensions) {
             return; // Izlazimo ako nedostaju podaci
@@ -49,18 +44,10 @@ function setSocket(serverSocket, serverIo) {
         io.emit('sync-image', data);
     });
 
-    // Osluškujemo kada klijent ukloni sliku
-    socket.on('remove-image', (imageUrl) => {
-        const index = newImage.findIndex(img => img.imageUrl === imageUrl);
-        if (index !== -1) {
-            // Uklonimo sliku iz liste
-            newImage.splice(index, 1);
-
-            // Emitujemo novu listu slika svim klijentima
-            io.emit('update-images', newImage);
-        }
-    });
-}
+  socket.on('remove-image', (imageUrl) => {
+    newImage = newImage.filter(img => img.imageUrl !== imageUrl); // Uklanjamo sliku
+    io.emit('update-images', newImage); // Emitujemo novu listu svima
+});
 
 // Funkcija za obradu slanja poruka u četu
 function chatMessage() {
