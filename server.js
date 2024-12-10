@@ -51,7 +51,6 @@ io.on('connection', (socket) => {
     console.log(`${nickname} se povezao.`);
 
     // Emitovanje događaja da bi ostali korisnici videli novog gosta
-    const updatedGuests = ensureRadioGalaksijaAtTop(guests);
     socket.broadcast.emit('newGuest', nickname);
     io.emit('updateGuestList', Object.values(guests));
 
