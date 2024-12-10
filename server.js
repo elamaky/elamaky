@@ -74,6 +74,14 @@ io.on('connection', (socket) => {
     chatMessage(guests);     // Pokretanje funkcije za slanje poruka
     clearChat();            // Pokretanje funkcije za brisanje chata
 
+     };
+        // Spremi IP, poruku i nickname u fajl
+        saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
+        
+        io.emit('chatMessage', messageToSend);
+    });
+
+
 
   // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
