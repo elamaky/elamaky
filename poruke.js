@@ -1,17 +1,20 @@
 let io;
+let socket;
 let newImage = [];
 
-function setSocket(serverIo) {
+// Funkcija za setovanje socket-a i io objekta
+function setSocket(serverSocket, serverIo) {
+    socket = serverSocket;
     io = serverIo;
 
-    io.on('connection', (clientSocket) => {
-        console.log(`Korisnik povezan: ${clientSocket.id}`);
+    io.on('connection', (socket) => {
+        console.log(`Korisnik povezan: ${socket.id}`);
 
-        // Inicijalne slike
-        clientSocket.emit('initial-images', newImage);
+        // Slanje inicijalnih slika
+        socket.emit('initial-images', newImage);
 
         // Dodavanje slike
-        clientSocket.on('add-image', (imageSource, position, dimensions) => {
+        socket.on('add-image', (imageSource, position, dimensions) => {
             if (!imageSource || !position || !dimensions) return;
 
             newImage.push({
@@ -28,7 +31,7 @@ function setSocket(serverIo) {
         });
 
         // Ažuriranje slike
-        clientSocket.on('update-image', (data) => {
+        socket.on('update-image', (data) => {
             const image = newImage.find(img => img.imageUrl === data.imageUrl);
             if (image) {
                 image.position = data.position;
@@ -38,7 +41,7 @@ function setSocket(serverIo) {
         });
 
         // Brisanje slike
-        clientSocket.on('remove-image', (imageUrl) => {
+        socket.on('remove-image', (imageUrl) => {
             const index = newImage.findIndex(img => img.imageUrl === imageUrl);
             if (index !== -1) {
                 newImage.splice(index, 1);
@@ -46,23 +49,23 @@ function setSocket(serverIo) {
             io.emit('update-images', newImage);
         });
 
-        // Obrada poruka
-        clientSocket.on('chatMessage', (msgData) => {
+        // Obrada poruka u četu
+        socket.on('chatMessage', (msgData) => {
             const time = new Date().toLocaleTimeString();
             const messageToSend = {
                 text: msgData.text,
                 bold: msgData.bold,
                 italic: msgData.italic,
                 color: msgData.color,
-                nickname: msgData.nickname || 'Guest',
+                nickname: msgData.nickname || 'Guest', // Provera za nickname
                 time: time
             };
             io.emit('chatMessage', messageToSend);
         });
 
         // Brisanje chata
-        clientSocket.on('clear-chat', () => {
-            console.log(`Zahtev za brisanje chata primljen od ${clientSocket.id}`);
+        socket.on('clear-chat', () => {
+            console.log(`Zahtev za brisanje chata primljen od ${socket.id}`);
             io.emit('chat-cleared');
         });
     });
