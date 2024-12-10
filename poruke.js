@@ -2,12 +2,7 @@ let io;
 let socket;
 let newImage = [];  
 
-// Funkcija za setovanje socket-a i io objekta
-function setSocket(serverSocket, serverIo) {
-    socket = serverSocket;
-    io = serverIo;
-
-    io.on('connection', (socket) => {
+        io.on('connection', (socket) => {
         socket.emit('initial-images', newImage);
     });
 
@@ -46,30 +41,28 @@ function setSocket(serverSocket, serverIo) {
     });
 }
 
-// Funkcija za obradu konekcija
-function handleConnections(guests) {
-    io.on('connection', (socket) => {
-        // Obrada slanja poruka u četu
-        socket.on('chatMessage', (msgData) => {
-            const time = new Date().toLocaleTimeString();
-            const messageToSend = {
-                text: msgData.text,
-                bold: msgData.bold,
-                italic: msgData.italic,
-                color: msgData.color,
-                nickname: guests[socket.id],
-                time: time
-            };
-            io.emit('chatMessage', messageToSend);
-        });
-
-        // Obrada brisanja chata
-        socket.on('clear-chat', () => {
-            console.log(`Zahtev za brisanje chata primljen od ${socket.id}`);
-            io.emit('chat-cleared');
-        });
+// Funkcija za obradu slanja poruka u četu
+function chatMessage(socket, io, guests) {
+    socket.on('chatMessage', (msgData) => {
+        const time = new Date().toLocaleTimeString();
+        const messageToSend = {
+            text: msgData.text,
+            bold: msgData.bold,
+            italic: msgData.italic,
+            color: msgData.color,
+            nickname: guests[socket.id],
+            time: time
+        };
+        io.emit('chatMessage', messageToSend);
     });
 }
 
+// Funkcija za brisanje chata
+function clearChat(socket, io) {
+    socket.on('clear-chat', () => {
+        console.log(`Zahtev za brisanje chata primljen od ${socket.id}`);
+        io.emit('chat-cleared');
+    });
+}
 
-module.exports = { setSocket, chatMessage, clearChat };
+module.exports = { chatMessage, clearChat };
