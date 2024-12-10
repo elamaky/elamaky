@@ -1,3 +1,4 @@
+
 let io; // Inicijalizujemo io
 let socket; // Inicijalizujemo socket
 const newImage = []; // Skladištenje URL-ova slika, pozicija i dimenzije
@@ -47,7 +48,7 @@ function setSocket(serverSocket, serverIo) {
   socket.on('remove-image', (imageUrl) => {
     newImage = newImage.filter(img => img.imageUrl !== imageUrl); // Uklanjamo sliku
     io.emit('update-images', newImage); // Emitujemo novu listu svima
-});
+};
 
 // Funkcija za obradu slanja poruka u četu
 function chatMessage() {
@@ -74,3 +75,4 @@ function clearChat() {
 
 // Eksportovanje funkcija
 module.exports = { setSocket, chatMessage, clearChat };
+
