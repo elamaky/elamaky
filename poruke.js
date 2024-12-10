@@ -1,13 +1,16 @@
 let io;
 let newImage = [];
 
-// Funkcija za setovanje socket-a i io objekta
-function setSocket(serverSocket, serverIo) {
+function setSocket(serverIo) {
     io = serverIo;
 
     io.on('connection', (clientSocket) => {
+        console.log(`Korisnik povezan: ${clientSocket.id}`);
+
+        // Inicijalne slike
         clientSocket.emit('initial-images', newImage);
 
+        // Dodavanje slike
         clientSocket.on('add-image', (imageSource, position, dimensions) => {
             if (!imageSource || !position || !dimensions) return;
 
@@ -24,6 +27,7 @@ function setSocket(serverSocket, serverIo) {
             });
         });
 
+        // Ažuriranje slike
         clientSocket.on('update-image', (data) => {
             const image = newImage.find(img => img.imageUrl === data.imageUrl);
             if (image) {
@@ -33,6 +37,7 @@ function setSocket(serverSocket, serverIo) {
             io.emit('sync-image', data);
         });
 
+        // Brisanje slike
         clientSocket.on('remove-image', (imageUrl) => {
             const index = newImage.findIndex(img => img.imageUrl === imageUrl);
             if (index !== -1) {
@@ -41,7 +46,7 @@ function setSocket(serverSocket, serverIo) {
             io.emit('update-images', newImage);
         });
 
-        // Obrada chat poruka
+        // Obrada poruka
         clientSocket.on('chatMessage', (msgData) => {
             const time = new Date().toLocaleTimeString();
             const messageToSend = {
@@ -49,7 +54,7 @@ function setSocket(serverSocket, serverIo) {
                 bold: msgData.bold,
                 italic: msgData.italic,
                 color: msgData.color,
-                nickname: msgData.nickname || 'Guest', // Dodajte provere za guests
+                nickname: msgData.nickname || 'Guest',
                 time: time
             };
             io.emit('chatMessage', messageToSend);
@@ -63,6 +68,4 @@ function setSocket(serverSocket, serverIo) {
     });
 }
 
-// Eksportovanje funkcija
 module.exports = { setSocket };
-
