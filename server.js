@@ -7,7 +7,7 @@ const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodu
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const { saveIpData, getIpData } = require('./ip'); // Uvozimo ip.js
 const konobaricaModul = require('./konobaricamodul'); // Uvoz konobaricamodul.js
-const slikemodul = require('./slikemodul');
+const slikemodul = require('./slikemodul'); 
 const pingService = require('./ping');
 require('dotenv').config();
 
@@ -45,16 +45,6 @@ const assignedNumbers = new Set(); // Set za generisane brojeve
 // Dodavanje socket događaja iz banmodula
 setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
 
-// Funkcija za generisanje jedinstvenog broja
-function generateUniqueNumber() {
-    let number;
-    do {
-        number = Math.floor(Math.random() * 8889) + 1111; // Brojevi između 1111 i 9999
-    } while (assignedNumbers.has(number));
-    assignedNumbers.add(number);
-    return number;
-}
-
 // Socket.io događaji
 io.on('connection', (socket) => {
     // Generisanje jedinstvenog broja za gosta
@@ -79,7 +69,7 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-    // Obrada diskonekcije korisnika
+     // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id]; // Uklanjanje gosta iz liste
@@ -99,6 +89,16 @@ io.on('connection', (socket) => {
             socket.emit('userNotFound', nicknameToBan);
         }
     });
+
+    // Funkcija za generisanje jedinstvenog broja
+    function generateUniqueNumber() {
+        let number;
+        do {
+            number = Math.floor(Math.random() * 8889) + 1111; // Brojevi između 1111 i 9999
+        } while (assignedNumbers.has(number));
+        assignedNumbers.add(number);
+        return number;
+    }
 });
 
 // Pokretanje servera na definisanom portu
