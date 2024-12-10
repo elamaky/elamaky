@@ -47,7 +47,4 @@ function setSocket(serverSocket, serverIo) {
     });
 }
 
-// Eksport funkcije
-module.exports = { setSocket };
-
-
+module.exports = { image: setSocket };
