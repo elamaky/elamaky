@@ -43,5 +43,28 @@ function setSocket(serverIo) {
     });
 }
 
+// Funkcija za obradu slanja poruka u četu
+function chatMessage(guests) {
+    socket.on('chatMessage', (msgData) => {
+        const time = new Date().toLocaleTimeString();
+        const messageToSend = {
+            text: msgData.text,
+            bold: msgData.bold,
+            italic: msgData.italic,
+            color: msgData.color,
+            nickname: guests[socket.id],
+            time: time
+        };
+        io.emit('chatMessage', messageToSend);
+    });
+}
+
+// Funkcija za brisanje chata
+function clearChat() {
+    socket.on('clear-chat', () => {
+        io.emit('chat-cleared');
+    });
+}
+
 // Izvoz funkcije setSocket
 module.exports = { setSocket };
