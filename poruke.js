@@ -1,6 +1,7 @@
 let io; // Inicijalizujemo io
 let socket; // Inicijalizujemo socket
 const newImage = []; // Skladištenje URL-ova slika, pozicija i dimenzije
+let images = []; // Ovaj niz sadrži sve slike sa pozicijama i dimenzijama
 
 // Funkcija za setovanje socket-a i io objekta
 function setSocket(serverSocket, serverIo) {
