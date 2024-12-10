@@ -43,8 +43,7 @@ function setSocket(serverIo) {
     });
 }
 
-// Funkcija za obradu slanja poruka u četu
-function chatMessage(guests) {
+// Obrada slanja poruka u četu
     socket.on('chatMessage', (msgData) => {
         const time = new Date().toLocaleTimeString();
         const messageToSend = {
@@ -52,12 +51,14 @@ function chatMessage(guests) {
             bold: msgData.bold,
             italic: msgData.italic,
             color: msgData.color,
-            nickname: guests[socket.id],
-            time: time
+            nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
+            time: time,
         };
+        // Spremi IP, poruku i nickname u fajl
+        saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
+        
         io.emit('chatMessage', messageToSend);
     });
-}
 
 // Funkcija za brisanje chata
 function clearChat() {
