@@ -7,9 +7,10 @@ const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodu
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const { saveIpData, getIpData } = require('./ip'); // Uvozimo ip.js
 const konobaricaModul = require('./konobaricamodul'); // Uvoz konobaricamodul.js
+const slikemodul = require('./slikemodul');
 const pingService = require('./ping');
 require('dotenv').config();
-const { image } = require('./image');  
+
 
 const app = express();
 const server = http.createServer(app);
@@ -17,7 +18,7 @@ const io = socketIo(server);
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
-image.setSocket(io);
+slikemodul.setSocket(io);
 
 // Middleware za parsiranje JSON podataka i serviranje statičkih fajlova
 app.use(express.json());
