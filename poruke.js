@@ -36,6 +36,7 @@ function setSocket(serverSocket, serverIo) {
         io.emit('sync-image', data);
     });
 
+
     socket.on('remove-image', (imageUrl) => {
         const index = newImage.findIndex(img => img.imageUrl === imageUrl);
         if (index !== -1) {
