@@ -79,12 +79,6 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-     // Spremi IP, poruku i nickname u fajl
-        saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
-
-        io.emit('chatMessage', messageToSend);
-    });
-
     // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
@@ -105,6 +99,7 @@ io.on('connection', (socket) => {
             socket.emit('userNotFound', nicknameToBan);
         }
     });
+});
 
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
