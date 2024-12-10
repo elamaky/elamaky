@@ -1,4 +1,3 @@
-
 let io;
 let socket;
 let newImage = [];  
@@ -37,7 +36,6 @@ function setSocket(serverSocket, serverIo) {
         io.emit('sync-image', data);
     });
 
-
     socket.on('remove-image', (imageUrl) => {
         const index = newImage.findIndex(img => img.imageUrl === imageUrl);
         if (index !== -1) {
@@ -47,4 +45,5 @@ function setSocket(serverSocket, serverIo) {
     });
 }
 
+// Izvoz funkcije setSocket
 module.exports = { setSocket };
