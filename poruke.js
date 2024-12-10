@@ -39,7 +39,6 @@ let newImage = [];
         }
         io.emit('update-images', newImage);
     });
-}
 
 // Funkcija za obradu slanja poruka u četu
 function chatMessage(socket, io, guests) {
