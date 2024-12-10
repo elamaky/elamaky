@@ -2,7 +2,7 @@ let io;
 let newImage = [];  
 
 // Funkcija za setovanje io objekta
-function setSocket(serverIo) {
+function setSocket(serverIo, guests) {
     io = serverIo;
 
     io.on('connection', (socket) => {
@@ -52,9 +52,11 @@ function setSocket(serverIo) {
                 nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
                 time: time,
             };
+
             // Spremi IP, poruku i nickname u fajl
             saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
 
+            // Emituj poruku svim korisnicima
             io.emit('chatMessage', messageToSend);
         });
 
@@ -62,6 +64,12 @@ function setSocket(serverIo) {
         socket.on('clear-chat', () => {
             io.emit('chat-cleared');
         });
+        
+        // Funkcija za čuvanje podataka o IP-u i poruci
+        function saveIpData(ip, message, nickname) {
+            // Ovaj deo koda treba biti implementiran prema vašim potrebama
+            console.log(`IP: ${ip}, Poruka: ${message}, Nickname: ${nickname}`);
+        }
     });
 }
 
