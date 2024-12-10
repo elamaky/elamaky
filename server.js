@@ -11,7 +11,6 @@ const slikemodul = require('./slikemodul');
 const pingService = require('./ping');
 require('dotenv').config();
 
-
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -46,6 +45,16 @@ const assignedNumbers = new Set(); // Set za generisane brojeve
 // Dodavanje socket događaja iz banmodula
 setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
 
+// Funkcija za generisanje jedinstvenog broja
+function generateUniqueNumber() {
+    let number;
+    do {
+        number = Math.floor(Math.random() * 8889) + 1111; // Brojevi između 1111 i 9999
+    } while (assignedNumbers.has(number));
+    assignedNumbers.add(number);
+    return number;
+}
+
 // Socket.io događaji
 io.on('connection', (socket) => {
     // Generisanje jedinstvenog broja za gosta
@@ -70,9 +79,21 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
+    // Obrada chat poruka (dodato da se uklope msgData i messageToSend)
+    socket.on('chatMessage', (msgData) => {
+        const time = new Date().toLocaleTimeString();
+        const messageToSend = {
+            text: msgData.text,
+            bold: msgData.bold,
+            italic: msgData.italic,
+            color: msgData.color,
+            nickname: guests[socket.id],
+            time: time
+        };
+
         // Spremi IP, poruku i nickname u fajl
         saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
-        
+
         io.emit('chatMessage', messageToSend);
     });
 
@@ -96,16 +117,7 @@ io.on('connection', (socket) => {
             socket.emit('userNotFound', nicknameToBan);
         }
     });
-
-    // Funkcija za generisanje jedinstvenog broja
-function generateUniqueNumber() {
-    let number;
-    do {
-        number = Math.floor(Math.random() * 8889) + 1111; // Brojevi između 1111 i 9999
-    } while (assignedNumbers.has(number));
-    assignedNumbers.add(number);
-    return number;
-}
+});
 
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
