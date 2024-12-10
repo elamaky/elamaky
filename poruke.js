@@ -54,14 +54,7 @@ function setSocket(serverSocket, serverIo) {
         console.log('Podaci emitovani drugim klijentima:', data);
     });
 
-    // Debug: ispisujemo listu svih slika prilikom ažuriranja
-    socket.on('get-all-images', () => {
-        console.log('Trenutne slike:', newImage);
-        socket.emit('all-images', newImage);
-    });
-}
-
- // Funkcija za obradu slanja poruka u četu
+    // Funkcija za obradu slanja poruka u četu
 function chatMessage(guests) {
     socket.on('chatMessage', (msgData) => {
         const time = new Date().toLocaleTimeString();
