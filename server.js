@@ -80,10 +80,7 @@ io.on('connection', (socket) => {
     chatMessage(guests);     // Pokretanje funkcije za slanje poruka
     clearChat();            // Pokretanje funkcije za brisanje chata
 
-     // Spremi IP, poruku i nickname u fajl
-        saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
-
-   // Obrada diskonekcije korisnika
+    // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id]; // Uklanjanje gosta iz liste
