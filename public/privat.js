@@ -15,33 +15,34 @@ document.getElementById('privateMessage').addEventListener('click', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     const guestList = document.getElementById('guestList');
-    let selectedGuest = null; // Varijabla za trenutnog selektovanog gosta
+    const chatInput = document.getElementById('chatInput');
+    const messageArea = document.getElementById('messageArea');
+    let selectedGuest = null;
 
     guestList.addEventListener('click', (event) => {
         if (event.target.classList.contains('guest')) {
-            // Ako je gost već selektovan, uklanjamo obeležavanje
+            // Ako je već selektovan gost, uklonimo obeležavanje
             if (selectedGuest === event.target) {
-                selectedGuest.classList.remove('selected');
-                selectedGuest = null; // Resetujemo selektovanog gosta
-                chatInput.placeholder = ''; // Resetujemo placeholder za poruku
-                console.log('Selektovanje gosta uklonjeno.');
+                event.target.style.backgroundColor = '';
+                selectedGuest = null;
+                chatInput.innerHTML = ''; // Očistimo formu za unos
             } else {
-                // Ako nije selektovan, obeležavamo novog gosta
-                if (selectedGuest) {
-                    selectedGuest.classList.remove('selected'); // Uklanjamo prethodno selektovanog
-                }
+                // Uklanjamo prethodno obeležavanje
+                document.querySelectorAll('.guest').forEach(guest => {
+                    guest.style.backgroundColor = ''; // Resetujemo boju
+                });
 
+                // Obeležavamo kliknutog gosta
                 selectedGuest = event.target;
-                selectedGuest.classList.add('selected'); // Dodajemo obeležavanje
-                chatInput.placeholder = `Poruka za ${selectedGuest.textContent}...`; // Ažurira placeholder
-                console.log(`Odabran gost: ${selectedGuest.textContent}`);
+                selectedGuest.style.backgroundColor = 'rgba(0, 0, 255, 0.1)';
+
+                // Popunjavamo formu za unos
+                chatInput.innerHTML = `SALJE ----->>> ${selectedGuest.textContent} : `;
             }
         }
     });
-});
 
-
-function sendMessage() {
+  function sendMessage() {
     const message = chatInput.value;
     const currentTime = new Date().toLocaleTimeString(); // Uzima trenutnu vremensku oznaku
     
