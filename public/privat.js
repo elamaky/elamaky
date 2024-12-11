@@ -44,13 +44,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const message = chatInput.value.trim();
 
             if (message && isPrivateChatEnabled && selectedGuest) {
-                // Kreiramo div za poruku
-                const messageElement = document.createElement('div');
-                messageElement.textContent = `${message} --->>> Prima: ${selectedGuest.textContent}`;
+                // Proveravamo da li je poruka već dodata (sprečavanje dupliranja)
+                const existingMessages = Array.from(messageArea.children);
+                const isDuplicate = existingMessages.some(msg => msg.textContent.includes(message));
 
-                // Dodajemo poruku u messageArea
-                messageArea.appendChild(messageElement);
-                console.log(`Poruka za ${selectedGuest.textContent}: ${message}`);
+                if (!isDuplicate) {
+                    // Kreiramo div za poruku
+                    const messageElement = document.createElement('div');
+                    messageElement.textContent = `${message} --->>> Prima: ${selectedGuest.textContent}`;
+
+                    // Dodajemo poruku u messageArea
+                    messageArea.appendChild(messageElement);
+                    console.log(`Poruka za ${selectedGuest.textContent}: ${message}`);
+                } else {
+                    console.log("Duplikat poruke otkriven, preskačemo dodavanje.");
+                }
 
                 // Čistimo input za novu poruku
                 chatInput.value = `---->>> ${selectedGuest.textContent} : `;
@@ -62,4 +70,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
 
