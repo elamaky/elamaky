@@ -19,7 +19,6 @@ const io = socketIo(server);
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
 slikemodul.setSocket(io);
-privatmodul(io, guests);
 
 // Middleware za parsiranje JSON podataka i serviranje statičkih fajlova
 app.use(express.json());
@@ -128,6 +127,8 @@ io.on('connection', (socket) => {
         return number;
     }
 });
+
+privatmodul(io, guests);
 
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
