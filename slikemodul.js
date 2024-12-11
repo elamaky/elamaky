@@ -50,7 +50,7 @@ socket.on('disconnect', () => {
         delete userImages[socket.id];
         io.emit('update-images', newImage);
     });
-});
+);
 
 socket.on('delete-all', (password) => {
     if (password === 'your_password') { // Provera lozinke
