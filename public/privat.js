@@ -6,11 +6,13 @@ document.getElementById('privateMessage').addEventListener('click', () => {
     isPrivateChatEnabled = !isPrivateChatEnabled;
     const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
 
+    // Resetovanje stanja ako isključimo privatni chat
     if (!isPrivateChatEnabled) {
         selectedGuest = null; // Resetujemo selektovanog gosta
         document.querySelectorAll('.guest').forEach(guest => {
             guest.style.backgroundColor = ''; // Resetujemo stil gostiju
         });
+        document.getElementById('chatInput').value = ''; // Očistimo input polje
     }
 
     console.log(statusText);
@@ -36,5 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Ovaj deo neće biti promenjen jer ne uključuje ništa vezano za slanje poruka ili message area
+    // Ovaj deo ne menja ništa vezano za slanje poruka
 });
+
