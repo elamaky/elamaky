@@ -1,5 +1,5 @@
 let isPrivateChatEnabled = false; // Status privatnog chata
-let selectedGuest = null;
+let selectedGuest = null; // Selekcija gosta
 
 // Event listener za dugme "Privatna poruka"
 document.getElementById('privateMessage').addEventListener('click', () => {
@@ -8,7 +8,6 @@ document.getElementById('privateMessage').addEventListener('click', () => {
 
     if (!isPrivateChatEnabled) {
         selectedGuest = null; // Resetujemo selektovanog gosta
-        document.getElementById('chatInput').value = ""; // Čistimo chat input
         document.querySelectorAll('.guest').forEach(guest => {
             guest.style.backgroundColor = ''; // Resetujemo stil gostiju
         });
@@ -21,7 +20,6 @@ document.getElementById('privateMessage').addEventListener('click', () => {
 document.addEventListener('DOMContentLoaded', () => {
     const guestList = document.getElementById('guestList');
     const chatInput = document.getElementById('chatInput');
-    const messageArea = document.getElementById('messageArea');
 
     guestList.addEventListener('click', (event) => {
         if (event.target.classList.contains('guest')) {
@@ -33,27 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             selectedGuest.style.backgroundColor = 'rgba(0, 0, 255, 0.1)'; // Isticanje selektovanog gosta
             isPrivateChatEnabled = true;
-            chatInput.value = `---->>> ${selectedGuest.textContent} : `;
+            chatInput.value = `---->>> ${selectedGuest.textContent} : `; // Forma poruke za privatni chat
             console.log("Privatni chat sa: ", selectedGuest.textContent);
         }
     });
 
-        if (message && isPrivateChatEnabled && selectedGuest) {
-                // Proveravamo da li je poruka već dodata (sprečavanje dupliranja)
-                const existingMessages = Array.from(messageArea.children);
-                const isDuplicate = existingMessages.some(msg => msg.textContent.includes(message));
-
-                if (!isDuplicate) {
-                    // Kreiramo div za poruku
-                    const messageElement = document.createElement('div');
-                    messageElement.textContent = `${message} --->>> Prima: ${selectedGuest.textContent}`;
-
-                // Ovde dodaj logiku za slanje na server
-            } else {
-                console.log("Poruka nije validna ili gost nije selektovan.");
-            }
-        }
-    });
+    // Kada je privatni chat omogućen, poruka će ostati u formi dok se ne isključi
+    if (isPrivateChatEnabled && selectedGuest) {
+        // Ovaj deo ostaje nepromenjen jer ne treba dodatno dodavati logiku za chat input ili message area
+    }
 });
+
 
 
