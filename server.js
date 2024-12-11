@@ -68,11 +68,6 @@ io.on('connection', (socket) => {
             nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
             time: time,
         };
-        // Spremi IP, poruku i nickname u fajl
-        saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
-        
-        io.emit('chatMessage', messageToSend);
-    });
 
 // Funkcija za brisanje chata
 function clearChat() {
@@ -80,6 +75,11 @@ function clearChat() {
         io.emit('chat-cleared');
     });
 }
+        // Spremi IP, poruku i nickname u fajl
+        saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
+        
+        io.emit('chatMessage', messageToSend);
+    });
 
     // Obrada prijave korisnika
     socket.on('userLoggedIn', async (username) => {
