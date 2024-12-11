@@ -80,12 +80,16 @@ io.on('connection', (socket) => {
             nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
             time: time,
         };
-        // Funkcija za brisanje chata
+       // Funkcija za brisanje chata
 function clearChat() {
+    // Postavi listener za 'clear-chat' događaj
     socket.on('clear-chat', () => {
+        // Emituj događaj 'chat-cleared' kada se primi 'clear-chat'
         io.emit('chat-cleared');
     });
 }
+// Pozivamo clearChat da aktiviramo listener
+clearChat();
         // Spremi IP, poruku i nickname u fajl
         saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
         
