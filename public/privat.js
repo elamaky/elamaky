@@ -51,7 +51,7 @@ document.getElementById('chatInput').addEventListener('keydown', (event) => {
 
             // Dodaj privatnu poruku u messageArea
             const messageDiv = document.createElement('div');
-            messageDiv.textContent = `Privatno (Za ${selectedUser}): ${message} --- ${time}`;
+            messageDiv.textContent = `${selectedUser}: ${message} (${time})`;
             document.getElementById('messageArea').appendChild(messageDiv);
         } else {
             // Emituj javnu poruku
@@ -70,7 +70,6 @@ document.getElementById('chatInput').addEventListener('keydown', (event) => {
 // Prikazivanje privatnih poruka
 socket.on('private_message', ({ from, message, time }) => {
     const messageDiv = document.createElement('div');
-    messageDiv.textContent = `Privatno od ${from}: ${message} --- ${time}`;
+    messageDiv.textContent = `${from}: ${message} (${time})`; // Prikazivanje privatne poruke
     document.getElementById('messageArea').appendChild(messageDiv);
 });
-
