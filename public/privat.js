@@ -13,8 +13,7 @@ function selectUser(username) {
     }
 }
 
-// Aktivira privatni chat
-document.getElementById('togglePrivateChat').addEventListener('click', () => {
+document.getElementById('privateMessage').addEventListener('click', () => {
     isPrivateChatEnabled = !isPrivateChatEnabled; // Prebacuje stanje privatnog chata
     const statusText = isPrivateChatEnabled ? 'Privatni chat je uključen' : 'Privatni chat je isključen';
     alert(statusText);
