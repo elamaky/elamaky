@@ -69,6 +69,3 @@ document.body.innerHTML += `
     <ul id="guestList"></ul>
     <button id="privateMessage">Privatna poruka</button>
 `;
-
-// Početni log: Učitavanje stranice
-console.log("Stranica učitana. Priprema za selektovanje gostiju.");
