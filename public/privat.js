@@ -15,30 +15,31 @@ document.getElementById('privateMessage').addEventListener('click', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     const guestList = document.getElementById('guestList');
+    let selectedGuest = null; // Varijabla za trenutnog selektovanog gosta
 
     guestList.addEventListener('click', (event) => {
         if (event.target.classList.contains('guest')) {
-            // Uklanjamo prethodno obeležavanje
-            document.querySelectorAll('.guest').forEach(guest => {
-                guest.style.backgroundColor = ''; // Resetujemo boju
-            });
+            // Ako je gost već selektovan, uklanjamo obeležavanje
+            if (selectedGuest === event.target) {
+                selectedGuest.classList.remove('selected');
+                selectedGuest = null; // Resetujemo selektovanog gosta
+                chatInput.placeholder = ''; // Resetujemo placeholder za poruku
+                console.log('Selektovanje gosta uklonjeno.');
+            } else {
+                // Ako nije selektovan, obeležavamo novog gosta
+                if (selectedGuest) {
+                    selectedGuest.classList.remove('selected'); // Uklanjamo prethodno selektovanog
+                }
 
-            // Obeležavamo kliknutog gosta
-            const selectedGuest = event.target;
-            selectedGuest.style.backgroundColor = 'rgba(0, 0, 255, 0.1)';
-
-            console.log(`Odabran gost: ${selectedGuest.textContent}`);
+                selectedGuest = event.target;
+                selectedGuest.classList.add('selected'); // Dodajemo obeležavanje
+                chatInput.placeholder = `Poruka za ${selectedGuest.textContent}...`; // Ažurira placeholder
+                console.log(`Odabran gost: ${selectedGuest.textContent}`);
+            }
         }
     });
 });
 
-guestList.addEventListener('click', (event) => {
-    if (event.target.classList.contains('guest')) {
-        selectedGuest = event.target;
-        selectedGuest.style.backgroundColor = 'rgba(0, 0, 255, 0.1)';
-        chatInput.value = `SALJE ----->>> ${selectedGuest.textContent} : `;
-    }
-});
 
 function sendMessage() {
     const message = chatInput.value;
