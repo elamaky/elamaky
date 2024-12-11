@@ -17,14 +17,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chatInput');
     const messageArea = document.getElementById('messageArea');
     let selectedGuest = null;
+    let senderNickname = "Gost-4444"; // Ovaj nadimak treba da bude dinamički dodeljen, kao što je ranije objašnjeno.
 
     guestList.addEventListener('click', (event) => {
         if (event.target.classList.contains('guest')) {
             // Ako je već selektovan gost, uklonimo obeležavanje
             if (selectedGuest === event.target) {
-                event.target.style.backgroundColor = '';
+                event.target.style.backgroundColor = '';  // Uklanjamo providnu traku
                 selectedGuest = null;
-                chatInput.value = ''; // Očistimo formu za unos
+                chatInput.value = ''; // Očistimo formu za unos kada je kliknut isti gost
             } else {
                 // Uklanjamo prethodno obeležavanje
                 document.querySelectorAll('.guest').forEach(guest => {
@@ -33,13 +34,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Obeležavamo kliknutog gosta
                 selectedGuest = event.target;
-                selectedGuest.style.backgroundColor = 'rgba(0, 0, 255, 0.1)';
+                selectedGuest.style.backgroundColor = 'rgba(0, 0, 255, 0.1)'; // Providna traka preko odabranog gosta
 
-                // Popunjavamo formu za unos
-                chatInput.value = `SALJE ----->>> ${selectedGuest.textContent} : `;
+                // Prikazujemo format poruke u chat inputu
+                chatInput.value = `${senderNickname} ---->>> ${selectedGuest.textContent} : `;
             }
         }
     });
+});
+
 
     // Funkcija za slanje poruke
     function sendMessage() {
