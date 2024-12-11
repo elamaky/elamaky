@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (selectedGuest === event.target) {
                 event.target.style.backgroundColor = '';
                 selectedGuest = null;
-                chatInput.innerHTML = ''; // Očistimo formu za unos
+                chatInput.value = ''; // Očistimo formu za unos
             } else {
                 // Uklanjamo prethodno obeležavanje
                 document.querySelectorAll('.guest').forEach(guest => {
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 selectedGuest.style.backgroundColor = 'rgba(0, 0, 255, 0.1)';
 
                 // Popunjavamo formu za unos
-                chatInput.innerHTML = `SALJE ----->>> ${selectedGuest.textContent} : `;
+                chatInput.value = `SALJE ----->>> ${selectedGuest.textContent} : `;
             }
         }
     });
@@ -64,3 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // Dodajte logiku za slanje poruke na server, ako je potrebno
         }
     }
+
+    // Povezivanje dugmeta za slanje poruke (ako postoji)
+    const sendButton = document.getElementById('sendMessage');
+    if (sendButton) {
+        sendButton.addEventListener('click', sendMessage);
+    }
+});
+
