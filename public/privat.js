@@ -1,4 +1,5 @@
 let isPrivateChatEnabled = false; // Status privatnog chata
+let senderNickname = "Gost-4444"; // Ovaj nadimak treba da bude dinamički dodeljen
 
 // Event listener za dugme "Privatna poruka"
 document.getElementById('privateMessage').addEventListener('click', () => {
@@ -17,15 +18,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chatInput');
     const messageArea = document.getElementById('messageArea');
     let selectedGuest = null;
-    let senderNickname = "Gost-4444"; // Ovaj nadimak treba da bude dinamički dodeljen
+
+    console.log("DOM potpuno učitan");
 
     guestList.addEventListener('click', (event) => {
+        console.log("Kliknut je gost: ", event.target);
+
         if (event.target.classList.contains('guest')) {
             // Ako je već selektovan gost, uklonimo obeležavanje
             if (selectedGuest === event.target) {
                 event.target.style.backgroundColor = '';  // Uklanjamo providnu traku
                 selectedGuest = null;
                 chatInput.value = ''; // Očistimo formu za unos kada je kliknut isti gost
+                console.log("Selektovani gost je odjavljen.");
             } else {
                 // Uklanjamo prethodno obeležavanje
                 document.querySelectorAll('.guest').forEach(guest => {
@@ -38,12 +43,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Prikazujemo format poruke u chat inputu
                 chatInput.value = `${senderNickname} ---->>> ${selectedGuest.textContent} : `;
+                console.log("Prikazan format poruke: ", chatInput.value);
             }
         }
     });
-});
 
- // Funkcija za slanje poruke
+    // Funkcija za slanje poruke
     function sendMessage() {
         const message = chatInput.value;
         const currentTime = new Date().toLocaleTimeString(); // Uzima trenutnu vremensku oznaku
@@ -64,6 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`Poruka za ${selectedGuest.textContent}: ${message} u ${currentTime}`);
             
             // Dodajte logiku za slanje poruke na server, ako je potrebno
+        } else {
+            console.log("Poruka nije validna ili gost nije selektovan.");
         }
     }
 
@@ -71,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendButton = document.getElementById('sendMessage');
     if (sendButton) {
         sendButton.addEventListener('click', sendMessage);
+    } else {
+        console.error("Dugme za slanje poruke nije pronađeno.");
     }
 });
-
