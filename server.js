@@ -5,7 +5,6 @@ const { connectDB } = require('./mongo');
 const { register, login } = require('./prijava');
 const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodula
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
-const { saveIpData, getIpData } = require('./ip'); // Uvozimo ip.js
 const konobaricaModul = require('./konobaricamodul'); // Uvoz konobaricamodul.js
 const slikemodul = require('./slikemodul'); 
 const pingService = require('./ping');
@@ -85,10 +84,6 @@ socket.on('chatMessage', (msgData) => {
 
     // Emituj poruku svim klijentima
     io.emit('chatMessage', messageToSend);
-
-    // Spremi IP, poruku i nickname u fajl
-    saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
-});
 
 // Obrada privatne poruke
 socket.on('private_message', ({ to, message, time }) => {
