@@ -43,23 +43,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-    // Funkcija za slanje poruke
-    function sendMessage() {
-        const message = chatInput.value;
-        const currentTime = new Date().toLocaleTimeString(); // Uzima trenutnu vremensku oznaku
-        
-        if (message && selectedGuest) {
+         if (message && selectedGuest) {
             // Kreiramo div za poruku
             const messageElement = document.createElement('div');
             
             // Formatiramo poruku
-            messageElement.textContent = `Salje: ${message} --->>> Prima: ${selectedGuest.textContent} | Vreme: ${currentTime}`;
+            messageElement.textContent = ${message} --->>> Prima: ${selectedGuest.textContent} | Vreme: ${currentTime}`;
             
             // Dodajemo poruku u messageArea
             messageArea.appendChild(messageElement);
-            
-            // Očistimo chatInput
-            chatInput.value = '';
             
             console.log(`Poruka za ${selectedGuest.textContent}: ${message} u ${currentTime}`);
             
