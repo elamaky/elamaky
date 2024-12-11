@@ -8,7 +8,6 @@ const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const { saveIpData, getIpData } = require('./ip'); // Uvozimo ip.js
 const konobaricaModul = require('./konobaricamodul'); // Uvoz konobaricamodul.js
 const slikemodul = require('./slikemodul'); 
-const privatmodul = require('./privatmodul');  // Import privatmodula
 const pingService = require('./ping');
 require('dotenv').config();
 
@@ -127,8 +126,6 @@ io.on('connection', (socket) => {
         return number;
     }
 });
-
-privatmodul(io, guests);
 
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
