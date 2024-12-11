@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             selectedGuest.style.backgroundColor = 'rgba(0, 0, 255, 0.1)'; // Isticanje selektovanog gosta
             isPrivateChatEnabled = true;
-            chatInput.value = `${senderNickname} ---->>> ${selectedGuest.textContent} : `;
+            chatInput.value = `---->>> ${selectedGuest.textContent} : `;
             console.log("Privatni chat sa: ", selectedGuest.textContent);
         }
     });
@@ -42,19 +42,18 @@ document.addEventListener('DOMContentLoaded', () => {
     chatInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
             const message = chatInput.value.trim();
-            const currentTime = new Date().toLocaleTimeString();
 
             if (message && isPrivateChatEnabled && selectedGuest) {
                 // Kreiramo div za poruku
                 const messageElement = document.createElement('div');
-                messageElement.textContent = `${message} --->>> Prima: ${selectedGuest.textContent} | Vreme: ${currentTime}`;
+                messageElement.textContent = `${message} --->>> Prima: ${selectedGuest.textContent}`;
 
                 // Dodajemo poruku u messageArea
                 messageArea.appendChild(messageElement);
-                console.log(`Poruka za ${selectedGuest.textContent}: ${message} u ${currentTime}`);
+                console.log(`Poruka za ${selectedGuest.textContent}: ${message}`);
 
                 // Čistimo input za novu poruku
-                chatInput.value = `${senderNickname} ---->>> ${selectedGuest.textContent} : `;
+                chatInput.value = `---->>> ${selectedGuest.textContent} : `;
 
                 // Ovde dodaj logiku za slanje na server
             } else {
@@ -63,3 +62,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
