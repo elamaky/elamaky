@@ -57,27 +57,32 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('newGuest', nickname);
     io.emit('updateGuestList', Object.values(guests));
 
+    // Funkcija za brisanje chata
+    function clearChat() {
+        socket.on('clear-chat', () => {
+            io.emit('chat-cleared');
+        });
+    }
+
     // Obrada slanja poruka u četu
     socket.on('chatMessage', (msgData) => {
         const time = new Date().toLocaleTimeString();
+        
+        // Provera da li postoji nickname pre nego što šaljemo poruku
+        const nickname = guests[socket.id] || 'Nepoznat korisnik'; // Ako nije definisano, koristi 'Nepoznat korisnik'
+
         const messageToSend = {
             text: msgData.text,
             bold: msgData.bold,
             italic: msgData.italic,
             color: msgData.color,
-            nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
+            nickname: nickname, // Korišćenje nadimka za slanje poruke
             time: time,
         };
 
-// Funkcija za brisanje chata
-function clearChat() {
-    socket.on('clear-chat', () => {
-        io.emit('chat-cleared');
-    });
-}
         // Spremi IP, poruku i nickname u fajl
-        saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
-        
+        saveIpData(socket.handshake.address, msgData.text, nickname);
+
         io.emit('chatMessage', messageToSend);
     });
 
@@ -93,12 +98,14 @@ function clearChat() {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-     // Obrada diskonekcije korisnika
+    // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id]; // Uklanjanje gosta iz liste
         io.emit('updateGuestList', Object.values(guests));
     });
+});
+
 
     // Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
