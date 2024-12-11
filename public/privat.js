@@ -1,62 +1,65 @@
 let isPrivateChatEnabled = false; // Status privatnog chata
-let senderNickname = false;
+let senderNickname = "Gost-1234"; // Primer imena korisnika
+let selectedGuest = null;
 
 // Event listener za dugme "Privatna poruka"
 document.getElementById('privateMessage').addEventListener('click', () => {
-    console.log("Kliknuto na dugme za privatnu poruku");
-
-    // Prebacivanje stanja privatnog chata
     isPrivateChatEnabled = !isPrivateChatEnabled;
     const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
 
-    console.log(statusText); // Logujemo status privatnog chata
-    alert(statusText); // Prikazujemo status privatnog chata
+    if (!isPrivateChatEnabled) {
+        selectedGuest = null; // Resetujemo selektovanog gosta
+        document.getElementById('chatInput').value = ""; // Čistimo chat input
+        document.querySelectorAll('.guest').forEach(guest => {
+            guest.style.backgroundColor = ''; // Resetujemo stil gostiju
+        });
+    }
+
+    console.log(statusText);
+    alert(statusText);
 });
 
 document.addEventListener('DOMContentLoaded', () => {
     const guestList = document.getElementById('guestList');
     const chatInput = document.getElementById('chatInput');
-    let selectedGuest = null;
-    
-     guestList.addEventListener('click', (event) => {
+    const messageArea = document.getElementById('messageArea');
+
+    guestList.addEventListener('click', (event) => {
         if (event.target.classList.contains('guest')) {
-            // Ako je već selektovan gost, nema potrebe da ponovo klikneš na njega
-            if (selectedGuest === event.target) {
-                console.log("Gost je već selektovan");
-                return; // Ne menja ništa ako je isti gost ponovo selektovan
-            } else {
-                // Uklanjamo prethodno obeležavanje
-                document.querySelectorAll('.guest').forEach(guest => {
-                    guest.style.backgroundColor = ''; // Resetujemo boju
-                });
+            // Prebacivanje stanja za privatni chat
+            selectedGuest = event.target;
+            document.querySelectorAll('.guest').forEach(guest => {
+                guest.style.backgroundColor = ''; // Resetujemo boje
+            });
 
-                // Obeležavamo kliknutog gosta
-                selectedGuest = event.target;
-                selectedGuest.style.backgroundColor = 'rgba(0, 0, 255, 0.1)'; // Providna traka preko odabranog gosta
+            selectedGuest.style.backgroundColor = 'rgba(0, 0, 255, 0.1)'; // Isticanje selektovanog gosta
+            isPrivateChatEnabled = true;
+            chatInput.value = `${senderNickname} ---->>> ${selectedGuest.textContent} : `;
+            console.log("Privatni chat sa: ", selectedGuest.textContent);
+        }
+    });
 
-                // Prikazujemo format poruke u chat inputu
+    chatInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            const message = chatInput.value.trim();
+            const currentTime = new Date().toLocaleTimeString();
+
+            if (message && isPrivateChatEnabled && selectedGuest) {
+                // Kreiramo div za poruku
+                const messageElement = document.createElement('div');
+                messageElement.textContent = `${message} --->>> Prima: ${selectedGuest.textContent} | Vreme: ${currentTime}`;
+
+                // Dodajemo poruku u messageArea
+                messageArea.appendChild(messageElement);
+                console.log(`Poruka za ${selectedGuest.textContent}: ${message} u ${currentTime}`);
+
+                // Čistimo input za novu poruku
                 chatInput.value = `${senderNickname} ---->>> ${selectedGuest.textContent} : `;
-                console.log("Prikazan format poruke: ", chatInput.value);
+
+                // Ovde dodaj logiku za slanje na server
+            } else {
+                console.log("Poruka nije validna ili gost nije selektovan.");
             }
         }
     });
 });
-
-
-         if (message && selectedGuest) {
-            // Kreiramo div za poruku
-            const messageElement = document.createElement('div');
-            
-            // Formatiramo poruku
-            messageElement.textContent = ${message} --->>> Prima: ${selectedGuest.textContent} | Vreme: ${currentTime}`;
-            
-            // Dodajemo poruku u messageArea
-            messageArea.appendChild(messageElement);
-            
-            console.log(`Poruka za ${selectedGuest.textContent}: ${message} u ${currentTime}`);
-            
-            // Dodajte logiku za slanje poruke na server, ako je potrebno
-        } else {
-            console.log("Poruka nije validna ili gost nije selektovan.");
-        }
-    }
