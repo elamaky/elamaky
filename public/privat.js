@@ -52,18 +52,7 @@ document.getElementById('chatInput').addEventListener('keydown', (event) => {
             // Emituj javnu poruku
             socket.emit('public_message', { message, time });
 
-            // Dodaj javnu poruku u messageArea
-            const messageDiv = document.createElement('div');
-            messageDiv.textContent chatInput.value = `---->>> ${selectedGuest.textContent} : `; // Forma poruke za privatni chat
-            document.getElementById('messageArea').appendChild(messageDiv);
-        }
-
-        document.getElementById('chatInput').value = ''; // Očisti polje za unos
-        event.preventDefault(); // Sprečava unos novog reda prilikom pritiska ENTER
-    }
-});
-
-// Prijem privatnih poruka
+          // Prijem privatnih poruka
 socket.on('private_message', ({ from, message, time }) => {
     const messageDiv = document.createElement('div');
     messageDiv.textContentchatInput.value = `---->>> ${selectedGuest.textContent} : `; // Forma poruke za privatni chat
