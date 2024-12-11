@@ -66,12 +66,3 @@ function populateGuestList(guests) {
         guestListElement.appendChild(guestItem);
     });
 }
-
-// HTML za privatnu traku i listu gostiju
-document.body.innerHTML += `
-    <ul id="guestList"></ul>
-    <button id="privateMessage">Privatna poruka</button>
-    <div id="privateChatInfo" style="display:none; padding: 5px; background-color: rgba(0, 0, 255, 0.1); margin-top: 10px;">
-        <!-- Ovdje će se prikazivati info o privatnom chatu -->
-    </div>
-`;
