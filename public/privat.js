@@ -32,4 +32,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+guestList.addEventListener('click', (event) => {
+    if (event.target.classList.contains('guest')) {
+        selectedGuest = event.target;
+        selectedGuest.style.backgroundColor = 'rgba(0, 0, 255, 0.1)';
+        chatInput.value = `SALJE ----->>> ${selectedGuest.textContent} : `;
+    }
+});
+
+function sendMessage() {
+    const message = chatInput.value;
+    const currentTime = new Date().toLocaleTimeString(); // Uzima trenutnu vremensku oznaku
+    
+    if (message && selectedGuest) {
+        // Kreiramo div za poruku
+        const messageElement = document.createElement('div');
+        
+        // Formatiramo poruku
+        messageElement.textContent = `Salje: ${message} --->>> Prima: ${selectedGuest.textContent} | Vreme: ${currentTime}`;
+        
+        // Dodajemo poruku u messageArea
+        messageArea.appendChild(messageElement);
+        
+        // Očistimo chatInput
+        chatInput.value = '';
+        
+        console.log(`Poruka za ${selectedGuest.textContent}: ${message} u ${currentTime}`);
+        
+        // Dodajte logiku za slanje poruke na server, ako je potrebno
+    }
+}
 
