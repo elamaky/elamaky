@@ -39,11 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    chatInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter') {
-            const message = chatInput.value.trim();
-
-            if (message && isPrivateChatEnabled && selectedGuest) {
+        if (message && isPrivateChatEnabled && selectedGuest) {
                 // Proveravamo da li je poruka već dodata (sprečavanje dupliranja)
                 const existingMessages = Array.from(messageArea.children);
                 const isDuplicate = existingMessages.some(msg => msg.textContent.includes(message));
