@@ -57,6 +57,30 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('newGuest', nickname);
     io.emit('updateGuestList', Object.values(guests));
 
+    // Obrada slanja poruka u četu
+    socket.on('chatMessage', (msgData) => {
+        const time = new Date().toLocaleTimeString();
+        const messageToSend = {
+            text: msgData.text,
+            bold: msgData.bold,
+            italic: msgData.italic,
+            color: msgData.color,
+            nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
+            time: time,
+        };
+        // Spremi IP, poruku i nickname u fajl
+        saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
+        
+        io.emit('chatMessage', messageToSend);
+    });
+
+// Funkcija za brisanje chata
+function clearChat() {
+    socket.on('clear-chat', () => {
+        io.emit('chat-cleared');
+    });
+}
+
     // Obrada prijave korisnika
     socket.on('userLoggedIn', async (username) => {
         if (authorizedUsers.has(username)) {
