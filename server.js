@@ -69,7 +69,7 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-    // Obrada slanja poruka u četu
+     // Obrada slanja chat poruka
     socket.on('chatMessage', (msgData) => {
         const time = new Date().toLocaleTimeString();
         const messageToSend = {
@@ -80,20 +80,19 @@ io.on('connection', (socket) => {
             nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
             time: time,
         };
-       // Funkcija za brisanje chata
-function clearChat() {
-    // Postavi listener za 'clear-chat' događaj
-    socket.on('clear-chat', () => {
-        // Emituj događaj 'chat-cleared' kada se primi 'clear-chat'
-        io.emit('chat-cleared');
-    });
-}
-// Pozivamo clearChat da aktiviramo listener
-clearChat();
+
         // Spremi IP, poruku i nickname u fajl
         saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
-        
+
+        // Emituj poruku svim klijentima
         io.emit('chatMessage', messageToSend);
+    });
+
+    // Obrada za čišćenje chata
+    socket.on('clear-chat', () => {
+        console.log('Chat cleared');
+        // Emituj događaj koji obaveštava ostale klijente da je chat obrisan
+        io.emit('chat-cleared');
     });
 
     // Obrada diskonekcije korisnika
