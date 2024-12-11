@@ -30,3 +30,10 @@ document.getElementById('chatInput').addEventListener('keydown', (event) => {
         event.preventDefault();  // Sprečava unos novog reda prilikom pritiska ENTER
     }
 });
+
+socket.on('private_message', ({ from, message, time }) => {
+    const messageDiv = document.createElement('div');
+    messageDiv.textContent = `PRIMA ---> ${from} ---> ${message} ---> ${time}`;
+    document.getElementById('messageArea').appendChild(messageDiv);
+});
+
