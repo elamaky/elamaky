@@ -1,4 +1,17 @@
+// Definisanje globalnih varijabli
 let selectedUser = null; // Odabran korisnik za privatni chat
+let isPrivateChatEnabled = false; // Status privatnog chata
+
+// Event listener za dugme "Privatna poruka" (prvo što treba biti pozvano)
+document.getElementById('privateMessage').addEventListener('click', () => {
+    console.log("Kliknuto na dugme za privatnu poruku");
+    
+    isPrivateChatEnabled = !isPrivateChatEnabled; // Prebacuje stanje privatnog chata
+    const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
+    
+    console.log(statusText); // Logujemo status privatnog chata
+    alert(statusText); // Prikazujemo status privatnog chata
+});
 
 // Funkcija za selektovanje korisnika (kada klikneš na korisnika u listi)
 function selectUser(nickname) {
@@ -50,10 +63,12 @@ document.getElementById('guestList').innerHTML = `
 
 // Test: Dodavanje providne trake u HTML-u
 document.body.innerHTML += `
-    <div id="privateChatInfo" style="display: none; background-color: rgba(0, 0, 255, 0.1); padding: 5px; margin-top: 10px;"></div>
+    <div id="privateChatInfo" style="display:none; padding: 5px; background-color: rgba(0, 0, 255, 0.1); margin-top: 10px;">
+        <!-- Ovdje će se prikazivati info o privatnom chatu -->
+    </div>
     <ul id="guestList"></ul>
+    <button id="privateMessage">Privatna poruka</button>
 `;
 
 // Početni log: Učitavanje stranice
 console.log("Stranica učitana. Priprema za selektovanje gostiju.");
-
