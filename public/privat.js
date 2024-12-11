@@ -1,4 +1,3 @@
-let selectedUser = null; // Odabran korisnik za privatni chat
 let isPrivateChatEnabled = false; // Status privatnog chata
 
 // Event listener za dugme "Privatna poruka"
@@ -42,26 +41,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-  function sendMessage() {
-    const message = chatInput.value;
-    const currentTime = new Date().toLocaleTimeString(); // Uzima trenutnu vremensku oznaku
-    
-    if (message && selectedGuest) {
-        // Kreiramo div za poruku
-        const messageElement = document.createElement('div');
+    // Funkcija za slanje poruke
+    function sendMessage() {
+        const message = chatInput.value;
+        const currentTime = new Date().toLocaleTimeString(); // Uzima trenutnu vremensku oznaku
         
-        // Formatiramo poruku
-        messageElement.textContent = `Salje: ${message} --->>> Prima: ${selectedGuest.textContent} | Vreme: ${currentTime}`;
-        
-        // Dodajemo poruku u messageArea
-        messageArea.appendChild(messageElement);
-        
-        // Očistimo chatInput
-        chatInput.value = '';
-        
-        console.log(`Poruka za ${selectedGuest.textContent}: ${message} u ${currentTime}`);
-        
-        // Dodajte logiku za slanje poruke na server, ako je potrebno
+        if (message && selectedGuest) {
+            // Kreiramo div za poruku
+            const messageElement = document.createElement('div');
+            
+            // Formatiramo poruku
+            messageElement.textContent = `Salje: ${message} --->>> Prima: ${selectedGuest.textContent} | Vreme: ${currentTime}`;
+            
+            // Dodajemo poruku u messageArea
+            messageArea.appendChild(messageElement);
+            
+            // Očistimo chatInput
+            chatInput.value = '';
+            
+            console.log(`Poruka za ${selectedGuest.textContent}: ${message} u ${currentTime}`);
+            
+            // Dodajte logiku za slanje poruke na server, ako je potrebno
+        }
     }
-}
-
