@@ -54,8 +54,7 @@ document.getElementById('guestList').addEventListener('contextmenu', function (e
     }
 });
 
-// Prikazivanje gostiju koji se dinamički dodaju sa servera
-// Ova funkcija bi zapravo trebalo da dođe sa servera i u tom slučaju se učitava dinamički
+// Funkcija za dinamičko popunjavanje guestList sa korisnicima sa servera
 function populateGuestList(guests) {
     const guestListElement = document.getElementById('guestList');
     guestListElement.innerHTML = ''; // Očisti prethodnu listu
@@ -66,3 +65,9 @@ function populateGuestList(guests) {
         guestListElement.appendChild(guestItem);
     });
 }
+
+// Na serveru, koristite socket da šaljete informacije o novim korisnicima
+socket.on('update_guest_list', function(guests) {
+    console.log("Dobijeni gosti sa servera: ", guests);
+    populateGuestList(guests); // Popunite listu sa gostima sa servera
+});
