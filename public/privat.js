@@ -51,15 +51,15 @@ document.getElementById('chatInput').addEventListener('keydown', (event) => {
 
             // Dodaj privatnu poruku u messageArea
             const messageDiv = document.createElement('div');
-            messageDiv.textContent = `SALJE --->>> PRIMA --->>> ${message} --->>> ${time}`;
+            messageDiv.textContent = `Privatno (Za ${selectedUser}): ${message} --- ${time}`;
             document.getElementById('messageArea').appendChild(messageDiv);
         } else {
             // Emituj javnu poruku
-            socket.emit('chatMessage', { text: message, bold: isBold, italic: isItalic, color: currentColor });
+            socket.emit('chatMessage', { text: message });
 
             // Dodaj javnu poruku u messageArea
             const messageDiv = document.createElement('div');
-            messageDiv.textContent = `SALJE --->>> PRIMA --->>> ${message} --->>> ${time}`;
+            messageDiv.textContent = `Javno: ${message} --- ${time}`;
             document.getElementById('messageArea').appendChild(messageDiv);
         }
 
@@ -70,6 +70,7 @@ document.getElementById('chatInput').addEventListener('keydown', (event) => {
 // Prikazivanje privatnih poruka
 socket.on('private_message', ({ from, message, time }) => {
     const messageDiv = document.createElement('div');
-    messageDiv.textContent = `SALJE --->>> PRIMA --->>> ${message} --->>> ${time}`;
+    messageDiv.textContent = `Privatno od ${from}: ${message} --- ${time}`;
     document.getElementById('messageArea').appendChild(messageDiv);
 });
+
