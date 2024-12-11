@@ -6,7 +6,7 @@ const { register, login } = require('./prijava');
 const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodula
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const konobaricaModul = require('./konobaricamodul'); // Uvoz konobaricamodul.js
-const slikemodul = require('./slikemodul'); 
+const slikemodul = require('./slikemodul');
 const pingService = require('./ping');
 require('dotenv').config();
 
@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-// Lista autorizovanih korisnika i banovanih korisnika
+// Lista autorizovanih i banovanih korisnika
 const authorizedUsers = new Set(['Radio Galaksija', 'ZI ZU', '__X__']);
 const bannedUsers = new Set();
 
@@ -57,53 +57,49 @@ io.on('connection', (socket) => {
     io.emit('updateGuestList', Object.values(guests));
 
     // Obrada prijave korisnika
-    socket.on('userLoggedIn', async (username) => {
+    socket.on('userLoggedIn', (username) => {
         if (authorizedUsers.has(username)) {
-            guests[socket.id] = username; // Ne dodajemo (Admin) oznaku
+            guests[socket.id] = username;
             console.log(`${username} je autentifikovan kao admin.`);
         } else {
-            guests[socket.id] = username; // Ako je običan gost
+            guests[socket.id] = username;
             console.log(`${username} se prijavio kao gost.`);
         }
         io.emit('updateGuestList', Object.values(guests));
     });
 
-     // Obrada slanja chat poruka
-socket.on('chatMessage', (msgData) => {
-    const time = new Date().toLocaleTimeString();
-    
-    // Priprema poruke za slanje
-    const messageToSend = {
-        text: msgData.text,
-        bold: msgData.bold,
-        italic: msgData.italic,
-        color: msgData.color,
-        nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
-        time: time,
-    };
+    // Obrada slanja chat poruka
+    socket.on('chatMessage', (msgData) => {
+        const time = new Date().toLocaleTimeString();
+        const messageToSend = {
+            text: msgData.text,
+            bold: msgData.bold,
+            italic: msgData.italic,
+            color: msgData.color,
+            nickname: guests[socket.id],
+            time: time,
+        };
+        io.emit('chatMessage', messageToSend);
+    });
 
-    // Emituj poruku svim klijentima
-    io.emit('chatMessage', messageToSend);
+    // Obrada privatne poruke
+    socket.on('private_message', ({ to, message, time }) => {
+        const toSocketId = Object.keys(guests).find(key => guests[key] === to);
+        if (toSocketId) {
+            io.to(toSocketId).emit('private_message', { from: guests[socket.id], message, time });
+        }
+    });
 
-// Obrada privatne poruke
-socket.on('private_message', ({ to, message, time }) => {
-    const toSocketId = users[to];
-    if (toSocketId) {
-        io.to(toSocketId).emit('private_message', { from: guests[socket.id], message, time });
-    }
-});
-
-// Obrada za čišćenje chata
-socket.on('clear-chat', () => {
-    console.log('Chat cleared');
-    // Emituj događaj koji obaveštava ostale klijente da je chat obrisan
-    io.emit('chat-cleared');
-});
+    // Obrada za čišćenje chata
+    socket.on('clear-chat', () => {
+        console.log('Chat cleared');
+        io.emit('chat-cleared');
+    });
 
     // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
-        delete guests[socket.id]; // Uklanjanje gosta iz liste
+        delete guests[socket.id];
         io.emit('updateGuestList', Object.values(guests));
     });
 
