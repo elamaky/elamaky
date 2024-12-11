@@ -53,16 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     const messageElement = document.createElement('div');
                     messageElement.textContent = `${message} --->>> Prima: ${selectedGuest.textContent}`;
 
-                    // Dodajemo poruku u messageArea
-                    messageArea.appendChild(messageElement);
-                    console.log(`Poruka za ${selectedGuest.textContent}: ${message}`);
-                } else {
-                    console.log("Duplikat poruke otkriven, preskačemo dodavanje.");
-                }
-
-                // Čistimo input za novu poruku
-                chatInput.value = `---->>> ${selectedGuest.textContent} : `;
-
                 // Ovde dodaj logiku za slanje na server
             } else {
                 console.log("Poruka nije validna ili gost nije selektovan.");
