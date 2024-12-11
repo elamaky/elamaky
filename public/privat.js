@@ -13,61 +13,23 @@ document.getElementById('privateMessage').addEventListener('click', () => {
     alert(statusText); // Prikazujemo status privatnog chata
 });
 
-// Funkcija za selektovanje korisnika za privatnu konverzaciju
-function selectUser(nickname) {
-    console.log("selectUser pozvan sa nickname: ", nickname);
+document.addEventListener('DOMContentLoaded', () => {
+    const guestList = document.getElementById('guestList');
 
-    selectedUser = nickname; // Skladištimo selektovanog korisnika
-    console.log("Selektovan korisnik: ", selectedUser);
+    guestList.addEventListener('click', (event) => {
+        if (event.target.classList.contains('guest')) {
+            // Uklanjamo prethodno obeležavanje
+            document.querySelectorAll('.guest').forEach(guest => {
+                guest.style.backgroundColor = ''; // Resetujemo boju
+            });
 
-    // Obeleži selektovanog korisnika u listi
-    document.querySelectorAll('#guestList li').forEach(li => {
-        li.style.backgroundColor = ''; // Resetujemo boju
-        console.log("Resetovanje boje korisnika: ", li.textContent);
+            // Obeležavamo kliknutog gosta
+            const selectedGuest = event.target;
+            selectedGuest.style.backgroundColor = 'rgba(0, 0, 255, 0.1)';
+
+            console.log(`Odabran gost: ${selectedGuest.textContent}`);
+        }
     });
-
-    const userElement = Array.from(document.querySelectorAll('#guestList li')).find(li => li.textContent === nickname);
-    if (userElement) {
-        userElement.style.backgroundColor = 'rgba(0, 0, 255, 0.1)'; // Obeleži selektovanog korisnika
-        console.log("Obeležen korisnik: ", userElement.textContent);
-    }
-
-    // Prikazivanje trake sa informacijom o privatnoj konverzaciji
-    const privateChatInfo = document.getElementById('privateChatInfo');
-    privateChatInfo.textContent = `Privatni chat sa ${nickname}`;
-    privateChatInfo.style.display = 'block'; // Prikazivanje trake
-    console.log("Prikazana providna traka sa informacijom o privatnoj konverzaciji");
-}
-
-// Event listener za desni klik na goste (samo za odabir korisnika)
-document.getElementById('guestList').addEventListener('contextmenu', function (event) {
-    console.log("Desni klik na element: ", event.target);
-
-    // Prevent default right-click menu
-    event.preventDefault();
-
-    // Proveri da li je kliknut na <li> element u listi gostiju
-    if (event.target && event.target.tagName === 'LI') {
-        const nickname = event.target.textContent;
-        console.log("Desni klik na korisnika: ", nickname);
-        selectUser(nickname); // Pozivamo funkciju za selektovanje korisnika
-    }
 });
 
-// Funkcija za dinamičko popunjavanje guestList sa korisnicima sa servera
-function populateGuestList(guests) {
-    const guestListElement = document.getElementById('guestList');
-    guestListElement.innerHTML = ''; // Očisti prethodnu listu
 
-    guests.forEach(guest => {
-        const guestItem = document.createElement('li');
-        guestItem.textContent = guest.nickname;
-        guestListElement.appendChild(guestItem);
-    });
-}
-
-// Na serveru, koristite socket da šaljete informacije o novim korisnicima
-socket.on('update_guest_list', function(guests) {
-    console.log("Dobijeni gosti sa servera: ", guests);
-    populateGuestList(guests); // Popunite listu sa gostima sa servera
-});
