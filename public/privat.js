@@ -36,11 +36,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Kada je privatni chat omogućen, poruka će ostati u formi dok se ne isključi
-    if (isPrivateChatEnabled && selectedGuest) {
-        // Ovaj deo ostaje nepromenjen jer ne treba dodatno dodavati logiku za chat input ili message area
-    }
+    // Ovaj deo neće biti promenjen jer ne uključuje ništa vezano za slanje poruka ili message area
 });
-
-
-
