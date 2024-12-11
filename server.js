@@ -57,33 +57,31 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('newGuest', nickname);
     io.emit('updateGuestList', Object.values(guests));
 
-    // Funkcija za brisanje chata
-    function clearChat() {
-        socket.on('clear-chat', () => {
-            io.emit('chat-cleared');
-        });
-    }
-
     // Obrada slanja poruka u četu
     socket.on('chatMessage', (msgData) => {
         const time = new Date().toLocaleTimeString();
         
         // Provera da li postoji nickname pre nego što šaljemo poruku
-        const nickname = guests[socket.id] || 'Nepoznat korisnik'; // Ako nije definisano, koristi 'Nepoznat korisnik'
+        const userNickname = guests[socket.id] || 'Nepoznat korisnik'; // Ako nije definisano, koristi 'Nepoznat korisnik'
 
         const messageToSend = {
             text: msgData.text,
             bold: msgData.bold,
             italic: msgData.italic,
             color: msgData.color,
-            nickname: nickname, // Korišćenje nadimka za slanje poruke
+            nickname: userNickname, // Korišćenje nadimka za slanje poruke
             time: time,
         };
 
         // Spremi IP, poruku i nickname u fajl
-        saveIpData(socket.handshake.address, msgData.text, nickname);
+        saveIpData(socket.handshake.address, msgData.text, userNickname);
 
         io.emit('chatMessage', messageToSend);
+    });
+
+    // Funkcija za brisanje chata
+    socket.on('clear-chat', () => {
+        io.emit('chat-cleared');
     });
 
     // Obrada prijave korisnika
@@ -106,8 +104,7 @@ io.on('connection', (socket) => {
     });
 });
 
-
-    // Mogućnost banovanja korisnika prema nickname-u
+  // Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
         const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
 
