@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chatInput');
     const messageArea = document.getElementById('messageArea');
     let selectedGuest = null;
-    let senderNickname = "Gost-4444"; // Ovaj nadimak treba da bude dinamički dodeljen, kao što je ranije objašnjeno.
+    let senderNickname = "Gost-4444"; // Ovaj nadimak treba da bude dinamički dodeljen
 
     guestList.addEventListener('click', (event) => {
         if (event.target.classList.contains('guest')) {
@@ -43,8 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
-    // Funkcija za slanje poruke
+ // Funkcija za slanje poruke
     function sendMessage() {
         const message = chatInput.value;
         const currentTime = new Date().toLocaleTimeString(); // Uzima trenutnu vremensku oznaku
