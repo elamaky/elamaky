@@ -1,5 +1,4 @@
 let isPrivateChatEnabled = false; // Status privatnog chata
-let senderNickname = "Gost-1234"; // Primer imena korisnika
 let selectedGuest = null;
 
 // Event listener za dugme "Privatna poruka"
