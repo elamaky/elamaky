@@ -70,30 +70,40 @@ io.on('connection', (socket) => {
     });
 
      // Obrada slanja chat poruka
-    socket.on('chatMessage', (msgData) => {
-        const time = new Date().toLocaleTimeString();
-        const messageToSend = {
-            text: msgData.text,
-            bold: msgData.bold,
-            italic: msgData.italic,
-            color: msgData.color,
-            nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
-            time: time,
-        };
+socket.on('chatMessage', (msgData) => {
+    const time = new Date().toLocaleTimeString();
+    
+    // Priprema poruke za slanje
+    const messageToSend = {
+        text: msgData.text,
+        bold: msgData.bold,
+        italic: msgData.italic,
+        color: msgData.color,
+        nickname: guests[socket.id], // Korišćenje nadimka za slanje poruke
+        time: time,
+    };
 
-        // Spremi IP, poruku i nickname u fajl
-        saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
+    // Emituj poruku svim klijentima
+    io.emit('chatMessage', messageToSend);
 
-        // Emituj poruku svim klijentima
-        io.emit('chatMessage', messageToSend);
-    });
+    // Spremi IP, poruku i nickname u fajl
+    saveIpData(socket.handshake.address, msgData.text, guests[socket.id]);
+});
 
-    // Obrada za čišćenje chata
-    socket.on('clear-chat', () => {
-        console.log('Chat cleared');
-        // Emituj događaj koji obaveštava ostale klijente da je chat obrisan
-        io.emit('chat-cleared');
-    });
+// Obrada privatne poruke
+socket.on('private_message', ({ to, message, time }) => {
+    const toSocketId = users[to];
+    if (toSocketId) {
+        io.to(toSocketId).emit('private_message', { from: guests[socket.id], message, time });
+    }
+});
+
+// Obrada za čišćenje chata
+socket.on('clear-chat', () => {
+    console.log('Chat cleared');
+    // Emituj događaj koji obaveštava ostale klijente da je chat obrisan
+    io.emit('chat-cleared');
+});
 
     // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
