@@ -19,8 +19,12 @@ function selectUser(username) {
     privateChatInfo.style.display = 'block'; // Prikazivanje trake
 }
 
-// Event za klik na korisnika u listi
-document.getElementById('guestList').addEventListener('click', function(event) {
+// Dodaj event listener za desni klik na goste
+document.getElementById('guestList').addEventListener('contextmenu', function(event) {
+    // Prevent default right-click menu
+    event.preventDefault();
+
+    // Proveri da li je kliknut na <li> element u listi gostiju
     if (event.target && event.target.tagName === 'LI') {
         const username = event.target.textContent;
         selectUser(username); // Pozivamo funkciju za selektovanje korisnika
@@ -69,3 +73,4 @@ socket.on('private_message', ({ from, message, time }) => {
     messageDiv.textContent = `SALJE --->>> PRIMA --->>> ${message} --->>> ${time}`;
     document.getElementById('messageArea').appendChild(messageDiv);
 });
+
