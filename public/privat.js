@@ -1,5 +1,5 @@
 let isPrivateChatEnabled = false; // Status privatnog chata
-let senderNickname = "Gost-4444"; // Ovaj nadimak treba da bude dinamički dodeljen
+let senderNickname = false;
 
 // Event listener za dugme "Privatna poruka"
 document.getElementById('privateMessage').addEventListener('click', () => {
@@ -16,21 +16,14 @@ document.getElementById('privateMessage').addEventListener('click', () => {
 document.addEventListener('DOMContentLoaded', () => {
     const guestList = document.getElementById('guestList');
     const chatInput = document.getElementById('chatInput');
-    const messageArea = document.getElementById('messageArea');
     let selectedGuest = null;
-
-    console.log("DOM potpuno učitan");
-
-    guestList.addEventListener('click', (event) => {
-        console.log("Kliknut je gost: ", event.target);
-
+    
+     guestList.addEventListener('click', (event) => {
         if (event.target.classList.contains('guest')) {
-            // Ako je već selektovan gost, uklonimo obeležavanje
+            // Ako je već selektovan gost, nema potrebe da ponovo klikneš na njega
             if (selectedGuest === event.target) {
-                event.target.style.backgroundColor = '';  // Uklanjamo providnu traku
-                selectedGuest = null;
-                chatInput.value = ''; // Očistimo formu za unos kada je kliknut isti gost
-                console.log("Selektovani gost je odjavljen.");
+                console.log("Gost je već selektovan");
+                return; // Ne menja ništa ako je isti gost ponovo selektovan
             } else {
                 // Uklanjamo prethodno obeležavanje
                 document.querySelectorAll('.guest').forEach(guest => {
@@ -47,6 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+});
+
 
     // Funkcija za slanje poruke
     function sendMessage() {
@@ -73,12 +68,3 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Poruka nije validna ili gost nije selektovan.");
         }
     }
-
-    // Povezivanje dugmeta za slanje poruke (ako postoji)
-    const sendButton = document.getElementById('sendMessage');
-    if (sendButton) {
-        sendButton.addEventListener('click', sendMessage);
-    } else {
-        console.error("Dugme za slanje poruke nije pronađeno.");
-    }
-});
