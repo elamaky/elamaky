@@ -1,43 +1,79 @@
+let selectedUser = null; // Odabran korisnik za privatni chat
 let isPrivateChatEnabled = false; // Status privatnog chata
-let selectedGuest = null; // Selekcija gosta
 
-// Event listener za dugme "Privatna poruka"
-document.getElementById('privateMessage').addEventListener('click', () => {
-    isPrivateChatEnabled = !isPrivateChatEnabled;
-    const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
-
-    // Resetovanje stanja ako isključimo privatni chat
-    if (!isPrivateChatEnabled) {
-        selectedGuest = null; // Resetujemo selektovanog gosta
-        document.querySelectorAll('.guest').forEach(guest => {
-            guest.style.backgroundColor = ''; // Resetujemo stil gostiju
-        });
-        document.getElementById('chatInput').value = ''; // Očistimo input polje
+// Funkcija za selektovanje korisnika
+function selectUser(username) {
+    selectedUser = username;
+    // Obeleži selektovanog korisnika
+    document.querySelectorAll('#guestList li').forEach(li => li.style.backgroundColor = '');
+    const userElement = Array.from(document.querySelectorAll('#guestList li')).find(li => li.textContent === username);
+    
+    if (userElement) {
+        userElement.style.backgroundColor = 'rgba(0, 0, 255, 0.1)'; // Obeleži selektovanog korisnika
     }
 
-    console.log(statusText);
+    // Prikazivanje trake sa informacijom o privatnoj konverzaciji
+    const privateChatInfo = document.getElementById('privateChatInfo');
+    if (!privateChatInfo) {
+        const newDiv = document.createElement('div');
+        newDiv.id = 'privateChatInfo';
+        newDiv.style.padding = '5px';
+        newDiv.style.backgroundColor = 'rgba(0, 0, 255, 0.1)';
+        newDiv.textContent = `Privatni chat sa ${username}`;
+        document.getElementById('messageArea').insertBefore(newDiv, document.getElementById('messageArea').firstChild);
+    } else {
+        privateChatInfo.textContent = `Privatni chat sa ${username}`;
+    }
+}
+
+// Aktivacija privatnog chata
+document.getElementById('privateMessage').addEventListener('click', () => {
+    isPrivateChatEnabled = !isPrivateChatEnabled; // Prebacuje stanje privatnog chata
+    const statusText = isPrivateChatEnabled ? 'Privatni chat je uključen' : 'Privatni chat je isključen';
     alert(statusText);
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    const guestList = document.getElementById('guestList');
-    const chatInput = document.getElementById('chatInput');
+// Event za unos poruke
+document.getElementById('chatInput').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        const message = document.getElementById('chatInput').value;
+        const time = new Date().toLocaleTimeString();
 
-    guestList.addEventListener('click', (event) => {
-        if (event.target.classList.contains('guest')) {
-            // Prebacivanje stanja za privatni chat
-            selectedGuest = event.target;
-            document.querySelectorAll('.guest').forEach(guest => {
-                guest.style.backgroundColor = ''; // Resetujemo boje
-            });
+        if (isPrivateChatEnabled && selectedUser) {
+            // Emituj privatnu poruku prema selektovanom korisniku
+            socket.emit('private_message', { to: selectedUser, message, time });
 
-            selectedGuest.style.backgroundColor = 'rgba(0, 0, 255, 0.1)'; // Isticanje selektovanog gosta
-            isPrivateChatEnabled = true;
-            chatInput.value = `---->>> ${selectedGuest.textContent} : `; // Forma poruke za privatni chat
-            console.log("Privatni chat sa: ", selectedGuest.textContent);
+            // Dodaj privatnu poruku u messageArea
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = `SALJE --->>> PRIMA --->>> ${message} --->>> ${time}`;
+            document.getElementById('messageArea').appendChild(messageDiv);
+        } else {
+            // Emituj javnu poruku
+            socket.emit('chatMessage', { text: message, bold: isBold, italic: isItalic, color: currentColor });
+
+            // Dodaj javnu poruku u messageArea
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = `SALJE --->>> PRIMA --->>> ${message} --->>> ${time}`;
+            document.getElementById('messageArea').appendChild(messageDiv);
         }
-    });
 
-    // Ovaj deo ne menja ništa vezano za slanje poruka
+        document.getElementById('chatInput').value = ''; // Očisti polje za unos
+    }
 });
 
+// Prijem privatnih poruka
+socket.on('private_message', ({ from, message, time }) => {
+    const messageDiv = document.createElement('div');
+    messageDiv.textContent = chatInput.value = `---->>> ${selectedGuest.textContent} : `; // Forma poruke za privatni chat
+    document.getElementById('messageArea').appendChild(messageDiv);
+});
+
+// Server Događaji za chat
+
+// Obrada privatne poruke
+socket.on('private_message', ({ from, message, time }) => {
+    const messageDiv = document.createElement('div');
+    messageDiv.textContent =  chatInput.value = `---->>> ${selectedGuest.textContent} : `; // Forma poruke za privatni chat
+    document.getElementById('messageArea').appendChild(messageDiv);
+});
