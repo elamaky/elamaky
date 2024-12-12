@@ -65,48 +65,74 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const savedPages = JSON.parse(localStorage.getItem('savedPages')) || [];
-        savedPages.push({ name: pageName });
-        localStorage.setItem('savedPages', JSON.stringify(savedPages));
+        const pageData = { name: pageName };
 
-        alert('Stranica je uspešno sačuvana!');
-        modal.style.display = 'none';
-        loadSavedPages();
+        fetch('/api/savePage', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(pageData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Stranica je uspešno sačuvana!');
+                modal.style.display = 'none';
+                loadSavedPages();
+            } else {
+                alert('Greška pri čuvanju stranice.');
+            }
+        })
+        .catch(error => {
+            console.error('Greška pri čuvanju stranice:', error);
+            alert('Došlo je do greške pri čuvanju stranice.');
+        });
     });
 
     function loadSavedPages() {
-        const savedPages = JSON.parse(localStorage.getItem('savedPages')) || [];
+        fetch('/api/getPages')
+        .then(response => response.json())
+        .then(data => {
+            const pageList = document.getElementById('pageList');
+            pageList.innerHTML = '';
 
-        const pageList = document.getElementById('pageList');
-        pageList.innerHTML = '';
+            data.pages.forEach(page => {
+                const li = document.createElement('li');
+                li.textContent = page.name;
+                li.style.borderBottom = '1px solid #00ffff';
+                li.style.padding = '5px 0';
+                li.style.cursor = 'pointer';
 
-        savedPages.forEach(page => {
-            const li = document.createElement('li');
-            li.textContent = page.name;
-            li.style.borderBottom = '1px solid #00ffff';
-            li.style.padding = '5px 0';
-            li.style.cursor = 'pointer';
+                li.addEventListener('click', function () {
+                    loadPageContent(page.name);
+                });
 
-            li.addEventListener('click', function () {
-                loadPageContent(page.name);
+                pageList.appendChild(li);
             });
-
-            pageList.appendChild(li);
+        })
+        .catch(error => {
+            console.error('Greška pri učitavanju stranica:', error);
+            alert('Došlo je do greške pri učitavanju stranica.');
         });
     }
 
     function loadPageContent(pageName) {
         alert(`Učitavam sadržaj stranice: ${pageName}`);
 
-        // Ovde možete dodati funkcionalnost za učitavanje sadržaja sa servera ili iz skladišta.
-        const savedPages = JSON.parse(localStorage.getItem('savedPages')) || [];
-        const page = savedPages.find(p => p.name === pageName);
-
-        if (page) {
-            console.log(`Sadržaj stranice ${pageName} je:`, page);
-            // Ovde se može učitati chat ili drugi sadržaj u realnom vremenu.
-        } else {
-            alert('Stranica nije pronađena.');
-        }
+        fetch(`/api/getPage?name=${encodeURIComponent(pageName)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.page) {
+                console.log(`Sadržaj stranice ${pageName} je:`, data.page);
+                // Ovde se može učitati chat ili drugi sadržaj u realnom vremenu.
+            } else {
+                alert('Stranica nije pronađena.');
+            }
+        })
+        .catch(error => {
+            console.error('Greška pri učitavanju stranice:', error);
+            alert('Došlo je do greške pri učitavanju stranice.');
+        });
     }
 });
