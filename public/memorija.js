@@ -85,9 +85,28 @@ document.addEventListener('DOMContentLoaded', function () {
             li.textContent = page.name;
             li.style.borderBottom = '1px solid #00ffff';
             li.style.padding = '5px 0';
+            li.style.cursor = 'pointer';
+
+            li.addEventListener('click', function () {
+                loadPageContent(page.name);
+            });
+
             pageList.appendChild(li);
         });
     }
+
+    function loadPageContent(pageName) {
+        alert(`Učitavam sadržaj stranice: ${pageName}`);
+
+        // Ovde možete dodati funkcionalnost za učitavanje sadržaja sa servera ili iz skladišta.
+        const savedPages = JSON.parse(localStorage.getItem('savedPages')) || [];
+        const page = savedPages.find(p => p.name === pageName);
+
+        if (page) {
+            console.log(`Sadržaj stranice ${pageName} je:`, page);
+            // Ovde se može učitati chat ili drugi sadržaj u realnom vremenu.
+        } else {
+            alert('Stranica nije pronađena.');
+        }
+    }
 });
-
-
