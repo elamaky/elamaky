@@ -47,7 +47,8 @@ function setSocket(serverIo) {
             }
             io.emit('update-images', newImage);
         });
+    });
+}
 
-     
 // Izvoz funkcije setSocket
 module.exports = { setSocket };
