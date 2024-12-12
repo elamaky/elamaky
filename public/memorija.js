@@ -1,26 +1,71 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Otvoriti modal kada se klikne na dugme "memorija"
-    document.getElementById('memorija').addEventListener('click', function() {
-        // Prikazuje modal
-        document.getElementById('memoryModal').style.display = 'block';
-        loadSavedPages();  // Učitaj memorisane stranice (ako je potrebno)
+    const modal = document.createElement('div');
+    modal.id = 'memoryModal';
+    modal.style.display = 'none';
+    modal.style.position = 'fixed';
+    modal.style.width = '400px';
+    modal.style.height = '400px';
+    modal.style.top = '50%';
+    modal.style.left = '50%';
+    modal.style.transform = 'translate(-50%, -50%)';
+    modal.style.backgroundColor = 'black';
+    modal.style.border = '2px solid #00ffff';
+    modal.style.boxShadow = '0 0 20px #00ffff';
+    modal.style.zIndex = '1000';
+    modal.style.padding = '20px';
+    modal.style.overflow = 'auto';
+    modal.style.cursor = 'move';
+
+    modal.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="color: #00ffff;">Unesite naziv stranice</h3>
+            <button id="closeModalButton" style="color: #00ffff; background: none; border: 1px solid #00ffff; padding: 5px; cursor: pointer;">Zatvori</button>
+        </div>
+        <input type="text" id="newPageNameInput" placeholder="Naziv stranice" style="width: 100%; margin: 10px 0; padding: 10px; background: black; color: #00ffff; border: 1px solid #00ffff;"/>
+        <button id="saveNewPageButton" style="width: 100%; padding: 10px; background: black; color: #00ffff; border: 1px solid #00ffff; cursor: pointer;">Spremi stranicu</button>
+        <ul id="pageList" style="margin-top: 20px; color: #00ffff; padding: 0; list-style: none;"></ul>
+    `;
+
+    document.body.appendChild(modal);
+
+    let isDragging = false;
+    let offsetX, offsetY;
+
+    modal.addEventListener('mousedown', function (e) {
+        isDragging = true;
+        offsetX = e.clientX - modal.offsetLeft;
+        offsetY = e.clientY - modal.offsetTop;
     });
 
-    // Zatvori modal kada se klikne na dugme "Zatvori"
-    document.getElementById('closeModalButton').addEventListener('click', function() {
-        document.getElementById('memoryModal').style.display = 'none';
+    document.addEventListener('mousemove', function (e) {
+        if (isDragging) {
+            modal.style.left = e.clientX - offsetX + 'px';
+            modal.style.top = e.clientY - offsetY + 'px';
+        }
     });
 
-    // Funkcija za snimanje nove stranice
-    document.getElementById('saveNewPageButton').addEventListener('click', function() {
-        const pageName = document.getElementById('newPageNameInput').value; // Unos naziva stranice
+    document.addEventListener('mouseup', function () {
+        isDragging = false;
+    });
+
+    document.getElementById('memorija').addEventListener('click', function () {
+        modal.style.display = 'block';
+        loadSavedPages();
+    });
+
+    document.getElementById('closeModalButton').addEventListener('click', function () {
+        modal.style.display = 'none';
+    });
+
+    document.getElementById('saveNewPageButton').addEventListener('click', function () {
+        const pageName = document.getElementById('newPageNameInput').value;
 
         if (!pageName) {
-            setMessage("Morate uneti naziv stranice.", true);
+            alert('Morate uneti naziv stranice.');
             return;
         }
 
-        const pageContent = document.documentElement.outerHTML; // Sadržaj stranice
+        const pageContent = document.documentElement.outerHTML;
 
         fetch('/save-page', {
             method: 'POST',
@@ -30,39 +75,31 @@ document.addEventListener('DOMContentLoaded', function () {
             body: JSON.stringify({ name: pageName, content: pageContent })
         })
         .then(response => response.json())
-        .then(data => {
-            setMessage("Stranica je uspešno sačuvana!", false);
-            document.getElementById('memoryModal').style.display = 'none'; // Zatvori modal nakon snimanja
+        .then(() => {
+            alert('Stranica je uspešno sačuvana!');
+            modal.style.display = 'none';
         })
-        .catch(error => {
-            console.error("Greška pri čuvanju stranice:", error);
-            setMessage("Došlo je do greške prilikom čuvanja stranice.", true);
+        .catch(() => {
+            alert('Došlo je do greške prilikom čuvanja stranice.');
         });
     });
 
-    // Funkcija za učitavanje memorisanih stranica
     function loadSavedPages() {
-        // Ovde možete dodati kod za učitavanje sa servera ili iz lokalnog skladišta
         const pages = [
             { name: "Stranica 1" },
             { name: "Stranica 2" }
         ];
 
         const pageList = document.getElementById('pageList');
-        pageList.innerHTML = '';  // Očisti prethodne stavke
+        pageList.innerHTML = '';
 
         pages.forEach(page => {
             const li = document.createElement('li');
             li.textContent = page.name;
-            li.style.borderBottom = '1px solid #fff';
+            li.style.borderBottom = '1px solid #00ffff';
+            li.style.padding = '5px 0';
             pageList.appendChild(li);
         });
     }
-
-    // Funkcija za postavljanje poruke
-    function setMessage(message, isError) {
-        const messageElement = document.getElementById('message');
-        messageElement.textContent = message;
-        messageElement.style.color = isError ? '#ff3333' : '#00ff00';  // Crvena za greške, zelena za uspeh
-    }
 });
+
