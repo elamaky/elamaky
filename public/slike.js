@@ -40,8 +40,11 @@ socket.on('update-images', (updatedImages) => {
     console.log('Nova lista slika:', updatedImages);
 
     // Prvo uklanjamo sve slike sa stranice
-    document.querySelectorAll('img').forEach(img => img.remove());
-
+    document.querySelectorAll('img').forEach(slika => {
+    if (slika.id !== "playerCover") {
+        slika.remove(); // Briše samo slike koje nemaju ID "playerCover"
+    }
+});
     // Zatim ponovo dodajemo sve slike iz nove liste
     updatedImages.forEach((imageData) => {
         addImageToDOM(imageData.imageUrl, imageData.position, imageData.dimensions);
