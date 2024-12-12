@@ -4,7 +4,7 @@ document.getElementById('smilesBtn').addEventListener('click', function() {
     const smilesBtn = document.getElementById('smilesBtn');
 
     const buttonRect = smilesBtn.getBoundingClientRect();
-    smileModal.style.top = `${buttonRect.top - 210}px`; // Pozicionirano iznad dugmeta
+    smileModal.style.top = `${buttonRect.bottom + 5}px`; // Pozicionirano ispod dugmeta
     smileModal.style.left = `${buttonRect.left}px`;
     smileModal.style.display = 'flex';
 });
