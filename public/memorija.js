@@ -1,6 +1,6 @@
 // Dugme za memoriju
 document.getElementById('memorija').addEventListener('click', function() {
-    const uuid = '123e4567-e89b-12d3-a456-426614174000';  // Ovdje trebaš koristiti stvarni UUID korisnika
+    const username = 'korisnicko_ime';  // Ovdje unesite stvarno korisničko ime (može biti dinamički dobijeno)
     const pageName = prompt("Unesite naziv stranice:");
 
     if (!pageName) {
@@ -14,7 +14,7 @@ document.getElementById('memorija').addEventListener('click', function() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ uuid, name: pageName })  // 'uuid' umesto 'username'
+        body: JSON.stringify({ username, name: pageName })  // Koristi username
     })
     .then(response => response.json())
     .then(data => alert(data.message))
@@ -25,8 +25,8 @@ document.getElementById('memorija').addEventListener('click', function() {
 });
 
 // Funkcija za učitavanje stranica
-function loadPage(uuid, pageName) {
-    fetch(`/load-page/${uuid}/${pageName}`)
+function loadPage(username, pageName) {
+    fetch(`/load-page/${username}/${pageName}`)
     .then(response => response.json())
     .then(data => {
         alert("Stranica učitana: " + data.name);
@@ -39,8 +39,8 @@ function loadPage(uuid, pageName) {
 }
 
 // Funkcija za prikazivanje sačuvanih stranica
-function showSavedPages(uuid) {
-    fetch(`/saved-pages/${uuid}`)
+function showSavedPages(username) {
+    fetch(`/saved-pages/${username}`)
     .then(response => response.json())
     .then(pages => {
         const menu = document.getElementById('savedPagesMenu');
@@ -48,7 +48,7 @@ function showSavedPages(uuid) {
         pages.forEach(page => {
             const button = document.createElement('button');
             button.textContent = page.name;
-            button.addEventListener('click', () => loadPage(uuid, page.name));
+            button.addEventListener('click', () => loadPage(username, page.name));
             menu.appendChild(button);
         });
     })
