@@ -7,7 +7,7 @@ const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodu
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const konobaricaModul = require('./konobaricamodul'); // Uvoz konobaricamodul.js
 const slikemodul = require('./slikemodul');
-const memoryRuta = require('./memorymodul');
+const memorymodul = require('./memorymodul');
 const pingService = require('./ping');
 require('dotenv').config();
 
