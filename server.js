@@ -7,7 +7,7 @@ const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodu
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const konobaricaModul = require('./konobaricamodul'); // Uvoz konobaricamodul.js
 const slikemodul = require('./slikemodul');
-const memorijaRuta = require('./memorijamodul');
+const memoryRuta = require('./memorymodul');
 const pingService = require('./ping');
 require('dotenv').config();
 
@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(express.static(__dirname + '/public'));
 app.use('/guests', uuidRouter); // Dodavanje ruta u aplikaciju
 app.set('trust proxy', true);
-app.use(memorijaRuta);
+app.use(memoryRuta);
 
 // Rute za registraciju i prijavu
 app.post('/register', (req, res) => register(req, res, io));
