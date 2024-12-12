@@ -1,6 +1,7 @@
 // Funkcija za otvaranje modalnog prozora sa smilovima
 document.getElementById('smilesBtn').addEventListener('click', function() {
   var smileModal = document.getElementById('smileModal');
+  var smileBtn = document.getElementById('smilesBtn');
   var rect = smileBtn.getBoundingClientRect();
   var x = rect.left + window.scrollX;
   var y = rect.top + window.scrollY;
@@ -49,20 +50,10 @@ const smileModalHTML = `
             <span class="smile" onclick="addSmile('🔥')">🔥</span>
             <span class="smile" onclick="addSmile('🎵')">🎵</span>
             <span class="smile" onclick="addSmile('😜')">😜</span>
-            <span class="smile" onclick="addSmile('😝')}}">😝<!-- Dodano je duplikat smiles emotikona -->
+            <button onclick="closeSmileModal()" style="margin-top: 10px;">Zatvori</button>
+        </div>
+    </div>
+`;
 
-<!-- Umetanje modalnog HTML-a u telo stranice -->
+// Umetanje modalnog HTML-a u telo stranice
 document.body.insertAdjacentHTML('beforeend', smileModalHTML);
-
-// Dodavanje dugmeta za otvaranje modalnog prozora
-var smileBtn = document.getElementById('smilesBtn');
-
-// Funkcija za pozicioniranje modalnog prozora
-function positionModal() {
-  var rect = smileBtn.getBoundingClientRect();
-  var x = rect.left + window.scrollX;
-  var y = rect.top + window.scrollY;
-  
-  smileModal.style.top = (y - 300) + 'px';
-  smileModal.style.left = x + 'px';
-}
