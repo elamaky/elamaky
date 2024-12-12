@@ -65,35 +65,22 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const pageContent = document.documentElement.outerHTML;
+        const savedPages = JSON.parse(localStorage.getItem('savedPages')) || [];
+        savedPages.push({ name: pageName });
+        localStorage.setItem('savedPages', JSON.stringify(savedPages));
 
-        fetch('/save-page', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ name: pageName, content: pageContent })
-        })
-        .then(response => response.json())
-        .then(() => {
-            alert('Stranica je uspešno sačuvana!');
-            modal.style.display = 'none';
-        })
-        .catch(() => {
-            alert('Došlo je do greške prilikom čuvanja stranice.');
-        });
+        alert('Stranica je uspešno sačuvana!');
+        modal.style.display = 'none';
+        loadSavedPages();
     });
 
     function loadSavedPages() {
-        const pages = [
-            { name: "Stranica 1" },
-            { name: "Stranica 2" }
-        ];
+        const savedPages = JSON.parse(localStorage.getItem('savedPages')) || [];
 
         const pageList = document.getElementById('pageList');
         pageList.innerHTML = '';
 
-        pages.forEach(page => {
+        savedPages.forEach(page => {
             const li = document.createElement('li');
             li.textContent = page.name;
             li.style.borderBottom = '1px solid #00ffff';
@@ -102,4 +89,5 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
 
