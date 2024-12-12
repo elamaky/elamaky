@@ -87,11 +87,7 @@ const smileModalHTML = `
 <span class="smile" style="font-size: 24px;" onclick="addSmile('👁️‍🗨️')">👁️‍🗨️</span>
 <span class="smile" style="font-size: 24px;" onclick="addSmile('👀')">👀</span>
         
-         ${Array.from({ length: 50 }, (_, i) => `<span class='smile' onclick="addSmile('<img src='gif_smile${i + 1}.gif' alt='GIF Smile ${i + 1}'>')"><img src='gif_smile${i + 1}.gif' alt='GIF Smile ${i + 1}' style='width: 20px; height: 20px;'></span>`).join('')}
-            <button onclick="closeSmileModal()" style="margin-top: 10px; width: 100%; background: #555; color: white; border: none; border-radius: 3px; padding: 5px;">Zatvori</button>
-        </div>
-    </div>
-`;
+         `;
 
 // Umetanje modalnog HTML-a u telo stranice
 document.body.insertAdjacentHTML('beforeend', smileModalHTML);
