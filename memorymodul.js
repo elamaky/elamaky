@@ -1,4 +1,4 @@
-const Page = require('./models/Page');  // Uvoz modela Page
+const Page = mongoose.model('Page', pageSchema);
 const router = require('express').Router(); // Koristi express Router
 
 // Ruta za spremanje stranice
