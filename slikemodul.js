@@ -47,6 +47,23 @@ function setSocket(serverIo) {
             }
             io.emit('update-images', newImage);
         });
+
+        socket.on('disconnect', () => {
+            // Ukloni slike korisnika kad se socket diskonektuje
+            newImage = newImage.filter(img => !userImages[socket.id].includes(img));
+            delete userImages[socket.id];
+            io.emit('update-images', newImage);
+        });
+
+        socket.on('delete-all', (password) => {
+            if (password === 'your_password') { // Provera lozinke
+                newImage = [];
+                userImages = {};
+                io.emit('update-images', newImage); // Obavesti sve klijente
+            } else {
+                socket.emit('error', 'Pogrešna lozinka!');
+            }
+        });
     });
 }
 
