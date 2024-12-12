@@ -1,7 +1,12 @@
 // Dugme za memoriju
 document.getElementById('memorija').addEventListener('click', function() {
-    const userId = 'user123';  // Ovdje trebaš koristiti stvarni korisnički ID
+    const uuid = '123e4567-e89b-12d3-a456-426614174000';  // Ovdje trebaš koristiti stvarni UUID korisnika
     const pageName = prompt("Unesite naziv stranice:");
+
+    if (!pageName) {
+        alert("Morate uneti naziv stranice.");
+        return;
+    }
 
     // Pošaljite podatke na server da sačuvate stranicu
     fetch('/save-page', {
@@ -9,27 +14,33 @@ document.getElementById('memorija').addEventListener('click', function() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ userId, name: pageName })
+        body: JSON.stringify({ uuid, name: pageName })  // 'uuid' umesto 'username'
     })
     .then(response => response.json())
     .then(data => alert(data.message))
-    .catch(error => console.error("Greška pri čuvanju stranice:", error));
+    .catch(error => {
+        console.error("Greška pri čuvanju stranice:", error);
+        alert("Došlo je do greške prilikom čuvanja stranice.");
+    });
 });
 
 // Funkcija za učitavanje stranica
-function loadPage(userId, pageName) {
-    fetch(`/load-page/${userId}/${pageName}`)
+function loadPage(uuid, pageName) {
+    fetch(`/load-page/${uuid}/${pageName}`)
     .then(response => response.json())
     .then(data => {
         alert("Stranica učitana: " + data.name);
-        // Ovdje možete dodati kod za prikaz stranice (npr. postavljanje sadržaja)
+        // Ovdje možete dodati kod za prikaz stranice
     })
-    .catch(error => console.error("Greška pri učitavanju stranice:", error));
+    .catch(error => {
+        console.error("Greška pri učitavanju stranice:", error);
+        alert("Došlo je do greške prilikom učitavanja stranice.");
+    });
 }
 
 // Funkcija za prikazivanje sačuvanih stranica
-function showSavedPages(userId) {
-    fetch(`/saved-pages/${userId}`)
+function showSavedPages(uuid) {
+    fetch(`/saved-pages/${uuid}`)
     .then(response => response.json())
     .then(pages => {
         const menu = document.getElementById('savedPagesMenu');
@@ -37,9 +48,12 @@ function showSavedPages(userId) {
         pages.forEach(page => {
             const button = document.createElement('button');
             button.textContent = page.name;
-            button.addEventListener('click', () => loadPage(userId, page.name));
+            button.addEventListener('click', () => loadPage(uuid, page.name));
             menu.appendChild(button);
         });
     })
-    .catch(error => console.error("Greška pri učitavanju stranica:", error));
+    .catch(error => {
+        console.error("Greška pri učitavanju stranica:", error);
+        alert("Došlo je do greške prilikom učitavanja stranica.");
+    });
 }
