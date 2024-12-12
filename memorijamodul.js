@@ -1,48 +1,59 @@
-const pageSchema = new mongoose.Schema({
-  userId: { type: String, required: true },  // ID korisnika
-  name: { type: String, required: true },    // Naziv stranice
-});
-
-const Page = mongoose.model('Page', pageSchema);
-const Page = require('./models/Page');
+const Page = require('./models/Page');  // Uvoz modela Page
+const router = require('express').Router(); // Koristi express Router
 
 // Ruta za spremanje stranice
-app.post('/save-page', async (req, res) => {
-  const { userId, name } = req.body;
+router.post('/save-page', async (req, res) => {
+  const { username, name } = req.body;  // Koristi username ili UUID umesto userId
 
   try {
-    const newPage = new Page({ userId, name });
+    console.log(`[INFO] Pokušaj spremanja stranice - username: ${username}, name: ${name}`);
+
+    const newPage = new Page({ username, name });  // Koristi username
     await newPage.save();
+
+    console.log(`[INFO] Stranica sačuvana - username: ${username}, name: ${name}`);
     res.status(200).json({ message: "Stranica je sačuvana!" });
   } catch (error) {
+    console.error(`[ERROR] Greška pri čuvanju stranice - username: ${username}`, error);
     res.status(500).json({ message: "Greška pri čuvanju stranice.", error });
   }
 });
 
 // Ruta za učitavanje stranice
-app.get('/load-page/:userId/:name', async (req, res) => {
-  const { userId, name } = req.params;
+router.get('/load-page/:username/:name', async (req, res) => {
+  const { username, name } = req.params;  // Koristi username umesto userId
 
   try {
-    const page = await Page.findOne({ userId, name });
+    console.log(`[INFO] Pokušaj učitavanja stranice - username: ${username}, name: ${name}`);
+
+    const page = await Page.findOne({ username, name });  // Traži po username
     if (page) {
-      res.status(200).json(page); // Vraćamo podatke stranice
+      console.log(`[INFO] Stranica učitana - username: ${username}, name: ${name}`);
+      res.status(200).json(page);  // Vraćamo podatke stranice
     } else {
+      console.log(`[INFO] Stranica nije pronađena - username: ${username}, name: ${name}`);
       res.status(404).json({ message: "Stranica nije pronađena." });
     }
   } catch (error) {
+    console.error(`[ERROR] Greška pri učitavanju stranice - username: ${username}`, error);
     res.status(500).json({ message: "Greška pri učitavanju stranice.", error });
   }
 });
 
 // Ruta za dobijanje svih sačuvanih stranica za korisnika
-app.get('/saved-pages/:userId', async (req, res) => {
-  const { userId } = req.params;
+router.get('/saved-pages/:username', async (req, res) => {
+  const { username } = req.params;  // Koristi username umesto userId
 
   try {
-    const pages = await Page.find({ userId });
-    res.status(200).json(pages);  // Vraćamo listu svih stranica korisnika
+    console.log(`[INFO] Pokušaj dobijanja stranica za korisnika - username: ${username}`);
+
+    const pages = await Page.find({ username });  // Traži stranice po username
+    console.log(`[INFO] Stranice za korisnika učitane - username: ${username}`);
+    res.status(200).json(pages);  // Vraćamo listu svih stranica
   } catch (error) {
+    console.error(`[ERROR] Greška pri dobijanju stranica - username: ${username}`, error);
     res.status(500).json({ message: "Greška pri dobijanju stranica.", error });
   }
 });
+
+module.exports = router;  // Izvoz rute
