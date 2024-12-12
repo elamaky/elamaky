@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Funkcija koja prati unos poruka
-    document.getElementById('chatInput').addEventListener('keydown', function(event) {
+    document.getElementById.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
             event.preventDefault();
             if (isBanned) {
