@@ -1,5 +1,23 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const router = express.Router();
+
+// Definisanje šeme za stranicu
+const pageSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+}, {
+  timestamps: true,  // Automatski dodaje 'createdAt' i 'updatedAt' polja
+});
+
+// Kreiranje modela za stranicu
 const Page = mongoose.model('Page', pageSchema);
-const router = require('express').Router(); // Koristi express Router
 
 // Ruta za spremanje stranice
 router.post('/save-page', async (req, res) => {
