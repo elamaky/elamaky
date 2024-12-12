@@ -2,7 +2,7 @@
 <button id="memorija">Otvori memoriju</button>
 
 <!-- Modal struktura -->
-<div id="memoryModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 999;">
+<div id="memoryModal" style="display:none; position: fixed; top: 400; left: 400; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 999;">
     <div style="position: relative; margin: auto; background-color: white; padding: 20px; max-width: 500px; top: 50%; transform: translateY(-50%);">
         <h2>Memorisane stranice</h2>
         <ul id="pageList">
@@ -77,3 +77,4 @@
         });
     }
 </script>
+
