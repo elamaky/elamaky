@@ -1,7 +1,12 @@
-// Dugme za memoriju
 document.getElementById('memorija').addEventListener('click', function() {
+    // Prikazivanje forme za unos stranice
+    document.getElementById('memoryForm').style.display = 'block';
+});
+
+// Event listener za dugme za čuvanje stranice
+document.getElementById('savePageButton').addEventListener('click', function() {
     const username = 'korisnicko_ime';  // Ovdje unesite stvarno korisničko ime (može biti dinamički dobijeno)
-    const pageName = prompt("Unesite naziv stranice:");
+    const pageName = document.getElementById('pageNameInput').value;  // Uzimanje unetog naziva stranice
 
     if (!pageName) {
         alert("Morate uneti naziv stranice.");
@@ -17,26 +22,17 @@ document.getElementById('memorija').addEventListener('click', function() {
         body: JSON.stringify({ username, name: pageName })  // Koristi username
     })
     .then(response => response.json())
-    .then(data => alert(data.message))
+    .then(data => {
+        alert(data.message);
+        // Sakrij formu nakon što je stranica sačuvana
+        document.getElementById('memoryForm').style.display = 'none';
+        document.getElementById('pageNameInput').value = '';  // Očisti unos
+    })
     .catch(error => {
         console.error("Greška pri čuvanju stranice:", error);
         alert("Došlo je do greške prilikom čuvanja stranice.");
     });
 });
-
-// Funkcija za učitavanje stranica
-function loadPage(username, pageName) {
-    fetch(`/load-page/${username}/${pageName}`)
-    .then(response => response.json())
-    .then(data => {
-        alert("Stranica učitana: " + data.name);
-        // Ovdje možete dodati kod za prikaz stranice
-    })
-    .catch(error => {
-        console.error("Greška pri učitavanju stranice:", error);
-        alert("Došlo je do greške prilikom učitavanja stranice.");
-    });
-}
 
 // Funkcija za prikazivanje sačuvanih stranica
 function showSavedPages(username) {
@@ -57,3 +53,4 @@ function showSavedPages(username) {
         alert("Došlo je do greške prilikom učitavanja stranica.");
     });
 }
+
