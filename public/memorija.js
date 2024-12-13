@@ -158,12 +158,14 @@ function getCookie(name) {
 }
 
 // Dohvatanje userId iz kolačića
-const userId = getCookie('userId');  // Pretpostavljamo da se kolačić zove 'userId'
+const userId = getCookie('user_id');  // Proveravaš kolačić 'user_id'
 
+// Ako korisnik nije prijavljen, tretiramo ga kao gosta
 if (!userId) {
-  alert('Nema korisničkog ID-a.');
+  console.log('Korisnik je gost');  // Ne prikazuj obavestenje, samo loguj
+  // Ovdje možeš omogućiti pristup samo onim funkcijama koje ne zahtevaju prijavu
 } else {
-  // Slanje GET zahteva za dobijanje stranica
+  // Ako je korisnik prijavljen, šaljemo zahtev za stranice
   fetch(`/api/getPages?userId=${userId}`)
     .then(response => {
       if (!response.ok) {
@@ -179,3 +181,42 @@ if (!userId) {
       console.error('Greška:', error);
     });
 }
+
+// Funkcija za učitavanje stranica iz localStorage
+function loadPagesFromStorage() {
+  const pages = JSON.parse(localStorage.getItem('pages')); // Pretpostavljamo da su stranice sačuvane u 'pages'
+  if (pages) {
+    // Ako stranice postoje u localStorage, prikaži ih u modalnom prozoru
+    console.log('Stranice učitane iz localStorage:', pages);
+    displayPagesInModal(pages); // Funkcija koja prikazuje stranice u modalnom prozoru
+  } else {
+    console.log('Nema stranica u localStorage.');
+  }
+}
+
+// Funkcija za prikazivanje stranica u modalnom prozoru
+function displayPagesInModal(pages) {
+  const modal = document.getElementById('modal'); // ID tvog modala
+  const modalContent = modal.querySelector('.modal-content'); // Unutar modala pronađi element za sadržaj
+
+  // Očisti prethodni sadržaj
+  modalContent.innerHTML = '';
+
+  // Prikazivanje stranica u modalnom prozoru
+  pages.forEach(page => {
+    const pageElement = document.createElement('div');
+    pageElement.classList.add('page-item');
+    pageElement.textContent = `Stranica: ${page.name}`;  // Pretpostavljamo da je 'name' ime stranice
+    modalContent.appendChild(pageElement);
+  });
+
+  // Prikazivanje modala
+  modal.style.display = 'block';  // Pretpostavljamo da koristiš 'display: block' da prikažeš modal
+}
+
+// Pozivanje funkcije za učitavanje stranica pri učitavanju stranice
+window.onload = function() {
+  loadPagesFromStorage();
+}
+
+     
