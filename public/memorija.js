@@ -86,14 +86,7 @@ document.getElementById('saveNewPageButton').addEventListener('click', function 
         return;
     }
 
-     // Zatvoriti modal
-    const closeButton = document.getElementById('closeModalButton');
-    closeButton.addEventListener('click', function () {
-        modal.style.display = 'none';
-    });
-});
-
- const pageData = { name: pageName };
+    const pageData = { name: pageName };
 
     fetch('/api/savePage', {
         method: 'POST',
@@ -158,6 +151,13 @@ function loadSavedPages() {
         alert('Došlo je do greške pri učitavanju stranica.');
     });
 }
+
+      // Zatvoriti modal
+    const closeButton = document.getElementById('closeModalButton');
+    closeButton.addEventListener('click', function () {
+        modal.style.display = 'none';
+    });
+});
 
    
 // Umesto kolačića, direktno pozivanje API-ja bez userId
