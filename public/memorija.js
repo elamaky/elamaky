@@ -176,13 +176,12 @@ fetch('/api/getPages')
     console.error('Greška:', error);
   });
 
-// Dodavanje event listenera za otvaranje modala
+// Dodavanje event listenera za otvaranje stranice nakon učitavanja podataka
 document.getElementById('memorija').addEventListener('click', function () {
-  modal.style.display = 'block';
-  loadSavedPages();  // Poziva funkciju bez userId
+  loadSavedPages();  
+  openPageAfterLoading();
+    
 });
-
-
 // Funkcija za učitavanje stranica
 function loadPages() {
   fetch('/api/getPages')  // API poziv za učitavanje stranica
