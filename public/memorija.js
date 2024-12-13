@@ -162,22 +162,20 @@ const userId = getCookie('userId');  // Pretpostavljamo da se kolačić zove 'us
 
 if (!userId) {
   alert('Nema korisničkog ID-a.');
-  return;
+} else {
+  // Slanje GET zahteva za dobijanje stranica
+  fetch(`/api/getPages?userId=${userId}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Greška pri učitavanju stranica.');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Obrada podataka
+      console.log(data);
+    })
+    .catch(error => {
+      console.error('Greška:', error);
+    });
 }
-
-// Slanje GET zahteva za dobijanje stranica
-fetch(`/api/getPages?userId=${userId}`)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Greška pri učitavanju stranica.');
-    }
-    return response.json();
-  })
-  .then(data => {
-    // Obrada podataka
-    console.log(data);
-  })
-  .catch(error => {
-    console.error('Greška:', error);
-  });
-
