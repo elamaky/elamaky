@@ -28,16 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.body.appendChild(modal);
 
-
     const pageList = modal.querySelector('#pageList');
-    const savedPages = JSON.parse(localStorage.getItem('pages')) || [];
-
-    // Učitavanje stranica iz localStorage
-    savedPages.forEach(page => {
-        const listItem = document.createElement('li');
-        listItem.textContent = page.name;
-        pageList.appendChild(listItem);
-    });
 
     // Otvoriti modal
     const openModalButton = document.getElementById('openModalButton'); // Pretpostavljamo da postoji dugme za otvaranje modala
@@ -52,12 +43,6 @@ document.addEventListener('DOMContentLoaded', function () {
     saveButton.addEventListener('click', function () {
         const pageName = document.getElementById('newPageNameInput').value;
         if (pageName) {
-            const newPage = { name: pageName };
-            savedPages.push(newPage);
-
-            // Ažuriraj localStorage
-            localStorage.setItem('pages', JSON.stringify(savedPages));
-
             // Dodaj novu stranicu u listu
             const listItem = document.createElement('li');
             listItem.textContent = pageName;
@@ -75,77 +60,71 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-    let isDragging = false;
-    let offsetX, offsetY;
 
-    modal.addEventListener('mousedown', function (e) {
-        isDragging = true;
-        offsetX = e.clientX - modal.offsetLeft;
-        offsetY = e.clientY - modal.offsetTop;
-    });
+   let isDragging = false;
+let offsetX, offsetY;
 
-    document.addEventListener('mousemove', function (e) {
-        if (isDragging) {
-            modal.style.left = e.clientX - offsetX + 'px';
-            modal.style.top = e.clientY - offsetY + 'px';
-        }
-    });
+modal.addEventListener('mousedown', function (e) {
+    isDragging = true;
+    offsetX = e.clientX - modal.offsetLeft;
+    offsetY = e.clientY - modal.offsetTop;
+});
 
-    document.addEventListener('mouseup', function () {
-        isDragging = false;
-    });
+document.addEventListener('mousemove', function (e) {
+    if (isDragging) {
+        modal.style.left = e.clientX - offsetX + 'px';
+        modal.style.top = e.clientY - offsetY + 'px';
+    }
+});
 
-    document.getElementById('memorija').addEventListener('click', function () {
-        modal.style.display = 'block';
-        loadSavedPages();
-    });
+document.addEventListener('mouseup', function () {
+    isDragging = false;
+});
 
- 
-    document.getElementById('saveNewPageButton').addEventListener('click', function () {
-        const pageName = document.getElementById('newPageNameInput').value;
+document.getElementById('memorija').addEventListener('click', function () {
+    modal.style.display = 'block';
+    // loadSavedPages(); // Ovaj deo je uklonjen jer više ne koristiš localStorage
+});
 
-        if (!pageName) {
-            alert('Morate uneti naziv stranice.');
-            return;
-        }
+document.getElementById('saveNewPageButton').addEventListener('click', function () {
+    const pageName = document.getElementById('newPageNameInput').value;
 
-        const pageData = { name: pageName };
-
-        fetch('/api/savePage', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(pageData)
-        })
-        .then(response => {
-            if (!response.ok) {
-                console.error('Odgovor nije validan:', response.status, response.statusText);
-                throw new Error('Greška pri slanju zahteva serveru.');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                alert('Stranica je uspešno sačuvana!');
-                modal.style.display = 'none';
-                loadSavedPages();
-            } else {
-                alert('Greška pri čuvanju stranice.');
-            }
-        })
-        .catch(error => {
-            console.error('Greška pri čuvanju stranice:', error);
-            alert('Došlo je do greške pri čuvanju stranice.');
-        });
-    });
-
-    function loadSavedPages() {
-    const userId = localStorage.getItem('userId');  // Proveri da li postoji userId u localStorage
-    if (!userId) {
-        alert('Nema korisničkog ID-a.');
+    if (!pageName) {
+        alert('Morate uneti naziv stranice.');
         return;
     }
 
-    fetch(`/api/getPages?userId=${userId}`)  // Poslati userId kao query parametar
+    const pageData = { name: pageName };
+
+    fetch('/api/savePage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pageData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            console.error('Odgovor nije validan:', response.status, response.statusText);
+            throw new Error('Greška pri slanju zahteva serveru.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            alert('Stranica je uspešno sačuvana!');
+            modal.style.display = 'none';
+            // loadSavedPages(); // Ovaj deo je uklonjen jer više ne koristiš localStorage
+        } else {
+            alert('Greška pri čuvanju stranice.');
+        }
+    })
+    .catch(error => {
+        console.error('Greška pri čuvanju stranice:', error);
+        alert('Došlo je do greške pri čuvanju stranice.');
+    });
+});
+
+function loadSavedPages() {
+    fetch('/api/getPages')  // Poziv na API bez korišćenja userId iz localStorage
     .then(response => {
         console.log('Odgovor od servera:', response);
         if (!response.ok) {
@@ -181,24 +160,33 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 }
 
-// Funkcija za čitanje kolačića
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
-  return null;
-}
+   
+// Umesto kolačića, direktno pozivanje API-ja bez userId
+fetch('/api/getPages')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Greška pri učitavanju stranica.');
+    }
+    return response.json();
+  })
+  .then(data => {
+    // Obrada podataka
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('Greška:', error);
+  });
 
-// Dohvatanje userId iz kolačića
-const userId = getCookie('user_id');  // Proveravaš kolačić 'user_id'
+// Dodavanje event listenera za otvaranje modala
+document.getElementById('memorija').addEventListener('click', function () {
+  modal.style.display = 'block';
+  loadSavedPages();  // Poziva funkciju bez userId
+});
 
-// Ako korisnik nije prijavljen, tretiramo ga kao gosta
-if (!userId) {
-  console.log('Korisnik je gost');  // Ne prikazuj obavestenje, samo loguj
-  // Ovdje možeš omogućiti pristup samo onim funkcijama koje ne zahtevaju prijavu
-} else {
-  // Ako je korisnik prijavljen, šaljemo zahtev za stranice
-  fetch(`/api/getPages?userId=${userId}`)
+
+// Funkcija za učitavanje stranica
+function loadPages() {
+  fetch('/api/getPages')  // API poziv za učitavanje stranica
     .then(response => {
       if (!response.ok) {
         throw new Error('Greška pri učitavanju stranica.');
@@ -206,30 +194,16 @@ if (!userId) {
       return response.json();
     })
     .then(data => {
-      // Obrada podataka
-      console.log(data);
+      if (data.pages) {
+        console.log('Stranice učitane sa servera:', data.pages);
+        displayPagesInModal(data.pages); // Funkcija koja prikazuje stranice u modalnom prozoru
+      } else {
+        console.log('Nema stranica za ovog korisnika.');
+      }
     })
     .catch(error => {
       console.error('Greška:', error);
     });
-
-  // Dodavanje event listenera za otvaranje modala
-  document.getElementById('memorija').addEventListener('click', function () {
-    modal.style.display = 'block';
-    loadSavedPages(userId);
-  });
-}
-
-// Funkcija za učitavanje stranica iz localStorage
-function loadPagesFromStorage() {
-  const pages = JSON.parse(localStorage.getItem('pages')); // Pretpostavljamo da su stranice sačuvane u 'pages'
-  if (pages) {
-    // Ako stranice postoje u localStorage, prikaži ih u modalnom prozoru
-    console.log('Stranice učitane iz localStorage:', pages);
-    displayPagesInModal(pages); // Funkcija koja prikazuje stranice u modalnom prozoru
-  } else {
-    console.log('Nema stranica u localStorage.');
-  }
 }
 
 // Funkcija za prikazivanje stranica u modalnom prozoru
@@ -251,6 +225,7 @@ function displayPagesInModal(pages) {
   // Prikazivanje modala
   modal.style.display = 'block';  // Pretpostavljamo da koristiš 'display: block' da prikažeš modal
 }
+
 
 // Funkcija za učitavanje stranica sa servera (ako je korisnik prijavljen)
 function loadSavedPages(userId) {
@@ -291,8 +266,10 @@ function loadSavedPages(userId) {
 
 // Pozivanje funkcije za učitavanje stranica pri učitavanju stranice
 window.onload = function() {
-  loadPagesFromStorage();
-}
-
-   
-     
+  const userId = getCookie('user_id');  // Dohvatanje userId iz kolačića (ako je korisnik prijavljen)
+  if (userId) {
+    loadSavedPages(userId);  // Pozivanje funkcije za učitavanje stranica
+  } else {
+    console.log('Korisnik nije prijavljen');
+  }
+};
