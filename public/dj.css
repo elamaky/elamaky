@@ -40,52 +40,81 @@
     color: #888;
 }
 
-/* Stil za modal */
+/* Osnovni stil za modal */
 #memoryModal {
-    display: none; /* Modal je skriven dok se ne klikne na dugme */
-    position: fixed; /* Modal će biti fiksiran na ekranu */
-    top: 50px; /* Početna pozicija je odmah iznad dugmeta */
-    left: 50%; /* Početna pozicija u sredini horizontalno */
-    transform: translateX(-50%); /* Centriraj horizontalno */
-    width: 400px;
-    height: 400px;
-    background-color: black;
-    color: #ffffff;
-    padding: 20px;
-    border: 2px solid #00ffff;
-    box-shadow: 0 0 10px #00ffff;
-    border-radius: 8px;
-    z-index: 1000;
+  display: none; /* Početno sakriven */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: black;
+  border: 2px solid #00ffff;
+  box-shadow: 0 0 20px #00ffff;
+  padding: 20px;
+  z-index: 1000;
+  width: 400px;
+  height: 400px;
+  cursor: move;
+  overflow: auto;
 }
 
-/* Stil za X dugme za zatvaranje modala */
-#memoryModal .close {
-    color: #00ffff;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    background: none;
-    border: none;
-    cursor: pointer;
+/* Modal sadržaj */
+.modal-content {
+  background-color: black;
+  color: #00ffff;
+  padding: 10px;
+  border: 1px solid #00ffff;
 }
 
-/* Stil za dugme koje otvara modal */
-#openModal {
-    background-color: #00ffff;
-    color: black;
-    border: 2px solid #00ffff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s;
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* Hover efekat za dugme koje otvara modal */
-#openModal:hover {
-    background-color: black;
-    color: #00ffff;
-    border-color: #00ffff;
+.modal-header h3 {
+  margin: 0;
+  color: #00ffff;
 }
+
+.close {
+  color: #00ffff;
+  background: none;
+  border: none;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: #fff;
+}
+
+#newPageNameInput,
+#saveNewPageButton {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: black;
+  color: #00ffff;
+  border: 1px solid #00ffff;
+}
+
+#saveNewPageButton {
+  cursor: pointer;
+}
+
+#pageList {
+  margin-top: 20px;
+  list-style: none;
+  padding: 0;
+}
+
+#pageList li {
+  padding: 5px;
+  border-bottom: 1px solid #00ffff;
+}
+
 
 
   /* Osnovni stil za desktop */
