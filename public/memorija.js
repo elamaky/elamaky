@@ -264,10 +264,6 @@ function loadSavedPages(userId) {
 
 // Pozivanje funkcije za učitavanje stranica pri učitavanju stranice
 window.onload = function() {
-  const userId = getCookie('user_id');  // Dohvatanje userId iz kolačića (ako je korisnik prijavljen)
-  if (userId) {
-    loadSavedPages(userId);  // Pozivanje funkcije za učitavanje stranica
-  } else {
-    console.log('Korisnik nije prijavljen');
-  }
+  loadSavedPages();  // Pozivanje funkcije za učitavanje stranica, bez korisničkog ID-a
 };
+
