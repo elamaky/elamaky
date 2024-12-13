@@ -148,7 +148,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// Čitanje kolačića sa userId
+
+// Funkcija za čitanje kolačića
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -163,4 +164,20 @@ if (!userId) {
   alert('Nema korisničkog ID-a.');
   return;
 }
+
+// Slanje GET zahteva za dobijanje stranica
+fetch(`/api/getPages?userId=${userId}`)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Greška pri učitavanju stranica.');
+    }
+    return response.json();
+  })
+  .then(data => {
+    // Obrada podataka
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('Greška:', error);
+  });
 
