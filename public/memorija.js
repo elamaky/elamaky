@@ -92,39 +92,47 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function loadSavedPages() {
         fetch('/api/getPages')
-    .then(response => {
-        console.log('Odgovor od servera:', response);
-        return response.json(); // Ovde se desila greška
-    })
-    .then(data => {
-        const pageList = document.getElementById('pageList');
-        pageList.innerHTML = '';
+        .then(response => {
+            console.log('Odgovor od servera:', response);
+            if (!response.ok) {
+                throw new Error('Greška u odgovoru servera.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const pageList = document.getElementById('pageList');
+            pageList.innerHTML = '';
 
-        data.pages.forEach(page => {
-            const li = document.createElement('li');
-            li.textContent = page.name;
-            li.style.borderBottom = '1px solid #00ffff';
-            li.style.padding = '5px 0';
-            li.style.cursor = 'pointer';
+            data.pages.forEach(page => {
+                const li = document.createElement('li');
+                li.textContent = page.name;
+                li.style.borderBottom = '1px solid #00ffff';
+                li.style.padding = '5px 0';
+                li.style.cursor = 'pointer';
 
-            li.addEventListener('click', function () {
-                loadPageContent(page.name);
+                li.addEventListener('click', function () {
+                    loadPageContent(page.name);
+                });
+
+                pageList.appendChild(li);
             });
-
-            pageList.appendChild(li);
+        })
+        .catch(error => {
+            console.error('Greška pri učitavanju stranica:', error);
+            alert('Došlo je do greške pri učitavanju stranica.');
         });
-    })
-    .catch(error => {
-        console.error('Greška pri učitavanju stranica:', error);
-        alert('Došlo je do greške pri učitavanju stranica.');
-    });
-
+    }
 
     function loadPageContent(pageName) {
         alert(`Učitavam sadržaj stranice: ${pageName}`);
 
         fetch(`/api/getPage?name=${encodeURIComponent(pageName)}`)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Greška u odgovoru servera.');
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.page) {
                 console.log(`Sadržaj stranice ${pageName} je:`, data.page);
@@ -147,4 +155,5 @@ document.addEventListener('DOMContentLoaded', function () {
             loadSavedPages(userId);
         });
     }
-};
+});
+
