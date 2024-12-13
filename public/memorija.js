@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
+    const userId = localStorage.getItem('userId');  // Proveri da li je korisnik ulogovan
+    if (!userId) {
+        alert("Morate biti ulogovani da biste koristili memoriju.");
+        return;
+    }
+
     const modal = document.createElement('div');
     modal.id = 'memoryModal';
     modal.style.display = 'none';
@@ -65,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const pageData = { name: pageName };
+        const pageData = { name: pageName, userId };
 
         fetch('/api/savePage', {
             method: 'POST',
@@ -91,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function loadSavedPages() {
-        fetch('/api/getPages')
+        fetch(`/api/getPages?userId=${userId}`)
         .then(response => response.json())
         .then(data => {
             const pageList = document.getElementById('pageList');
@@ -120,12 +126,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function loadPageContent(pageName) {
         alert(`Učitavam sadržaj stranice: ${pageName}`);
 
-        fetch(`/api/getPage?name=${encodeURIComponent(pageName)}`)
+        fetch(`/api/getPage?name=${encodeURIComponent(pageName)}&userId=${userId}`)
         .then(response => response.json())
         .then(data => {
             if (data.page) {
                 console.log(`Sadržaj stranice ${pageName} je:`, data.page);
-                // Ovde se može učitati chat ili drugi sadržaj u realnom vremenu.
             } else {
                 alert('Stranica nije pronađena.');
             }
@@ -137,79 +142,4 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-
-const userId = localStorage.getItem('userId');  // Pretpostavljamo da je korisnik već ulogovan i ID je sačuvan
-
-if (!userId) {
-    alert("Morate biti ulogovani da biste koristili memoriju.");
-    return;
-}
-
-// Aktivacija modala za memoriju
-document.getElementById('memorija').addEventListener('click', function () {
-    modal.style.display = 'block';
-    loadSavedPages(userId);  // Preuzimanje stranica specifičnih za korisnika
-});
-
-// Učitavanje sačuvanih stranica za određenog korisnika
-function loadSavedPages(userId) {
-    fetch(`/api/getPages?userId=${userId}`)
-    .then(response => response.json())
-    .then(data => {
-        const pageList = document.getElementById('pageList');
-        pageList.innerHTML = '';
-
-        data.pages.forEach(page => {
-            const li = document.createElement('li');
-            li.textContent = page.name;
-            li.style.borderBottom = '1px solid #00ffff';
-            li.style.padding = '5px 0';
-            li.style.cursor = 'pointer';
-
-            li.addEventListener('click', function () {
-                loadPageContent(page.name);
-            });
-
-            pageList.appendChild(li);
-        });
-    })
-    .catch(error => {
-        console.error('Greška pri učitavanju stranica:', error);
-        alert('Došlo je do greške pri učitavanju stranica.');
-    });
-}
-
-// Spremanje nove stranice
-document.getElementById('saveNewPageButton').addEventListener('click', function () {
-    const pageName = document.getElementById('newPageNameInput').value;
-
-    if (!pageName) {
-        alert('Morate uneti naziv stranice.');
-        return;
-    }
-
-    const pageData = { name: pageName, userId };  // Dodajemo korisnički ID
-
-    fetch('/api/savePage', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(pageData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Stranica je uspešno sačuvana!');
-            modal.style.display = 'none';
-            loadSavedPages(userId);  // Ponovo učitaj stranice nakon što je nova sačuvana
-        } else {
-            alert('Greška pri čuvanju stranice.');
-        }
-    })
-    .catch(error => {
-        console.error('Greška pri čuvanju stranice:', error);
-        alert('Došlo je do greške pri čuvanju stranice.');
-    });
-});
 
