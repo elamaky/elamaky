@@ -53,15 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Zatvoriti modal
-    const closeButton = document.getElementById('closeModalButton');
-    closeButton.addEventListener('click', function () {
-        modal.style.display = 'none';
-    });
-});
-
-
-   let isDragging = false;
+    let isDragging = false;
 let offsetX, offsetY;
 
 modal.addEventListener('mousedown', function (e) {
@@ -94,7 +86,14 @@ document.getElementById('saveNewPageButton').addEventListener('click', function 
         return;
     }
 
-    const pageData = { name: pageName };
+     // Zatvoriti modal
+    const closeButton = document.getElementById('closeModalButton');
+    closeButton.addEventListener('click', function () {
+        modal.style.display = 'none';
+    });
+});
+
+ const pageData = { name: pageName };
 
     fetch('/api/savePage', {
         method: 'POST',
