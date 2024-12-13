@@ -45,7 +45,7 @@ document.getElementById('memorija').addEventListener('click', function() {
     let isDragging = false;
     let offsetX, offsetY;
 
-    modal.addEventListener('mousedown', function (e) {
+    memoryModal.addEventListener('mousedown', function (e) {
         isDragging = true;
         offsetX = e.clientX - modal.offsetLeft;
         offsetY = e.clientY - modal.offsetTop;
