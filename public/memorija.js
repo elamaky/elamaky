@@ -147,3 +147,20 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+// Čitanje kolačića sa userId
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
+
+// Dohvatanje userId iz kolačića
+const userId = getCookie('userId');  // Pretpostavljamo da se kolačić zove 'userId'
+
+if (!userId) {
+  alert('Nema korisničkog ID-a.');
+  return;
+}
+
