@@ -40,80 +40,42 @@
     color: #888;
 }
 
-/* Osnovni stil za modal */
-#memoryModal {
-  display: none; /* Početno sakriven */
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: black;
-  border: 2px solid #00ffff;
-  box-shadow: 0 0 20px #00ffff;
-  padding: 20px;
-  z-index: 1000;
-  width: 400px;
-  height: 400px;
-  cursor: move;
-  overflow: auto;
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 400px;
+    height: auto;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.8); /* Tamna poluprozirna pozadina */
+    border: 2px solid #fff; /* Bela neon ivica */
+    box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.8); /* Neon svetlo oko */
+    border-radius: 10px;
 }
 
-/* Modal sadržaj */
 .modal-content {
-  background-color: black;
-  color: #00ffff;
-  padding: 10px;
-  border: 1px solid #00ffff;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.modal-header h3 {
-  margin: 0;
-  color: #00ffff;
+    background-color: #111; /* Tamna pozadina za sadržaj */
+    color: #fff; /* Bela boja teksta */
+    padding: 20px;
+    border: 1px solid #fff; /* Bela neon ivica */
+    border-radius: 10px;
 }
 
 .close {
-  color: #00ffff;
-  background: none;
-  border: none;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
+    color: #fff; /* Bela boja za dugme za zatvaranje */
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
-.close:hover {
-  color: #fff;
+.close:hover,
+.close:focus {
+    color: #ff00ff; /* Neon ružičasta na hover */
+    text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff; /* Neon efekat na hover */
 }
 
-#newPageNameInput,
-#saveNewPageButton {
-  width: 100%;
-  margin-top: 10px;
-  padding: 10px;
-  background-color: black;
-  color: #00ffff;
-  border: 1px solid #00ffff;
-}
-
-#saveNewPageButton {
-  cursor: pointer;
-}
-
-#pageList {
-  margin-top: 20px;
-  list-style: none;
-  padding: 0;
-}
-
-#pageList li {
-  padding: 5px;
-  border-bottom: 1px solid #00ffff;
-}
 
 
 
