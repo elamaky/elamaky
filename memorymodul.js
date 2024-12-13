@@ -41,9 +41,11 @@ router.post('/api/savePage', async (req, res) => {
   }
 });
 
-// Ruta za dobijanje svih sačuvanih stranica za korisnika
+// Ruta za dobijanje stranica
 router.get('/api/getPages', async (req, res) => {
-  const { userId } = req.query;  // Pretpostavljamo da šaljemo userId kao query parametar
+  const { userId } = req.query;
+
+  console.log('Primljeni userId:', userId);  // Proveri da li je userId poslat u query
 
   if (!userId) {
     return res.status(400).json({ success: false, message: "UserId je obavezan." });
@@ -51,7 +53,6 @@ router.get('/api/getPages', async (req, res) => {
 
   try {
     console.log(`[INFO] Pokušaj dobijanja stranica za korisnika - userId: ${userId}`);
-
     const pages = await Page.find({ userId });  // Tražimo stranice po userId
     console.log(`[INFO] Stranice za korisnika učitane - userId: ${userId}`);
     res.status(200).json({ success: true, pages });  // Vraćamo listu svih stranica
@@ -60,6 +61,7 @@ router.get('/api/getPages', async (req, res) => {
     res.status(500).json({ success: false, message: "Greška pri dobijanju stranica.", error });
   }
 });
+
 
 // Ruta za učitavanje sadržaja stranice
 router.get('/api/getPage', async (req, res) => {
