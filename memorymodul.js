@@ -37,26 +37,26 @@ router.post('/api/savePage', async (req, res) => {
   }
 });
 
-// Ruta za učitavanje stranice
-router.get('/api/loadPage/:userId/:name', async (req, res) => {
-  const { userId, name } = req.params;  // Tražimo po userId i name
+// Ruta za dobijanje svih sačuvanih stranica
+router.get('/getPages', async (req, res) => {
+  const userId = req.query.userId;  // Pretpostavljamo da šaljemo userId kao query parametar
+
+  if (!userId) {
+    return res.status(400).json({ success: false, message: "Nema userId parametra." });
+  }
 
   try {
-    console.log(`[INFO] Pokušaj učitavanja stranice - userId: ${userId}, name: ${name}`);
+    console.log(`[INFO] Pokušaj dobijanja stranica za korisnika - userId: ${userId}`);
 
-    const page = await Page.findOne({ userId, name });  // Tražimo po userId i name
-    if (page) {
-      console.log(`[INFO] Stranica učitana - userId: ${userId}, name: ${name}`);
-      res.status(200).json({ success: true, page });  // Vraćamo podatke stranice
-    } else {
-      console.log(`[INFO] Stranica nije pronađena - userId: ${userId}, name: ${name}`);
-      res.status(404).json({ success: false, message: "Stranica nije pronađena." });
-    }
+    const pages = await Page.find({ userId });  // Tražimo stranice po userId
+    console.log(`[INFO] Stranice za korisnika učitane - userId: ${userId}`);
+    res.status(200).json({ success: true, pages });  // Vraćamo listu svih stranica
   } catch (error) {
-    console.error(`[ERROR] Greška pri učitavanju stranice - userId: ${userId}`, error);
-    res.status(500).json({ success: false, message: "Greška pri učitavanju stranice.", error });
+    console.error(`[ERROR] Greška pri dobijanju stranica - userId: ${userId}`, error);
+    res.status(500).json({ success: false, message: "Greška pri dobijanju stranica.", error });
   }
 });
+
 
 // Ruta za dobijanje svih sačuvanih stranica za korisnika
 router.get('/api/savedPages/:userId', async (req, res) => {
