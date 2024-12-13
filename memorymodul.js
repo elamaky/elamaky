@@ -20,7 +20,7 @@ const pageSchema = new mongoose.Schema({
 const Page = mongoose.model('Page', pageSchema);
 
 // Ruta za spremanje stranice
-router.post('/save-page', async (req, res) => {
+router.post('/api/savePage', async (req, res) => {
   const { userId, name } = req.body;  // Koristimo userId za povezivanje stranice sa korisnikom
 
   try {
@@ -38,7 +38,7 @@ router.post('/save-page', async (req, res) => {
 });
 
 // Ruta za učitavanje stranice
-router.get('/load-page/:userId/:name', async (req, res) => {
+router.get('/api/loadPage/:userId/:name', async (req, res) => {
   const { userId, name } = req.params;  // Tražimo po userId i name
 
   try {
@@ -59,7 +59,7 @@ router.get('/load-page/:userId/:name', async (req, res) => {
 });
 
 // Ruta za dobijanje svih sačuvanih stranica za korisnika
-router.get('/saved-pages/:userId', async (req, res) => {
+router.get('/api/savedPages/:userId', async (req, res) => {
   const { userId } = req.params;  // Tražimo stranice za određenog korisnika na osnovu userId
 
   try {
@@ -74,5 +74,6 @@ router.get('/saved-pages/:userId', async (req, res) => {
   }
 });
 
-module.exports = router;  // Izvoz rute
+module.exports = router;
+
 
