@@ -28,6 +28,53 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.body.appendChild(modal);
 
+
+    const pageList = modal.querySelector('#pageList');
+    const savedPages = JSON.parse(localStorage.getItem('pages')) || [];
+
+    // Učitavanje stranica iz localStorage
+    savedPages.forEach(page => {
+        const listItem = document.createElement('li');
+        listItem.textContent = page.name;
+        pageList.appendChild(listItem);
+    });
+
+    // Otvoriti modal
+    const openModalButton = document.getElementById('openModalButton'); // Pretpostavljamo da postoji dugme za otvaranje modala
+    if (openModalButton) {
+        openModalButton.addEventListener('click', () => {
+            modal.style.display = 'block';
+        });
+    }
+
+    // Spremanje nove stranice
+    const saveButton = document.getElementById('saveNewPageButton');
+    saveButton.addEventListener('click', function () {
+        const pageName = document.getElementById('newPageNameInput').value;
+        if (pageName) {
+            const newPage = { name: pageName };
+            savedPages.push(newPage);
+
+            // Ažuriraj localStorage
+            localStorage.setItem('pages', JSON.stringify(savedPages));
+
+            // Dodaj novu stranicu u listu
+            const listItem = document.createElement('li');
+            listItem.textContent = pageName;
+            pageList.appendChild(listItem);
+
+            // Očisti unos
+            document.getElementById('newPageNameInput').value = '';
+        }
+    });
+
+    // Zatvoriti modal
+    const closeButton = document.getElementById('closeModalButton');
+    closeButton.addEventListener('click', function () {
+        modal.style.display = 'none';
+    });
+});
+
     let isDragging = false;
     let offsetX, offsetY;
 
