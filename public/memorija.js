@@ -39,13 +39,11 @@ document.addEventListener('DOMContentLoaded', function () {
         pageList.appendChild(listItem);
     });
 
-    // Otvoriti modal
-    const openModalButton = document.getElementById('openModalButton'); // Pretpostavljamo da postoji dugme za otvaranje modala
-    if (openModalButton) {
-        openModalButton.addEventListener('click', () => {
-            modal.style.display = 'block';
-        });
-    }
+   // Event listener za otvaranje modala
+document.getElementById('memorija').addEventListener('click', function() {
+    document.getElementById('memoryModal').style.display = 'block';
+    loadPagesFromStorage();
+});
 
     // Spremanje nove stranice
     const saveButton = document.getElementById('saveNewPageButton');
