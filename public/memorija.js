@@ -92,30 +92,33 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function loadSavedPages() {
         fetch('/api/getPages')
-        .then(response => response.json())
-        .then(data => {
-            const pageList = document.getElementById('pageList');
-            pageList.innerHTML = '';
+    .then(response => {
+        console.log('Odgovor od servera:', response);
+        return response.json(); // Ovde se desila greška
+    })
+    .then(data => {
+        const pageList = document.getElementById('pageList');
+        pageList.innerHTML = '';
 
-            data.pages.forEach(page => {
-                const li = document.createElement('li');
-                li.textContent = page.name;
-                li.style.borderBottom = '1px solid #00ffff';
-                li.style.padding = '5px 0';
-                li.style.cursor = 'pointer';
+        data.pages.forEach(page => {
+            const li = document.createElement('li');
+            li.textContent = page.name;
+            li.style.borderBottom = '1px solid #00ffff';
+            li.style.padding = '5px 0';
+            li.style.cursor = 'pointer';
 
-                li.addEventListener('click', function () {
-                    loadPageContent(page.name);
-                });
-
-                pageList.appendChild(li);
+            li.addEventListener('click', function () {
+                loadPageContent(page.name);
             });
-        })
-        .catch(error => {
-            console.error('Greška pri učitavanju stranica:', error);
-            alert('Došlo je do greške pri učitavanju stranica.');
+
+            pageList.appendChild(li);
         });
-    }
+    })
+    .catch(error => {
+        console.error('Greška pri učitavanju stranica:', error);
+        alert('Došlo je do greške pri učitavanju stranica.');
+    });
+
 
     function loadPageContent(pageName) {
         alert(`Učitavam sadržaj stranice: ${pageName}`);
