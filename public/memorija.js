@@ -1,10 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const userId = localStorage.getItem('userId');  // Proveri da li je korisnik ulogovan
-    if (!userId) {
-        alert("Morate biti ulogovani da biste koristili memoriju.");
-        return;
-    }
-
     const modal = document.createElement('div');
     modal.id = 'memoryModal';
     modal.style.display = 'none';
@@ -71,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const pageData = { name: pageName, userId };
+        const pageData = { name: pageName };
 
         fetch('/api/savePage', {
             method: 'POST',
@@ -97,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function loadSavedPages() {
-        fetch(`/api/getPages?userId=${userId}`)
+        fetch('/api/getPages')
         .then(response => response.json())
         .then(data => {
             const pageList = document.getElementById('pageList');
@@ -126,11 +120,12 @@ document.addEventListener('DOMContentLoaded', function () {
     function loadPageContent(pageName) {
         alert(`Učitavam sadržaj stranice: ${pageName}`);
 
-        fetch(`/api/getPage?name=${encodeURIComponent(pageName)}&userId=${userId}`)
+        fetch(`/api/getPage?name=${encodeURIComponent(pageName)}`)
         .then(response => response.json())
         .then(data => {
             if (data.page) {
                 console.log(`Sadržaj stranice ${pageName} je:`, data.page);
+                // Ovde se može učitati chat ili drugi sadržaj u realnom vremenu.
             } else {
                 alert('Stranica nije pronađena.');
             }
@@ -140,6 +135,13 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Došlo je do greške pri učitavanju stranice.');
         });
     }
+
+    const userId = localStorage.getItem('userId');
+
+    if (userId) {
+        document.getElementById('memorija').addEventListener('click', function () {
+            modal.style.display = 'block';
+            loadSavedPages(userId);
+        });
+    }
 });
-
-
