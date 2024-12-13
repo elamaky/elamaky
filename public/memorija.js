@@ -100,10 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
         loadSavedPages();
     });
 
-    document.getElementById('closeModalButton').addEventListener('click', function () {
-        modal.style.display = 'none';
-    });
-
+ 
     document.getElementById('saveNewPageButton').addEventListener('click', function () {
         const pageName = document.getElementById('newPageNameInput').value;
 
@@ -184,18 +181,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 }
 
-
-    const userId = localStorage.getItem('userId');
-
-    if (userId) {
-        document.getElementById('memorija').addEventListener('click', function () {
-            modal.style.display = 'block';
-            loadSavedPages(userId);
-        });
-    }
-});
-
-
 // Funkcija za čitanje kolačića
 function getCookie(name) {
   const value = `; ${document.cookie}`;
@@ -227,6 +212,12 @@ if (!userId) {
     .catch(error => {
       console.error('Greška:', error);
     });
+
+  // Dodavanje event listenera za otvaranje modala
+  document.getElementById('memorija').addEventListener('click', function () {
+    modal.style.display = 'block';
+    loadSavedPages(userId);
+  });
 }
 
 // Funkcija za učitavanje stranica iz localStorage
@@ -261,9 +252,47 @@ function displayPagesInModal(pages) {
   modal.style.display = 'block';  // Pretpostavljamo da koristiš 'display: block' da prikažeš modal
 }
 
+// Funkcija za učitavanje stranica sa servera (ako je korisnik prijavljen)
+function loadSavedPages(userId) {
+  fetch(`/api/getPages?userId=${userId}`)  // Poslati userId kao query parametar
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Greška pri učitavanju stranica.');
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.success && data.pages) {
+      const pageList = document.getElementById('pageList');
+      pageList.innerHTML = '';
+
+      data.pages.forEach(page => {
+        const li = document.createElement('li');
+        li.textContent = page.name;
+        li.style.borderBottom = '1px solid #00ffff';
+        li.style.padding = '5px 0';
+        li.style.cursor = 'pointer';
+
+        li.addEventListener('click', function () {
+          loadPageContent(page.name);
+        });
+
+        pageList.appendChild(li);
+      });
+    } else {
+      alert('Nema stranica za ovog korisnika.');
+    }
+  })
+  .catch(error => {
+    console.error('Greška pri učitavanju stranica:', error);
+    alert('Došlo je do greške pri učitavanju stranica.');
+  });
+}
+
 // Pozivanje funkcije za učitavanje stranica pri učitavanju stranice
 window.onload = function() {
   loadPagesFromStorage();
 }
 
+   
      
