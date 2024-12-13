@@ -95,15 +95,22 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function loadSavedPages() {
-        fetch('/api/getPages')
-        .then(response => {
-            console.log('Odgovor od servera:', response);
-            if (!response.ok) {
-                throw new Error('Greška u odgovoru servera.');
-            }
-            return response.json();
-        })
-        .then(data => {
+    const userId = localStorage.getItem('userId');  // Proveri da li postoji userId u localStorage
+    if (!userId) {
+        alert('Nema korisničkog ID-a.');
+        return;
+    }
+
+    fetch(`/api/getPages?userId=${userId}`)  // Poslati userId kao query parametar
+    .then(response => {
+        console.log('Odgovor od servera:', response);
+        if (!response.ok) {
+            throw new Error('Greška u odgovoru servera.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success && data.pages) {
             const pageList = document.getElementById('pageList');
             pageList.innerHTML = '';
 
@@ -120,36 +127,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 pageList.appendChild(li);
             });
-        })
-        .catch(error => {
-            console.error('Greška pri učitavanju stranica:', error);
-            alert('Došlo je do greške pri učitavanju stranica.');
-        });
-    }
+        } else {
+            alert('Nema stranica za ovog korisnika.');
+        }
+    })
+    .catch(error => {
+        console.error('Greška pri učitavanju stranica:', error);
+        alert('Došlo je do greške pri učitavanju stranica.');
+    });
+}
 
-    function loadPageContent(pageName) {
-        alert(`Učitavam sadržaj stranice: ${pageName}`);
-
-        fetch(`/api/getPage?name=${encodeURIComponent(pageName)}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Greška u odgovoru servera.');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.page) {
-                console.log(`Sadržaj stranice ${pageName} je:`, data.page);
-                // Ovde se može učitati chat ili drugi sadržaj u realnom vremenu.
-            } else {
-                alert('Stranica nije pronađena.');
-            }
-        })
-        .catch(error => {
-            console.error('Greška pri učitavanju stranice:', error);
-            alert('Došlo je do greške pri učitavanju stranice.');
-        });
-    }
 
     const userId = localStorage.getItem('userId');
 
