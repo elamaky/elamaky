@@ -224,9 +224,14 @@ function displayPagesInModal(pages) {
 }
 
 
-// Funkcija za učitavanje stranica sa servera (ako je korisnik prijavljen)
+// Funkcija za učitavanje stranica sa servera
 function loadSavedPages(userId) {
-  fetch(`/api/getPages?userId=${userId}`)  // Poslati userId kao query parametar
+  if (!userId) {
+    console.error('Nema korisničkog ID-a');
+    return;
+  }
+  
+  fetch(`/api/getPages?userId=${userId}`)  // Koristi userId u API pozivu
   .then(response => {
     if (!response.ok) {
       throw new Error('Greška pri učitavanju stranica.');
@@ -236,7 +241,7 @@ function loadSavedPages(userId) {
   .then(data => {
     if (data.success && data.pages) {
       const pageList = document.getElementById('pageList');
-      pageList.innerHTML = '';
+      pageList.innerHTML = ''; // Očisti prethodnu listu stranica
 
       data.pages.forEach(page => {
         const li = document.createElement('li');
@@ -245,10 +250,20 @@ function loadSavedPages(userId) {
         li.style.padding = '5px 0';
         li.style.cursor = 'pointer';
 
-        li.addEventListener('click', function () {
-          loadPageContent(page.name);
+        // Dodaj dugme za učitavanje stranice
+        const loadButton = document.createElement('button');
+        loadButton.textContent = 'Učitaj stranicu';
+        loadButton.style.backgroundColor = '#00ffff';
+        loadButton.style.border = 'none';
+        loadButton.style.padding = '5px';
+        loadButton.style.cursor = 'pointer';
+        
+        // Klik na dugme učitava stranicu
+        loadButton.addEventListener('click', function () {
+          loadPageContent(page.name); // Ovdje trebaš dodati funkciju za učitavanje sadržaja stranice
         });
 
+        li.appendChild(loadButton);
         pageList.appendChild(li);
       });
     } else {
@@ -261,8 +276,14 @@ function loadSavedPages(userId) {
   });
 }
 
-// Pozivanje funkcije za učitavanje stranica pri učitavanju stranice
+// Funkcija za učitavanje stranica pri učitavanju stranice
 window.onload = function() {
-  loadSavedPages();  // Pozivanje funkcije za učitavanje stranica, bez korisničkog ID-a
+  const userId = localStorage.getItem('userId'); // Preuzmi userId iz localStorage
+  if (userId) {
+    loadSavedPages(userId);  // Pozivanje funkcije za učitavanje stranica sa userId
+  } else {
+    alert('Nema korisničkog ID-a.');
+  }
 };
+
 
