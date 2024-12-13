@@ -56,7 +56,7 @@
 }
 
 .modal-content {
-    background-color: #111; /* Tamna pozadina za sadržaj */
+    background-color: black;
     color: #fff; /* Bela boja teksta */
     padding: 20px;
     border: 1px solid #fff; /* Bela neon ivica */
