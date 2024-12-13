@@ -67,34 +67,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const pageData = { name: pageName };
 
-       fetch('/api/savePage', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(pageData)
-})
-.then(response => {
-    if (!response.ok) {
-        console.error('Odgovor nije validan:', response.status, response.statusText);
-        throw new Error('Greška pri slanju zahteva serveru.');
-    }
-    return response.json();
-})
-.then(data => {
-    if (data.success) {
-        alert('Stranica je uspešno sačuvana!');
-        modal.style.display = 'none';
-        loadSavedPages();
-    } else {
-        alert('Greška pri čuvanju stranice.');
-    }
-})
-.catch(error => {
-    console.error('Greška pri čuvanju stranice:', error);
-    alert('Došlo je do greške pri čuvanju stranice.');
-});
-
+        fetch('/api/savePage', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(pageData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.error('Odgovor nije validan:', response.status, response.statusText);
+                throw new Error('Greška pri slanju zahteva serveru.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Stranica je uspešno sačuvana!');
+                modal.style.display = 'none';
+                loadSavedPages();
+            } else {
+                alert('Greška pri čuvanju stranice.');
+            }
+        })
+        .catch(error => {
+            console.error('Greška pri čuvanju stranice:', error);
+            alert('Došlo je do greške pri čuvanju stranice.');
+        });
+    });
 
     function loadSavedPages() {
         fetch('/api/getPages')
@@ -162,4 +160,3 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
-
