@@ -179,9 +179,8 @@ fetch('/api/getPages')
 // Dodavanje event listenera za otvaranje stranice nakon učitavanja podataka
 document.getElementById('memorija').addEventListener('click', function () {
   loadSavedPages();  
-  openPageAfterLoading();
-    
-});
+  
+    });
 // Funkcija za učitavanje stranica
 function loadPages() {
   fetch('/api/getPages')  // API poziv za učitavanje stranica
