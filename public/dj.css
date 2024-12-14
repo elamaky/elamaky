@@ -134,35 +134,33 @@ h1 {
     display: none;
     position: fixed;
     z-index: 1;
-    left: 50%;              /* Postavlja modal u centar ekrana horizontalno */
-    top: 50%;               /* Postavlja modal u centar ekrana vertikalno */
-    transform: translate(-50%, -50%); /* Pomera modal tako da se centriše */
-    width: 800px;         /* Maksimalna širina */
-    height: 800px;        /* Maksimalna visina */
-    overflow: hidden;     /* Skriva overflow sadržaj */
-    background-color: rgba(0, 0, 0, 0.9); /* Polu-transparentna crna pozadina */
+    left: 0;
+    top: 0;
+    width: 350px;
+    height:800px;
+    overflow: hidden;
+    background-color: black; /* Potpuno crna pozadina */
+    border: 2px solid #fff; /* Bela neon ivica */
+    box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.8); /* Neon svetlo oko */
+    border-radius: 10px;
 }
 
 .mixerModal-content {
-    position: relative; 
-    width: 100%;  /* Zauzima punu širinu modala */
-    height: calc(100% - 40px); /* Oduzima visinu dugmeta za zatvaranje */
+    background-color: black;
+    color: #fff; /* Bela boja teksta */
+    padding: 20px;
+    border: 1px solid #fff; /* Bela neon ivica */
+    border-radius: 10px;
 }
 
-iframe {
-    width: 100%;  /* Iframe zauzima 100% širine modala */
-    height: 100%; /* Iframe zauzima punu visinu dostupnog prostora */
-    border: none; /* Uklanja granice iframe-a */
-}
-
+/* Dugme za zatvaranje modala */
 .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    z-index: 2; /* Osigurava da je dugme iznad iframe-a */
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
 }
