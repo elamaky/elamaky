@@ -30,16 +30,26 @@ konobaricaItem.classList.add('guest-konobarica');
 konobaricaItem.innerHTML = 'Konobarica'; // Dodajemo samo tekst bez tagova
 guestList.appendChild(konobaricaItem);
 
-// OVO SU LINIJE KODA ZA MIXER
-document.getElementById('openMixerButton').addEventListener('click', () => {
-    document.getElementById('mixer').style.display = 'block'; // Otvara mixer
+// Pronađite dugme za otvaranje mixera
+const openMixerButton = document.getElementById('openMixerButton');
+const mixerModal = document.getElementById('mixerModal');
+const closeMixerModal = document.getElementById('closeMixerModal');
+
+// Funkcija za otvaranje mixera
+openMixerButton.addEventListener('click', function() {
+    mixerModal.style.display = 'block';
 });
 
-document.getElementById('hideButton').addEventListener('click', () => {
-    document.getElementById('mixer').style.display = 'none'; // Sakriva mixer
+// Funkcija za zatvaranje mixera
+closeMixerModal.addEventListener('click', function() {
+    mixerModal.style.display = 'none';
 });
 
-document.getElementById('closeButton').addEventListener('click', () => {
-    document.getElementById('mixer').remove(); // Uklanja mixer iz DOM-a
+// Ako korisnik klikne van modala, zatvori modal
+window.addEventListener('click', function(event) {
+    if (event.target === mixerModal) {
+        mixerModal.style.display = 'none';
+    }
 });
+
 
