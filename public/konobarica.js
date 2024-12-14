@@ -29,3 +29,17 @@ const konobaricaItem = document.createElement('div');
 konobaricaItem.classList.add('guest-konobarica');
 konobaricaItem.innerHTML = 'Konobarica'; // Dodajemo samo tekst bez tagova
 guestList.appendChild(konobaricaItem);
+
+// OVO SU LINIJE KODA ZA MIXER
+document.getElementById('openMixerButton').addEventListener('click', () => {
+    document.getElementById('mixer').style.display = 'block'; // Otvara mixer
+});
+
+document.getElementById('hideButton').addEventListener('click', () => {
+    document.getElementById('mixer').style.display = 'none'; // Sakriva mixer
+});
+
+document.getElementById('closeButton').addEventListener('click', () => {
+    document.getElementById('mixer').remove(); // Uklanja mixer iz DOM-a
+});
+
