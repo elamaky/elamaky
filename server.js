@@ -100,13 +100,15 @@ io.on('connection', (socket) => {
     });
 
        socket.on('audio-stream', (data, hasMixerAccess) => {
-       if (hasMixerAccess) {
+        console.log(`Korisnik ${socket.id} pokušava da strimuje. Pristup mixeru: ${hasMixerAccess}`);
+
+           if (hasMixerAccess) {
             if (!isAudioStreaming) {
                 console.log('Počelo je strimovanje audio signala.');
-                isAudioStreaming = true; 
-                socket.broadcast.emit('audio-stream', data);
+                isAudioStreaming = true; // Označavamo da je strimovanje počelo
+                socket.broadcast.emit('audio-stream', data); // Prosleđujemo audio signal
             } else {
-                socket.broadcast.emit('audio-stream', data); 
+                socket.broadcast.emit('audio-stream', data); // Ako već neko strimuje, samo prosleđujemo audio
             }
         } else {
             console.log('Korisnik nema pristup mixeru i ne može da strimuje.');
