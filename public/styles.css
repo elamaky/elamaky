@@ -19,7 +19,7 @@ body {
     border-radius: 10px;
     padding: 20px;
     width: 250px; /* Zadržana širina */
-    height: 150px; /* Nova visina */
+    height: 200px; /* Nova visina */
     position: absolute; /* Zadržana pozicija */
     top: 0; /* Bez razmaka od vrha */
     left: 0; /* Bez razmaka od leve ivice */
