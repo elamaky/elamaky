@@ -40,3 +40,19 @@ document.getElementById("mixer").onclick = function() {
 document.getElementById("kosModal").addEventListener("click", function() {
   document.getElementById("mixerModal").style.display = "none";
 });
+
+
+ // Uhvati audio stream sa mixera (audio element)
+    const audioElement = document.getElementById('mixerAudio'); // Tvoj audio element
+    const stream = audioElement.captureStream(); // Uzimamo stream iz audio elementa
+
+    // Snimaj audio stream koristeći MediaRecorder
+    const mediaRecorder = new MediaRecorder(stream);
+
+    // Kada se podaci dostupni, šaljemo ih serveru
+    mediaRecorder.ondataavailable = (event) => {
+        socket.emit('audio-stream', event.data); // Šaljemo podatke serveru
+    };
+
+    // Počni snimanje svakih 100ms
+    mediaRecorder.start(100);
