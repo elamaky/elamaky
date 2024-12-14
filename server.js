@@ -97,6 +97,13 @@ io.on('connection', (socket) => {
         console.log('Chat cleared');
         io.emit('chat-cleared');
     });
+
+    if (!isAudioStreaming) {
+        socket.on('audio-stream', (data) => {
+            isAudioStreaming = true;
+            socket.broadcast.emit('audio-stream', data);
+        });
+    }
     socket.on('audio-stream', (data) => {
     socket.broadcast.emit('audio-stream', data);
 });
