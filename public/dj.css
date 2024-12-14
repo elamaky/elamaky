@@ -129,7 +129,7 @@ h1 {
 }
 
 /* STIL ZA MIXER MODAL */
-.mixerModal {
+.modal {
   display: none;
   position: fixed;
   z-index: 1;
@@ -141,10 +141,17 @@ h1 {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-.mixerModal-content {
+.modal-content {
   background-color: #fff;
   margin: 15% auto;
-  padding: 20px;
+  padding: 0;
   width: 80%;
+  max-width: 90%; /* Uklanja ograničenje širine */
+  max-height: 80%;
+  border: none;  /* Uklanja granice */
+  resize: both; /* Omogućava promenu veličine */
+  overflow: hidden; /* Sprečava pomeranje sadržaja van okvira */
+  cursor: move; /* Kursom za pomeranje */
 }
+
 
