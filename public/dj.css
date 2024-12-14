@@ -131,28 +131,26 @@ h1 {
 /* STIL ZA MIXER MODAL */
 
 .mixerModal {
-  display: none;
-  position: fixed;  /* Postavljamo ga fiksno, da bude na ekranu */
-  z-index: 1;
-  top: 0;
-  left: 0;
-  width: 100vw;  /* Koristi celu širinu ekrana */
-  height: 100vh;  /* Koristi celu visinu ekrana */
-  background-color: rgba(0, 0, 0, 0.4);  /* Poluprovidna pozadina */
-  border: none;  /* Nema granica */
-  overflow: hidden;  /* Ovdje možeš koristiti i overflow: auto, ako želiš da se sadržaj skroluje */
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 350px;
+    height:800px;
+    overflow: hidden;
+    background-color: black; /* Potpuno crna pozadina */
+    border: 2px solid #fff; /* Bela neon ivica */
+    box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.8); /* Neon svetlo oko */
+    border-radius: 10px;
 }
 
-/* Sadržaj modala */
-.modal-content {
-  position: absolute;  /* Modal može da se pozicionira bilo gde */
-  top: 0;
-  left: 0;
-  background-color: #fff;
-  border: none;  /* Uklonimo granice */
-  resize: none;  /* Ovo je opcionalno, jer mixer unutar ima svoje resize funkcionalnosti */
-  width: 100%;  /* Širina modala se prilagođava ekranu */
-  height: 100%;  /* Visina modala se prilagođava ekranu */
+.mixerModal-content {
+    background-color: black;
+    color: #fff; /* Bela boja teksta */
+    padding: 20px;
+    border: 1px solid #fff; /* Bela neon ivica */
+    border-radius: 10px;
 }
 
 /* Dugme za zatvaranje modala */
