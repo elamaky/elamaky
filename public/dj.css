@@ -130,7 +130,7 @@ h1 {
 
 /* STIL ZA MIXER MODAL */
 
-.modal {
+.mixerModal {
     display: none;
     position: fixed;
     z-index: 1;
@@ -142,7 +142,7 @@ h1 {
     background-color: rgba(0, 0, 0, 0.9); /* Polu-transparentna crna pozadina */
 }
 
-.modal-content {
+.mixerModal-content {
     position: relative; /* Da se može pozicionirati unutar modala */
     width: 100%;
     height: 100%;
