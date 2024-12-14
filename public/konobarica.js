@@ -44,15 +44,15 @@ window.onclick = function(event) {
 }
 
 // Make modal content draggable
-let modalContent = document.getElementById("modalContent");
+let mixerModalContent = document.getElementById("modalContent");
 
 modalContent.onmousedown = function(e) {
   let offsetX = e.clientX - modalContent.getBoundingClientRect().left;
   let offsetY = e.clientY - modalContent.getBoundingClientRect().top;
 
   function moveAt(pageX, pageY) {
-    modalContent.style.left = pageX - offsetX + 'px';
-    modalContent.style.top = pageY - offsetY + 'px';
+    mixerModalContent.style.left = pageX - offsetX + 'px';
+    mixerModalContent.style.top = pageY - offsetY + 'px';
   }
 
   moveAt(e.pageX, e.pageY);
@@ -63,13 +63,13 @@ modalContent.onmousedown = function(e) {
 
   document.addEventListener('mousemove', onMouseMove);
 
-  modalContent.onmouseup = function() {
+  mixerModalContent.onmouseup = function() {
     document.removeEventListener('mousemove', onMouseMove);
     modalContent.onmouseup = null;
   };
 };
 
-modalContent.ondragstart = function() {
+mixerModalContent.ondragstart = function() {
   return false; // Prevent default dragging behavior
 };
 
