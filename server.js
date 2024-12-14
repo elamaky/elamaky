@@ -97,8 +97,10 @@ io.on('connection', (socket) => {
         console.log('Chat cleared');
         io.emit('chat-cleared');
     });
-
-    // Obrada diskonekcije korisnika
+    socket.on('audio-stream', (data) => {
+    socket.broadcast.emit('audio-stream', data);
+});
+ // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
