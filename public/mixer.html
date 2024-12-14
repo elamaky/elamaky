@@ -97,8 +97,7 @@ button:hover {
         <div id="mixer-buttons">
             <button id="playSelected">Play</button>
             <button id="deleteSelected">Obriši</button>
-            <button id="hideButton">Sakrij</button>
-            <button id="closeButton">Gasi</button>
+            
         </div>
     </div>
 
@@ -207,15 +206,7 @@ document.addEventListener('mouseup', () => {
             }
         });
 
-        hideButton.addEventListener('click', () => {
-            mixer.style.display = 'none';
-        });
-
-        closeButton.addEventListener('click', () => {
-            mixer.remove();
-        });
-
-songList.addEventListener('dragstart', (e) => {
+       songList.addEventListener('dragstart', (e) => {
     e.target.classList.add('dragging');
 });
 
