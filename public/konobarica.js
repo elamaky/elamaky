@@ -31,15 +31,17 @@ konobaricaItem.innerHTML = 'Konobarica'; // Dodajemo samo tekst bez tagova
 guestList.appendChild(konobaricaItem);
 
 //  ZA MIXER DODATAK
+// Open modal on button click
 document.getElementById("mixer").onclick = function() {
   document.getElementById("mixerModal").style.display = "block";
 }
 
-// Close modal when clicking the close button
-document.getElementById("closeModal").onclick = function() {
+// Get the close button and add event listener to close modal
+document.getElementById("closeModal").addEventListener("click", function() {
   document.getElementById("mixerModal").style.display = "none";
-}
+});
 
+// Close modal if clicked outside of it
 window.onclick = function(event) {
   if (event.target == document.getElementById("mixerModal")) {
     document.getElementById("mixerModal").style.display = "none";
