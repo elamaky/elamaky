@@ -23,7 +23,7 @@ socket.on('message', (data) => {
     messageArea.insertBefore(messageElement, messageArea.firstChild);
 });
 
-document.getElementById('openMixerButton').onclick = () => {
-    document.getElementById('mixerModal').style.display = 'block';
-};
+document.getElementById("openMixerButton").addEventListener("click", function() {
+  document.getElementById("mixerFrame").style.display = "block";
+});
 
