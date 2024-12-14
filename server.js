@@ -99,20 +99,10 @@ io.on('connection', (socket) => {
         io.emit('chat-cleared');
     });
 
-       socket.on('audio-stream', (data, hasMixerAccess) => {
-        console.log(`Korisnik ${socket.id} pokušava da strimuje. Pristup mixeru: ${hasMixerAccess}`);
-
-           if (hasMixerAccess) {
-            if (!isAudioStreaming) {
-                console.log('Počelo je strimovanje audio signala.');
-                isAudioStreaming = true; // Označavamo da je strimovanje počelo
-                socket.broadcast.emit('audio-stream', data); // Prosleđujemo audio signal
-            } else {
-                socket.broadcast.emit('audio-stream', data); // Ako već neko strimuje, samo prosleđujemo audio
-            }
-        } else {
-            console.log('Korisnik nema pristup mixeru i ne može da strimuje.');
-        }
+      // Kada korisnik (ti sa mixerom) pošalje audio stream
+    socket.on('audio-stream', (data) => {
+        // Prosleđujemo audio svim povezanim korisnicima (osim onom ko je poslao)
+        socket.broadcast.emit('audio-stream', data);
     });
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
