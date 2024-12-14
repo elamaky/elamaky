@@ -23,17 +23,15 @@ socket.on('message', (data) => {
     messageArea.insertBefore(messageElement, messageArea.firstChild);
 });
 
-// Dodavanje Konobarice u listu gostiju (ako je potrebno)
-const guestList = document.getElementById('guestList');
-const konobaricaItem = document.createElement('div');
-konobaricaItem.classList.add('guest-konobarica');
-konobaricaItem.innerHTML = 'Konobarica'; // Dodajemo samo tekst bez tagova
-guestList.appendChild(konobaricaItem);
-
-
-    const openMixerButton = document.getElementById('openMixerButton');
-    const mixerModal = document.getElementById('mixerModal');
-
+ // Funkcija za učitavanje mixer.html
+        document.getElementById("openMixerButton").addEventListener("click", function() {
+            fetch('mixer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("mixerContainer").innerHTML = data;
+                })
+                .catch(error => console.error('Greška pri učitavanju mixer.html:', error));
+        });
     // Otvaranje modala na klik dugmeta
     openMixerButton.addEventListener('click', () => {
         mixerModal.style.display = 'block';
