@@ -24,6 +24,7 @@ socket.on('message', (data) => {
 });
 
 document.getElementById("openMixerButton").addEventListener("click", function() {
-  document.getElementById("mixerFrame").style.display = "block";
+  var iframe = document.getElementById("mixerFrame");
+  iframe.style.display = iframe.style.display === "none" ? "block" : "none";
 });
 
