@@ -35,21 +35,14 @@ const openMixerButton = document.getElementById('openMixerButton');
 const mixerModal = document.getElementById('mixerModal');
 const closeMixerModal = document.getElementById('closeMixerModal');
 
-// Funkcija za otvaranje mixera
-openMixerButton.addEventListener('click', function() {
-    mixerModal.style.display = 'block';
-});
-
-// Funkcija za zatvaranje mixera
-closeMixerModal.addEventListener('click', function() {
-    mixerModal.style.display = 'none';
-});
-
-// Ako korisnik klikne van modala, zatvori modal
-window.addEventListener('click', function(event) {
-    if (event.target === mixerModal) {
-        mixerModal.style.display = 'none';
-    }
+document.getElementById('openMixerButton').addEventListener('click', function() {
+    fetch('mixer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('mixerContent').innerHTML = data;
+            document.getElementById('functionModal').style.display = 'block'; // Otvori modal
+        })
+        .catch(error => console.error('Greška:', error));
 });
 
 
