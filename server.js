@@ -99,19 +99,19 @@ io.on('connection', (socket) => {
         io.emit('chat-cleared');
     });
 
- if (!isAudioStreaming) {
-        socket.on('audio-stream', (data) => {
-            isAudioStreaming = true;  // Obeležavamo da je započeto strimovanje
-            console.log('Počelo je strimovanje audio signala.');
-
-            socket.broadcast.emit('audio-stream', data);
-        });
-    } else {
-        
-        socket.on('audio-stream', (data) => {
-            socket.broadcast.emit('audio-stream', data);
-        });
-    }
+       socket.on('audio-stream', (data, hasMixerAccess) => {
+       if (hasMixerAccess) {
+            if (!isAudioStreaming) {
+                console.log('Počelo je strimovanje audio signala.');
+                isAudioStreaming = true; 
+                socket.broadcast.emit('audio-stream', data);
+            } else {
+                socket.broadcast.emit('audio-stream', data); 
+            }
+        } else {
+            console.log('Korisnik nema pristup mixeru i ne može da strimuje.');
+        }
+    });
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
