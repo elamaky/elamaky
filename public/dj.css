@@ -130,7 +130,7 @@ h1 {
 
 /* STIL ZA MIXER MODAL */
 /* Modal osnovni stil */
-.modal {
+.mixerModal {
   display: none;
   position: fixed;  /* Postavljamo ga fiksno, da bude na ekranu */
   z-index: 1;
@@ -142,7 +142,7 @@ h1 {
 }
 
 /* Sadržaj modala (bez granica i sa slobodnim pozicioniranjem) */
-.modal-content {
+.mixerModal-content {
   position: absolute; /* Oslobađa modal od fiksnog pozicioniranja */
   top: 20px; /* Početna pozicija modala */
   left: 20px; /* Početna pozicija modala */
