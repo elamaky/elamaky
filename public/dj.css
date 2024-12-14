@@ -129,30 +129,30 @@ h1 {
 }
 
 /* STIL ZA MIXER MODAL */
-/* Modal osnovni stil */
+
 .mixerModal {
   display: none;
   position: fixed;  /* Postavljamo ga fiksno, da bude na ekranu */
   z-index: 1;
-  left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4); /* Poluprovidna pozadina */
+  left: 0;
+  width: 100vw;  /* Koristi celu širinu ekrana */
+  height: 100vh;  /* Koristi celu visinu ekrana */
+  background-color: rgba(0, 0, 0, 0.4);  /* Poluprovidna pozadina */
+  border: none;  /* Nema granica */
+  overflow: hidden;  /* Ovdje možeš koristiti i overflow: auto, ako želiš da se sadržaj skroluje */
 }
 
-/* Sadržaj modala (bez granica i sa slobodnim pozicioniranjem) */
-.mixerModal-content {
-  position: absolute; /* Oslobađa modal od fiksnog pozicioniranja */
-  top: 20px; /* Početna pozicija modala */
-  left: 20px; /* Početna pozicija modala */
-  width: 80%;  /* Širina modala */
-  max-width: 90%; /* Maksimalna širina modala */
-  height: auto; /* Visina modala se automatski prilagođava sadržaju */
+/* Sadržaj modala */
+.modal-content {
+  position: absolute;  /* Modal može da se pozicionira bilo gde */
+  top: 0;
+  left: 0;
   background-color: #fff;
-  border: none; /* Uklanjanje granica */
-  resize: none;  /* Neće biti potrebno jer mixer ima svoje funkcionalnosti za resize */
-  overflow: auto; /* Omogućava skrolovanje sadržaja ako je potrebno */
+  border: none;  /* Uklonimo granice */
+  resize: none;  /* Ovo je opcionalno, jer mixer unutar ima svoje resize funkcionalnosti */
+  width: 100%;  /* Širina modala se prilagođava ekranu */
+  height: 100%;  /* Visina modala se prilagođava ekranu */
 }
 
 /* Dugme za zatvaranje modala */
@@ -166,9 +166,3 @@ h1 {
   padding: 10px;
   cursor: pointer;
 }
-
-.close-btn:hover {
-  background-color: darkred;
-}
-
-
