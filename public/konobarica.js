@@ -68,4 +68,3 @@ async function startAudioStream() {
 // Ovaj kod poziva samo prvi klijent kada se poveže
 startAudioStream();
 socket.emit('audio-stream', audioData); // Samo korisnici sa pristupom šalju audio
-}
