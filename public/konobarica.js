@@ -23,16 +23,13 @@ socket.on('message', (data) => {
     messageArea.insertBefore(messageElement, messageArea.firstChild);
 });
 
- // Funkcija za učitavanje mixer.html
-        document.getElementById("openMixerButton").addEventListener("click", function() {
-            fetch('mixer.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById("mixerContainer").innerHTML = data;
-                })
-                .catch(error => console.error('Greška pri učitavanju mixer.html:', error));
+document.getElementById("openMixerButton").addEventListener("click", function() {
+    fetch('mixer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("mixerContainer").innerHTML = data;
+            document.getElementById("mixerModal").style.display = "block";  // Prikazivanje modala
         });
-    // Otvaranje modala na klik dugmeta
-    openMixerButton.addEventListener('click', () => {
-        mixerModal.style.display = 'block';
-    });
+});
+
+   
