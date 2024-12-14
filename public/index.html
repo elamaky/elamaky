@@ -66,21 +66,16 @@
 </div>
 <div id="savedPagesMenu"></div>
 
-    <!-- Mixer koji je inicijalno sakriven -->
-<div id="mixer" style="display:none;">
-    <!-- Tvoj mixer sadržaj ovde -->
-    <audio id="audioPlayer" controls style="position: absolute; top: 0px; left: 0;"></audio>
-    <input type="file" id="fileInput" multiple style="position: absolute; top: 90px; left: 0; right: 0; margin-bottom: 10px;">
-    <ul id="songList"></ul>
-    <div id="mixer-buttons">
-        <button id="playSelected">Play</button>
-        <button id="deleteSelected">Obriši</button>
-        <button id="hideButton">Sakrij</button>
-        <button id="closeButton">Zatvori</button>
+<!-- Dodajte ovo unutar "modal-content" ako želite da prikažete mixer -->
+<div id="mixerModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" id="closeMixerModal">&times;</span>
+        <h2>Mixer</h2>
+        <!-- Dodajte sadržaj mixera ovde -->
+        <p>Ovdje ide sadržaj mixera.</p>
     </div>
 </div>
 
-    
 
   <div id="messageArea"></div>
 
