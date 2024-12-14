@@ -29,3 +29,15 @@ const konobaricaItem = document.createElement('div');
 konobaricaItem.classList.add('guest-konobarica');
 konobaricaItem.innerHTML = 'Konobarica'; // Dodajemo samo tekst bez tagova
 guestList.appendChild(konobaricaItem);
+
+//  ZA MIXER DODATAK
+document.getElementById("mixer").onclick = function() {
+  document.getElementById("mixerModal").style.display = "block";
+}
+
+window.onclick = function(event) {
+  if (event.target == document.getElementById("mixerModal")) {
+    document.getElementById("mixerModal").style.display = "none";
+  }
+}
+
