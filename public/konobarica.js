@@ -23,9 +23,7 @@ socket.on('message', (data) => {
     messageArea.insertBefore(messageElement, messageArea.firstChild);
 });
 
-document.getElementById('openMixerButton').addEventListener('click', function() {
-            // Učitaj mixer.html u iframe
-            var iframe = document.getElementById('mixerIframe');
-            iframe.src = 'mixer.html'; // Postavi src za iframe
-            iframe.style.display = 'block'; // Prikaži iframe
-        });
+document.getElementById('openMixerButton').onclick = () => {
+    document.getElementById('mixerModal').style.display = 'block';
+};
+
