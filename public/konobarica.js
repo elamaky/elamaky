@@ -35,6 +35,11 @@ document.getElementById("mixer").onclick = function() {
   document.getElementById("mixerModal").style.display = "block";
 }
 
+// Close modal when clicking the close button
+document.getElementById("closeModal").onclick = function() {
+  document.getElementById("mixerModal").style.display = "none";
+}
+
 window.onclick = function(event) {
   if (event.target == document.getElementById("mixerModal")) {
     document.getElementById("mixerModal").style.display = "none";
