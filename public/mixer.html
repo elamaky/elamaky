@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radio Galaksija</title>
     <style>
-       #mixer {
+   #mixer {
     background-color: black;
     color: white;
-    width: 250px;
+    width: 300px; /* Prilagođena širina */
+    height: auto; /* Automatska visina */
     padding: 10px;
     border: 5px solid white; 
     position: absolute;
@@ -16,21 +17,21 @@
     box-shadow: 0 0 10px white; 
     border-radius: 10px; 
     bottom: 20px;
-    resize: both;
-    overflow: hidden; 
+    resize: both; /* Omogućava promenu veličine */
+    overflow: hidden; /* Održava prikaz unutar okvira */
 }
 
 button {
     background-color: black;
     color: white;
-    border: 5px solid white; 
-    padding: 5px; /* Smanjen padding za bolje uklapanje */
+    border: 2px solid white; 
+    padding: 10px; 
     cursor: pointer;
     margin: 5px;
     text-transform: uppercase;
     box-shadow: 0 0 10px white; 
-    width: 70px; /* Širina dugmića prilagođena */
-    font-size: 12px; /* Manji font za sklad */
+    width: 60px; /* Usklađena širina */
+    font-size: 12px;
 }
 
 button:hover {
@@ -41,12 +42,12 @@ button:hover {
 #songList {
     list-style: none;
     padding: 0;
-    max-height: calc(100% - 140px); /* Ažurirana visina liste za punu prilagodbu */
-    overflow-y: auto;
+    max-height: calc(100% - 150px); /* Lista se prilagođava visini */
+    overflow-y: auto; 
     border: 1px solid white;
     border-radius: 5px;  
     margin-top: 10px; 
-    margin-bottom: 10px; /* Razmak između liste i dugmadi */
+    margin-bottom: 10px; 
 }
 
 #songList li {
@@ -67,7 +68,7 @@ button:hover {
     color: white;
     font-family: Arial, sans-serif;
     margin: 0; 
-    margin-bottom: 10px; /* Razmak između naslova i liste */
+    margin-bottom: 10px; 
     font-weight: bold; 
     font-style: italic; 
 }
@@ -75,12 +76,12 @@ button:hover {
 #mixer-buttons {
     display: flex;
     justify-content: space-around; 
-    position: absolute;
-    bottom: 5px;
-    left: 5px;
-    right: 5px;
+    position: relative; /* Omogućava pravilan raspored */
+    bottom: 0; /* Na samom dnu */
+    left: 0;
+    right: 0;
+    margin-top: 10px; /* Razmak od liste */
 }
-
 
     </style>
 </head>
