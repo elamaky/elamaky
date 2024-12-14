@@ -14,6 +14,7 @@ require('dotenv').config();
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
+let isAudioStreaming = false;
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
@@ -98,15 +99,19 @@ io.on('connection', (socket) => {
         io.emit('chat-cleared');
     });
 
-    if (!isAudioStreaming) {
+ if (!isAudioStreaming) {
         socket.on('audio-stream', (data) => {
-            isAudioStreaming = true;
+            isAudioStreaming = true;  // Obeležavamo da je započeto strimovanje
+            console.log('Počelo je strimovanje audio signala.');
+
+            socket.broadcast.emit('audio-stream', data);
+        });
+    } else {
+        
+        socket.on('audio-stream', (data) => {
             socket.broadcast.emit('audio-stream', data);
         });
     }
-    socket.on('audio-stream', (data) => {
-    socket.broadcast.emit('audio-stream', data);
-});
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
