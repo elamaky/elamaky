@@ -29,20 +29,3 @@ const konobaricaItem = document.createElement('div');
 konobaricaItem.classList.add('guest-konobarica');
 konobaricaItem.innerHTML = 'Konobarica'; // Dodajemo samo tekst bez tagova
 guestList.appendChild(konobaricaItem);
-
-// Pronađite dugme za otvaranje mixera
-const openMixerButton = document.getElementById('openMixerButton');
-const mixerModal = document.getElementById('mixerModal');
-const closeMixerModal = document.getElementById('closeMixerModal');
-
-document.getElementById('openMixerButton').addEventListener('click', function() {
-    fetch('mixer.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('mixerContent').innerHTML = data;
-            document.getElementById('functionModal').style.display = 'block'; // Otvori modal
-        })
-        .catch(error => console.error('Greška:', error));
-});
-
-
