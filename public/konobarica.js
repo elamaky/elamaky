@@ -31,13 +31,46 @@ konobaricaItem.innerHTML = 'Konobarica'; // Dodajemo samo tekst bez tagova
 guestList.appendChild(konobaricaItem);
 
 //  ZA MIXER DODATAK
+// Open modal on button click
 document.getElementById("mixer").onclick = function() {
   document.getElementById("mixerModal").style.display = "block";
 }
 
+// Close modal if clicked outside of it
 window.onclick = function(event) {
   if (event.target == document.getElementById("mixerModal")) {
     document.getElementById("mixerModal").style.display = "none";
   }
 }
+
+// Make modal content draggable
+let modalContent = document.getElementById("modalContent");
+
+modalContent.onmousedown = function(e) {
+  let offsetX = e.clientX - modalContent.getBoundingClientRect().left;
+  let offsetY = e.clientY - modalContent.getBoundingClientRect().top;
+
+  function moveAt(pageX, pageY) {
+    modalContent.style.left = pageX - offsetX + 'px';
+    modalContent.style.top = pageY - offsetY + 'px';
+  }
+
+  moveAt(e.pageX, e.pageY);
+
+  function onMouseMove(e) {
+    moveAt(e.pageX, e.pageY);
+  }
+
+  document.addEventListener('mousemove', onMouseMove);
+
+  modalContent.onmouseup = function() {
+    document.removeEventListener('mousemove', onMouseMove);
+    modalContent.onmouseup = null;
+  };
+};
+
+modalContent.ondragstart = function() {
+  return false; // Prevent default dragging behavior
+};
+
 
