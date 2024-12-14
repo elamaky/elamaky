@@ -47,8 +47,9 @@
             <button id="privateMessage">Privatna poruka</button>
         </div>
         
+        <div id="mixerContent"></div>
         
-          <div class="backgroundFunctions">
+        <div class="backgroundFunctions">
             <button id="addImage"> slika</button>
             <button id="banned">A</button>
              <button id="memorija">memorija</button>
@@ -66,26 +67,8 @@
     <button id="savePageButton">Spremi stranicu</button>
 </div>
 <div id="savedPagesMenu"></div>
-    
-    <div id="mixer" style="display:none;">
-</div>
 
-     <div id="mixer">
-        <audio id="audioPlayer" controls style="position: absolute; top: 0px; left: 0;"></audio>
-        <h2 class="title" style="position: absolute; top: 60px; left: 0;">By *__X__*</h2>
-        <input type="file" id="fileInput" multiple style="position: absolute; top: 90px; left: 0; right: 0; margin-bottom: 10px;">
-
-        <ul id="songList"></ul>
-        
-        <div id="mixer-buttons">
-            <button id="playSelected">Play</button>
-            <button id="deleteSelected">Obriši</button>
-            <button id="hideButton">Sakrij</button>
-            <button id="closeButton">Gasi</button>
-        </div>
-    </div>
-
-  <div id="messageArea"></div>
+    <div id="messageArea"></div>
 
      <div id="messageInput">
         <textarea id="chatInput" rows="1" placeholder="Ispeci Pa Reci...Godjaja Lafi.....               ❤️"></textarea>
@@ -107,14 +90,15 @@
 <script src="memorija.js"></script>
  <script src="uuid.js"></script>
  <script src="poruke.js"></script>
- <script src="regist.js"></script>
 <iframe src="https://zeno.fm/player/radio-galaksija?autoplay=true&muted=true" 
         width="300" height="139" frameborder="5" scrolling="no"
         style="position: fixed; top: 0; right: 0; z-index: 9998;"></iframe>
-    
- <img id="playerCover" src="https://i.imgur.com/OFK8Tur.jpeg" 
+
+<img id="playerCover" src="https://i.imgur.com/OFK8Tur.jpeg" 
      width="300" height="139" 
      style="position: fixed; top: 0; right: 0; z-index: 9999; pointer-events: none;">
 
- </body>
+
+     
+   </body>
 </html>
