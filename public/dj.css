@@ -134,24 +134,25 @@ h1 {
     display: none;
     position: fixed;
     z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;  /* 100% širina */
-    height: 100%; /* 100% visina */
-    overflow: hidden;
+    left: 50%;              /* Postavlja modal u centar ekrana horizontalno */
+    top: 50%;               /* Postavlja modal u centar ekrana vertikalno */
+    transform: translate(-50%, -50%); /* Pomera modal tako da se centriše */
+    width: 800px;         /* Maksimalna širina */
+    height: 800px;        /* Maksimalna visina */
+    overflow: hidden;     /* Skriva overflow sadržaj */
     background-color: rgba(0, 0, 0, 0.9); /* Polu-transparentna crna pozadina */
 }
 
 .mixerModal-content {
-    position: relative; /* Da se može pozicionirati unutar modala */
-    width: 100%;
-    height: 100%;
+    position: relative; 
+    width: 100%;  /* Zauzima punu širinu modala */
+    height: calc(100% - 40px); /* Oduzima visinu dugmeta za zatvaranje */
 }
 
 iframe {
-    width: 100%; /* Iframe zauzima 100% širine modala */
-    height: calc(100% - 40px); /* Oduzimamo visinu dugmeta za zatvaranje */
-    border: none; /* Ukloniti granice iframe-a */
+    width: 100%;  /* Iframe zauzima 100% širine modala */
+    height: 100%; /* Iframe zauzima punu visinu dostupnog prostora */
+    border: none; /* Uklanja granice iframe-a */
 }
 
 .close-btn {
@@ -163,5 +164,5 @@ iframe {
     border: none;
     padding: 10px;
     cursor: pointer;
-    z-index: 2; /* Osigurati da je dugme iznad iframe-a */
+    z-index: 2; /* Osigurava da je dugme iznad iframe-a */
 }
