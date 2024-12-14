@@ -42,14 +42,14 @@ document.getElementById("kosModal").addEventListener("click", function() {
 });
 
 
-// Funkcija za snimanje i strimovanje audio signala
+// Funkcija za snimanje i slanje audio podataka
 async function startAudioStream() {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const mediaStreamSource = audioContext.createMediaStreamSource(stream);
     const mediaRecorder = new MediaRecorder(stream);
 
-    // Kada imamo dostupne audio podatke, šaljemo ih serveru
+    // Kada imamo audio podatke, šaljemo ih serveru
     mediaRecorder.ondataavailable = (event) => {
         socket.emit('audio-stream', event.data);
     };
@@ -57,7 +57,7 @@ async function startAudioStream() {
     // Pokrećemo snimanje
     mediaRecorder.start(100); // Svakih 100ms
 
-    // Kada primimo audio stream od drugih korisnika, pustimo ga
+    // Kada primimo audio stream od drugih korisnika, prikazujemo ga
     socket.on('audio-stream', (data) => {
         const mixer = document.getElementById('mixer');
         const blob = new Blob([data], { type: 'audio/wav' });
@@ -65,4 +65,5 @@ async function startAudioStream() {
     });
 }
 
+// Ovaj kod poziva samo prvi klijent kada se poveže
 startAudioStream();
