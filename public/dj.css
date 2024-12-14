@@ -129,7 +129,7 @@ h1 {
 }
 
 /* STIL ZA MIXER MODAL */
-.modal {
+.mixerModal {
   display: none;
   position: fixed;
   z-index: 1;
@@ -141,7 +141,7 @@ h1 {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-.modal-content {
+.mixerModal-content {
   background-color: #fff;
   margin: 15% auto;
   padding: 20px;
