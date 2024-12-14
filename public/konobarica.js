@@ -35,8 +35,7 @@ guestList.appendChild(konobaricaItem);
 document.getElementById("mixer").onclick = function() {
   document.getElementById("mixerModal").style.display = "block";
 }
-
 // Close modal when clicking the close button
-document.getElementById("closeModal").addEventListener("click", function() {
+document.getElementById("kosModal").addEventListener("click", function() {
   document.getElementById("mixerModal").style.display = "none";
 });
