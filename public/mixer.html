@@ -5,88 +5,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radio Galaksija</title>
     <style>
-        #mixer {
-            background-color: black;
-            color: white;
-            width: 250px;
-            height: auto;
-            padding: 10px;
-            border: 5px solid white; 
-            position: absolute;
-            cursor: move;
-            box-shadow: 0 0 10px white; 
-            border-radius: 10px; 
-            bottom: 20px;
-            resize: both; /* Omogućava promenu veličine */
-            overflow: hidden; /* Uklonjeno za ispravnost */
-        }
+       #mixer {
+    background-color: black;
+    color: white;
+    width: 250px;
+    height: 400px; /* Definišemo visinu da sve stane */
+    padding: 10px;
+    border: 5px solid white; 
+    position: absolute;
+    cursor: move;
+    box-shadow: 0 0 10px white; 
+    border-radius: 10px; 
+    bottom: 20px;
+    resize: both;
+    overflow: hidden; 
+}
 
-        button {
-            background-color: black;
-            color: white;
-            border: 5px solid white; 
-            padding: 50px;
-            cursor: pointer;
-            margin: 5px;
-            text-transform: uppercase;
-            box-shadow: 0 0 10px white; 
-            width: 70px; 
-            top:10px;
-        }
+button {
+    background-color: black;
+    color: white;
+    border: 5px solid white; 
+    padding: 10px; /* Smanjujemo padding da dugmići budu manji */
+    cursor: pointer;
+    margin: 5px;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px white; 
+    width: 70px; 
+    top: 10px;
+    font-size: 14px; /* Manji font za bolje uklapanje */
+}
 
-        button:hover {
-            background-color: white;
-            color: black;
-        }
+button:hover {
+    background-color: white;
+    color: black;
+}
 
-        #songList {
-            list-style: none;
-            padding: 0;
-            max-height: calc(100% - 220px); /* Ograničenje visine liste (100px natpis + 100px dugme) */
-            overflow-y: auto; /* Pomoćno za skrolovanje liste */
-            border: 1px solid white;
-            border-radius: 5px;  
-            margin-top: 100px; 
-            margin-bottom: 10px; /* Razmak između liste i dugmadi */
-        }
+#songList {
+    list-style: none;
+    padding: 0;
+    max-height: calc(100% - 190px); /* Ažuriramo visinu liste kako bi stala između naslova i dugmadi */
+    overflow-y: auto; /* Pomoćno za skrolovanje liste */
+    border: 1px solid white;
+    border-radius: 5px;  
+    margin-top: 10px; 
+    margin-bottom: 10px; /* Razmak između liste i dugmadi */
+}
 
-        #songList li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 5px;
-            border-bottom: 1px solid white;
-            cursor: grab;
-        }
+#songList li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    border-bottom: 1px solid white;
+    cursor: grab;
+}
 
-        .selected {
-            background-color: #333;
-        }
+.selected {
+    background-color: #333;
+}
 
-        .title {
-            text-align: center;
-            color: white;
-            font-family: Arial, sans-serif;
-            margin: 0; /* Uklanjamo margin na vrhu */
-            margin-bottom: 5px; /* Razmak između natpisa i dugmeta */
-            font-weight: bold; /* Podebljano */
-            font-style: italic; /* Italik */
-            position: relative; /* Da bi se postavio sa top:5px */
-            top: 5px; /* Pomera natpis 5px od vrha */
-        }
+.title {
+    text-align: center;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0; 
+    margin-bottom: 10px; /* Razmak između naslova i liste */
+    font-weight: bold; 
+    font-style: italic; 
+    position: relative; 
+    top: 5px; 
+}
 
-        #uploadButton {
-            margin-bottom: 10px; /* Razmak između dugmeta za upload i liste */
-        }
+#mixer-buttons {
+    display: flex;
+    justify-content: space-around; 
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+}
 
-        #mixer-buttons {
-            display: flex;
-            justify-content: space-around; 
-            position: absolute;
-            bottom: 5px;
-            left: 5px;
-            right: 5px;
-        }
     </style>
 </head>
 <body>
