@@ -30,7 +30,7 @@ konobaricaItem.classList.add('guest-konobarica');
 konobaricaItem.innerHTML = 'Konobarica'; // Dodajemo samo tekst bez tagova
 guestList.appendChild(konobaricaItem);
 
-<script>
+
     const openMixerButton = document.getElementById('openMixerButton');
     const mixerModal = document.getElementById('mixerModal');
 
@@ -38,5 +38,3 @@ guestList.appendChild(konobaricaItem);
     openMixerButton.addEventListener('click', () => {
         mixerModal.style.display = 'block';
     });
-</script>
-
