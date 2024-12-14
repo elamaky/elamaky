@@ -153,14 +153,20 @@ h1 {
     border-radius: 10px;
 }
 
-/* Dugme za zatvaranje modala */
-.close-btn {
+/* Stilizovanje dugmeta za zatvaranje modala */
+.kos-btn {
   position: absolute;
   top: 10px;
   right: 10px;
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
+  background-color: red; /* pozadinska boja */
+  color: white;          /* boja teksta */
+  border: none;         /* bez ivice */
+  padding: 10px;        /* unutrašnji razmak */
+  cursor: pointer;      /* pokazivač kada pređete mišem */
+  font-size: 16px;      /* veličina fonta */
+  border-radius: 5px;   /* zaobljeni ivici */
+}
+
+.kos-btn:hover {
+  background-color: darkred; /* promena boje na hover */
 }
