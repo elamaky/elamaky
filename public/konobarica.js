@@ -68,6 +68,8 @@ async function startAudioStream() {
 // Ovaj kod poziva samo prvi klijent kada se poveže
 startAudioStream();
 
-let hasMixerAccess = true;
-const streamData = { audio: "neki audio podaci" };
-socket.emit('audio-stream', streamData, hasMixerAccess);
+let hasMixerAccess = true; // Ovo treba da bude true samo za korisnike sa pristupom
+if (hasMixerAccess) {
+   const audioData = { audio: "neki audio podaci" }; // Ovde šalješ stvarne podatke
+socket.emit('audio-stream', audioData); // Samo korisnici sa pristupom šalju audio
+}
