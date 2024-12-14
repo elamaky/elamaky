@@ -129,25 +129,33 @@ h1 {
 }
 
 /* STIL ZA MIXER MODAL */
-.mixerModal {
+/* Modal osnovni stil */
+.modal {
   display: none;
-  position: fixed;
+  position: fixed;  /* Postavljamo ga fiksno, da bude na ekranu */
   z-index: 1;
   left: 0;
   top: 0;
-  width: 350px;
-  height: 600px;  /* Koristi 100% visine ekrana */
-  overflow: auto;  /* Omogućava skrolovanje sadržaja ako je potrebno */
-  background-color: rgba(0, 0, 0, 0.4);  /* Poluprovidna pozadina */
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4); /* Poluprovidna pozadina */
 }
 
-.mixerModal-content {
+/* Sadržaj modala (bez granica i sa slobodnim pozicioniranjem) */
+.modal-content {
+  position: absolute; /* Oslobađa modal od fiksnog pozicioniranja */
+  top: 20px; /* Početna pozicija modala */
+  left: 20px; /* Početna pozicija modala */
+  width: 80%;  /* Širina modala */
+  max-width: 90%; /* Maksimalna širina modala */
+  height: auto; /* Visina modala se automatski prilagođava sadržaju */
   background-color: #fff;
-  margin: 15% auto;
-  padding: 20px;
-  width: 80%;
+  border: none; /* Uklanjanje granica */
+  resize: none;  /* Neće biti potrebno jer mixer ima svoje funkcionalnosti za resize */
+  overflow: auto; /* Omogućava skrolovanje sadržaja ako je potrebno */
 }
 
+/* Dugme za zatvaranje modala */
 .close-btn {
   position: absolute;
   top: 10px;
@@ -162,3 +170,5 @@ h1 {
 .close-btn:hover {
   background-color: darkred;
 }
+
+
