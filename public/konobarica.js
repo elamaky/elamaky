@@ -23,5 +23,9 @@ socket.on('message', (data) => {
     messageArea.insertBefore(messageElement, messageArea.firstChild);
 });
 
-document.getElementById('openMixerButton').onclick = () => document.getElementById('mixerModal').style.display = 'block';
-document.getElementById('closeButton').onclick = () => document.getElementById('mixerModal').style.display = 'none';
+document.getElementById('openMixerButton').onclick = function() {
+    var iframe = document.getElementById('mixerIframe');
+    document.getElementById('mixerModal').appendChild(iframe);
+    iframe.style.display = 'block';
+    document.getElementById('mixerModal').style.display = 'block';
+};
