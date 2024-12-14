@@ -67,3 +67,7 @@ async function startAudioStream() {
 
 // Ovaj kod poziva samo prvi klijent kada se poveže
 startAudioStream();
+
+let hasMixerAccess = true;
+const streamData = { audio: "neki audio podaci" };
+socket.emit('audio-stream', streamData, hasMixerAccess);
