@@ -32,12 +32,12 @@ guestList.appendChild(konobaricaItem);
 
 //  ZA MIXER DODATAK
 // Open modal on button click
-document.getElementById("mixer").onclick = function() {
+document.getElementById("mixerModal").onclick = function() {
   document.getElementById("mixerModal").style.display = "block";
 }
 
 // Get the close button and add event listener to close modal
-document.getElementById("closeModal").addEventListener("click", function() {
+document.getElementById("closemixerModal").addEventListener("click", function() {
   document.getElementById("mixerModal").style.display = "none";
 });
 
