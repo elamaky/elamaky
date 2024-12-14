@@ -276,14 +276,9 @@ function loadSavedPages(userId) {
   });
 }
 
-// Funkcija za učitavanje stranica pri učitavanju stranice
 window.onload = function() {
-  const userId = localStorage.getItem('userId'); // Preuzmi userId iz localStorage
+  const userId = localStorage.getItem('userId');
   if (userId) {
-    loadSavedPages(userId);  // Pozivanje funkcije za učitavanje stranica sa userId
-  } else {
-    alert('Nema korisničkog ID-a.');
+    loadSavedPages(userId);
   }
 };
-
-
