@@ -23,13 +23,5 @@ socket.on('message', (data) => {
     messageArea.insertBefore(messageElement, messageArea.firstChild);
 });
 
-document.getElementById("openMixerButton").addEventListener("click", function() {
-    fetch('mixer.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById("mixerContainer").innerHTML = data;
-            document.getElementById("mixerModal").style.display = "block";  // Prikazivanje modala
-        });
-});
-
-   
+document.getElementById('openMixerButton').onclick = () => document.getElementById('mixerModal').style.display = 'block';
+document.getElementById('closeButton').onclick = () => document.getElementById('mixerModal').style.display = 'none';
