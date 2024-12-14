@@ -153,20 +153,20 @@ h1 {
     border-radius: 10px;
 }
 
-/* Stilizovanje dugmeta za zatvaranje modala */
-.kos-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: red; /* pozadinska boja */
-  color: white;          /* boja teksta */
-  border: none;         /* bez ivice */
-  padding: 10px;        /* unutrašnji razmak */
-  cursor: pointer;      /* pokazivač kada pređete mišem */
-  font-size: 16px;      /* veličina fonta */
-  border-radius: 5px;   /* zaobljeni ivici */
+/* Stilizacija dugmadi */
+button {
+    background-color: black;   /* Crna pozadina */
+    color: white;              /* Belu boju teksta */
+    border: 2px solid white;   /* Bele granice */
+    border-radius: 5px;       /* Zaobljeni uglovi */
+    padding: 10px 20px;       /* Unutrašnje margine (gore-dole, levo-desno) */
+    margin: 5px;              /* Spoljna margina između dugmadi */
+    cursor: pointer;           /* Promeni kursor na ruku */
+    transition: background-color 0.3s; /* Efekat prelaska */
 }
 
-.kos-btn:hover {
-  background-color: darkred; /* promena boje na hover */
+/* Efekat hover za dugmadi */
+button:hover {
+    background-color: white;   /* Promeni pozadinu na belu kada se pređe mišem */
+    color: black;              /* Promeni boju teksta na crnu */
 }
