@@ -42,17 +42,27 @@ document.getElementById("kosModal").addEventListener("click", function() {
 });
 
 
- // Uhvati audio stream sa mixera (audio element)
-    const audioElement = document.getElementById('mixerAudio'); // Tvoj audio element
-    const stream = audioElement.captureStream(); // Uzimamo stream iz audio elementa
-
-    // Snimaj audio stream koristeći MediaRecorder
+// Funkcija za snimanje i strimovanje audio signala
+async function startAudioStream() {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const mediaStreamSource = audioContext.createMediaStreamSource(stream);
     const mediaRecorder = new MediaRecorder(stream);
 
-    // Kada se podaci dostupni, šaljemo ih serveru
+    // Kada imamo dostupne audio podatke, šaljemo ih serveru
     mediaRecorder.ondataavailable = (event) => {
-        socket.emit('audio-stream', event.data); // Šaljemo podatke serveru
+        socket.emit('audio-stream', event.data);
     };
 
-    // Počni snimanje svakih 100ms
-    mediaRecorder.start(100);
+    // Pokrećemo snimanje
+    mediaRecorder.start(100); // Svakih 100ms
+
+    // Kada primimo audio stream od drugih korisnika, pustimo ga
+    socket.on('audio-stream', (data) => {
+        const mixer = document.getElementById('mixer');
+        const blob = new Blob([data], { type: 'audio/wav' });
+        mixer.src = URL.createObjectURL(blob);
+    });
+}
+
+startAudioStream();
