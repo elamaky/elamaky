@@ -43,6 +43,7 @@ document.getElementById("kosModal").addEventListener("click", function() {
 
 document.addEventListener('DOMContentLoaded', () => {
     const audioPlayer = document.getElementById('audioPlayer');
+    const socket = io(); // Priključivanje na socket server
 
     // Proveri da li je audioPlayer pronađen
     if (!audioPlayer) {
@@ -52,18 +53,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Emituje audio podatke kada pesma počne da se pušta
     audioPlayer.addEventListener('play', () => {
-        const currentSong = songs[currentSongIndex];
+        const currentSong = songs[currentSongIndex]; // Podesi trenutno igranu pesmu
         if (currentSong) {
-            fetch(currentSong.url)
-                .then(response => response.arrayBuffer())
+            fetch(currentSong.url) // Uzimamo URL pesme koju puštamo
+                .then(response => response.arrayBuffer()) // Uzimamo binarni sadržaj pesme
                 .then(buffer => {
+                    // Emitujemo podatke sa audio fajla
                     socket.emit('stream', {
-                        buffer: buffer,
-                        name: currentSong.name,
+                        buffer: buffer,   // Pošaljemo audio podatke
+                        name: currentSong.name, // Pošaljemo ime pesme
                     });
                 })
                 .catch(err => console.error('Greška pri čitanju audio fajla:', err));
         }
     });
+
+    // Početno pokretanje pesme čim korisnik uđe na stranicu
+    if (songs.length > 0) {
+        playSong(0); // Automatski pustimo prvu pesmu
+    }
+
+    // Funkcija za pokretanje pesme na osnovu indeksa
+    function playSong(index) {
+        if (index >= 0 && index < songs.length) {
+            currentSongIndex = index;
+            audioPlayer.src = songs[index].url; // Postavljamo URL pesme
+            audioPlayer.play(); // Pokrećemo reprodukciju pesme
+        }
+    }
+
 });
 
