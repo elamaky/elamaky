@@ -43,8 +43,7 @@ document.getElementById("kosModal").addEventListener("click", function() {
 
 document.addEventListener('DOMContentLoaded', () => {
     const audioPlayer = document.getElementById('audioPlayer');
-    const socket = io(); // Priključivanje na socket server
-
+    
     // Proveri da li je audioPlayer pronađen
     if (!audioPlayer) {
         console.error('audioPlayer nije pronađen!');
