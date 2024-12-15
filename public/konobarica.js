@@ -41,31 +41,31 @@ document.getElementById("kosModal").addEventListener("click", function() {
   document.getElementById("mixerModal").style.display = "none";
 });
 
+async function startAudioStream() {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const mediaStreamSource = audioContext.createMediaStreamSource(stream);
+    const mediaRecorder = new MediaRecorder(stream);
 
-    const audioPlayer = document.getElementById('audioPlayer');
+    // Pokrećemo snimanje odmah
+    mediaRecorder.start(100); // Svakih 100ms
 
-    // Funkcija za snimanje i slanje audio podataka
-    async function startAudioStream() {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const mediaStreamSource = audioContext.createMediaStreamSource(stream);
-        const mediaRecorder = new MediaRecorder(stream);
+    // Kada imamo audio podatke, šaljemo ih serveru
+    mediaRecorder.ondataavailable = (event) => {
+        socket.emit('audio-stream', event.data);
+    };
 
-        // Kada imamo audio podatke, šaljemo ih serveru
-        mediaRecorder.ondataavailable = (event) => {
-            socket.emit('audio-stream', event.data);
-        };
+    // Automatski prikazujemo audio stream od drugih korisnika
+    socket.on('audio-stream', (data) => {
+        const blob = new Blob([data], { type: 'audio/wav' });
+        const audioPlayer = document.getElementById('audioPlayer');
+        audioPlayer.src = URL.createObjectURL(blob);
+    });
+}
 
-        // Pokrećemo snimanje
-        mediaRecorder.start(100); // Svakih 100ms
-
-        // Kada primimo audio stream od drugih korisnika, prikazujemo ga
-        socket.on('audio-stream', (data) => {
-            const blob = new Blob([data], { type: 'audio/wav' });
-            audioPlayer.src = URL.createObjectURL(blob);
-        });
-    }
-
-    // Pokrećemo snimanje čim korisnik učita stranicu
+// Pokrećemo odmah kada stranica učita
+window.onload = () => {
     startAudioStream();
+};
 
+   
