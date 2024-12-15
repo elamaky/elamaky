@@ -15,7 +15,6 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 let isAudioStreaming = false;
-const pageRoutes = require('./pageRoutes'); // Uvezi fajl sa rutama za stranice
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
