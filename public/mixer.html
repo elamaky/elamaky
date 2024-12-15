@@ -113,31 +113,8 @@ button:hover {
         let songs = [];
         let currentSongIndex = 0;
 
-        let isDragging = false;
-let offsetX, offsetY;
-
-mixer.addEventListener('mousedown', (e) => {
-    if (e.target === mixer || e.target.tagName === 'H2') {
-        isDragging = true;
-        offsetX = e.clientX - mixer.offsetLeft;
-        offsetY = e.clientY - mixer.offsetTop;
-        e.stopPropagation();  // Sprečava širenje događaja na druge elemente
-    }
-});
-
-document.addEventListener('mousemove', (e) => {
-    if (isDragging) {
-        mixer.style.left = `${e.clientX - offsetX}px`;
-        mixer.style.top = `${e.clientY - offsetY}px`;
-    }
-});
-
-document.addEventListener('mouseup', () => {
-    isDragging = false;
-});
-
-
-        fileInput.addEventListener('change', (event) => {
+        
+          fileInput.addEventListener('change', (event) => {
             const files = event.target.files;
             for (let i = 0; i < files.length; i++) {
                 const url = URL.createObjectURL(files[i]);
