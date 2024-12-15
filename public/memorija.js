@@ -1,3 +1,15 @@
+// Na primer, nakon što korisnik uspešno unese podatke
+localStorage.setItem('userId', '123456');  // Sačuvaj userId u localStorage
+
+// Kasnije, kada želiš da koristiš userId
+const userId = localStorage.getItem('userId');  // Uzmi userId iz localStorage
+
+if (userId) {
+  // Koristi userId za API poziv ili druge operacije
+  console.log(`Korisnik sa ID: ${userId}`);
+} else {
+  console.log('UserId nije sačuvan!');
+}
 document.addEventListener('DOMContentLoaded', function () {
     const modal = document.createElement('div');
     modal.id = 'memoryModal';
