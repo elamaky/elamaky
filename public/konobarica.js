@@ -41,52 +41,18 @@ document.getElementById("kosModal").addEventListener("click", function() {
   document.getElementById("mixerModal").style.display = "none";
 });
 
-let songs = [];
-
-// Kada korisnik izabere muziku
-document.getElementById('fileInput').addEventListener('change', (event) => {
-    const files = event.target.files;
-    for (const file of files) {
-        if (file.type.startsWith('audio/')) {
-            songs.push(file);
-
-            const listItem = document.createElement('li');
-            listItem.textContent = file.name;
-            listItem.dataset.index = songs.length - 1;
-
-            listItem.addEventListener('click', () => {
-                listItem.classList.toggle('selected');
-            });
-
-            document.getElementById('songList').appendChild(listItem);
-        }
+// Emituje audio podatke kada pesma počne da se pušta
+audioPlayer.addEventListener('play', () => {
+    const currentSong = songs[currentSongIndex];
+    if (currentSong) {
+        fetch(currentSong.url)
+            .then(response => response.arrayBuffer())
+            .then(buffer => {
+                socket.emit('stream', {
+                    buffer: buffer,
+                    name: currentSong.name,
+                });
+            })
+            .catch(err => console.error('Greška pri čitanju audio fajla:', err));
     }
 });
-
-// Osluškanje za dugme "Play"
-document.getElementById('playSelected').addEventListener('click', () => {
-    const selectedSongItem = document.getElementById('songList').querySelector('li.selected');
-    if (selectedSongItem) {
-        const index = selectedSongItem.dataset.index;
-        const selectedSong = songs[index];
-        const url = URL.createObjectURL(selectedSong);
-        document.getElementById('audioPlayer').src = url;
-        document.getElementById('audioPlayer').play();
-    }
-});
-
-// Osluškanje za dugme "Obriši"
-document.getElementById('deleteSelected').addEventListener('click', () => {
-    const selectedSongItem = document.getElementById('songList').querySelector('li.selected');
-    if (selectedSongItem) {
-        const indexToDelete = selectedSongItem.dataset.index;
-        songs.splice(indexToDelete, 1);
-        selectedSongItem.remove();
-
-        const allItems = document.getElementById('songList').querySelectorAll('li');
-        allItems.forEach((item, index) => {
-            item.dataset.index = index;
-        });
-    }
-});
-   
