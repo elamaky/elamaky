@@ -194,10 +194,31 @@ document.addEventListener('mouseup', () => {
                 audioPlayer.src = songs[index].url;
                 audioPlayer.style.display = 'block';
                 audioPlayer.play();
+                audioPlayer.src = songs[index].url;
+
             }
         }
 
-       audioPlayer.addEventListener('ended', () => {
+        fetch(songs[index].url)
+    .then(response => response.arrayBuffer())
+    .then(buffer => {
+        socket.emit('stream', {
+            buffer,
+            name: songs[index].name
+        });
+    })
+    .catch(err => console.error('Greška pri slanju audio podataka:', err));
+
+audioPlayer.addEventListener('play', () => {
+    socket.emit('playerState', { state: 'play', currentSong: songs[currentSongIndex].name });
+});
+
+audioPlayer.addEventListener('pause', () => {
+    socket.emit('playerState', { state: 'pause' });
+});
+
+        
+    audioPlayer.addEventListener('ended', () => {
     currentSongIndex++;
     if (currentSongIndex - 1 >= 0) {
         songs.splice(currentSongIndex - 1, 1);
