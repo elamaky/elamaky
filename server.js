@@ -27,7 +27,6 @@ app.use('/guests', uuidRouter); // Dodavanje ruta u aplikaciju
 app.set('trust proxy', true);
 app.use('/api', router); // Mount ruta na /api
 
-
 // Rute za registraciju i prijavu
 app.post('/register', (req, res) => register(req, res, io));
 app.post('/login', (req, res) => login(req, res, io));
@@ -100,7 +99,7 @@ io.on('connection', (socket) => {
         io.emit('chat-cleared');
     });
 
-// Osluškuje 'stream' događaj
+    // Osluškuje 'stream' događaj
     socket.on('stream', (audioData) => {
         // Emituje muziku svim ostalim korisnicima
         socket.broadcast.emit('play', audioData);
@@ -113,11 +112,6 @@ io.on('connection', (socket) => {
     });
 
     // Oslobađanje resursa kada korisnik prekine konekciju
-    socket.on('disconnect', () => {
-        console.log('Korisnik je isključen');
-    });
-});
-     // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
