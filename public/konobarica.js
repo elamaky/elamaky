@@ -1,5 +1,3 @@
-const socket = io();
-
 // Kada se povežemo sa serverom, emitujemo događaj za novog gosta
 socket.emit('new_guest');
 
