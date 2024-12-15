@@ -182,11 +182,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+function loadSavedPages(userId) {
+    // implementacija funkcije
+}
 
 window.onload = function() {
     const userId = localStorage.getItem('userId');
     if (userId) {
-        
-        loadSavedPages(userId);  
+         loadSavedPages(userId);  
     }
 };
