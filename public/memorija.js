@@ -1,15 +1,12 @@
-// Na primer, nakon što korisnik uspešno unese podatke
-localStorage.setItem('userId', '123456');  // Sačuvaj userId u localStorage
-
-// Kasnije, kada želiš da koristiš userId
-const userId = localStorage.getItem('userId');  // Uzmi userId iz localStorage
+localStorage.setItem('userId', '123456');  
+const userId = localStorage.getItem('userId');  
 
 if (userId) {
-  // Koristi userId za API poziv ili druge operacije
   console.log(`Korisnik sa ID: ${userId}`);
 } else {
   console.log('UserId nije sačuvan!');
 }
+
 document.addEventListener('DOMContentLoaded', function () {
     const modal = document.createElement('div');
     modal.id = 'memoryModal';
@@ -39,23 +36,20 @@ document.addEventListener('DOMContentLoaded', function () {
     `;
 
     document.body.appendChild(modal);
-
-    const pageList = modal.querySelector('#pageList');
-
-    // Otvoriti modal
-    const openModalButton = document.getElementById('openModalButton');
+  
+   const pageList = modal.querySelector('#pageList')
+   const openModalButton = document.getElementById('openModalButton');
     if (openModalButton) {
         openModalButton.addEventListener('click', () => {
             modal.style.display = 'block';
         });
     }
 
-    // Spremanje nove stranice
-    const saveButton = document.getElementById('saveNewPageButton');
+     const saveButton = document.getElementById('saveNewPageButton');
     saveButton.addEventListener('click', function () {
         const pageName = document.getElementById('newPageNameInput').value;
         if (pageName) {
-            // Dodaj novu stranicu u listu
+            
             const listItem = document.createElement('li');
             listItem.textContent = pageName;
             pageList.appendChild(listItem);
@@ -87,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('memorija').addEventListener('click', function () {
         modal.style.display = 'block';
-        loadSavedPages();  // Učitavanje stranica
+        loadSavedPages();  
     });
 
     document.getElementById('saveNewPageButton').addEventListener('click', function () {
@@ -116,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.success) {
                 alert('Stranica je uspešno sačuvana!');
                 modal.style.display = 'none';
-                loadSavedPages(); // Osvježava listu stranica
+                loadSavedPages(); 
             } else {
                 alert('Greška pri čuvanju stranice.');
             }
@@ -128,13 +122,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function loadSavedPages() {
-        const userId = localStorage.getItem('userId');  // Uzmi userId iz localStorage
+        const userId = localStorage.getItem('userId');  
         if (!userId) {
             alert('Nema korisničkog ID-a!');
             return;
         }
 
-        fetch(`/api/getPages?userId=${userId}`)  // Koristi userId u API pozivu
+        fetch(`/api/getPages?userId=${userId}`)  
         .then(response => {
             if (!response.ok) {
                 throw new Error('Greška pri učitavanju stranica.');
@@ -143,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(data => {
             if (data.success && data.pages) {
-                pageList.innerHTML = ''; // Očisti prethodnu listu
+                pageList.innerHTML = ''; 
 
                 data.pages.forEach(page => {
                     const li = document.createElement('li');
@@ -152,7 +146,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     li.style.padding = '5px 0';
                     li.style.cursor = 'pointer';
 
-                    // Dodaj dugme za učitavanje stranice
                     const loadButton = document.createElement('button');
                     loadButton.textContent = 'Učitaj stranicu';
                     loadButton.style.backgroundColor = '#00ffff';
@@ -161,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     loadButton.style.cursor = 'pointer';
                     
                     loadButton.addEventListener('click', function () {
-                        loadPageContent(page.name);  // Funkcija za učitavanje stranice
+                        loadPageContent(page.name);  
                     });
 
                     li.appendChild(loadButton);
@@ -177,10 +170,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Funkcija za učitavanje stranice
+    
     function loadPageContent(pageName) {
         console.log(`Učitavam stranicu: ${pageName}`);
-        // Ovde možeš dodati logiku za učitavanje sadržaja stranice
+        
     }
 
     const closeButton = document.getElementById('closeModalButton');
@@ -189,9 +182,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+
 window.onload = function() {
     const userId = localStorage.getItem('userId');
     if (userId) {
-        loadSavedPages();  // Učitava stranice pri učitavanju stranice
+        
+        loadSavedPages(userId);  
     }
 };
