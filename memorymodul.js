@@ -62,7 +62,6 @@ router.get('/api/getPages', async (req, res) => {
   }
 });
 
-
 // Ruta za učitavanje sadržaja stranice
 router.get('/api/getPage', async (req, res) => {
   const { name } = req.query;
