@@ -41,28 +41,40 @@ document.getElementById("kosModal").addEventListener("click", function() {
   document.getElementById("mixerModal").style.display = "none";
 });
 
-async function startAudioStream() {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const mediaStreamSource = audioContext.createMediaStreamSource(stream);
-    const mediaRecorder = new MediaRecorder(stream);
+// Referenca na audio plejer
+const audioPlayer = document.getElementById('audioPlayer');
 
-    // Pokrećemo snimanje odmah
-    mediaRecorder.start(100); // Svakih 100ms
-
-    // Kada imamo audio podatke, šaljemo ih serveru
-    mediaRecorder.ondataavailable = (event) => {
-        socket.emit('audio-stream', event.data);
+// Funkcija za slanje muzike serveru
+function streamMusic(file) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const audioData = event.target.result;
+        // Emituj muziku serveru
+        socket.emit('stream', audioData);
     };
-
-    // Automatski prikazujemo audio stream od drugih korisnika
-    socket.on('audio-stream', (data) => {
-        const blob = new Blob([data], { type: 'audio/wav' });
-        const audioPlayer = document.getElementById('audioPlayer');
-        audioPlayer.src = URL.createObjectURL(blob);
-    });
+    reader.readAsArrayBuffer(file);
 }
 
+// Kada korisnik izabere muziku
+document.getElementById('fileInput').addEventListener('change', (event) => {
+    const files = event.target.files;
+    if (files.length) {
+        streamMusic(files[0]); // Uzmi samo prvu izabranu pesmu
+    }
+});
+
+// Osluškuj događaj 'play' sa servera
+socket.on('play', (audioData) => {
+    const blob = new Blob([audioData]);
+    const url = URL.createObjectURL(blob);
+    audioPlayer.src = url;
+    audioPlayer.play();
+});
+
+// Osluškuj događaj 'ended' da bi znao kada da pauziraš
+socket.on('ended', () => {
+    audioPlayer.pause();
+});
 // Pokrećemo odmah kada stranica učita
 window.onload = () => {
     startAudioStream();
