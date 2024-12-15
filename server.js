@@ -100,17 +100,24 @@ io.on('connection', (socket) => {
         io.emit('chat-cleared');
     });
 
-socket.on('stream', (audioData) => {
-        // Emituj muziku svim ostalim korisnicima
+// Osluškuje 'stream' događaj
+    socket.on('stream', (audioData) => {
+        // Emituje muziku svim ostalim korisnicima
         socket.broadcast.emit('play', audioData);
     });
 
+    // Osluškuje 'ended' događaj
     socket.on('ended', () => {
-        socket.broadcast.emit('ended'); // Emituj da je audio završio
+        // Emituje da je audio završio svim ostalim korisnicima
+        socket.broadcast.emit('ended');
+    });
+
+    // Oslobađanje resursa kada korisnik prekine konekciju
+    socket.on('disconnect', () => {
+        console.log('Korisnik je isključen');
     });
 });
-    
- // Obrada diskonekcije korisnika
+     // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
