@@ -15,6 +15,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 let isAudioStreaming = false;
+const pageRoutes = require('./pageRoutes'); // Uvezi fajl sa rutama za stranice
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
@@ -26,6 +27,7 @@ app.use(express.static(__dirname + '/public'));
 app.use('/guests', uuidRouter); // Dodavanje ruta u aplikaciju
 app.set('trust proxy', true);
 app.use('/api', router); // Mount ruta na /api
+app.use('/api', pageRoutes);
 
 // Rute za registraciju i prijavu
 app.post('/register', (req, res) => register(req, res, io));
