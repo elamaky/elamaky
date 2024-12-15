@@ -41,45 +41,52 @@ document.getElementById("kosModal").addEventListener("click", function() {
   document.getElementById("mixerModal").style.display = "none";
 });
 
-// Referenca na audio plejer
-const audioPlayer = document.getElementById('audioPlayer');
+let songs = [];
 
-// Funkcija za slanje muzike serveru
-function streamMusic(file) {
-    const reader = new FileReader();
-    reader.onload = function(event) {
-        const audioData = event.target.result;
-        // Emituj muziku serveru
-        socket.emit('stream', audioData);
-    };
-    reader.readAsArrayBuffer(file);
-}
+// Kada korisnik izabere muziku
+document.getElementById('fileInput').addEventListener('change', (event) => {
+    const files = event.target.files;
+    for (const file of files) {
+        if (file.type.startsWith('audio/')) {
+            songs.push(file);
 
-// Očekuje se da je 'fileInput' i 'audioPlayer' već u DOM-u
-document.addEventListener('DOMContentLoaded', () => {
-    const fileInput = document.getElementById('fileInput');
-    const audioPlayer = document.getElementById('audioPlayer');
+            const listItem = document.createElement('li');
+            listItem.textContent = file.name;
+            listItem.dataset.index = songs.length - 1;
 
-    // Kada korisnik izabere muziku
-    fileInput.addEventListener('change', (event) => {
-        const files = event.target.files;
-        if (files.length) {
-            streamMusic(files[0]); // Uzmi samo prvu izabranu pesmu
+            listItem.addEventListener('click', () => {
+                listItem.classList.toggle('selected');
+            });
+
+            document.getElementById('songList').appendChild(listItem);
         }
-    });
-
-    // Osluškuj događaj 'play' sa servera
-    socket.on('play', (audioData) => {
-        const blob = new Blob([audioData]); // Proveri da li je audioData tipa koji se može konvertovati u Blob
-        const url = URL.createObjectURL(blob);
-        audioPlayer.src = url;
-        audioPlayer.play();
-    });
-
-    // Osluškuj događaj 'ended' da bi znao kada da pauziraš
-    socket.on('ended', () => {
-        audioPlayer.pause();
-    });
+    }
 });
 
+// Osluškanje za dugme "Play"
+document.getElementById('playSelected').addEventListener('click', () => {
+    const selectedSongItem = document.getElementById('songList').querySelector('li.selected');
+    if (selectedSongItem) {
+        const index = selectedSongItem.dataset.index;
+        const selectedSong = songs[index];
+        const url = URL.createObjectURL(selectedSong);
+        document.getElementById('audioPlayer').src = url;
+        document.getElementById('audioPlayer').play();
+    }
+});
+
+// Osluškanje za dugme "Obriši"
+document.getElementById('deleteSelected').addEventListener('click', () => {
+    const selectedSongItem = document.getElementById('songList').querySelector('li.selected');
+    if (selectedSongItem) {
+        const indexToDelete = selectedSongItem.dataset.index;
+        songs.splice(indexToDelete, 1);
+        selectedSongItem.remove();
+
+        const allItems = document.getElementById('songList').querySelectorAll('li');
+        allItems.forEach((item, index) => {
+            item.dataset.index = index;
+        });
+    }
+});
    
