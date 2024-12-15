@@ -26,7 +26,7 @@ app.use(express.static(__dirname + '/public'));
 app.use('/guests', uuidRouter); // Dodavanje ruta u aplikaciju
 app.set('trust proxy', true);
 app.use('/api', router); // Mount ruta na /api
-app.use('/api', pageRoutes);
+app.use('/api', memorymodul);
 
 // Rute za registraciju i prijavu
 app.post('/register', (req, res) => register(req, res, io));
