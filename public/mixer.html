@@ -197,16 +197,20 @@ document.addEventListener('mouseup', () => {
             }
         }
 
-        audioPlayer.addEventListener('ended', () => {
-            currentSongIndex++;
-            if (currentSongIndex < songs.length) {
-                playSong(currentSongIndex);
-            } else {
-                currentSongIndex = 0; // Resetovanje na početak
-            }
-        });
+       audioPlayer.addEventListener('ended', () => {
+    currentSongIndex++;
+    if (currentSongIndex - 1 >= 0) {
+        songs.splice(currentSongIndex - 1, 1);
+        songList.removeChild(songList.children[currentSongIndex - 1]);
+    }
+    if (currentSongIndex < songs.length) {
+        playSong(currentSongIndex);
+    } else {
+        currentSongIndex = 0; // Resetovanje na početak
+    }
+});
 
-       songList.addEventListener('dragstart', (e) => {
+songList.addEventListener('dragstart', (e) => {
     e.target.classList.add('dragging');
 });
 
