@@ -101,6 +101,13 @@ button:hover {
             
         </div>
     </div>
+    <script>
+  
+  socket.emit('event_from_mixer', { message: 'Hello from mixer!' });
+  socket.on('event_from_server', (data) => {
+    console.log(data);
+  });
+</script>
 <script src="strim.js"></script>
    
 </body>
