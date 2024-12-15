@@ -100,11 +100,16 @@ io.on('connection', (socket) => {
         io.emit('chat-cleared');
     });
 
-      // Kada korisnik (ti sa mixerom) pošalje audio stream
-    socket.on('audio-stream', (data) => {
-        // Prosleđujemo audio svim povezanim korisnicima (osim onom ko je poslao)
-        socket.broadcast.emit('audio-stream', data);
+socket.on('stream', (audioData) => {
+        // Emituj muziku svim ostalim korisnicima
+        socket.broadcast.emit('play', audioData);
     });
+
+    socket.on('ended', () => {
+        socket.broadcast.emit('ended'); // Emituj da je audio završio
+    });
+});
+    
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
