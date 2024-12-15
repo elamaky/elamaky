@@ -41,10 +41,11 @@ document.getElementById("kosModal").addEventListener("click", function() {
   document.getElementById("mixerModal").style.display = "none";
 });
 
+  // ZA STRIMOVANJE
 document.addEventListener('DOMContentLoaded', () => {
-    const audioPlayer = document.getElementById('audioPlayer');
-    
-    // Proveri da li je audioPlayer pronađen
+    const iframe = document.querySelector('iframe'); // Selektuj iframe
+    const audioPlayer = iframe.contentWindow.document.getElementById('audioPlayer'); // Pristupi audioPlayer-u unutar iframe-a
+
     if (!audioPlayer) {
         console.error('audioPlayer nije pronađen!');
         return;
