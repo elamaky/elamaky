@@ -41,18 +41,29 @@ document.getElementById("kosModal").addEventListener("click", function() {
   document.getElementById("mixerModal").style.display = "none";
 });
 
-// Emituje audio podatke kada pesma počne da se pušta
-audioPlayer.addEventListener('play', () => {
-    const currentSong = songs[currentSongIndex];
-    if (currentSong) {
-        fetch(currentSong.url)
-            .then(response => response.arrayBuffer())
-            .then(buffer => {
-                socket.emit('stream', {
-                    buffer: buffer,
-                    name: currentSong.name,
-                });
-            })
-            .catch(err => console.error('Greška pri čitanju audio fajla:', err));
+document.addEventListener('DOMContentLoaded', () => {
+    const audioPlayer = document.getElementById('audioPlayer');
+
+    // Proveri da li je audioPlayer pronađen
+    if (!audioPlayer) {
+        console.error('audioPlayer nije pronađen!');
+        return;
     }
+
+    // Emituje audio podatke kada pesma počne da se pušta
+    audioPlayer.addEventListener('play', () => {
+        const currentSong = songs[currentSongIndex];
+        if (currentSong) {
+            fetch(currentSong.url)
+                .then(response => response.arrayBuffer())
+                .then(buffer => {
+                    socket.emit('stream', {
+                        buffer: buffer,
+                        name: currentSong.name,
+                    });
+                })
+                .catch(err => console.error('Greška pri čitanju audio fajla:', err));
+        }
+    });
 });
+
