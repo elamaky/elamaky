@@ -55,29 +55,31 @@ function streamMusic(file) {
     reader.readAsArrayBuffer(file);
 }
 
-// Kada korisnik izabere muziku
-document.getElementById('fileInput').addEventListener('change', (event) => {
-    const files = event.target.files;
-    if (files.length) {
-        streamMusic(files[0]); // Uzmi samo prvu izabranu pesmu
-    }
-});
+// Očekuje se da je 'fileInput' i 'audioPlayer' već u DOM-u
+document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('fileInput');
+    const audioPlayer = document.getElementById('audioPlayer');
 
-// Osluškuj događaj 'play' sa servera
-socket.on('play', (audioData) => {
-    const blob = new Blob([audioData]);
-    const url = URL.createObjectURL(blob);
-    audioPlayer.src = url;
-    audioPlayer.play();
-});
+    // Kada korisnik izabere muziku
+    fileInput.addEventListener('change', (event) => {
+        const files = event.target.files;
+        if (files.length) {
+            streamMusic(files[0]); // Uzmi samo prvu izabranu pesmu
+        }
+    });
 
-// Osluškuj događaj 'ended' da bi znao kada da pauziraš
-socket.on('ended', () => {
-    audioPlayer.pause();
+    // Osluškuj događaj 'play' sa servera
+    socket.on('play', (audioData) => {
+        const blob = new Blob([audioData]); // Proveri da li je audioData tipa koji se može konvertovati u Blob
+        const url = URL.createObjectURL(blob);
+        audioPlayer.src = url;
+        audioPlayer.play();
+    });
+
+    // Osluškuj događaj 'ended' da bi znao kada da pauziraš
+    socket.on('ended', () => {
+        audioPlayer.pause();
+    });
 });
-// Pokrećemo odmah kada stranica učita
-window.onload = () => {
-    startAudioStream();
-};
 
    
