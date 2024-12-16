@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="/socket.io/socket.io."></script>
+ <script src="/socket.io/socket.io.js"></script>
     <title>Mixer pravio  *__X__* </title>
     <style>
    #mixer {
@@ -103,6 +103,7 @@ button:hover {
     </div>
 
     <script>
+        const socket = window.socket;
         const mixer = document.getElementById("mixer");
         const audioPlayer = document.getElementById('audioPlayer');
         const songList = document.getElementById('songList');
