@@ -105,6 +105,7 @@ socket.on('stream', (data) => {
     
     if (data.buffer && data.buffer.byteLength > 0) {
         console.log(`Veličina buffer-a: ${data.buffer.byteLength}`);
+        console.log('Primljeni podaci:', data.buffer);
         socket.broadcast.emit('stream', data);
         console.log(`Emitujem podatke pesme: ${data.name}`);
     } else {
