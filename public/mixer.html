@@ -259,41 +259,48 @@ function updateSongsOrder() {
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
 
-// KODOVI ZA STRIMOVANJE 
- const currentSong = songs[currentSongIndex]; // Podesi trenutno igranu pesmu
-if (currentSong) {
-    console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Stranica je učitana.'); // Log za učitavanje stranice
 
-    fetch(currentSong.url) // Uzimamo URL pesme koju puštamo
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error('Greška pri fetch-u pesme: ' + response.statusText);
-            }
-            console.log('Fetch uspešan za pesmu:', currentSong.name); // Log za uspešan fetch
-            return response.arrayBuffer(); // Uzimamo binarni sadržaj pesme
-        })
-        .then((buffer) => {
-            console.log('Emitujem podatke pesme:', currentSong.name); // Log za emitovanje
-            socket.emit('stream', {
-                buffer: buffer, // Pošaljemo audio podatke
-                name: currentSong.name, // Pošaljemo ime pesme
-            });
-        })
-        .catch((err) => console.error('Greška pri čitanju audio fajla:', err));
-} else {
-    console.error('Nije pronađena trenutna pesma!'); // Log za slučaj kada pesma ne postoji
-}
+    // Funkcija za pokretanje strimovanja i puštanje pesme
+    const startStreamingAndPlay = () => {
+        const currentSong = songs[currentSongIndex]; // Podesi trenutno igranu pesmu
+        if (currentSong) {
+            console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
 
-      
-    // Početno pokretanje strima odmah čim korisnik uđe na stranicu
+            fetch(currentSong.url) // Uzimamo URL pesme koju puštamo
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Greška pri fetch-u pesme: ' + response.statusText);
+                    }
+                    console.log('Fetch uspešan za pesmu:', currentSong.name); // Log za uspešan fetch
+                    return response.arrayBuffer(); // Uzimamo binarni sadržaj pesme
+                })
+                .then((buffer) => {
+                    console.log('Emitujem podatke pesme:', currentSong.name); // Log za emitovanje
+                    socket.emit('stream', {
+                        buffer: buffer, // Pošaljemo audio podatke
+                        name: currentSong.name, // Pošaljemo ime pesme
+                    });
+
+                    // Pokrećemo pesmu nakon što je strim završen
+                    playSong(currentSongIndex);
+                })
+                .catch((err) => console.error('Greška pri čitanju audio fajla:', err));
+        } else {
+            console.error('Nije pronađena trenutna pesma!'); // Log za slučaj kada pesma ne postoji
+        }
+    };
+
+    // Početno pokretanje strima i puštanje pesme čim korisnik uđe na stranicu
     if (songs.length > 0) {
         console.log('Automatsko pokretanje prve pesme:', songs[0].name); // Log za automatsko pokretanje
-        startStreaming(); // Pozivamo funkciju za strimovanje odmah pri učitavanju stranice
+        startStreamingAndPlay(); // Pozivamo funkciju za strimovanje i puštanje pesme odmah pri učitavanju stranice
     } else {
         console.warn('Lista pesama je prazna!'); // Log za prazan niz pesama
     }
 
- // Funkcija za pokretanje pesme na osnovu indeksa
+    // Funkcija za pokretanje pesme na osnovu indeksa
     function playSong(index) {
         if (index >= 0 && index < songs.length) {
             currentSongIndex = index;
