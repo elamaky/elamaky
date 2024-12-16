@@ -101,19 +101,20 @@ io.on('connection', (socket) => {
     });
 
 socket.on('stream', (data) => {
-    console.log(`Primljen strim od korisnika: ${data.name}`);
-    
-    if (data.buffer && data.buffer.byteLength > 0) {
-        console.log(`Veličina buffer-a: ${data.buffer.byteLength}`);
-        socket.broadcast.emit('stream', data);
-        console.log(`Emitujem podatke pesme: ${data.name}`);
+    if (data.buffer && data.buffer.length > 0) {
+        const arrayBuffer = new Uint8Array(data.buffer).buffer;
+        console.log(`Veličina buffer-a: ${arrayBuffer.byteLength}`);
+        socket.broadcast.emit('stream', {
+            buffer: data.buffer,
+            name: data.name,
+        });
     } else {
         console.error('Buffer nije validan ili je prazan.');
     }
 });
 
 
-   // Obrada diskonekcije korisnika
+ // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
