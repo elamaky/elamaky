@@ -271,35 +271,30 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentSong) {
             console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
 
- async function fetchAndSendSong() {
-    try {
-        const response = await fetch(currentSong.url); // Uzimamo URL pesme koju puštamo
-        
+fetch(currentSong.url) // Uzimamo URL pesme koju puštamo
+    .then((response) => {
         if (!response.ok) {
             throw new Error('Greška pri fetch-u pesme: ' + response.statusText);
         }
-        
-        console.log('Fetch uspešan za pesmu:', currentSong.name);
-        
-        const buffer = await response.arrayBuffer(); // Uzimamo binarni sadržaj pesme
-        
+        console.log('Fetch uspešan za pesmu:', currentSong.name); // Log za uspešan fetch
+        return response.arrayBuffer(); // Uzimamo binarni sadržaj pesme
+    })
+    .then((buffer) => {
         console.log('Buffer pre slanja:', buffer);
         console.log('Veličina buffer-a:', buffer.byteLength);
 
         if (buffer.byteLength > 0) {
-            socket.emit('stream', {
+            socket.emit('stream', { // Emitovanje podataka
                 buffer: buffer,
                 name: currentSong.name,
             });
         } else {
             console.error('Buffer je prazan!');
         }
-    } catch (err) {
+    })
+    .catch((err) => {
         console.error('Greška pri čitanju audio fajla:', err);
-    }
-}
-
-fetchAndSendSong();
+    });
 
 
  // Početno pokretanje pesme čim korisnik uđe na stranicu
