@@ -101,13 +101,13 @@ io.on('connection', (socket) => {
     });
 
 socket.on('stream', (data) => {
-    console.log(`Primljen strim od korisnika: ${data.name}`);
+    console.log('Primljen strim od korisnika:', data.name);
+    console.log('Podaci strima:', data);  // Dodaj log za ceo objekat
     
     if (data.buffer && data.buffer.byteLength > 0) {
-        console.log(`Veličina buffer-a: ${data.buffer.byteLength}`);
-        console.log('Primljeni podaci:', data.buffer);
+        console.log('Veličina buffer-a:', data.buffer.byteLength);
         socket.broadcast.emit('stream', data);
-        console.log(`Emitujem podatke pesme: ${data.name}`);
+        console.log('Emitujem podatke pesme:', data.name);
     } else {
         console.error('Buffer nije validan ili je prazan.');
     }
