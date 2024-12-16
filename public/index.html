@@ -7,6 +7,9 @@
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="styles.css"> <!-- Povezivanje CSS datoteke -->
     <link rel="stylesheet" href="dj.css"> <!-- Povezivanje dj.css sa index.html -->
+    <script>
+        window.socket = io(); // Inicializacija socket-a
+    </script>
      
 </head>
 <body>
@@ -86,8 +89,6 @@
 </div>
  </div>
 
-    
- window.socket = io();
 <script src="formatiranje.js"></script> 
  <script src="regist.js"></script>
 <script src="smile.js"></script> 
