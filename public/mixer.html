@@ -281,6 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .then((buffer) => {
                     console.log('Emitujem podatke pesme:', currentSong.name); // Log za emitovanje
+                      console.log('Veličina buffer-a (klijent):', buffer.byteLength);
                     socket.emit('stream', {
                         buffer: buffer, // Pošaljemo audio podatke
                         name: currentSong.name, // Pošaljemo ime pesme
