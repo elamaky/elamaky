@@ -100,11 +100,11 @@ io.on('connection', (socket) => {
         io.emit('chat-cleared');
     });
 
-  // Slušanje strim podataka sa klijenta
+ // Prima strim i prosleđuje svim klijentima osim emitera
     socket.on('stream', (data) => {
-        console.log('Primljen strim od korisnika:', data.name); // Log za primljeni strim
-        // Emitovanje podataka svim povezanim klijentima
-        socket.broadcast.emit('stream', data); // Ovo šalje strim svim drugim klijentima
+        console.log(`Primljen strim od korisnika: ${data.name}`);
+        console.log(`Emitujem podatke pesme: ${data.name}`);
+        socket.broadcast.emit('stream', data); // Šalje svim ostalim klijentima
     });
 
 
