@@ -103,18 +103,19 @@ io.on('connection', (socket) => {
     });
 
 socket.on('stream', (data) => {
-    if (data.buffer && data.buffer.length > 0) {
-        const arrayBuffer = new Uint8Array(data.buffer).buffer;
-        console.log(`Veličina buffer-a: ${arrayBuffer.byteLength}`);
-        socket.broadcast.emit('stream', {
-            buffer: data.buffer,
-            name: data.name,
-        });
-    } else {
-        console.error('Buffer nije validan ili je prazan.');
-    }
-});
+        console.log('Primljen strim:', data);  // Dodajemo log za podatke koje server prima
 
+        if (data.buffer && data.buffer.length > 0) {
+            const arrayBuffer = new Uint8Array(data.buffer).buffer;
+            console.log(`Veličina buffer-a: ${arrayBuffer.byteLength}`);
+            socket.broadcast.emit('stream', {
+                buffer: data.buffer,
+                name: data.name,
+            });
+        } else {
+            console.error('Buffer nije validan ili je prazan.');
+        }
+    });
 
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
