@@ -14,8 +14,8 @@ require('dotenv').config();
 const app = express();
 const server = http.createServer(app);
 let isAudioStreaming = false; 
-const io = socketIo(server, {
-    transports: ['websocket', 'polling'], // Dodajemo podršku za websocket i fallback na polling
+const io = require('socket.io')(server, {
+    transports: ['websocket']  // Isključujemo polling
 });
 
 connectDB(); // Povezivanje na bazu podataka
