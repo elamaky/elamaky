@@ -103,10 +103,10 @@ io.on('connection', (socket) => {
     });
 
 socket.on('stream', (data) => {
-    console.log('Primljen strim:', data);  // Ispisujemo podatke koji su primljeni
+    console.log('Primljen strim:', data);  // Ovaj log treba da prikaže podatke koje je server primio
     if (data && data.buffer) {
-        console.log('Primljen buffer sa veličinom:', data.buffer.length);  // Ispis veličine
-        const arrayBuffer = new Uint8Array(data.buffer).buffer;  // Pretvaranje u ArrayBuffer
+        console.log('Primljen buffer sa veličinom:', data.buffer.length);
+        const arrayBuffer = new Uint8Array(data.buffer).buffer;
         console.log(`Veličina buffer-a: ${arrayBuffer.byteLength}`);
         socket.broadcast.emit('stream', {
             buffer: data.buffer,
@@ -116,7 +116,6 @@ socket.on('stream', (data) => {
         console.error('Podaci nisu ispravni ili buffer nije prisutan:', data);
     }
 });
-
 
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
