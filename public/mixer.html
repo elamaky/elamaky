@@ -299,11 +299,22 @@ function updateSongsOrder() {
             }
         });
 
-        // Slušanje strimovanog audio podataka sa servera
-        socket.on('stream', (data) => {
-            console.log('Prikačeni strim sa servera:', data.name); // Log za primanje strima
-            // Ovde možeš dodati kod za obradu primljenih podataka, ako je potrebno
-        });
+       socket.on('stream', (data) => {
+    console.log('Prikačen strim sa servera:', data.name); // Log za primanje strima
+
+    // Dekodiraj audio buffer i reprodukuj pesmu
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    audioContext.decodeAudioData(data.buffer, (decodedData) => {
+        const source = audioContext.createBufferSource();
+        source.buffer = decodedData;
+        source.connect(audioContext.destination);
+        source.start();
+        console.log('Pesma se reprodukuje:', data.name);
+    }, (error) => {
+        console.error('Greška pri dekodiranju audio podataka:', error);
+    });
+});
+
 
     </script>
 </body>
