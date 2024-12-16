@@ -11,11 +11,10 @@ const router = require('./memorymodul'); // Uvoz ruta iz memorymodul.js
 const pingService = require('./ping');
 require('dotenv').config();
 
-
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
-let isAudioStreaming = false; 
+let isAudioStreaming = false;
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
@@ -27,6 +26,7 @@ app.use(express.static(__dirname + '/public'));
 app.use('/guests', uuidRouter); // Dodavanje ruta u aplikaciju
 app.set('trust proxy', true);
 app.use('/api', router); // Mount ruta na /api
+
 
 // Rute za registraciju i prijavu
 app.post('/register', (req, res) => register(req, res, io));
@@ -99,21 +99,21 @@ io.on('connection', (socket) => {
         console.log('Chat cleared');
         io.emit('chat-cleared');
     });
+
 socket.on('stream', (data) => {
-    console.log('Primljen strim:', data);
-    if (data && data.buffer) {
-        console.log('Veličina buffer-a:', data.buffer.byteLength);  // Provjeri byteLength
-        socket.broadcast.emit('stream', {
-            buffer: data.buffer,
-            name: data.name,
-        });
+    console.log(`Primljen strim od korisnika: ${data.name}`);
+    
+    if (data.buffer && data.buffer.byteLength > 0) {
+        console.log(`Veličina buffer-a: ${data.buffer.byteLength}`);
+        socket.broadcast.emit('stream', data);
+        console.log(`Emitujem podatke pesme: ${data.name}`);
     } else {
-        console.error('Buffer nije ispravan ili nije prisutan:', data);
+        console.error('Buffer nije validan ili je prazan.');
     }
 });
 
-    
-  // Obrada diskonekcije korisnika
+
+   // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
