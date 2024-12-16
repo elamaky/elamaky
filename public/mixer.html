@@ -258,12 +258,9 @@ function updateSongsOrder() {
 
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
-// KODOVI ZA STRIMOVANJE 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Stranica je učitana.'); // Log za učitavanje stranice
 
-    // Funkcija za pokretanje strimovanja odmah čim stranica bude učitana
-    const startStreaming = () => {
+// KODOVI ZA STRIMOVANJE 
+ 
         const currentSong = songs[currentSongIndex]; // Podesi trenutno igranu pesmu
         if (currentSong) {
             console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
@@ -287,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             console.error('Nije pronađena trenutna pesma!'); // Log za slučaj kada pesma ne postoji
         }
-    };
+    });
 
     // Početno pokretanje strima odmah čim korisnik uđe na stranicu
     if (songs.length > 0) {
@@ -296,13 +293,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.warn('Lista pesama je prazna!'); // Log za prazan niz pesama
     }
-
-    // Opcionalno: emituj pesmu kada korisnik klikne play (ako je to još potrebno)
-    audioPlayer.addEventListener('play', () => {
-        console.log('Pesma se pušta.'); // Log za puštanje pesme
-        startStreaming(); // Emitujemo strim kada pesma počne
-    });
-});
 
   // Početno pokretanje pesme čim korisnik uđe na stranicu
     if (songs.length > 0) {
