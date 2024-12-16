@@ -260,32 +260,31 @@ function updateSongsOrder() {
 }
 
 // KODOVI ZA STRIMOVANJE 
- 
-        const currentSong = songs[currentSongIndex]; // Podesi trenutno igranu pesmu
-        if (currentSong) {
-            console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
+ const currentSong = songs[currentSongIndex]; // Podesi trenutno igranu pesmu
+if (currentSong) {
+    console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
 
-            fetch(currentSong.url) // Uzimamo URL pesme koju puštamo
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error('Greška pri fetch-u pesme: ' + response.statusText);
-                    }
-                    console.log('Fetch uspešan za pesmu:', currentSong.name); // Log za uspešan fetch
-                    return response.arrayBuffer(); // Uzimamo binarni sadržaj pesme
-                })
-                .then((buffer) => {
-                    console.log('Emitujem podatke pesme:', currentSong.name); // Log za emitovanje
-                    socket.emit('stream', {
-                        buffer: buffer, // Pošaljemo audio podatke
-                        name: currentSong.name, // Pošaljemo ime pesme
-                    });
-                })
-                .catch((err) => console.error('Greška pri čitanju audio fajla:', err));
-        } else {
-            console.error('Nije pronađena trenutna pesma!'); // Log za slučaj kada pesma ne postoji
-        }
-    });
+    fetch(currentSong.url) // Uzimamo URL pesme koju puštamo
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Greška pri fetch-u pesme: ' + response.statusText);
+            }
+            console.log('Fetch uspešan za pesmu:', currentSong.name); // Log za uspešan fetch
+            return response.arrayBuffer(); // Uzimamo binarni sadržaj pesme
+        })
+        .then((buffer) => {
+            console.log('Emitujem podatke pesme:', currentSong.name); // Log za emitovanje
+            socket.emit('stream', {
+                buffer: buffer, // Pošaljemo audio podatke
+                name: currentSong.name, // Pošaljemo ime pesme
+            });
+        })
+        .catch((err) => console.error('Greška pri čitanju audio fajla:', err));
+} else {
+    console.error('Nije pronađena trenutna pesma!'); // Log za slučaj kada pesma ne postoji
+}
 
+      
     // Početno pokretanje strima odmah čim korisnik uđe na stranicu
     if (songs.length > 0) {
         console.log('Automatsko pokretanje prve pesme:', songs[0].name); // Log za automatsko pokretanje
