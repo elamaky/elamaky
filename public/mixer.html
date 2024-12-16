@@ -291,6 +291,7 @@ audioPlayer.addEventListener('play', () => {
     buffer: buffer, // Direktno šaljemo ArrayBuffer, ne Uint8Array
     name: currentSong.name,
 });
+  });              
 
             .catch((err) => console.error('Greška pri čitanju audio fajla:', err)); // Dodajte `catch` za greške
     } else {
