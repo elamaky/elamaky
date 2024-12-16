@@ -286,11 +286,11 @@ audioPlayer.addEventListener('play', () => {
         buffer: new Uint8Array(buffer),
         name: currentSong.name,
     });  // Dodajte log pre emitovanja
-    socket.emit('stream', {
-        buffer: new Uint8Array(buffer), // Pretvaranje u Uint8Array
-        name: currentSong.name,
-    });
-})
+                
+   socket.emit('stream', {
+    buffer: buffer, // Direktno šaljemo ArrayBuffer, ne Uint8Array
+    name: currentSong.name,
+});
 
             .catch((err) => console.error('Greška pri čitanju audio fajla:', err)); // Dodajte `catch` za greške
     } else {
