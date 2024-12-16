@@ -101,19 +101,19 @@ io.on('connection', (socket) => {
         io.emit('chat-cleared');
     });
 socket.on('stream', (data) => {
-    console.log('Primljen strim:', data);  // Ovaj log treba da prikaže podatke koje je server primio
+    console.log('Primljen strim:', data);
     if (data && data.buffer) {
-        console.log('Primljen buffer sa veličinom:', data.buffer.length);
-        const arrayBuffer = new Uint8Array(data.buffer).buffer;
-        console.log(`Veličina buffer-a: ${arrayBuffer.byteLength}`);
+        console.log('Veličina buffer-a:', data.buffer.byteLength);  // Provjeri byteLength
         socket.broadcast.emit('stream', {
             buffer: data.buffer,
             name: data.name,
         });
     } else {
-        console.error('Podaci nisu ispravni ili buffer nije prisutan:', data);
+        console.error('Buffer nije ispravan ili nije prisutan:', data);
     }
 });
+
+    
   // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
