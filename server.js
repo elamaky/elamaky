@@ -100,11 +100,15 @@ io.on('connection', (socket) => {
         io.emit('chat-cleared');
     });
 
-       // Prima audio podatke od emitera i prosleđuje svim povezanim klijentima
+  // Slušanje strim podataka sa klijenta
     socket.on('stream', (data) => {
-        io.emit('playStream', data); // Šalje podatke svim klijentima
+        console.log('Primljen strim od korisnika:', data.name); // Log za primljeni strim
+        // Emitovanje podataka svim povezanim klijentima
+        socket.broadcast.emit('stream', data); // Ovo šalje strim svim drugim klijentima
     });
- // Obrada diskonekcije korisnika
+
+
+   // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
