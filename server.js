@@ -13,8 +13,10 @@ require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
-let isAudioStreaming = false;
+let isAudioStreaming = false; 
+const io = socketIo(server, {
+    transports: ['websocket', 'polling'], // Dodajemo podršku za websocket i fallback na polling
+});
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
