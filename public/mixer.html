@@ -103,7 +103,11 @@ button:hover {
     </div>
 
     <script>
-        const socket = window.parent.socket;
+
+      const socket = io({
+    transports: ['websocket', 'polling'], // Dodajte podršku za transport
+});
+window.socket = socket;
         const mixer = document.getElementById("mixer");
         const audioPlayer = document.getElementById('audioPlayer');
         const songList = document.getElementById('songList');
