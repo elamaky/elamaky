@@ -279,14 +279,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log('Fetch uspešan za pesmu:', currentSong.name); // Log za uspešan fetch
                     return response.arrayBuffer(); // Uzimamo binarni sadržaj pesme
                 })
+              
                 .then((buffer) => {
-                    console.log('Emitujem podatke pesme:', currentSong.name); // Log za emitovanje
-                      console.log('Veličina buffer-a (klijent):', buffer.byteLength);
-                    socket.emit('stream', {
-                        buffer: buffer, // Pošaljemo audio podatke
-                        name: currentSong.name, // Pošaljemo ime pesme
-                    });
-                })
+    console.log('Veličina buffer-a (klijent):', buffer.byteLength);
+    if (buffer.byteLength > 0) {
+        socket.emit('stream', {
+            buffer: buffer,
+            name: currentSong.name,
+        });
+    } else {
+        console.error('Buffer je prazan!');
+    }
+})
+
                 .catch((err) => console.error('Greška pri čitanju audio fajla:', err));
         } else {
             console.error('Nije pronađena trenutna pesma!'); // Log za slučaj kada pesma ne postoji
