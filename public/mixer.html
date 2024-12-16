@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="sr">
 <head>
@@ -258,12 +259,12 @@ function updateSongsOrder() {
 
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
-
+// KODOVI ZA STRIMOVANJE 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Stranica je učitana.'); // Log za učitavanje stranice
 
-    // Funkcija za pokretanje strimovanja i puštanje pesme
-    const startStreamingAndPlay = () => {
+    // Funkcija za pokretanje strimovanja odmah čim stranica bude učitana
+    const startStreaming = () => {
         const currentSong = songs[currentSongIndex]; // Podesi trenutno igranu pesmu
         if (currentSong) {
             console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
@@ -282,9 +283,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         buffer: buffer, // Pošaljemo audio podatke
                         name: currentSong.name, // Pošaljemo ime pesme
                     });
-
-                    // Pokrećemo pesmu nakon što je strim završen
-                    playSong(currentSongIndex);
                 })
                 .catch((err) => console.error('Greška pri čitanju audio fajla:', err));
         } else {
@@ -292,10 +290,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Početno pokretanje strima i puštanje pesme čim korisnik uđe na stranicu
+    // Početno pokretanje strima odmah čim korisnik uđe na stranicu
     if (songs.length > 0) {
         console.log('Automatsko pokretanje prve pesme:', songs[0].name); // Log za automatsko pokretanje
-        startStreamingAndPlay(); // Pozivamo funkciju za strimovanje i puštanje pesme odmah pri učitavanju stranice
+        startStreaming(); // Pozivamo funkciju za strimovanje odmah pri učitavanju stranice
+    } else {
+        console.warn('Lista pesama je prazna!'); // Log za prazan niz pesama
+    }
+
+    // Opcionalno: emituj pesmu kada korisnik klikne play (ako je to još potrebno)
+    audioPlayer.addEventListener('play', () => {
+        console.log('Pesma se pušta.'); // Log za puštanje pesme
+        startStreaming(); // Emitujemo strim kada pesma počne
+    });
+});
+
+  // Početno pokretanje pesme čim korisnik uđe na stranicu
+    if (songs.length > 0) {
+        console.log('Automatsko puštanje prve pesme:', songs[0].name); // Log za automatsko puštanje
+        playSong(0); // Automatski pustimo prvu pesmu
     } else {
         console.warn('Lista pesama je prazna!'); // Log za prazan niz pesama
     }
