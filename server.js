@@ -11,12 +11,10 @@ const router = require('./memorymodul'); // Uvoz ruta iz memorymodul.js
 const pingService = require('./ping');
 require('dotenv').config();
 
+const io = socketIo(server);
 const app = express();
 const server = http.createServer(app);
 let isAudioStreaming = false; 
-const io = require('socket.io')(server, {
-    transports: ['websocket', 'polling'] // Ovo omogućava WebSocket i fallback na polling
-});
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
