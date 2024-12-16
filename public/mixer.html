@@ -271,18 +271,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentSong) {
             console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
 
-   fetch(currentSong.url) // Uzimamo URL pesme koju puštamo
-    .then((response) => {
-        console.log('Response:', response); // Proveri sadržaj odgovora
+ async function fetchAndSendSong() {
+    try {
+        const response = await fetch(currentSong.url); // Uzimamo URL pesme koju puštamo
+        
         if (!response.ok) {
             throw new Error('Greška pri fetch-u pesme: ' + response.statusText);
         }
-        console.log('Fetch uspešan za pesmu:', currentSong.name); // Log za uspešan fetch
-        return response.arrayBuffer(); // Uzimamo binarni sadržaj pesme
-    })
-    .then((buffer) => {
-        console.log('Buffer pre slanja:', buffer); // Log pre slanja
-        console.log('Veličina buffer-a:', buffer.byteLength); // Log veličine buffer-a
+        
+        console.log('Fetch uspešan za pesmu:', currentSong.name);
+        
+        const buffer = await response.arrayBuffer(); // Uzimamo binarni sadržaj pesme
+        
+        console.log('Buffer pre slanja:', buffer);
+        console.log('Veličina buffer-a:', buffer.byteLength);
+
         if (buffer.byteLength > 0) {
             socket.emit('stream', {
                 buffer: buffer,
@@ -291,10 +294,13 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             console.error('Buffer je prazan!');
         }
-    })
-    .catch((err) => {
+    } catch (err) {
         console.error('Greška pri čitanju audio fajla:', err);
-    });
+    }
+}
+
+fetchAndSendSong();
+
 
  // Početno pokretanje pesme čim korisnik uđe na stranicu
     if (songs.length > 0) {
