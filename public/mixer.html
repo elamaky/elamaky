@@ -287,12 +287,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Buffer je prazan!');
         }
     })
-    .catch((err) => {
-        console.error('Greška pri fetch-u:', err);
-    });
-
-
-                .catch((err) => console.error('Greška pri čitanju audio fajla:', err));
+  
+        .catch((err) => console.error('Greška pri čitanju audio fajla:', err));
         } else {
             console.error('Nije pronađena trenutna pesma!'); // Log za slučaj kada pesma ne postoji
         }
