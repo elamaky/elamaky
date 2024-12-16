@@ -264,7 +264,7 @@ function updateSongsOrder() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Stranica je učitana.'); // Log za učitavanje stranice
 
-   // Emituje audio podatke kada pesma počne da se pušta
+  // Emituje audio podatke kada pesma počne da se pušta
 audioPlayer.addEventListener('play', () => {
     console.log('Pesma se pušta.'); // Log za puštanje pesme
     const currentSong = songs[currentSongIndex]; // Podesi trenutno igranu pesmu
@@ -281,18 +281,17 @@ audioPlayer.addEventListener('play', () => {
                 return response.arrayBuffer(); // Uzimamo binarni sadržaj pesme
             })
             .then((buffer) => { 
-    console.log('Veličina buffer-a (klijent):', buffer.byteLength);
-    console.log('Emituju se podaci na server:', {
-        buffer: new Uint8Array(buffer),
-        name: currentSong.name,
-    });  // Dodajte log pre emitovanja
+                console.log('Veličina buffer-a (klijent):', buffer.byteLength);
+                console.log('Emituju se podaci na server:', {
+                    buffer: new Uint8Array(buffer),
+                    name: currentSong.name,
+                });  // Dodajte log pre emitovanja
                 
-   socket.emit('stream', {
-    buffer: buffer, // Direktno šaljemo ArrayBuffer, ne Uint8Array
-    name: currentSong.name,
-});
-  });              
-
+                socket.emit('stream', {
+                    buffer: buffer, // Direktno šaljemo ArrayBuffer
+                    name: currentSong.name,
+                });
+            })
             .catch((err) => console.error('Greška pri čitanju audio fajla:', err)); // Dodajte `catch` za greške
     } else {
         console.error('Nije pronađena trenutna pesma!');
