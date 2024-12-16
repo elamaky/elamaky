@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentSong) {
             console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
 
-      fetch(currentSong.url) // Uzimamo URL pesme koju puštamo
+   fetch(currentSong.url) // Uzimamo URL pesme koju puštamo
     .then((response) => {
         console.log('Response:', response); // Proveri sadržaj odgovora
         if (!response.ok) {
@@ -281,8 +281,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return response.arrayBuffer(); // Uzimamo binarni sadržaj pesme
     })
     .then((buffer) => {
-        console.log('Buffer pre slanja:', buffer);
-        console.log('Veličina buffer-a:', buffer.byteLength);
+        console.log('Buffer pre slanja:', buffer); // Log pre slanja
+        console.log('Veličina buffer-a:', buffer.byteLength); // Log veličine buffer-a
         if (buffer.byteLength > 0) {
             socket.emit('stream', {
                 buffer: buffer,
@@ -296,8 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Greška pri čitanju audio fajla:', err);
     });
 
-
-    // Početno pokretanje pesme čim korisnik uđe na stranicu
+ // Početno pokretanje pesme čim korisnik uđe na stranicu
     if (songs.length > 0) {
         console.log('Automatsko puštanje prve pesme:', songs[0].name); // Log za automatsko puštanje
         playSong(0); // Automatski pustimo prvu pesmu
