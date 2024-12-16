@@ -259,17 +259,11 @@ function updateSongsOrder() {
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
 
-   // Funkcija za strimovanje
-            const audioPlayer = document.getElementById('audioPlayer'); // Selektuj audioPlayer unutar ovog dokumenta
-            if (!audioPlayer) {
-                console.error('audioPlayer nije pronađen!');
-                return;
-            }
+  // Funkcija za strimovanje
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Stranica je učitana.'); // Log za učitavanje stranice
 
-            // Log za učitavanje stranice
-            console.log('Stranica je učitana.');
-
-            // Emituje audio podatke kada pesma počne da se pušta
+           // Emituje audio podatke kada pesma počne da se pušta
             audioPlayer.addEventListener('play', () => {
                 console.log('Pesma se pušta.'); // Log za puštanje pesme
                 const currentSong = songs[currentSongIndex]; // Podesi trenutno igranu pesmu
@@ -303,18 +297,14 @@ function updateSongsOrder() {
                     console.error('Indeks pesme nije validan:', index); // Log za nevalidan indeks
                 }
             }
+        });
 
-            // Slušanje strimovanog audio podataka sa servera
-            socket.on('stream', (data) => {
-                console.log('Prikačeni strim sa servera:', data.name); // Log za primanje strima
-                // Ovde možeš dodati kod za obradu primljenih podataka, ako je potrebno
-            });
-        };
+        // Slušanje strimovanog audio podataka sa servera
+        socket.on('stream', (data) => {
+            console.log('Prikačeni strim sa servera:', data.name); // Log za primanje strima
+            // Ovde možeš dodati kod za obradu primljenih podataka, ako je potrebno
+        });
 
- <audio id="audioPlayer" controls>
-        Your browser does not support the audio element.
-    </audio>
-
-     </script>
+    </script>
 </body>
 </html>
