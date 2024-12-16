@@ -312,27 +312,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Prijem i reprodukcija strimovanih podataka sa servera
+// Kada klijent primi stream sa servera
 socket.on('stream', (data) => {
-    console.log('Prikačen strim sa servera:', data.name); // Log za primanje strima
+    console.log('Prikačen strim sa servera:', data.name);
 
-    // Dekodiraj audio buffer i reprodukuj pesmu
+    // Kreiraj AudioContext za dekodiranje i reprodukciju audio podataka
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
     if (data.buffer && data.buffer.byteLength > 0) {
+        console.log('Dekodiram audio podatke za pesmu:', data.name);
+
         audioContext.decodeAudioData(data.buffer, (decodedData) => {
+            console.log('Audio podaci dekodirani uspešno za pesmu:', data.name);
+
             const source = audioContext.createBufferSource();
             source.buffer = decodedData; // Postavi dekodirane podatke
-            source.connect(audioContext.destination); // Poveži na izlaz (zvučnike)
+            source.connect(audioContext.destination); // Poveži na zvučnike
             source.start(); // Pokreni reprodukciju
             console.log('Pesma se reprodukuje:', data.name);
         }, (error) => {
-            console.error('Greška pri dekodiranju audio podataka:', error);
+            console.error('Greška pri dekodiranju audio podataka za pesmu:', data.name, error);
         });
     } else {
-        console.error('Primljen buffer je prazan ili nevalidan za pesmu:', data.name); // Log za prazan buffer
+        console.error('Primljen buffer je prazan ili nevalidan za pesmu:', data.name);
     }
 });
+
 
 </script>
 </body>
