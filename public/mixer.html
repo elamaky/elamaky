@@ -258,31 +258,7 @@ function updateSongsOrder() {
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
 
- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mixer</title>
-    <script src="/socket.io/socket.io.js"></script>
-</head>
-<body>
-    <div id="mixerModal" class="modal">
-        <button id="playButton">Play</button>
-        <!-- Ostatak sadržaja, npr. <iframe> za audio player -->
-        <iframe src="audio_player.html" width="100%" height="300px"></iframe>
-    </div>
-
-    <script>
-        const socket = io(); // Instanciranje Socket.IO
-        const songs = [
-            { name: "Pesma 1", url: "url_do_pesme_1.mp3" },
-            { name: "Pesma 2", url: "url_do_pesme_2.mp3" }
-            // Dodaj ostale pesme...
-        ];
-        let currentSongIndex = 0;
-
-        // Funkcija za strimovanje
+   // Funkcija za strimovanje
         document.addEventListener('DOMContentLoaded', () => {
             console.log('Stranica je učitana.'); // Log za učitavanje stranice
 
