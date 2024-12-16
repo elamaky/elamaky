@@ -262,34 +262,27 @@ function updateSongsOrder() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Stranica je učitana.'); // Log za učitavanje stranice
 
-    // Emituje audio podatke kada pesma počne da se pušta
-    audioPlayer.addEventListener('play', () => {
-        console.log('Pesma se pušta.'); // Log za puštanje pesme
+    // Funkcija za pokretanje strima odmah čim stranica bude učitana
+    const startStreaming = () => {
         const currentSong = songs[currentSongIndex]; // Podesi trenutno igranu pesmu
-
         if (currentSong) {
             console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
 
             fetch(currentSong.url) // Uzimamo URL pesme koju puštamo
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error('Greška pri fetch-u pesme: ' + response.statusText);
-                    }
-                    console.log('Fetch uspešan za pesmu:', currentSong.name); // Log za uspešan fetch
-                    return response.arrayBuffer(); // Uzimamo binarni sadržaj pesme
-                })
+                .then((response) => response.arrayBuffer()) // Preuzimamo binarne podatke
                 .then((buffer) => {
                     console.log('Emitujem podatke pesme:', currentSong.name); // Log za emitovanje
-                    socket.emit('stream', {
-                        buffer: buffer, // Pošaljemo audio podatke
-                        name: currentSong.name, // Pošaljemo ime pesme
-                    });
+                    socket.emit('stream', { buffer, name: currentSong.name }); // Šaljemo binarni buffer
                 })
                 .catch((err) => console.error('Greška pri čitanju audio fajla:', err));
-        } else {
-            console.error('Nije pronađena trenutna pesma!'); // Log za slučaj kada pesma ne postoji
         }
-    });
+    };
+
+    // Početno pokretanje strima odmah čim korisnik uđe
+    startStreaming(); // Pozivanje funkcije odmah pri učitavanju stranice
+
+});
+
 
     // Početno pokretanje pesme čim korisnik uđe na stranicu
     if (songs.length > 0) {
