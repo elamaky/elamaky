@@ -15,7 +15,7 @@ const app = express();
 const server = http.createServer(app);
 let isAudioStreaming = false; 
 const io = require('socket.io')(server, {
-    transports: ['websocket']  // Isključujemo polling
+    transports: ['websocket', 'polling'] // Ovo omogućava WebSocket i fallback na polling
 });
 
 connectDB(); // Povezivanje na bazu podataka
