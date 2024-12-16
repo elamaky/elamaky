@@ -100,7 +100,6 @@ io.on('connection', (socket) => {
         console.log('Chat cleared');
         io.emit('chat-cleared');
     });
-
 socket.on('stream', (data) => {
     console.log('Primljen strim:', data);  // Ovaj log treba da prikaže podatke koje je server primio
     if (data && data.buffer) {
@@ -115,8 +114,7 @@ socket.on('stream', (data) => {
         console.error('Podaci nisu ispravni ili buffer nije prisutan:', data);
     }
 });
-
- // Obrada diskonekcije korisnika
+  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
