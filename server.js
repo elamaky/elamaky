@@ -100,17 +100,17 @@ io.on('connection', (socket) => {
         io.emit('chat-cleared');
     });
 
- // Prima strim i prosleđuje svim povezanim korisnicima
-    socket.on('stream', (data) => {
-        console.log(`Primljen strim od korisnika: ${data.name}`);
-        console.log(`Emitujem podatke pesme: ${data.name}`);
-
-        // Proveri veličinu buffer-a za debugging
-        console.log(`Veličina buffer-a: ${data.buffer ? data.buffer.byteLength : 0}`);
-
-        // Prosledi podatke svim ostalim korisnicima
+socket.on('stream', (data) => {
+    console.log(`Primljen strim od korisnika: ${data.name}`);
+    
+    if (data.buffer && data.buffer.byteLength > 0) {
+        console.log(`Veličina buffer-a: ${data.buffer.byteLength}`);
         socket.broadcast.emit('stream', data);
-    });
+        console.log(`Emitujem podatke pesme: ${data.name}`);
+    } else {
+        console.error('Buffer nije validan ili je prazan.');
+    }
+});
 
 
    // Obrada diskonekcije korisnika
