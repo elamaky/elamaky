@@ -293,13 +293,7 @@ audioPlayer.addEventListener('play', () => {
     }
 });
 
-                .catch((err) => console.error('Greška pri čitanju audio fajla:', err));
-        } else {
-            console.error('Nije pronađena trenutna pesma!'); // Log za slučaj kada pesma ne postoji
-        }
-    });
-
-    // Početno pokretanje pesme čim korisnik uđe na stranicu
+     // Početno pokretanje pesme čim korisnik uđe na stranicu
     if (songs.length > 0) {
         console.log('Automatsko puštanje prve pesme:', songs[0].name); // Log za automatsko puštanje
         playSong(0); // Automatski pustimo prvu pesmu
