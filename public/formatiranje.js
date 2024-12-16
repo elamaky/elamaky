@@ -1,5 +1,3 @@
-const socket = io();
-
 let isBold = false;
 let isItalic = false;
 let currentColor = '#FFFFFF';
