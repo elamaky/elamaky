@@ -262,11 +262,9 @@ function updateSongsOrder() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Stranica je učitana.'); // Log za učitavanje stranice
 
-    // Emituje audio podatke kada pesma počne da se pušta
-    audioPlayer.addEventListener('play', () => {
-        console.log('Pesma se pušta.'); // Log za puštanje pesme
+    // Funkcija za pokretanje strimovanja odmah čim stranica bude učitana
+    const startStreaming = () => {
         const currentSong = songs[currentSongIndex]; // Podesi trenutno igranu pesmu
-
         if (currentSong) {
             console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
 
@@ -289,15 +287,24 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             console.error('Nije pronađena trenutna pesma!'); // Log za slučaj kada pesma ne postoji
         }
+    };
+
+    // Početno pokretanje strima odmah čim korisnik uđe na stranicu
+    if (songs.length > 0) {
+        console.log('Automatsko pokretanje prve pesme:', songs[0].name); // Log za automatsko pokretanje
+        startStreaming(); // Pozivamo funkciju za strimovanje odmah pri učitavanju stranice
+    } else {
+        console.warn('Lista pesama je prazna!'); // Log za prazan niz pesama
+    }
+
+    // Opcionalno: emituj pesmu kada korisnik klikne play (ako je to još potrebno)
+    audioPlayer.addEventListener('play', () => {
+        console.log('Pesma se pušta.'); // Log za puštanje pesme
+        startStreaming(); // Emitujemo strim kada pesma počne
     });
-
-    // Početno pokretanje strima odmah čim korisnik uđe
-    startStreaming(); // Pozivanje funkcije odmah pri učitavanju stranice
-
 });
 
-
-    // Početno pokretanje pesme čim korisnik uđe na stranicu
+  // Početno pokretanje pesme čim korisnik uđe na stranicu
     if (songs.length > 0) {
         console.log('Automatsko puštanje prve pesme:', songs[0].name); // Log za automatsko puštanje
         playSong(0); // Automatski pustimo prvu pesmu
