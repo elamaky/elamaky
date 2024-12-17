@@ -80,6 +80,8 @@ io.on('connection', (socket) => {
             bold: msgData.bold,
             italic: msgData.italic,
             color: msgData.color,
+             underline: msgData.underline,
+            overline: msgData.overline,
             nickname: guests[socket.id],
             time: time,
         };
