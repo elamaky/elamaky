@@ -102,16 +102,18 @@ io.on('connection', (socket) => {
 
 socket.on('stream', (data) => {
     console.log('Primljen strim od korisnika:', data.name);
-    console.log('Podaci strima:', data);  // Dodaj log za ceo objekat
-    
-    if (data.buffer && data.buffer.byteLength > 0) {
-        console.log('Veličina buffer-a:', data.buffer.byteLength);
-        socket.broadcast.emit('stream', data);
+    console.log('Podaci strima:', data);
+
+    if (data.buffer && data.buffer.length > 0) {
+        const buffer = Buffer.from(data.buffer); // Pretvori nazad u Buffer
+        console.log('Veličina buffer-a:', buffer.length);
+        socket.broadcast.emit('stream', { buffer: buffer, name: data.name });
         console.log('Emitujem podatke pesme:', data.name);
     } else {
         console.error('Buffer nije validan ili je prazan.');
     }
 });
+
 
 
    // Obrada diskonekcije korisnika
