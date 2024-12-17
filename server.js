@@ -100,17 +100,20 @@ io.on('connection', (socket) => {
         io.emit('chat-cleared');
     });
 
-socket.on('stream', (data) => {
-    console.log('Primljen strim sa podacima:', data);  // Logiraj sve podatke koje primaš
+   // Slušaj na 'stream' događaj
+    socket.on('stream', (data) => {
+        if (data.buffer) {
+            console.log('Primljeni buffer:', data.buffer);
 
-    if (data.buffer && data.buffer instanceof ArrayBuffer) {
-        // Ako je buffer validan ArrayBuffer, pretvori ga u Buffer (Node.js)
-        const buffer = Buffer.from(data.buffer);
-        console.log('Buffer dužina:', buffer.length);  // Logiraj dužinu buffer-a
-    } else {
-        console.error('Prazan ili nevalidan buffer!');  // Ako buffer nije validan
-    }
-});
+            // Emituj buffer kao ArrayBuffer svim povezanim klijentima
+            socket.broadcast.emit('stream', { 
+                buffer: data.buffer, 
+                name: data.name 
+            });
+        } else {
+            console.error('Prazan ili nevalidan buffer!');
+        }
+    });
 
    // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
