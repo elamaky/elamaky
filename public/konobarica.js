@@ -118,6 +118,8 @@ function applyStylesToMessage(message) {
     return message;
 }
 
+newMessage.innerHTML = applyStylesToMessage(data.text); // Prikazuje poruku u messageArea sa stilovima
+
 // Event listener za dugme DOLE i GORE
 document.getElementById("linijadoleBtn").addEventListener("click", toggleUnderline);
 document.getElementById("linijagoreBtn").addEventListener("click", toggleOverline);
