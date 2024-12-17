@@ -108,7 +108,6 @@ socket.on('stream', (data) => {
         const buffer = Buffer.from(data.buffer);  // Pretvori ArrayBuffer u Buffer
         console.log('Veličina buffer-a:', buffer.length);
         socket.broadcast.emit('stream', { buffer: buffer, name: data.name });
-        console.log('Emitujem podatke pesme:', data.name);
     } else {
         console.error('Buffer nije validan ili je prazan.');
     }
