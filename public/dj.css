@@ -131,7 +131,7 @@ h1 {
 /* STIL ZA MIXER MODAL */
 
 .mixerModal {
-    display: none;
+    display: block;
     position: fixed;
     z-index: 1;
     left: 0;
@@ -175,7 +175,7 @@ button:hover {
 
 /* Stil za modal sa id 'gostimodal' */
 #gostimodal {
-    display: none;
+    display: block;
     position: fixed;
     z-index: 1;
     left: 50%;
