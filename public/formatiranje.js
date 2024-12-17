@@ -36,6 +36,7 @@ function updateInputStyle() {
     inputField.style.fontWeight = isBold ? 'bold' : 'normal';
     inputField.style.fontStyle = isItalic ? 'italic' : 'normal';
     inputField.style.color = currentColor;
+    inputField.style.textDecoration = (isUnderline ? 'underline' : '') + (isOverline ? ' overline' : '');
 }
 
 // Kada korisnik pritisne Enter
@@ -61,6 +62,7 @@ socket.on('chatMessage', function(data) {
     newMessage.style.fontWeight = data.bold ? 'bold' : 'normal';
     newMessage.style.fontStyle = data.italic ? 'italic' : 'normal';
     newMessage.style.color = data.color;
+    let messageText = applyTextStylesToMessage(data.text);
     newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
     messageArea.prepend(newMessage);
     messageArea.scrollTop = 0; // Automatsko skrolovanje
