@@ -61,7 +61,7 @@ socket.on('chatMessage', function(data) {
     newMessage.classList.add('message');
     newMessage.style.fontWeight = data.bold ? 'bold' : 'normal';
     newMessage.style.fontStyle = data.italic ? 'italic' : 'normal';
-/ Dodaj underline i overline stilove
+
     let decorations = [];
     if (data.isUnderline) decorations.push('underline');
     if (data.isOverline) decorations.push('overline');
