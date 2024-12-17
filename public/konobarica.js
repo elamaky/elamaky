@@ -79,16 +79,30 @@ function decreaseFontSize() {
     messageArea.style.fontSize = newSize + "px";
 }
 
-function applyUnderline() {
-    const textInput = document.getElementById('textInput');
-    const output = document.getElementById('output');
-    output.innerHTML = textInput.value.replace(/(\S+)/g, '<span style="text-decoration: underline;">$1</span>');
+// External JavaScript for the buttons
+
+function UNDERLINE() {
+    const selectedText = window.getSelection().toString();
+    if (selectedText) {
+        document.execCommand('underline');
+    } else {
+        alert('Please select text to underline.');
+    }
 }
 
-function applyOverline() {
-    const textInput = document.getElementById('textInput');
-    const output = document.getElementById('output');
-    output.innerHTML = textInput.value.replace(/(\S+)/g, '<span style="text-decoration: overline;">$1</span>');
+function OVERLINE() {
+    const selectedText = window.getSelection().toString();
+    if (selectedText) {
+        const span = document.createElement('span');
+        span.style.textDecoration = 'overline';
+        span.textContent = selectedText;
+
+        const range = window.getSelection().getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(span);
+    } else {
+        alert('Please select text to overline.');
+    }
 }
 
 
