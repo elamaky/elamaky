@@ -278,14 +278,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 return response.arrayBuffer();
             })
-       .then((buffer) => {
+     .then((buffer) => {
+    console.log('Tip buffer-a:', buffer.constructor.name);  // Dodaj ovu liniju
     console.log('Buffer pre slanja:', buffer);
     if (buffer && buffer.byteLength > 0) {
-        // Direktno šaljemo ArrayBuffer
         socket.emit('stream', { 
             buffer: buffer,  // Šaljemo ArrayBuffer direktno
             name: currentSong.name 
         });
+    } else {
+        console.error('Buffer je prazan ili nije validan!');
+    }
+});
+
     
         } else {
                     console.error('Buffer je prazan! Proveri URL ili fajl.');
