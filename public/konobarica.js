@@ -81,16 +81,8 @@ function decreaseFontSize() {
 
 let isUnderline = false;
 let isOverline = false;
-const socket = io(); // Pretpostavljam da je socket.io već uključen
 
-// Postavljanje jedinstvenog ID-a za ovog klijenta
-let clientId = null;
-socket.on('connect', () => {
-    clientId = socket.id; // Postavlja ID trenutnog korisnika
-    console.log("Moj socket ID:", clientId);
-});
-
-// Funkcije za stilove
+// Funkcije za uključivanje/isključivanje stilova
 function toggleUnderline() {
     isUnderline = !isUnderline;
     console.log("Underline stil:", isUnderline ? "UKLJUČEN" : "ISKLJUČEN");
@@ -101,35 +93,58 @@ function toggleOverline() {
     console.log("Overline stil:", isOverline ? "UKLJUČEN" : "ISKLJUČEN");
 }
 
-// Kada korisnik šalje poruku
-function sendMessage(messageText) {
-    const messageData = {
+// Slanje poruke serveru
+function sendMessage() {
+    const chatInput = document.getElementById('chatInput');
+    const messageText = chatInput.value;
+
+    if (!messageText.trim()) return; // Ako je poruka prazna, ništa ne radi
+
+    // Priprema podataka za slanje
+    const msgData = {
         text: messageText,
         underline: isUnderline,
         overline: isOverline,
     };
-    socket.emit('newMessage', messageData); // Emituj poruku serveru
+
+    // Emituj poruku serveru
+    socket.emit('chatMessage', msgData);
+    console.log("Poruka poslata:", msgData);
+
+    // Očisti input
+    chatInput.value = '';
 }
 
-// Dodavanje poruka u messageArea
-socket.on('messageReceived', (data) => {
-    const { text, senderId, underline, overline } = data;
+// Dodavanje poruke u `messageArea`
+socket.on('chatMessage', (data) => {
+    const { text, underline, overline, nickname, time } = data;
+
     const messageArea = document.getElementById('messageArea');
     const newMessage = document.createElement('div');
 
-    // Dodaj tekst i stilove
-    newMessage.textContent = text;
-    newMessage.setAttribute('data-sender', senderId); // Postavi ID autora poruke
+    // Postavi tekst poruke i autora
+    newMessage.textContent = `[${time}] ${nickname}: ${text}`;
+    newMessage.classList.add('message'); // Opciona klasa za stilizaciju
+
+    // Primeni stilove
     let decorations = [];
     if (underline) decorations.push('underline');
     if (overline) decorations.push('overline');
     newMessage.style.textDecoration = decorations.join(' ');
 
-    // Dodaj poruku u messageArea
+    // Dodaj poruku u `messageArea`
     messageArea.appendChild(newMessage);
-    console.log("Poruka primljena od:", senderId, "sa stilovima:", decorations.join(' '));
+    console.log("Poruka primljena:", data);
 });
 
 // Dugmad za menjanje stilova
 document.getElementById('linijadoleBtn').addEventListener('click', toggleUnderline);
 document.getElementById('linijagoreBtn').addEventListener('click', toggleOverline);
+
+// Kada korisnik pritisne Enter za slanje poruke
+document.getElementById('chatInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+    }
+});
