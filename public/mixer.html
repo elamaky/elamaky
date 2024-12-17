@@ -278,15 +278,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 return response.arrayBuffer();
             })
-           .then((buffer) => {
+          .then((buffer) => {
     console.log('Buffer pre slanja:', buffer);
-    if (buffer.byteLength > 0) {
+    if (buffer && buffer.byteLength > 0) {
         socket.emit('stream', { 
             buffer: buffer,  // Ovdje šaljemo ArrayBuffer direktno
             name: currentSong.name 
         });
   
-                } else {
+        } else {
                     console.error('Buffer je prazan! Proveri URL ili fajl.');
                 }
             })
