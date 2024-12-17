@@ -104,8 +104,7 @@ socket.on('stream', (data) => {
     console.log('Primljen strim od korisnika:', data.name);
     console.log('Podaci strima:', data);
 
-    // Proveri da li je data.buffer validan i nije prazan
-    if (data.buffer && data.buffer.byteLength > 0) {
+    if (data.buffer && data.buffer instanceof ArrayBuffer && data.buffer.byteLength > 0) {
         const buffer = Buffer.from(data.buffer);  // Pretvori ArrayBuffer u Buffer
         console.log('Veličina buffer-a:', buffer.length);
         socket.broadcast.emit('stream', { buffer: buffer, name: data.name });
@@ -115,8 +114,8 @@ socket.on('stream', (data) => {
     }
 });
 
-    
- // Obrada diskonekcije korisnika
+
+     // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
