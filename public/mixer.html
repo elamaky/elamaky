@@ -270,8 +270,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (currentSong) {
             console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
-
-          fetch(currentSong.url)
+            
+console.log('Fetch URL:', currentSong.url);
+  fetch(currentSong.url)
     .then((response) => {
         console.log('Response:', response);
         if (!response.ok) {
@@ -279,6 +280,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return response.arrayBuffer();
     })
+
+     if (buffer.byteLength === 0) {
+    console.error('Buffer je prazan! Proveri URL ili fajl.');
+    return;
+}
+ 
     .then((buffer) => {
         console.log('Buffer pre slanja:', buffer);
         if (buffer.byteLength > 0) {
