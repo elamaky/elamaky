@@ -92,26 +92,26 @@ function UNDERLINE() {
     }
 }
 
-function OVERLINE() {
-    isOverlineActive = !isOverlineActive;
-    if (isOverlineActive) {
-        document.addEventListener('keydown', applyOverline);
-    } else {
-        document.removeEventListener('keydown', applyOverline);
-    }
+let currentStyle = ''; // trenutni stil koji je izabran
+
+// Funkcija za postavljanje stila
+function setStyle(style) {
+    currentStyle = style;
 }
 
-function applyOverline(event) {
-    const target = event.target;
-    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
-        const span = document.createElement('span');
-        span.style.textDecoration = 'overline';
-        span.textContent = event.key;
-        event.preventDefault();
-
-        const range = window.getSelection().getRangeAt(0);
-        range.deleteContents();
-        range.insertNode(span);
-        range.collapse(false);
+ if (messageText.trim() === '') return; // Ako je polje prazno, ne šaljemo poruku
+    
+    let messageDiv = document.createElement('div');
+    messageDiv.textContent = messageText;
+    
+    // Primena stila na poruku
+    if (currentStyle === 'underline') {
+        messageDiv.style.textDecoration = 'underline';
+    } else if (currentStyle === 'overline') {
+        messageDiv.style.textDecoration = 'overline';
     }
+
+    // Dodavanje poruke u kontejner
+    document.getElementById('messageArea').appendChild(messageDiv);
+    
 }
