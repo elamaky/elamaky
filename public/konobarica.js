@@ -79,7 +79,7 @@ function decreaseFontSize() {
     messageArea.style.fontSize = newSize + "px";
 }
 
-// Globalne promenljive koje čuvaju stanje stila
+// Globalne promenljive koje prate stanje stilova
 let isUnderlineActive = false;
 let isOverlineActive = false;
 
@@ -118,7 +118,7 @@ function updateStyles() {
     }
 }
 
-// Funkcija za slanje poruke (na primer, emitovanje putem Socket.io)
+// Funkcija za slanje poruke
 function sendMessage() {
     const chatInput = document.getElementById("chatInput");
     const message = chatInput.value;
@@ -126,13 +126,10 @@ function sendMessage() {
     // Dodavanje stila na poruku pre nego što je pošaljemo
     const styledMessage = applyStylesToMessage(message);
     
-    // Ovdje bi trebalo da pošaljete poruku putem Socket.io
-    // socket.emit('newMessage', styledMessage);
-    
     // Dodavanje poruke u messageArea
     const messageArea = document.getElementById("messageArea");
     const newMessage = document.createElement('div');
-    newMessage.innerHTML = styledMessage;  // Koristimo innerHTML da bismo prikazali stilizovani HTML
+    newMessage.innerHTML = styledMessage;  // Prikazujemo stilizovanu poruku koristeći innerHTML
     messageArea.appendChild(newMessage);
     
     // Resetovanje inputa
@@ -141,12 +138,17 @@ function sendMessage() {
 
 // Funkcija koja primenjuje stilove na poruku pre slanja
 function applyStylesToMessage(message) {
+    // Ako je underline aktivan, dodajemo HTML tag <u> (podvlačenje)
     if (isUnderlineActive) {
-        message = `<u>${message}</u>`;  // HTML oznaka za podvlačenje
+        message = `<u>${message}</u>`;
     }
+    
+    // Ako je overline aktivan, dodajemo HTML tag <span> sa stilom za crtu na vrhu
     if (isOverlineActive) {
-        message = `<span style="text-decoration: overline;">${message}</span>`;  // HTML oznaka za crtu na vrhu
+        message = `<span style="text-decoration: overline;">${message}</span>`;
     }
+    
     return message;
 }
+
 
