@@ -79,27 +79,22 @@ function decreaseFontSize() {
     messageArea.style.fontSize = newSize + "px";
 }
 
-// Funkcija za dodavanje underline (podcrtavanje)
 function UNDERLINE() {
-    var messageArea = document.getElementById("messageArea");
     var selection = window.getSelection();
     if (selection.rangeCount > 0) {
         var range = selection.getRangeAt(0);
         var span = document.createElement("span");
         span.style.textDecoration = "underline";
-        range.surroundContents(span); // Okružuje selektovani tekst sa <span> tagom
+        range.surroundContents(span);
     }
 }
 
-// Funkcija za dodavanje overline (linija gore)
 function OVERLINE() {
-    var messageArea = document.getElementById("messageArea");
     var selection = window.getSelection();
     if (selection.rangeCount > 0) {
         var range = selection.getRangeAt(0);
         var span = document.createElement("span");
         span.style.textDecoration = "overline";
-        range.surroundContents(span); // Okružuje selektovani tekst sa <span> tagom
+        range.surroundContents(span);
     }
 }
-
