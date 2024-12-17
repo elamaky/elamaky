@@ -36,11 +36,6 @@ function updateInputStyle() {
     inputField.style.fontWeight = isBold ? 'bold' : 'normal';
     inputField.style.fontStyle = isItalic ? 'italic' : 'normal';
     inputField.style.color = currentColor;
-    let decorations = [];
-    if (data.isUnderline) decorations.push('underline');
-    if (data.isOverline) decorations.push('overline');
-    console.log(inputField.style.textDecoration);
-   
 }
 
 // Kada korisnik pritisne Enter
@@ -65,7 +60,6 @@ socket.on('chatMessage', function(data) {
     newMessage.classList.add('message');
     newMessage.style.fontWeight = data.bold ? 'bold' : 'normal';
     newMessage.style.fontStyle = data.italic ? 'italic' : 'normal';
-
     newMessage.style.color = data.color;
     newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
     messageArea.prepend(newMessage);
@@ -141,5 +135,4 @@ socket.on('updateGuestList', function(users) {
         }
     });
 });  
-
 
