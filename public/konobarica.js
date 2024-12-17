@@ -39,3 +39,27 @@ document.getElementById("mixer").onclick = function() {
 document.getElementById("kosModal").addEventListener("click", function() {
   document.getElementById("mixerModal").style.display = "none";
 });
+
+
+// GOSTI MODAL 
+var modal = document.getElementById("gostimodal");
+var btn = document.getElementById("GBtn");
+var span = document.getElementsByClassName("close")[0];
+
+// Otvori modal kada klikneš na dugme GBtn
+btn.onclick = function() {
+    modal.style.display = "block";
+}
+
+// Zatvori modal kada klikneš na X
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// Zatvori modal klikom izvan njega
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
