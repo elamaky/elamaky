@@ -103,6 +103,5 @@ function updateInputStyle() {
     inputField.style.textDecoration = decorations.join(' ');
 }
 
-// Event listeneri za dugmad
 document.getElementById("linijadoleBtn").addEventListener("click", toggleUnderline);
 document.getElementById("linijagoreBtn").addEventListener("click", toggleOverline);
