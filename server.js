@@ -104,6 +104,7 @@ socket.on('stream', (data) => {
     console.log('Primljen strim od korisnika:', data.name);
     console.log('Podaci strima:', data);
 
+    // Proveri da li je data.buffer validan i nije prazan
     if (data.buffer && data.buffer.byteLength > 0) {
         const buffer = Buffer.from(data.buffer);  // Pretvori ArrayBuffer u Buffer
         console.log('Veličina buffer-a:', buffer.length);
