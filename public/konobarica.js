@@ -24,7 +24,6 @@ socket.on('message', (data) => {
 });
 
 // Dodavanje Konobarice u listu gostiju (ako je potrebno)
-const guestList = document.getElementById('guestList');
 const konobaricaItem = document.createElement('div');
 konobaricaItem.classList.add('guest-konobarica');
 konobaricaItem.innerHTML = 'Konobarica'; // Dodajemo samo tekst bez tagova
