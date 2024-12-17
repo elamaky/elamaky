@@ -103,7 +103,5 @@ function updateInputStyle() {
     inputField.style.textDecoration = decorations.join(' ');
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("linijadoleBtn").addEventListener("click", toggleUnderline);
-    document.getElementById("linijagoreBtn").addEventListener("click", toggleOverline);
-});
+linijaDoleBtn.addEventListener('click', function() { });
+linijaGoreBtn.addEventListener('click', function() { });
