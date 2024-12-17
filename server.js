@@ -103,18 +103,23 @@ io.on('connection', (socket) => {
 socket.on('stream', (data) => {
     console.log('Primljen strim od korisnika:', data.name);
     console.log('Podaci strima:', data);
-
-    if (data.buffer && data.buffer instanceof ArrayBuffer && data.buffer.byteLength > 0) {
-        const buffer = Buffer.from(data.buffer);  // Pretvori ArrayBuffer u Buffer
+    
+    // Proveri da li je data.buffer instanca ArrayBuffer-a
+    if (data.buffer && data.buffer instanceof ArrayBuffer) {
+        console.log('Buffer tip:', data.buffer.constructor.name);  // Trebalo bi da bude ArrayBuffer
+        
+        // Pretvori ArrayBuffer u Node.js Buffer
+        const buffer = Buffer.from(data.buffer);
         console.log('Veličina buffer-a:', buffer.length);
+        
+        // Emituj dalje ili obradi
         socket.broadcast.emit('stream', { buffer: buffer, name: data.name });
     } else {
-        console.error('Buffer nije validan ili je prazan.');
+        console.error('Buffer nije validan ili nije ArrayBuffer.');
     }
 });
 
-
-     // Obrada diskonekcije korisnika
+    // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
