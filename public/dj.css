@@ -189,6 +189,7 @@ button:hover {
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
     padding: 20px;
     text-align: center;
+    overflow: auto
 }
 
 /* Neon efekat na granici modal-a */
@@ -201,12 +202,12 @@ button:hover {
     background-color: transparent;
     border: 2px solid white;
     color: white;
-    font-size: 14px;
+    font-size: 10px;
     margin: 5px;
-    padding: 10px;
+    padding: 5px;
     border-radius: 5px;
     cursor: pointer;
-    width: 80%;
+    width: 15px;
     transition: 0.3s;
 }
 
