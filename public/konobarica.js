@@ -63,3 +63,38 @@ window.onclick = function(event) {
     }
 }
 
+// Funkcija za uvećanje fonta u messageArea
+function increaseFontSize() {
+    var messageArea = document.getElementById("messageArea");
+    var currentSize = window.getComputedStyle(messageArea, null).getPropertyValue('font-size');
+    var newSize = parseInt(currentSize) + 2; // Povećaj veličinu fonta za 2px
+    messageArea.style.fontSize = newSize + "px";
+}
+
+// Funkcija za smanjenje fonta u messageArea
+function decreaseFontSize() {
+    var messageArea = document.getElementById("messageArea");
+    var currentSize = window.getComputedStyle(messageArea, null).getPropertyValue('font-size');
+    var newSize = parseInt(currentSize) - 2; // Smanji veličinu fonta za 2px
+    messageArea.style.fontSize = newSize + "px";
+}
+
+// Funkcija za dodavanje underline u messageArea
+function toggleUnderline() {
+    var messageArea = document.getElementById("messageArea");
+    if (messageArea.style.textDecoration === "underline") {
+        messageArea.style.textDecoration = "none"; // Ukloni underline
+    } else {
+        messageArea.style.textDecoration = "underline"; // Dodaj underline
+    }
+}
+
+// Funkcija za dodavanje overline u messageArea
+function toggleOverline() {
+    var messageArea = document.getElementById("messageArea");
+    if (messageArea.style.textDecoration === "overline") {
+        messageArea.style.textDecoration = "none"; // Ukloni overline
+    } else {
+        messageArea.style.textDecoration = "overline"; // Dodaj overline
+    }
+}
