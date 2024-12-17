@@ -131,7 +131,7 @@ h1 {
 /* STIL ZA MIXER MODAL */
 
 .mixerModal {
-    display: block;
+    display: none;
     position: fixed;
     z-index: 1;
     left: 0;
@@ -175,7 +175,7 @@ button:hover {
 
 /* Stil za modal sa id 'gostimodal' */
 #gostimodal {
-    display: block;
+    display: none;
     position: fixed;
     z-index: 1;
     left: 50%;
@@ -194,7 +194,7 @@ button:hover {
 
 /* Neon efekat na granici modal-a */
 #gostimodal {
-    box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.7);
 }
 
 /* Stil za dugmiće unutar modala */
