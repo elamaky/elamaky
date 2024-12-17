@@ -85,7 +85,8 @@ function UNDERLINE() {
         var range = selection.getRangeAt(0);
         var span = document.createElement("span");
         span.style.textDecoration = "underline";
-        range.surroundContents(span);
+        span.appendChild(range.extractContents());
+        range.insertNode(span);
     }
 }
 
@@ -95,6 +96,8 @@ function OVERLINE() {
         var range = selection.getRangeAt(0);
         var span = document.createElement("span");
         span.style.textDecoration = "overline";
-        range.surroundContents(span);
+        span.appendChild(range.extractContents());
+        range.insertNode(span);
     }
 }
+
