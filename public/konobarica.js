@@ -82,19 +82,16 @@ function decreaseFontSize() {
 let isUnderline = false;
 let isOverline = false;
 
-// Funkcija za primenu underline stila
 function toggleUnderline() {
     isUnderline = !isUnderline;
     updateInputStyle();
 }
 
-// Funkcija za primenu overline stila
 function toggleOverline() {
     isOverline = !isOverline;
     updateInputStyle();
 }
 
-// Primena stilova na polju za unos
 function updateInputStyle() {
     let inputField = document.getElementById('chatInput');
     let decorations = [];
@@ -103,5 +100,5 @@ function updateInputStyle() {
     inputField.style.textDecoration = decorations.join(' ');
 }
 
-linijaDoleBtn.addEventListener('click', function() { });
-linijaGoreBtn.addEventListener('click', function() { });
+document.getElementById('linijadoleBtn').addEventListener('click', toggleUnderline);
+document.getElementById('linijagoreBtn').addEventListener('click', toggleOverline);
