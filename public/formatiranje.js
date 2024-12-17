@@ -65,9 +65,8 @@ socket.on('chatMessage', function(data) {
     let decorations = [];
     if (data.isUnderline) decorations.push('underline');
     if (data.isOverline) decorations.push('overline');
-
-    // Postavi tekstualnu dekoraciju
-    newMessage.style.textDecoration = decorations.join(' ');
+    inputField.style.textDecoration = decorations.join(' ');
+    console.log(inputField.style.textDecoration);
     
     newMessage.style.color = data.color;
     newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
