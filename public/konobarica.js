@@ -81,9 +81,18 @@ function decreaseFontSize() {
 
 let isUnderline = false;
 let isOverline = false;
+const socket = io(); // Pretpostavljam da je socket.io već uključen
 
+// Postavljanje jedinstvenog ID-a za ovog klijenta
+let clientId = null;
+socket.on('connect', () => {
+    clientId = socket.id; // Postavlja ID trenutnog korisnika
+    console.log("Moj socket ID:", clientId);
+});
+
+// Funkcije za stilove
 function toggleUnderline() {
-    isUnderline = !isUnderline; 
+    isUnderline = !isUnderline;
     console.log("Underline stil:", isUnderline ? "UKLJUČEN" : "ISKLJUČEN");
 }
 
@@ -92,40 +101,35 @@ function toggleOverline() {
     console.log("Overline stil:", isOverline ? "UKLJUČEN" : "ISKLJUČEN");
 }
 
-function applyStylesToLastMessage() {
-    console.log("Pokušavam da primenim stilove na poslednju poruku...");
-    const messageArea = document.getElementById('messageArea');
-    const messages = messageArea.children;
-    if (messages.length === 0) {
-        console.log("Nema poruka u messageArea.");
-        return; 
-    }
-
-    const lastMessage = messages[messages.length - 1];
-    let decorations = [];
-    if (isUnderline) decorations.push('underline');
-    if (isOverline) decorations.push('overline');
-
-    lastMessage.style.textDecoration = decorations.join(' ');
-    console.log("Primijenjeni stil:", decorations.join(' '));
+// Kada korisnik šalje poruku
+function sendMessage(messageText) {
+    const messageData = {
+        text: messageText,
+        underline: isUnderline,
+        overline: isOverline,
+    };
+    socket.emit('newMessage', messageData); // Emituj poruku serveru
 }
 
+// Dodavanje poruka u messageArea
+socket.on('messageReceived', (data) => {
+    const { text, senderId, underline, overline } = data;
+    const messageArea = document.getElementById('messageArea');
+    const newMessage = document.createElement('div');
+
+    // Dodaj tekst i stilove
+    newMessage.textContent = text;
+    newMessage.setAttribute('data-sender', senderId); // Postavi ID autora poruke
+    let decorations = [];
+    if (underline) decorations.push('underline');
+    if (overline) decorations.push('overline');
+    newMessage.style.textDecoration = decorations.join(' ');
+
+    // Dodaj poruku u messageArea
+    messageArea.appendChild(newMessage);
+    console.log("Poruka primljena od:", senderId, "sa stilovima:", decorations.join(' '));
+});
+
 // Dugmad za menjanje stilova
-document.getElementById('linijadoleBtn').addEventListener('click', () => {
-    console.log("Kliknuto na dugme DOLE (underline)");
-    toggleUnderline();
-});
-
-document.getElementById('linijagoreBtn').addEventListener('click', () => {
-    console.log("Kliknuto na dugme GORE (overline)");
-    toggleOverline();
-});
-
-// Prati dodavanje novih poruka u messageArea
-const observer = new MutationObserver(() => {
-    console.log("Promena detektovana u messageArea. Dodajem stil...");
-    applyStylesToLastMessage();
-});
-observer.observe(document.getElementById('messageArea'), { childList: true });
-
-console.log("Kod je učitan i spreman.");
+document.getElementById('linijadoleBtn').addEventListener('click', toggleUnderline);
+document.getElementById('linijagoreBtn').addEventListener('click', toggleOverline);
