@@ -94,10 +94,12 @@ function toggleOverline() {
     updateMessageStyles(); // Ažuriraj stilove
 }
 
-// Funkcija koja primenjuje stilove na chat input
+// Funkcija koja primenjuje stilove na chat input i message area
 function updateMessageStyles() {
     const chatInput = document.getElementById('chatInput');
+    const messageArea = document.getElementById('messageArea');
     
+    // Ažuriraj chat input
     if (isUnderline) {
         chatInput.style.textDecoration = 'underline';
     } else if (isOverline) {
@@ -105,19 +107,54 @@ function updateMessageStyles() {
     } else {
         chatInput.style.textDecoration = 'none';
     }
+
+    // Ažuriraj message area (ako želimo da poruke budu u istom stilu)
+    const messages = messageArea.querySelectorAll('.message');
+    messages.forEach(message => {
+        if (isUnderline) {
+            message.style.textDecoration = 'underline';
+        } else if (isOverline) {
+            message.style.textDecoration = 'overline';
+        } else {
+            message.style.textDecoration = 'none';
+        }
+    });
 }
 
 // Funkcija koja se poziva pri slanju poruke
 function applyStylesToMessage(message) {
+    let styledMessage = message;
+    
     if (isUnderline) {
-        message = `<u>${message}</u>`;
+        styledMessage = `<u>${styledMessage}</u>`;
     }
     if (isOverline) {
-        message = `<span style="text-decoration: overline;">${message}</span>`;
+        styledMessage = `<span style="text-decoration: overline;">${styledMessage}</span>`;
     }
-    return message;
+
+    return styledMessage;
+}
+
+// Funkcija za dodavanje poruke u message area
+function addMessageToArea(message) {
+    const messageArea = document.getElementById('messageArea');
+    const styledMessage = applyStylesToMessage(message);
+    
+    const newMessage = document.createElement('div');
+    newMessage.classList.add('message');
+    newMessage.innerHTML = styledMessage;
+    
+    messageArea.appendChild(newMessage);
 }
 
 // Event listener za dugme DOLE i GORE
 document.getElementById("linijadoleBtn").addEventListener("click", toggleUnderline);
 document.getElementById("linijagoreBtn").addEventListener("click", toggleOverline);
+
+// Primer kako možete poslati poruku (npr. kada korisnik klikne na dugme za slanje)
+document.getElementById('sendMessageButton').addEventListener('click', function() {
+    const messageInput = document.getElementById('chatInput');
+    const message = messageInput.value;
+    addMessageToArea(message); // Dodajte poruku u message area
+    messageInput.value = ''; // Očistite input polje nakon slanja
+});
