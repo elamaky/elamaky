@@ -111,7 +111,7 @@ function updateInputStyle() {
         });
 
         this.value = '';
-    }
+    
 });
 
  let decorations = [];
