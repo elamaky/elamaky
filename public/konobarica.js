@@ -79,22 +79,21 @@ function decreaseFontSize() {
     messageArea.style.fontSize = newSize + "px";
 }
 
-let isUnderlineActive = false;
-let isOverlineActive = false;
-let currentStyle = ''; // trenutni stil koji je izabran
+let isUnderlineActive = false; // Stil za underline
+let currentStyle = ''; // Trenutni stil koji se koristi
 
-// Funkcija za postavljanje stila
-function setStyle(style) {
-    currentStyle = style;
-}
+// Funkcija za prebacivanje stila (underline ili overline)
+document.getElementById('linijadoleBtn').addEventListener('click', function() {
+    isUnderlineActive = !isUnderlineActive; // Prebacuje stanje
+    currentStyle = isUnderlineActive ? 'underline' : ''; // Postavlja stil
+});
 
 // Funkcija za slanje poruke
 function sendMessage() {
     let chatInput = document.getElementById('chatInput');
     let messageText = chatInput.value;
 
-    // Ako je polje prazno, ne šaljemo poruku
-    if (messageText.trim() === '') return;
+    if (messageText.trim() === '') return; // Ne šaljemo praznu poruku
 
     let messageDiv = document.createElement('div');
     messageDiv.textContent = messageText;
@@ -102,14 +101,11 @@ function sendMessage() {
     // Primena stila na poruku
     if (currentStyle === 'underline') {
         messageDiv.style.textDecoration = 'underline';
-    } else if (currentStyle === 'overline') {
-        messageDiv.style.textDecoration = 'overline';
     }
 
-    // Dodavanje poruke u kontejner
+    // Dodavanje poruke u messageArea
     document.getElementById('messageArea').appendChild(messageDiv);
 
     // Brisanje unosa nakon slanja
     chatInput.value = '';
 }
-
