@@ -36,6 +36,10 @@ function updateInputStyle() {
     inputField.style.fontWeight = isBold ? 'bold' : 'normal';
     inputField.style.fontStyle = isItalic ? 'italic' : 'normal';
     inputField.style.color = currentColor;
+    let decorations = [];
+    if (data.isUnderline) decorations.push('underline');
+    if (data.isOverline) decorations.push('overline');
+    console.log(inputField.style.textDecoration);
    
 }
 
@@ -62,12 +66,6 @@ socket.on('chatMessage', function(data) {
     newMessage.style.fontWeight = data.bold ? 'bold' : 'normal';
     newMessage.style.fontStyle = data.italic ? 'italic' : 'normal';
 
-    let decorations = [];
-    if (data.isUnderline) decorations.push('underline');
-    if (data.isOverline) decorations.push('overline');
-    inputField.style.textDecoration = decorations.join(' ');
-    console.log(inputField.style.textDecoration);
-    
     newMessage.style.color = data.color;
     newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
     messageArea.prepend(newMessage);
