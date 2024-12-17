@@ -79,28 +79,27 @@ function decreaseFontSize() {
     messageArea.style.fontSize = newSize + "px";
 }
 
-// External JavaScript for the buttons
 
 let isUnderlineActive = false;
 let isOverlineActive = false;
 
-document.getElementById('linijadoleBtn').addEventListener('click', () => {
+function UNDERLINE() {
     isUnderlineActive = !isUnderlineActive;
     if (isUnderlineActive) {
         document.execCommand('underline', false, null);
     } else {
         document.execCommand('underline', false, null); // Toggling underline off
     }
-});
+}
 
-document.getElementById('linijagoreBtn').addEventListener('click', () => {
+function OVERLINE() {
     isOverlineActive = !isOverlineActive;
     if (isOverlineActive) {
         document.addEventListener('keydown', applyOverline);
     } else {
         document.removeEventListener('keydown', applyOverline);
     }
-});
+}
 
 function applyOverline(event) {
     const target = event.target;
@@ -116,6 +115,3 @@ function applyOverline(event) {
         range.collapse(false);
     }
 }
-
-
-
