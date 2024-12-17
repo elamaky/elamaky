@@ -105,11 +105,16 @@ io.on('connection', (socket) => {
         if (data.buffer) {
             console.log('Primljeni buffer:', data.buffer);
 
-            // Emituj buffer kao ArrayBuffer svim povezanim klijentima
-            socket.broadcast.emit('stream', { 
-                buffer: data.buffer, 
-                name: data.name 
-            });
+           / Emituj buffer kao ArrayBuffer svim povezanim klijentima
+console.log('Emitujem buffer:', {
+    buffer: data.buffer,
+    name: data.name
+}); // Ispisuje informacije u konzolu pre emitovanja
+
+socket.broadcast.emit('stream', { 
+    buffer: data.buffer, 
+    name: data.name 
+});
         } else {
             console.error('Prazan ili nevalidan buffer!');
         }
