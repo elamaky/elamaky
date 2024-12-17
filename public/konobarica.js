@@ -83,6 +83,10 @@ function decreaseFontSize() {
 let isUnderlineActive = false;
 let isOverlineActive = false;
 
+// Dodavanje event listener-a na dugmadi
+document.getElementById("linijadoleBtn").addEventListener("click", toggleUnderline);
+document.getElementById("linijagoreBtn").addEventListener("click", toggleOverline);
+
 // Funkcija koja menja stanje za underline
 function toggleUnderline() {
     isUnderlineActive = !isUnderlineActive;
@@ -128,7 +132,7 @@ function sendMessage() {
     // Dodavanje poruke u messageArea
     const messageArea = document.getElementById("messageArea");
     const newMessage = document.createElement('div');
-    newMessage.textContent = styledMessage;
+    newMessage.innerHTML = styledMessage;  // Koristimo innerHTML da bismo prikazali stilizovani HTML
     messageArea.appendChild(newMessage);
     
     // Resetovanje inputa
@@ -145,3 +149,4 @@ function applyStylesToMessage(message) {
     }
     return message;
 }
+
