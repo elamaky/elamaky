@@ -84,30 +84,57 @@ let isOverline = false;
 
 // Funkcija za primenu underline stila
 function toggleUnderline() {
-    isUnderline = !isUnderline; // Prebaci stanje
-    updateInputStyle(); // Ažuriraj stil unosa
+    isUnderline = !isUnderline;
+    updateInputStyle();
 }
 
 // Funkcija za primenu overline stila
 function toggleOverline() {
-    isOverline = !isOverline; // Prebaci stanje
-    updateInputStyle(); // Ažuriraj stil unosa
+    isOverline = !isOverline;
+    updateInputStyle();
 }
 
-// Funkcija koja primenjuje underline i overline stilove na novu poruku
-function applyTextStylesToMessage(message) {
-    let styledMessage = message;
-    
-    if (isUnderline) {
-        styledMessage = `<u>${styledMessage}</u>`;
-    }
-    if (isOverline) {
-        styledMessage = `<span style="text-decoration: overline;">${styledMessage}</span>`;
-    }
-
-    return styledMessage;
+// Primena stilova na polju za unos
+function updateInputStyle() {
+    let inputField = document.getElementById('chatInput');
+    let decorations = [];
+    if (isUnderline) decorations.push('underline');
+    if (isOverline) decorations.push('overline');
+    inputField.style.textDecoration = decorations.join(' ');
 }
 
-// Event listener za dugme DOLE i GORE
+// Kada korisnik pritisne Enter
+document.getElementById('chatInput').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        let message = this.value;
+
+        // Emituj poruku sa stilovima underline i overline
+        socket.emit('chatMessage', {
+            text: message,
+            isUnderline: isUnderline,
+            isOverline: isOverline
+        });
+
+        this.value = '';
+    }
+});
+
+// Kada server pošalje poruku
+socket.on('chatMessage', function(data) {
+    let messageArea = document.getElementById('messageArea');
+    let newMessage = document.createElement('div');
+
+    let decorations = [];
+    if (data.isUnderline) decorations.push('underline');
+    if (data.isOverline) decorations.push('overline');
+
+    newMessage.style.textDecoration = decorations.join(' ');
+
+    newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text}`;
+    messageArea.prepend(newMessage);
+});
+
+// Event listeneri za dugmad
 document.getElementById("linijadoleBtn").addEventListener("click", toggleUnderline);
 document.getElementById("linijagoreBtn").addEventListener("click", toggleOverline);
