@@ -79,33 +79,69 @@ function decreaseFontSize() {
     messageArea.style.fontSize = newSize + "px";
 }
 
-let isUnderlineActive = false; // Stil za underline
-let currentStyle = ''; // Trenutni stil koji se koristi
+// Globalne promenljive koje čuvaju stanje stila
+let isUnderlineActive = false;
+let isOverlineActive = false;
 
-// Funkcija za prebacivanje stila (underline ili overline)
-document.getElementById('linijadoleBtn').addEventListener('click', function() {
-    isUnderlineActive = !isUnderlineActive; // Prebacuje stanje
-    currentStyle = isUnderlineActive ? 'underline' : ''; // Postavlja stil
-});
+// Funkcija koja menja stanje za underline
+function toggleUnderline() {
+    isUnderlineActive = !isUnderlineActive;
+    updateStyles();
+}
 
-// Funkcija za slanje poruke
-function sendMessage() {
-    let chatInput = document.getElementById('chatInput');
-    let messageText = chatInput.value;
+// Funkcija koja menja stanje za overline
+function toggleOverline() {
+    isOverlineActive = !isOverlineActive;
+    updateStyles();
+}
 
-    if (messageText.trim() === '') return; // Ne šaljemo praznu poruku
-
-    let messageDiv = document.createElement('div');
-    messageDiv.textContent = messageText;
-
-    // Primena stila na poruku
-    if (currentStyle === 'underline') {
-        messageDiv.style.textDecoration = 'underline';
+// Funkcija koja ažurira stilove u chatInput i messageArea
+function updateStyles() {
+    const chatInput = document.getElementById("chatInput");
+    
+    // Ako je underline aktivan, primenjujemo stil na chatInput
+    if (isUnderlineActive) {
+        chatInput.style.textDecoration = 'underline';
+    } else {
+        chatInput.style.textDecoration = 'none';
     }
+    
+    // Ako je overline aktivan, primenjujemo stil na chatInput
+    if (isOverlineActive) {
+        chatInput.style.textDecoration = 'overline';
+    } else {
+        chatInput.style.textDecoration = 'none';
+    }
+}
 
+// Funkcija za slanje poruke (na primer, emitovanje putem Socket.io)
+function sendMessage() {
+    const chatInput = document.getElementById("chatInput");
+    const message = chatInput.value;
+    
+    // Dodavanje stila na poruku pre nego što je pošaljemo
+    const styledMessage = applyStylesToMessage(message);
+    
+    // Ovdje bi trebalo da pošaljete poruku putem Socket.io
+    // socket.emit('newMessage', styledMessage);
+    
     // Dodavanje poruke u messageArea
-    document.getElementById('messageArea').appendChild(messageDiv);
-
-    // Brisanje unosa nakon slanja
+    const messageArea = document.getElementById("messageArea");
+    const newMessage = document.createElement('div');
+    newMessage.textContent = styledMessage;
+    messageArea.appendChild(newMessage);
+    
+    // Resetovanje inputa
     chatInput.value = '';
+}
+
+// Funkcija koja primenjuje stilove na poruku pre slanja
+function applyStylesToMessage(message) {
+    if (isUnderlineActive) {
+        message = `<u>${message}</u>`;  // HTML oznaka za podvlačenje
+    }
+    if (isOverlineActive) {
+        message = `<span style="text-decoration: overline;">${message}</span>`;  // HTML oznaka za crtu na vrhu
+    }
+    return message;
 }
