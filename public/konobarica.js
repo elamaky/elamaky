@@ -103,17 +103,6 @@ function updateInputStyle() {
     inputField.style.textDecoration = decorations.join(' ');
 }
 
- // Emituj poruku sa stilovima underline i overline
-        socket.emit('chatMessage', {
-            text: message,
-            isUnderline: isUnderline,
-            isOverline: isOverline
-        });
-
-        this.value = '';
-    }
-});
-
 // Event listeneri za dugmad
 document.getElementById("linijadoleBtn").addEventListener("click", toggleUnderline);
 document.getElementById("linijagoreBtn").addEventListener("click", toggleOverline);
