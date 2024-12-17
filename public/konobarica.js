@@ -103,13 +103,7 @@ function updateInputStyle() {
     inputField.style.textDecoration = decorations.join(' ');
 }
 
-// Kada korisnik pritisne Enter
-document.getElementById('chatInput').addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-        let message = this.value;
-
-        // Emituj poruku sa stilovima underline i overline
+ // Emituj poruku sa stilovima underline i overline
         socket.emit('chatMessage', {
             text: message,
             isUnderline: isUnderline,
@@ -120,12 +114,7 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
     }
 });
 
-// Kada server pošalje poruku
-socket.on('chatMessage', function(data) {
-    let messageArea = document.getElementById('messageArea');
-    let newMessage = document.createElement('div');
-
-    let decorations = [];
+ let decorations = [];
     if (data.isUnderline) decorations.push('underline');
     if (data.isOverline) decorations.push('overline');
 
