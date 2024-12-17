@@ -61,6 +61,14 @@ socket.on('chatMessage', function(data) {
     newMessage.classList.add('message');
     newMessage.style.fontWeight = data.bold ? 'bold' : 'normal';
     newMessage.style.fontStyle = data.italic ? 'italic' : 'normal';
+/ Dodaj underline i overline stilove
+    let decorations = [];
+    if (data.isUnderline) decorations.push('underline');
+    if (data.isOverline) decorations.push('overline');
+
+    // Postavi tekstualnu dekoraciju
+    newMessage.style.textDecoration = decorations.join(' ');
+    
     newMessage.style.color = data.color;
     newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
     messageArea.prepend(newMessage);
