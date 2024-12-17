@@ -85,15 +85,17 @@ let isOverline = false;
 // Funkcija za primenu underline stila
 function toggleUnderline() {
     isUnderline = !isUnderline; // Prebaci stanje
+    updateInputStyle(); // Ažuriraj stil unosa
 }
 
 // Funkcija za primenu overline stila
 function toggleOverline() {
     isOverline = !isOverline; // Prebaci stanje
+    updateInputStyle(); // Ažuriraj stil unosa
 }
 
-// Funkcija koja primenjuje stilove na novu poruku
-function applyStylesToMessage(message) {
+// Funkcija koja primenjuje underline i overline stilove na novu poruku
+function applyTextStylesToMessage(message) {
     let styledMessage = message;
     
     if (isUnderline) {
@@ -105,6 +107,7 @@ function applyStylesToMessage(message) {
 
     return styledMessage;
 }
+
 // Event listener za dugme DOLE i GORE
 document.getElementById("linijadoleBtn").addEventListener("click", toggleUnderline);
 document.getElementById("linijagoreBtn").addEventListener("click", toggleOverline);
