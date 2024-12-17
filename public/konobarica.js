@@ -111,17 +111,7 @@ function updateInputStyle() {
         });
 
         this.value = '';
-    
-});
-
- let decorations = [];
-    if (data.isUnderline) decorations.push('underline');
-    if (data.isOverline) decorations.push('overline');
-
-    newMessage.style.textDecoration = decorations.join(' ');
-
-    newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text}`;
-    messageArea.prepend(newMessage);
+    }
 });
 
 // Event listeneri za dugmad
