@@ -113,10 +113,7 @@ socket.on('stream', (data) => {
         console.error('Buffer nije validan ili je prazan.');
     }
 });
-
-
-
-   // Obrada diskonekcije korisnika
+ // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
