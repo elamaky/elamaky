@@ -63,7 +63,7 @@ window.onclick = function(event) {
     }
 }
 
-// Funkcija za uvećanje fonta u messageArea
+// Funkcija za uvećanje fonta
 function increaseFontSize() {
     var messageArea = document.getElementById("messageArea");
     var currentSize = window.getComputedStyle(messageArea, null).getPropertyValue('font-size');
@@ -71,7 +71,7 @@ function increaseFontSize() {
     messageArea.style.fontSize = newSize + "px";
 }
 
-// Funkcija za smanjenje fonta u messageArea
+// Funkcija za smanjenje fonta
 function decreaseFontSize() {
     var messageArea = document.getElementById("messageArea");
     var currentSize = window.getComputedStyle(messageArea, null).getPropertyValue('font-size');
@@ -79,22 +79,15 @@ function decreaseFontSize() {
     messageArea.style.fontSize = newSize + "px";
 }
 
-// Funkcija za dodavanje underline u messageArea
-function toggleUnderline() {
+// Funkcija za dodavanje underline (podcrtavanje)
+function UNDERLINE() {
     var messageArea = document.getElementById("messageArea");
-    if (messageArea.style.textDecoration === "underline") {
-        messageArea.style.textDecoration = "none"; // Ukloni underline
-    } else {
-        messageArea.style.textDecoration = "underline"; // Dodaj underline
-    }
+    messageArea.style.textDecoration = "underline"; // Dodaj underline
 }
 
-// Funkcija za dodavanje overline u messageArea
-function toggleOverline() {
+// Funkcija za dodavanje overline (linija gore)
+function OVERLINE() {
     var messageArea = document.getElementById("messageArea");
-    if (messageArea.style.textDecoration === "overline") {
-        messageArea.style.textDecoration = "none"; // Ukloni overline
-    } else {
-        messageArea.style.textDecoration = "overline"; // Dodaj overline
-    }
+    messageArea.style.textDecoration = "overline"; // Dodaj liniju gore
 }
+
