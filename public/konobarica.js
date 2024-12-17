@@ -83,22 +83,49 @@ let isUnderline = false;
 let isOverline = false;
 
 function toggleUnderline() {
-    isUnderline = !isUnderline;
-    updateInputStyle();
+    isUnderline = !isUnderline; 
+    console.log("Underline stil:", isUnderline ? "UKLJUČEN" : "ISKLJUČEN");
 }
 
 function toggleOverline() {
     isOverline = !isOverline;
-    updateInputStyle();
+    console.log("Overline stil:", isOverline ? "UKLJUČEN" : "ISKLJUČEN");
 }
 
-function updateInputStyle() {
-    let inputField = document.getElementById('chatInput');
+function applyStylesToLastMessage() {
+    console.log("Pokušavam da primenim stilove na poslednju poruku...");
+    const messageArea = document.getElementById('messageArea');
+    const messages = messageArea.children;
+    if (messages.length === 0) {
+        console.log("Nema poruka u messageArea.");
+        return; 
+    }
+
+    const lastMessage = messages[messages.length - 1];
     let decorations = [];
     if (isUnderline) decorations.push('underline');
     if (isOverline) decorations.push('overline');
-    inputField.style.textDecoration = decorations.join(' ');
+
+    lastMessage.style.textDecoration = decorations.join(' ');
+    console.log("Primijenjeni stil:", decorations.join(' '));
 }
 
-document.getElementById('linijadoleBtn').addEventListener('click', toggleUnderline);
-document.getElementById('linijagoreBtn').addEventListener('click', toggleOverline);
+// Dugmad za menjanje stilova
+document.getElementById('linijadoleBtn').addEventListener('click', () => {
+    console.log("Kliknuto na dugme DOLE (underline)");
+    toggleUnderline();
+});
+
+document.getElementById('linijagoreBtn').addEventListener('click', () => {
+    console.log("Kliknuto na dugme GORE (overline)");
+    toggleOverline();
+});
+
+// Prati dodavanje novih poruka u messageArea
+const observer = new MutationObserver(() => {
+    console.log("Promena detektovana u messageArea. Dodajem stil...");
+    applyStylesToLastMessage();
+});
+observer.observe(document.getElementById('messageArea'), { childList: true });
+
+console.log("Kod je učitan i spreman.");
