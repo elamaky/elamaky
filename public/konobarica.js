@@ -79,28 +79,16 @@ function decreaseFontSize() {
     messageArea.style.fontSize = newSize + "px";
 }
 
-function UNDERLINE() {
-    var selection = window.getSelection();
-    if (selection.rangeCount > 0) {
-        var range = selection.getRangeAt(0);
-        var span = document.createElement("span");
-        span.style.textDecoration = "underline";
-        range.deleteContents();
-        range.insertNode(span);
-        span.appendChild(document.createTextNode(selection.toString()));
-    }
+function applyUnderline() {
+    const textInput = document.getElementById('textInput');
+    const output = document.getElementById('output');
+    output.innerHTML = textInput.value.replace(/(\S+)/g, '<span style="text-decoration: underline;">$1</span>');
 }
 
-function OVERLINE() {
-    var selection = window.getSelection();
-    if (selection.rangeCount > 0) {
-        var range = selection.getRangeAt(0);
-        var span = document.createElement("span");
-        span.style.textDecoration = "overline";
-        range.deleteContents();
-        range.insertNode(span);
-        span.appendChild(document.createTextNode(selection.toString()));
-    }
+function applyOverline() {
+    const textInput = document.getElementById('textInput');
+    const output = document.getElementById('output');
+    output.innerHTML = textInput.value.replace(/(\S+)/g, '<span style="text-decoration: overline;">$1</span>');
 }
 
 
