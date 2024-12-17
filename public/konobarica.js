@@ -79,76 +79,45 @@ function decreaseFontSize() {
     messageArea.style.fontSize = newSize + "px";
 }
 
-// Globalne promenljive koje prate stanje stilova
-let isUnderlineActive = false;
-let isOverlineActive = false;
+let isUnderline = false;
+let isOverline = false;
 
-// Dodavanje event listener-a na dugmadi
-document.getElementById("linijadoleBtn").addEventListener("click", toggleUnderline);
-document.getElementById("linijagoreBtn").addEventListener("click", toggleOverline);
-
-// Funkcija koja menja stanje za underline
+// Funkcija za primenu underline stila
 function toggleUnderline() {
-    isUnderlineActive = !isUnderlineActive;
-    updateStyles();
+    isUnderline = !isUnderline; // Prebaci stanje
+    updateMessageStyles(); // Ažuriraj stilove
 }
 
-// Funkcija koja menja stanje za overline
+// Funkcija za primenu overline stila
 function toggleOverline() {
-    isOverlineActive = !isOverlineActive;
-    updateStyles();
+    isOverline = !isOverline; // Prebaci stanje
+    updateMessageStyles(); // Ažuriraj stilove
 }
 
-// Funkcija koja ažurira stilove u chatInput i messageArea
-function updateStyles() {
-    const chatInput = document.getElementById("chatInput");
+// Funkcija koja primenjuje stilove na chat input
+function updateMessageStyles() {
+    const chatInput = document.getElementById('chatInput');
     
-    // Ako je underline aktivan, primenjujemo stil na chatInput
-    if (isUnderlineActive) {
+    if (isUnderline) {
         chatInput.style.textDecoration = 'underline';
-    } else {
-        chatInput.style.textDecoration = 'none';
-    }
-    
-    // Ako je overline aktivan, primenjujemo stil na chatInput
-    if (isOverlineActive) {
+    } else if (isOverline) {
         chatInput.style.textDecoration = 'overline';
     } else {
         chatInput.style.textDecoration = 'none';
     }
 }
 
-// Funkcija za slanje poruke
-function sendMessage() {
-    const chatInput = document.getElementById("chatInput");
-    const message = chatInput.value;
-    
-    // Dodavanje stila na poruku pre nego što je pošaljemo
-    const styledMessage = applyStylesToMessage(message);
-    
-    // Dodavanje poruke u messageArea
-    const messageArea = document.getElementById("messageArea");
-    const newMessage = document.createElement('div');
-    newMessage.innerHTML = styledMessage;  // Prikazujemo stilizovanu poruku koristeći innerHTML
-    messageArea.appendChild(newMessage);
-    
-    // Resetovanje inputa
-    chatInput.value = '';
-}
-
-// Funkcija koja primenjuje stilove na poruku pre slanja
+// Funkcija koja se poziva pri slanju poruke
 function applyStylesToMessage(message) {
-    // Ako je underline aktivan, dodajemo HTML tag <u> (podvlačenje)
-    if (isUnderlineActive) {
+    if (isUnderline) {
         message = `<u>${message}</u>`;
     }
-    
-    // Ako je overline aktivan, dodajemo HTML tag <span> sa stilom za crtu na vrhu
-    if (isOverlineActive) {
+    if (isOverline) {
         message = `<span style="text-decoration: overline;">${message}</span>`;
     }
-    
     return message;
 }
 
-
+// Event listener za dugme DOLE i GORE
+document.getElementById("linijadoleBtn").addEventListener("click", toggleUnderline);
+document.getElementById("linijagoreBtn").addEventListener("click", toggleOverline);
