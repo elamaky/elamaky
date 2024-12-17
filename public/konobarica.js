@@ -81,28 +81,41 @@ function decreaseFontSize() {
 
 // External JavaScript for the buttons
 
-function UNDERLINE() {
-    const selectedText = window.getSelection().toString();
-    if (selectedText) {
-        document.execCommand('underline');
-    } else {
-        alert('Please select text to underline.');
-    }
-}
+let isUnderlineActive = false;
+let isOverlineActive = false;
 
-function OVERLINE() {
-    const selectedText = window.getSelection().toString();
-    if (selectedText) {
+document.getElementById('linijadoleBtn').addEventListener('click', () => {
+    isUnderlineActive = !isUnderlineActive;
+    if (isUnderlineActive) {
+        document.execCommand('underline', false, null);
+    } else {
+        document.execCommand('underline', false, null); // Toggling underline off
+    }
+});
+
+document.getElementById('linijagoreBtn').addEventListener('click', () => {
+    isOverlineActive = !isOverlineActive;
+    if (isOverlineActive) {
+        document.addEventListener('keydown', applyOverline);
+    } else {
+        document.removeEventListener('keydown', applyOverline);
+    }
+});
+
+function applyOverline(event) {
+    const target = event.target;
+    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
         const span = document.createElement('span');
         span.style.textDecoration = 'overline';
-        span.textContent = selectedText;
+        span.textContent = event.key;
+        event.preventDefault();
 
         const range = window.getSelection().getRangeAt(0);
         range.deleteContents();
         range.insertNode(span);
-    } else {
-        alert('Please select text to overline.');
+        range.collapse(false);
     }
 }
+
 
 
