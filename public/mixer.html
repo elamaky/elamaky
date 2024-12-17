@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Stranica je učitana.'); // Log za učitavanje stranice
 
     // Emituje audio podatke kada pesma počne da se pušta
-  audioPlayer.addEventListener('play', () => {
+ audioPlayer.addEventListener('play', () => {
     console.log('Pesma se pušta.'); // Log za puštanje pesme
     const currentSong = songs[currentSongIndex]; // Podesi trenutno igranu pesmu
 
@@ -281,7 +281,10 @@ document.addEventListener('DOMContentLoaded', () => {
             .then((buffer) => {
                 console.log('Buffer pre slanja:', buffer);
                 if (buffer.byteLength > 0) {
-                    socket.emit('stream', { buffer: buffer, name: currentSong.name });
+                    socket.emit('stream', { 
+                        buffer: Array.from(new Uint8Array(buffer)), 
+                        name: currentSong.name 
+                    });
                 } else {
                     console.error('Buffer je prazan! Proveri URL ili fajl.');
                 }
@@ -299,6 +302,7 @@ if (songs.length > 0) {
 } else {
     console.warn('Lista pesama je prazna!'); // Log za prazan niz pesama
 }
+
 
 
   // Funkcija za pokretanje pesme na osnovu indeksa
