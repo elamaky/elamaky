@@ -39,16 +39,16 @@ if (selectedGuest) {
 
 selectedGuest = event.target; // Postavlja novog gosta
 
-if (isPrivateChatEnabled) {
-    selectedGuest.style.backgroundColor = 'rgba(169, 169, 169, 0.3)'; // Providna siva traka kad je PV aktivan
-} else {
-    selectedGuest.style.backgroundColor = ''; // Bez trake kada PV nije aktivan
-}
+if (selectedGuest) { // Proverava da li je selectedGuest validan
+    if (isPrivateChatEnabled) {
+        selectedGuest.style.backgroundColor = 'rgba(169, 169, 169, 0.3)'; // Providna siva traka kad je PV aktivan
+    } else {
+        selectedGuest.style.backgroundColor = ''; // Bez trake kada PV nije aktivan
+    }
 
-selectedGuest.style.pointerEvents = isPrivateChatEnabled ? 'auto' : 'none'; // Onemogući selektovanje ako nije PV aktivan
+    selectedGuest.style.pointerEvents = isPrivateChatEnabled ? 'auto' : 'none'; // Onemogući selektovanje ako nije PV aktivan
 
-// Forma poruke za privatni chat
-if (isPrivateChatEnabled) {
+    // Forma poruke za privatni chat
     chatInput.value = `---->>> ${selectedGuest.textContent} : `;
 }
 
