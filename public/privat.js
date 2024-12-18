@@ -48,8 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Privatni chat sa: ", selectedGuest.textContent);
         }
     });
-    selectedGuest.style.pointerEvents = isPrivateChatEnabled ? 'auto' : 'none';
-
+  
     // Kada korisnik pritisne Enter
     chatInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
