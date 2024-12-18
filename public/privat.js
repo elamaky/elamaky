@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     italic: isItalic,
                     color: currentColor,
                     underline: isUnderline,
-                    overline: isOverline
+                    overline: isOverline,
                     time
                 });
 
