@@ -20,7 +20,7 @@ let isAudioStreaming = false;
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
 slikemodul.setSocket(io);
-privateModule(io, guests);
+
 
 // Middleware za parsiranje JSON podataka i serviranje statičkih fajlova
 app.use(express.json());
@@ -49,6 +49,7 @@ const assignedNumbers = new Set(); // Set za generisane brojeve
 
 // Dodavanje socket događaja iz banmodula
 setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
+privateModule(io, guests);
 
 // Socket.io događaji
 io.on('connection', (socket) => {
