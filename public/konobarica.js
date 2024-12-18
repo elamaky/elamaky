@@ -80,9 +80,19 @@ function decreaseFontSize() {
 }
 
 //ZA MIXER 
- fetch('mixer.html')
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById('mixer-container').innerHTML = data;
+ document.getElementById('mixer').addEventListener('click', function () {
+        const mixerContainer = document.getElementById('mixer-container');
+        
+        // Proveri da li je sadržaj već učitan
+        if (mixerContainer.innerHTML === '') {
+            fetch('mixer.html')
+                .then(response => response.text())
+                .then(data => {
+                    mixerContainer.innerHTML = data; // Ubacuje sadržaj mixer.html
+                    mixerContainer.style.display = 'block'; // Prikazuje kontejner
+                })
+                .catch(error => console.error('Greška pri učitavanju mixer.html:', error));
+        } else {
+            mixerContainer.style.display = 'block'; // Ako je već učitan, samo ga prikaži
+        }
     });
-
