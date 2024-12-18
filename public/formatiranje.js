@@ -3,11 +3,28 @@ let isItalic = false;
 let currentColor = '#FFFFFF';
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
+let isPrivate = false; // Statičko stanje za privatne poruke
 let privateTarget = null; // Globalna varijabla koja čuva ciljanog korisnika za privatnu poruku
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
 const colorPrefs = {};
+
+// Dodajemo event listener za dugme
+document.getElementById('privateMessage').addEventListener('click', function() {
+    isPrivate = !isPrivate;  // Prebacujemo stanje privatne poruke
+    const buttonText = isPrivate ? 'Isključiti privatnu poruku' : 'Privatna poruka';
+    this.textContent = buttonText;  // Menjamo tekst dugmeta
+    privateTarget = null;  // Resetujujemo ciljanog korisnika
+
+    // Ako je privatna poruka uključena, postavljamo chatInput u odgovarajući format
+    if (isPrivate) {
+        document.getElementById('chatInput').placeholder = 'Kucaj privatnu poruku...';
+    } else {
+        document.getElementById('chatInput').placeholder = 'Kucaj poruku...';
+    }
+});
+
 
 // Dodavanje event listenera za desni klik na goste
 document.querySelectorAll('.guest').forEach(guest => {
