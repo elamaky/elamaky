@@ -9,6 +9,7 @@ const konobaricaModul = require('./konobaricamodul'); // Uvoz konobaricamodul.js
 const slikemodul = require('./slikemodul');
 const router = require('./memorymodul'); // Uvoz ruta iz memorymodul.js
 const pingService = require('./ping');
+const privateModule = require('./privatmodul'); // Podesi putanju ako je u drugom folderu
 require('dotenv').config();
 
 const app = express();
