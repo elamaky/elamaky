@@ -58,18 +58,18 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
     if (event.key === 'Enter') {
         event.preventDefault();
         let message = this.value;
+        let time = new Date().toLocaleTimeString();
 
         // Ako je aktiviran privatni chat
         if (isPrivateChatEnabled && selectedGuest) {
-            let time = new Date().toLocaleTimeString();
             // Emituj privatnu poruku na server
             socket.emit('private_message', {
                 to: selectedGuest.textContent,  // Ime gosta kojem šalješ
                 message: message,
                 time: time
             });
-        } else if (!isPrivateChatEnabled) {  // Ovdje ne šaljemo običnu poruku ako je privatni chat aktivan
-            // Emituj standardnu chat poruku
+        } else { 
+            // Emituj samo javnu poruku ako nije aktiviran privatni chat
             socket.emit('chatMessage', {
                 text: message,
                 bold: isBold,
