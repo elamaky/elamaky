@@ -78,3 +78,11 @@ function decreaseFontSize() {
     var newSize = parseInt(currentSize) - 2; // Smanji veličinu fonta za 2px
     messageArea.style.fontSize = newSize + "px";
 }
+
+//ZA MIXER 
+ fetch('mixer.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('mixer-container').innerHTML = data;
+    });
+
