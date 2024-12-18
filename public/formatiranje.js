@@ -55,22 +55,35 @@ function updateInputStyle() {
 }
 
 
-// Kada korisnik pritisne Enter
 document.getElementById('chatInput').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
         let message = this.value;
-        socket.emit('chatMessage', {
-            text: message,
-            bold: isBold,
-            italic: isItalic,
-            color: currentColor,
-            underline: isUnderline,  // Dodano za underline
-            overline: isOverline     // Dodano za overline
-        });
+
+        // Ako je aktiviran privatni chat
+        if (isPrivateChatEnabled && selectedGuest) {
+            let time = new Date().toLocaleTimeString();
+            // Emituj privatnu poruku na server
+            socket.emit('private_message', {
+                to: selectedGuest.textContent,  // Ime gosta kojem šalješ
+                message: message,
+                time: time
+            });
+        } else {
+            // Emituj standardnu chat poruku
+            socket.emit('chatMessage', {
+                text: message,
+                bold: isBold,
+                italic: isItalic,
+                color: currentColor,
+                underline: isUnderline,
+                overline: isOverline
+            });
+        }
         this.value = ''; // Isprazni polje za unos
     }
 });
+
 
 
 // Kada server pošalje poruku
@@ -86,6 +99,26 @@ socket.on('chatMessage', function(data) {
     messageArea.prepend(newMessage);
     messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
+
+// Kada server pošalje privatnu poruku
+socket.on('private_message', function(data) {
+    let messageArea = document.getElementById('messageArea');
+    let newMessage = document.createElement('div');
+    newMessage.classList.add('message');
+
+    // Formatiranje privatne poruke
+    newMessage.style.fontWeight = data.bold ? 'bold' : 'normal';
+    newMessage.style.fontStyle = data.italic ? 'italic' : 'normal';
+    newMessage.style.color = data.color;
+    newMessage.style.textDecoration = (data.underline ? 'underline ' : '') + (data.overline ? 'overline' : '');
+    
+    newMessage.innerHTML = `<strong>${data.from} (Privatno):</strong> ${data.message} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
+    
+    // Prikazuje privatnu poruku
+    messageArea.prepend(newMessage);
+    messageArea.scrollTop = 0; // Automatsko skrolovanje
+});
+
 
 
 // Funkcija za dodavanje stilova gostima
