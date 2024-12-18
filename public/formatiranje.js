@@ -4,7 +4,6 @@ let currentColor = '#FFFFFF';
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
 
-
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
 const colorPrefs = {};
@@ -65,10 +64,8 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
             bold: isBold,
             italic: isItalic,
             color: currentColor,
-            underline: isUnderline, // Dodato za underline
-            overline: isOverline    // Dodato za overline
-            
- });
+            nickname: nickname // Pošalji ime gosta
+        });
         this.value = ''; // Isprazni polje za unos
     }
 });
