@@ -7,7 +7,7 @@ let isOverline = false;   // Dodano za overline
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
 const colorPrefs = {};
-const bannedUsers = {}; // Lista banovanih korisnika
+
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
