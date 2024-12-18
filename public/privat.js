@@ -1,3 +1,4 @@
+
 let isPrivateChatEnabled = false; // Status privatnog chata
 let selectedGuest = null; // Selekcija gosta
 
@@ -32,32 +33,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("Privatni chat isključen.");
                 return;
             }
-// Postavljanje novog selektovanog gosta
-if (selectedGuest) {
-    selectedGuest.style.backgroundColor = ''; // Resetuje prethodnog gosta
-}
 
-selectedGuest = event.target; // Postavlja novog gosta
+            // Postavljanje novog selektovanog gosta
+            if (selectedGuest) {
+                selectedGuest.style.backgroundColor = ''; // Resetuje prethodnog gosta
+            }
 
-if (selectedGuest) { // Proverava da li je selectedGuest validan
-    if (isPrivateChatEnabled) {
-        selectedGuest.style.backgroundColor = 'rgba(169, 169, 169, 0.3)'; // Providna siva traka kad je PV aktivan
-    } else {
-        selectedGuest.style.backgroundColor = ''; // Bez trake kada PV nije aktivan
-    }
+            selectedGuest = event.target; // Postavlja novog gosta
+            selectedGuest.style.backgroundColor = 'rgba(255, 255, 0, 0.3)'; // Providna žuta traka
+            isPrivateChatEnabled = true; // Uključuje privatni chat
 
-    selectedGuest.style.pointerEvents = isPrivateChatEnabled ? 'auto' : 'none'; // Onemogući selektovanje ako nije PV aktivan
-
-    // Forma poruke za privatni chat
-    chatInput.value = `---->>> ${selectedGuest.textContent} : `;
-}
-
-
-// Forma poruke za privatni chat
-if (isPrivateChatEnabled) {
-    chatInput.value = `---->>> ${selectedGuest.textContent} : `;
-    console.log("Privatni chat sa: ", selectedGuest.textContent);
-}
+            // Forma poruke za privatni chat
+            chatInput.value = `---->>> ${selectedGuest.textContent} : `;
+            console.log("Privatni chat sa: ", selectedGuest.textContent);
+        }
+    });
+    selectedGuest.style.pointerEvents = isPrivateChatEnabled ? 'auto' : 'none';
 
     // Kada korisnik pritisne Enter
     chatInput.addEventListener('keydown', (event) => {
@@ -100,3 +91,4 @@ if (isPrivateChatEnabled) {
         }
     });
 });
+
