@@ -59,19 +59,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const recipient = selectedGuest.textContent;
                 const time = new Date().toLocaleTimeString();
 
-               socket.emit('private_message', {
-    to: recipient,
-    message,
-    time,
-    bold: isBold,
-    italic: isItalic,
-    color: currentColor,
-    underline: isUnderline,
-    overline: isOverline
-});
+                socket.emit('private_message', {
+                    to: recipient,
+                    message,
+                    time
+                });
 
-               
-               // Forma ostaje netaknuta za privatni chat
+                console.log(`Privatna poruka poslata ${recipient}:`, message);
+
+                // Forma ostaje netaknuta za privatni chat
                 chatInput.value = `---->>> ${recipient} : `;
             } else {
                 // Emisija obične poruke
