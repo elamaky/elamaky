@@ -58,31 +58,20 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
     if (event.key === 'Enter') {
         event.preventDefault();
         let message = this.value;
-        let time = new Date().toLocaleTimeString();
-        let nickname = 'User'; // Prilagodi ovo da bi stavio korisničko ime
 
         // Ako je aktiviran privatni chat
         if (isPrivateChatEnabled && selectedGuest) {
+            let time = new Date().toLocaleTimeString();
             // Emituj privatnu poruku na server
             socket.emit('private_message', {
-                type: 'private',  // Dodajemo tip poruke
                 to: selectedGuest.textContent,  // Ime gosta kojem šalješ
                 message: message,
-                time: time,
-                nickname: nickname,  // Dodajemo nickname
-                bold: isBold,
-                italic: isItalic,
-                color: currentColor,
-                underline: isUnderline,
-                overline: isOverline
+                time: time
             });
-        } else {
+        } else if (!isPrivateChatEnabled) {  // Ovdje ne šaljemo običnu poruku ako je privatni chat aktivan
             // Emituj standardnu chat poruku
             socket.emit('chatMessage', {
-                type: 'chat',  // Dodajemo tip poruke
                 text: message,
-                time: time,
-                nickname: nickname,  // Dodajemo nickname
                 bold: isBold,
                 italic: isItalic,
                 color: currentColor,
@@ -90,40 +79,42 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
                 overline: isOverline
             });
         }
+
         this.value = ''; // Isprazni polje za unos
     }
 });
 
 // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
-    if (data.type === 'chat') {  // Proveri da li je obična poruka
-        let messageArea = document.getElementById('messageArea');
-        let newMessage = document.createElement('div');
-        newMessage.classList.add('message');
-        newMessage.style.fontWeight = data.bold ? 'bold' : 'normal';
-        newMessage.style.fontStyle = data.italic ? 'italic' : 'normal';
-        newMessage.style.color = data.color;
-        newMessage.style.textDecoration = (data.underline ? 'underline ' : '') + (data.overline ? 'overline' : '');
-        newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
-        messageArea.prepend(newMessage);
-        messageArea.scrollTop = 0; // Automatsko skrolovanje
-    }
+    let messageArea = document.getElementById('messageArea');
+    let newMessage = document.createElement('div');
+    newMessage.classList.add('message');
+    newMessage.style.fontWeight = data.bold ? 'bold' : 'normal';
+    newMessage.style.fontStyle = data.italic ? 'italic' : 'normal';
+    newMessage.style.color = data.color;
+    newMessage.style.textDecoration = (data.underline ? 'underline ' : '') + (data.overline ? 'overline' : '');
+    newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
+    messageArea.prepend(newMessage);
+    messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
 
 // Kada server pošalje privatnu poruku
 socket.on('private_message', function(data) {
-    if (data.type === 'private') {  // Proveri da li je privatna poruka
-        let messageArea = document.getElementById('messageArea');
-        let newMessage = document.createElement('div');
-        newMessage.classList.add('message');
-        newMessage.style.fontWeight = data.bold ? 'bold' : 'normal';
-        newMessage.style.fontStyle = data.italic ? 'italic' : 'normal';
-        newMessage.style.color = data.color;
-        newMessage.style.textDecoration = (data.underline ? 'underline ' : '') + (data.overline ? 'overline' : '');
-        newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
-        messageArea.prepend(newMessage);
-        messageArea.scrollTop = 0; // Automatsko skrolovanje
-    }
+    let messageArea = document.getElementById('messageArea');
+    let newMessage = document.createElement('div');
+    newMessage.classList.add('message');
+
+    // Formatiranje privatne poruke
+    newMessage.style.fontWeight = data.bold ? 'bold' : 'normal';
+    newMessage.style.fontStyle = data.italic ? 'italic' : 'normal';
+    newMessage.style.color = data.color;
+    newMessage.style.textDecoration = (data.underline ? 'underline ' : '') + (data.overline ? 'overline' : '');
+    
+    newMessage.innerHTML = `<strong>${data.from} (Privatno):</strong> ${data.message} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
+    
+    // Prikazuje privatnu poruku
+    messageArea.prepend(newMessage);
+    messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
 
 
