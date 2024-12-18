@@ -29,6 +29,18 @@ konobaricaItem.classList.add('guest-konobarica');
 konobaricaItem.innerHTML = 'Konobarica'; // Dodajemo samo tekst bez tagova
 guestList.appendChild(konobaricaItem);
 
+//  ZA MIXER DODATAK
+// Open modal on button click
+document.getElementById("mixer").onclick = function() {
+  document.getElementById("mixerModal").style.display = "block";
+}
+
+// Close modal when clicking the close button
+document.getElementById("kosModal").addEventListener("click", function() {
+  document.getElementById("mixerModal").style.display = "none";
+});
+
+
 // GOSTI MODAL 
 var modal = document.getElementById("gostimodal");
 var btn = document.getElementById("GBtn");
@@ -66,21 +78,3 @@ function decreaseFontSize() {
     var newSize = parseInt(currentSize) - 2; // Smanji veličinu fonta za 2px
     messageArea.style.fontSize = newSize + "px";
 }
-
-//ZA MIXER 
- document.getElementById('mixer').addEventListener('click', function () {
-        const mixerContainer = document.getElementById('mixer-container');
-        
-        // Provera i učitavanje sadržaja
-        if (mixerContainer.innerHTML === '') {
-            fetch('mixer.html')
-                .then(response => response.text())
-                .then(data => {
-                    mixerContainer.innerHTML = data; // Ubacuje sadržaj iz mixer.html
-                    mixerContainer.style.display = 'block'; // Prikazuje kontejner
-                })
-                .catch(error => console.error('Greška pri učitavanju mixer.html:', error));
-        } else {
-            mixerContainer.style.display = 'block'; // Prikazuje već učitani sadržaj
-        }
-    });
