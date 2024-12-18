@@ -3,27 +3,10 @@ let isItalic = false;
 let currentColor = '#FFFFFF';
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
-let isPrivate = false; // Statičko stanje za privatne poruke
-let privateTarget = null; // Globalna varijabla koja čuva ciljanog korisnika za privatnu poruku
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
 const colorPrefs = {};
-
-// Dodajemo event listener za dugme
-document.getElementById('privateMessage').addEventListener('click', function() {
-    isPrivate = !isPrivate;  // Prebacujemo stanje privatne poruke
-    const buttonText = isPrivate ? 'Isključiti privatnu poruku' : 'Privatna poruka';
-    this.textContent = buttonText;  // Menjamo tekst dugmeta
-    privateTarget = null;  // Resetujujemo ciljanog korisnika
-
-    // Ako je privatna poruka uključena, postavljamo chatInput u odgovarajući format
-    if (isPrivate) {
-        document.getElementById('chatInput').placeholder = 'Kucaj privatnu poruku...';
-    } else {
-        document.getElementById('chatInput').placeholder = 'Kucaj poruku...';
-    }
-});
 
 
 // Funkcija za BOLD formatiranje
@@ -71,34 +54,21 @@ function updateInputStyle() {
     inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
 }
 
-document.getElementById('chatInput').addEventListener('focus', function() {
-    if (privateTarget) {
-        this.value = `------->>>> ${privateTarget}: `; // Dodajemo oznaku za privatnu poruku
-    }
-});
 
-
-// Kada korisnik pritisne Enter, šaljemo poruku
+// Kada korisnik pritisne Enter
 document.getElementById('chatInput').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
         let message = this.value;
-        if (privateTarget) {
-            // Ako je privatna poruka, formatiramo je
-            message = `------->>>> ${privateTarget}: ${message}`;
-            socket.emit('private_message', { to: privateTarget, message, time: new Date().toLocaleTimeString() });
-            privateTarget = null;  // Resetujemo privatni cilj
-        } else {
-            socket.emit('chatMessage', {
-                text: message,
-                bold: isBold,
-                italic: isItalic,
-                color: currentColor,
-                underline: isUnderline,
-                overline: isOverline
-            });
-        }
-        this.value = ''; // Očistimo input polje
+        socket.emit('chatMessage', {
+            text: message,
+            bold: isBold,
+            italic: isItalic,
+            color: currentColor,
+            underline: isUnderline,  // Dodano za underline
+            overline: isOverline     // Dodano za overline
+        });
+        this.value = ''; // Isprazni polje za unos
     }
 });
 
@@ -113,7 +83,6 @@ socket.on('chatMessage', function(data) {
     newMessage.style.color = data.color;
     newMessage.style.textDecoration = (data.underline ? 'underline ' : '') + (data.overline ? 'overline' : '');
     newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
-    newMessage.innerHTML = `<strong>${data.from} (Privatno):</strong> ${data.message} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
     messageArea.prepend(newMessage);
     messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
@@ -188,13 +157,3 @@ socket.on('updateGuestList', function(users) {
         }
     });
 });  
-
-// Dodavanje event listenera za desni klik na goste
-document.querySelectorAll('.guest').forEach(guest => {
-    guest.addEventListener('contextmenu', function(e) {
-        e.preventDefault();  // Sprečavamo da se pojavi kontekst meni
-        privateTarget = guest.textContent;  // Postavljamo ciljanog korisnika za privatnu poruku
-        alert(`Sada šaljete privatnu poruku korisniku: ${privateTarget}`);
-    });
-});
-console.log(privateTarget);  // Proveri da li je ispravno postavljen
