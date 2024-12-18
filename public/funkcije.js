@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const guestList = document.getElementById("guestList");
     const chatContainer = document.getElementById("chatContainer"); // Referenca na chat
+    const bannedUsers = {}; // Lista banovanih korisnika
+
 
     // Funkcija za proveru lozinke
     function promptPassword() {
