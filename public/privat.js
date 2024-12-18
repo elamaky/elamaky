@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
   
     // Kada korisnik pritisne Enter
     chatInput.addEventListener('keydown', (event) => {
