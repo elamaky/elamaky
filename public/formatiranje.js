@@ -68,8 +68,8 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
                 message: message,
                 time: time
             });
-        } else { 
-            // Emituj samo javnu poruku ako nije aktiviran privatni chat
+        } else if (!isPrivateChatEnabled) {  // Ovdje šaljemo samo javnu poruku ako privatni chat nije aktivan
+            // Emituj standardnu chat poruku
             socket.emit('chatMessage', {
                 text: message,
                 bold: isBold,
@@ -110,7 +110,9 @@ socket.on('private_message', function(data) {
     newMessage.style.color = data.color;
     newMessage.style.textDecoration = (data.underline ? 'underline ' : '') + (data.overline ? 'overline' : '');
     
-   // Prikazuje privatnu poruku
+    newMessage.innerHTML = `<strong>${data.from} (Privatno):</strong> ${data.message} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
+    
+    // Prikazuje privatnu poruku
     messageArea.prepend(newMessage);
     messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
