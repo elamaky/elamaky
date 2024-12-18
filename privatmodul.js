@@ -1,5 +1,3 @@
-// privatmodul.js
-
 module.exports = function (io, guests) {
     // Privatna poruka
     io.on('connection', (socket) => {
