@@ -93,28 +93,6 @@ function toggleOverline() {
     console.log("Overline stil:", isOverline ? "UKLJUČEN" : "ISKLJUČEN");
 }
 
-// Slanje poruke serveru
-function sendMessage() {
-    const chatInput = document.getElementById('chatInput');
-    const messageText = chatInput.value;
-
-    if (!messageText.trim()) return; // Ako je poruka prazna, ništa ne radi
-
-    // Priprema podataka za slanje
-    const msgData = {
-        text: messageText,
-        underline: isUnderline,
-        overline: isOverline,
-    };
-
-    // Emituj poruku serveru
-    socket.emit('chatMessage', msgData);
-    console.log("Poruka poslata:", msgData);
-
-    // Očisti input
-    chatInput.value = '';
-}
-
 // Dodavanje poruke u `messageArea`
 socket.on('chatMessage', (data) => {
     const { text, underline, overline, nickname, time } = data;
@@ -122,19 +100,14 @@ socket.on('chatMessage', (data) => {
     const messageArea = document.getElementById('messageArea');
     const newMessage = document.createElement('div');
 
-    // Postavi tekst poruke i autora
-    newMessage.textContent = `[${time}] ${nickname}: ${text}`;
-    newMessage.classList.add('message'); // Opciona klasa za stilizaciju
-
+   
     // Primeni stilove
     let decorations = [];
     if (underline) decorations.push('underline');
     if (overline) decorations.push('overline');
     newMessage.style.textDecoration = decorations.join(' ');
 
-    // Dodaj poruku u `messageArea`
-    messageArea.appendChild(newMessage);
-    console.log("Poruka primljena:", data);
+   
 });
 
 // Dugmad za menjanje stilova
