@@ -26,16 +26,6 @@ document.getElementById('privateMessage').addEventListener('click', function() {
 });
 
 
-// Dodavanje event listenera za desni klik na goste
-document.querySelectorAll('.guest').forEach(guest => {
-    guest.addEventListener('contextmenu', function(e) {
-        e.preventDefault();  // Sprečavamo da se pojavi kontekst meni
-        privateTarget = guest.textContent;  // Postavljamo ciljanog korisnika za privatnu poruku
-        alert(`Sada šaljete privatnu poruku korisniku: ${privateTarget}`);
-    });
-});
-
-
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
@@ -199,3 +189,12 @@ socket.on('updateGuestList', function(users) {
     });
 });  
 
+// Dodavanje event listenera za desni klik na goste
+document.querySelectorAll('.guest').forEach(guest => {
+    guest.addEventListener('contextmenu', function(e) {
+        e.preventDefault();  // Sprečavamo da se pojavi kontekst meni
+        privateTarget = guest.textContent;  // Postavljamo ciljanog korisnika za privatnu poruku
+        alert(`Sada šaljete privatnu poruku korisniku: ${privateTarget}`);
+    });
+});
+console.log(privateTarget);  // Proveri da li je ispravno postavljen
