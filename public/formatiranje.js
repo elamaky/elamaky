@@ -58,37 +58,7 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
     if (event.key === 'Enter') {
         event.preventDefault();
         let message = this.value;
-
-        if (isPrivateChatEnabled && selectedGuest) {
-            let time = new Date().toLocaleTimeString();
-
-            // Emituj privatnu poruku samo jednom
-            socket.emit('private_message', {
-                from: "Gost-3964", // Ovde koristi svoj identifikator
-                to: selectedGuest.textContent,
-                message: message,
-                time: time,
-                bold: isBold,
-                italic: isItalic,
-                color: currentColor,
-                underline: isUnderline,
-                overline: isOverline
-            });
-
-            // Lokalno dodaj svoju poruku kako ne bi čekao povratnu poruku od servera
-            let messageArea = document.getElementById('messageArea');
-            let newMessage = document.createElement('div');
-            newMessage.classList.add('message');
-
-            newMessage.style.fontWeight = isBold ? 'bold' : 'normal';
-            newMessage.style.fontStyle = isItalic ? 'italic' : 'normal';
-            newMessage.style.color = currentColor;
-            newMessage.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
-
-            newMessage.innerHTML = `<strong>Ti (Privatno):</strong> ${message} <span style="font-size: 0.8em; color: gray;">(${time})</span>`;
-            messageArea.prepend(newMessage);
-        } else {
-            socket.emit('chatMessage', {
+        socket.emit('chatMessage', {
                 text: message,
                 bold: isBold,
                 italic: isItalic,
@@ -97,10 +67,11 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
                 overline: isOverline
             });
         }
-
         this.value = ''; // Isprazni polje za unos
     }
 });
+
+
 
 // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
@@ -116,10 +87,8 @@ socket.on('chatMessage', function(data) {
     messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
 
+// Kada server pošalje privatnu poruku
 socket.on('private_message', function(data) {
-    // Ako je pošiljalac isti kao trenutni korisnik, ne prikazuj je ponovo
-    if (data.from === "Gost-3964") return;
-
     let messageArea = document.getElementById('messageArea');
     let newMessage = document.createElement('div');
     newMessage.classList.add('message');
@@ -129,10 +98,14 @@ socket.on('private_message', function(data) {
     newMessage.style.fontStyle = data.italic ? 'italic' : 'normal';
     newMessage.style.color = data.color;
     newMessage.style.textDecoration = (data.underline ? 'underline ' : '') + (data.overline ? 'overline' : '');
-
+    
     newMessage.innerHTML = `<strong>${data.from} (Privatno):</strong> ${data.message} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
+    
+    // Prikazuje privatnu poruku
     messageArea.prepend(newMessage);
+    messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
+
 
 
 // Funkcija za dodavanje stilova gostima
