@@ -20,6 +20,7 @@ let isAudioStreaming = false;
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
 slikemodul.setSocket(io);
+privateModule(io, guests);
 
 // Middleware za parsiranje JSON podataka i serviranje statičkih fajlova
 app.use(express.json());
@@ -87,14 +88,6 @@ io.on('connection', (socket) => {
             time: time,
         };
         io.emit('chatMessage', messageToSend);
-    });
-
-    // Obrada privatne poruke
-    socket.on('private_message', ({ to, message, time }) => {
-        const toSocketId = Object.keys(guests).find(key => guests[key] === to);
-        if (toSocketId) {
-            io.to(toSocketId).emit('private_message', { from: guests[socket.id], message, time });
-        }
     });
 
     // Obrada za čišćenje chata
