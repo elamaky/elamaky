@@ -54,23 +54,21 @@ function updateInputStyle() {
     inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
 }
 
+// Kada korisnik pritisne Enter
 document.getElementById('chatInput').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
         let message = this.value;
         socket.emit('chatMessage', {
-                text: message,
-                bold: isBold,
-                italic: isItalic,
-                color: currentColor,
-                underline: isUnderline,
-                overline: isOverline
-            });
-        }
+            text: message,
+            bold: isBold,
+            italic: isItalic,
+            color: currentColor,
+            nickname: nickname // Pošalji ime gosta
+        });
         this.value = ''; // Isprazni polje za unos
     }
 });
-
 
 
 // Kada server pošalje poruku
