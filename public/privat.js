@@ -62,6 +62,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 socket.emit('private_message', {
                     to: recipient,
                     message,
+                     bold: isBold,
+                    italic: isItalic,
+                    color: currentColor,
+                    underline: isUnderline,
+                    overline: isOverline
                     time
                 });
 
