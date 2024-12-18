@@ -32,8 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("Privatni chat isključen.");
                 return;
             }
-
-          // Postavljanje novog selektovanog gosta
+// Postavljanje novog selektovanog gosta
 if (selectedGuest) {
     selectedGuest.style.backgroundColor = ''; // Resetuje prethodnog gosta
 }
@@ -47,6 +46,12 @@ if (isPrivateChatEnabled) {
 }
 
 selectedGuest.style.pointerEvents = isPrivateChatEnabled ? 'auto' : 'none'; // Onemogući selektovanje ako nije PV aktivan
+
+// Forma poruke za privatni chat
+if (isPrivateChatEnabled) {
+    chatInput.value = `---->>> ${selectedGuest.textContent} : `;
+}
+
 
 // Forma poruke za privatni chat
 if (isPrivateChatEnabled) {
