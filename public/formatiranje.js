@@ -110,9 +110,7 @@ socket.on('private_message', function(data) {
     newMessage.style.color = data.color;
     newMessage.style.textDecoration = (data.underline ? 'underline ' : '') + (data.overline ? 'overline' : '');
     
-    newMessage.innerHTML = `<strong>${data.from} (Privatno):</strong> ${data.message} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
-    
-    // Prikazuje privatnu poruku
+   // Prikazuje privatnu poruku
     messageArea.prepend(newMessage);
     messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
