@@ -54,35 +54,38 @@ function updateInputStyle() {
     inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
 }
 
-document.getElementById('chatInput').addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-        let message = this.value;
+if (!document.getElementById('chatInput').hasAttribute('listener-added')) {
+    document.getElementById('chatInput').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            let message = this.value;
 
-        // Ako je aktiviran privatni chat
-        if (isPrivateChatEnabled && selectedGuest) {
-            let time = new Date().toLocaleTimeString();
-            // Emituj privatnu poruku na server
-            socket.emit('private_message', {
-                to: selectedGuest.textContent,  // Ime gosta kojem šalješ
-                message: message,
-                time: time
-            });
-        } else {
-            // Emituj standardnu chat poruku
-            socket.emit('chatMessage', {
-                text: message,
-                bold: isBold,
-                italic: isItalic,
-                color: currentColor,
-                underline: isUnderline,
-                overline: isOverline
-            });
+            // Ako je aktiviran privatni chat
+            if (isPrivateChatEnabled && selectedGuest) {
+                let time = new Date().toLocaleTimeString();
+                // Emituj privatnu poruku na server
+                socket.emit('private_message', {
+                    to: selectedGuest.textContent,  // Ime gosta kojem šalješ
+                    message: message,
+                    time: time
+                });
+            } else {
+                // Emituj standardnu chat poruku
+                socket.emit('chatMessage', {
+                    text: message,
+                    bold: isBold,
+                    italic: isItalic,
+                    color: currentColor,
+                    underline: isUnderline,
+                    overline: isOverline
+                });
+            }
+            this.value = ''; // Isprazni polje za unos
         }
-        this.value = ''; // Isprazni polje za unos
-    }
-});
+    });
 
+    document.getElementById('chatInput').setAttribute('listener-added', 'true');
+}
 
 
 // Kada server pošalje poruku
