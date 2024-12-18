@@ -12,8 +12,8 @@ document.getElementById('privateMessage').addEventListener('click', () => {
             guest.style.backgroundColor = ''; // Resetujemo stil gostiju
         });
     }
+});
 
-  
 document.addEventListener('DOMContentLoaded', () => {
     const guestList = document.getElementById('guestList');
     const chatInput = document.getElementById('chatInput');
@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 selectedGuest = null; // Resetuje selektovanog gosta
                 isPrivateChatEnabled = false; // Isključuje privatni chat
                 chatInput.value = ''; // Resetuje unos
-                console.log("Privatni chat isključen.");
                 return;
             }
 
@@ -35,13 +34,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 selectedGuest.style.backgroundColor = ''; // Resetuje prethodnog gosta
             }
 
-           selectedGuest = event.target; // Postavlja novog gosta
-selectedGuest.style.backgroundColor = 'rgba(255, 255, 0, 0.3)'; // Providna žuta traka
-isPrivateChatEnabled = true; // Uključuje privatni chat
+            selectedGuest = event.target; // Postavlja novog gosta
+            selectedGuest.style.backgroundColor = 'rgba(255, 255, 0, 0.3)'; // Providna žuta traka
+            isPrivateChatEnabled = true; // Uključuje privatni chat
 
-// Forma poruke za privatni chat
-chatInput.value = `---->>> ${selectedGuest.textContent} : `;
-}
+            // Forma poruke za privatni chat
+            chatInput.value = `---->>> ${selectedGuest.textContent} : `;
+        }
+    });
 
     // Kada korisnik pritisne Enter
     chatInput.addEventListener('keydown', (event) => {
@@ -59,8 +59,6 @@ chatInput.value = `---->>> ${selectedGuest.textContent} : `;
                     message,
                     time
                 });
-
-               
 
                 // Forma ostaje netaknuta za privatni chat
                 chatInput.value = `---->>> ${recipient} : `;
@@ -80,5 +78,3 @@ chatInput.value = `---->>> ${selectedGuest.textContent} : `;
         }
     });
 });
-
-
