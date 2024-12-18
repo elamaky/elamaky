@@ -48,20 +48,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Event listener za dugme "Privatna poruka" (opcionalno, kao dodatna kontrola)
-    document.getElementById('privateMessage').addEventListener('click', () => {
-        isPrivateChatEnabled = !isPrivateChatEnabled;
-        const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
+    // Kada korisnik pritisne Enter
+    chatInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            let message = chatInput.value;
 
-        if (!isPrivateChatEnabled) {
-            if (selectedGuest) {
-                selectedGuest.style.backgroundColor = ''; // Resetuje traku selekcije
-                selectedGuest = null; // Resetuje selektovanog gosta
+            if (isPrivateChatEnabled && selectedGuest) {
+                // Emisija privatne poruke
+                const recipient = selectedGuest.textContent;
+                const time = new Date().toLocaleTimeString();
+
+                socket.emit('private_message', {
+                    to: recipient,
+                    message,
+                    time
+                });
+
+                console.log(`Privatna poruka poslata ${recipient}:`, message);
+
+                // Forma ostaje netaknuta za privatni chat
+                chatInput.value = `---->>> ${recipient} : `;
+            } else {
+                // Emisija obične poruke
+                socket.emit('chatMessage', {
+                    text: message,
+                    bold: isBold,
+                    italic: isItalic,
+                    color: currentColor,
+                    underline: isUnderline,
+                    overline: isOverline
+                });
+
+                chatInput.value = ''; // Resetuje unos samo za obične poruke
             }
-            chatInput.value = ''; // Resetuje unos
         }
-
-        console.log(statusText);
     });
 });
+
 
