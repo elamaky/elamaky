@@ -2,13 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
 
-// Konekcija sa MongoDB
-mongoose.connect('mongodb://localhost:27017/guests', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => console.log("Povezan na MongoDB"))
-  .catch(err => console.error("Greška pri povezivanju na MongoDB:", err));
-
 // Definisanje modela za goste
 const guestSchema = new mongoose.Schema({
     uuid: { type: String, required: true, unique: true },
