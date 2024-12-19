@@ -41,11 +41,10 @@ router.post('/api/savePage', async (req, res) => {
   }
 });
 
-// Ruta za dobijanje stranica
 router.get('/api/getPages', async (req, res) => {
   const { userId } = req.query;
 
-  console.log('Primljeni userId:', userId);  // Proveri da li je userId poslat u query
+  console.log('Primljeni userId:', userId);  // Proverite da li je userId poslat u query
 
   if (!userId) {
     return res.status(400).json({ success: false, message: "UserId je obavezan." });
@@ -53,14 +52,17 @@ router.get('/api/getPages', async (req, res) => {
 
   try {
     console.log(`[INFO] Pokušaj dobijanja stranica za korisnika - userId: ${userId}`);
-    const pages = await Page.find({ userId });
+    const pages = await Page.find({ userId });  // Tražimo stranice po userId
+    console.log('Pronađene stranice:', pages);  // Logujte stranice koje su pronađene u bazi
 
-    res.status(200).json({ success: true, pages });
+    if (pages.length === 0) {
+      console.log(`[INFO] Nema stranica za korisnika - userId: ${userId}`);
+      res.status(404).json({ success: false, message: "Nema stranica za ovog korisnika." });
+    } else {
+      res.status(200).json({ success: true, pages });
+    }
   } catch (error) {
-    console.error(`[ERROR] Greška pri učitavanju stranica za userId: ${userId}`, error);
-    res.status(500).json({ success: false, message: "Greška pri učitavanju stranica." });
+    console.error(`[ERROR] Greška pri dobijanju stranica - userId: ${userId}`, error);
+    res.status(500).json({ success: false, message: "Greška pri dobijanju stranica.", error });
   }
 });
-
-module.exports = router;
-
