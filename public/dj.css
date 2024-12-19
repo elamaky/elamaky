@@ -111,7 +111,7 @@ button:focus {
   /* Osnovni stil za desktop */
 body {
     font-size: 16px;
-    background-color: #f4f4f4;
+   background-color: black;
     margin: 0;
     padding: 0;
 }
