@@ -11,10 +11,16 @@ const pageSchema = new mongoose.Schema({
 const Page = mongoose.model('Page', pageSchema);
 
 // Ruta za spremanje stranice
-router.post('/api/savePage', async (req, res) => {
+router.post('/api/savePage', async (req, res) => {  // Dodaj async ovde
   const { userId, name } = req.body;
-  // Tvoja logika za spremanje stranice
-  res.send('Stranica je sačuvana');
+  
+  try {
+    // Asinhrona operacija, npr. sačuvaj stranicu u bazi
+    await newPage.save();  // Ovdje koristiš await
+    res.send('Stranica je sačuvana');
+  } catch (error) {
+    res.status(500).send('Greška prilikom spremanja stranice');
+  }
 });
 
   if (!userId || !name) {
