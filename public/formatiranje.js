@@ -42,17 +42,13 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value; // Uzima boju iz color pickera
     updateInputStyle(); // Ažurira stil za unos poruke
 
-    // Ažuriraj boju nika u gost listi
-    const guestElement = document.querySelector(`#guestList .guest[data-nickname="${nickname}"]`); // Nađi gosta prema nickname
+  // Pronađi gosta u listi po nickname-u i primeni boju
+    const guestElement = document.querySelector(`[data-nickname="${guestsData[guestId].nickname}"]`);
     if (guestElement) {
-        guestElement.style.color = currentColor; // Postavi boju nika
-    }
-
-    // Ažuriraj boju u guestsData objektu
-    if (guestsData[nickname]) {
-        guestsData[nickname].color = currentColor; // Sačuvaj novu boju za gosta
+        guestElement.style.color = currentColor; // Promeni boju nika
     }
 });
+
 
 // Primena stilova na polju za unos
 function updateInputStyle() {
@@ -112,6 +108,22 @@ socket.on('private_message', function(data) {
     messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
 
+
+
+// Kada nov gost dođe
+socket.on('newGuest', function(nickname) {
+    const guestId = `guest-${nickname}`;
+    const guestList = document.getElementById('guestList');
+    const newGuest = document.createElement('div');
+    newGuest.classList.add('guest');
+    newGuest.textContent = nickname;
+
+    newGuest.setAttribute('data-nickname', nickname); // Dodajemo nickname kao data atribut
+    newGuest.style.color = '#FFFFFF'; // Podrazumevana boja
+
+    guestList.appendChild(newGuest); // Dodaj novog gosta u listu
+});
+
 // Ažuriranje liste gostiju bez resetovanja stilova
 socket.on('updateGuestList', function(users) {
     const guestList = document.getElementById('guestList');
@@ -129,18 +141,3 @@ socket.on('updateGuestList', function(users) {
             }
         }
     });
-
-    // Dodaj nove goste
-    users.forEach(nickname => {
-        const guestId = `guest-${nickname}`;
-        if (!guestsData[guestId]) {
-            const newGuest = document.createElement('div');
-            newGuest.className = 'guest';
-            newGuest.textContent = nickname;
-            newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
-            
-            guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
-            guestList.appendChild(newGuest); // Dodaj novog gosta u listu
-        }
-    });
-});
