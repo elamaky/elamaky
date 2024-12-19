@@ -13,6 +13,9 @@ const Page = mongoose.model('Page', pageSchema);
 // Ruta za spremanje stranice
 router.post('/api/savePage', async (req, res) => {
   const { userId, name } = req.body;
+  // Tvoja logika za spremanje stranice
+  res.send('Stranica je sačuvana');
+});
 
   if (!userId || !name) {
     return res.status(400).json({ success: false, message: "UserId i name su obavezni." });
