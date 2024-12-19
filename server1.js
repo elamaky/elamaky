@@ -1,32 +1,24 @@
 const express = require('express');
 const http = require('http');
-const socketIo = require('socket.io');
+const { Server } = require('socket.io');
+const fs = require('fs');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);  // Povezivanje Socket.io sa serverom
+const io = new Server(server);
 
-// Tvoje rute ili logika
-app.get('/', (req, res) => {
-  res.send('Ovo je drugi server!');
-});
+app.use(express.static('public')); // Serviraj statičke fajlove (npr. mixer.html)
 
-// Socket.io konekcija
 io.on('connection', (socket) => {
-  console.log('Korisnik je povezan');
+    console.log('Korisnik povezan: ' + socket.id);
 
-  // Prilagoditi kod za strimovanje muzike ovde
-  socket.on('playMusic', (musicData) => {
-    // Ovde šalješ muziku klijentima
-    io.emit('musicStream', musicData);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('Korisnik je isključen');
-  });
+    socket.on('audio-stream', (chunk) => {
+        // Emituj audio svim povezanim korisnicima osim onog koji šalje
+        socket.broadcast.emit('audio-stream', chunk);
+    });
 });
 
-// Drugi server na portu 3001
-server.listen(3001, '0.0.0.0', () => {
-  console.log('Drugi server je pokrenut na portu 3001');
+server.listen(3000, () => {
+    console.log('Server pokrenut na http://localhost:3000');
 });
+
