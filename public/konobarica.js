@@ -65,4 +65,38 @@ function decreaseFontSize() {
     var currentSize = window.getComputedStyle(messageArea, null).getPropertyValue('font-size');
     var newSize = parseInt(currentSize) - 2; // Smanji veličinu fonta za 2px
     messageArea.style.fontSize = newSize + "px";
+} 
+
+//GLAVNI MODAL DRAGOBILE
+const button = document.getElementById('openModal');
+
+let isDragging = false;
+let offsetX, offsetY;
+
+// Kada počneš da prevlačiš
+button.addEventListener('mousedown', (e) => {
+  isDragging = true;
+
+  // Izračunaj razliku između pozicije kursora i početne pozicije dugmeta
+  offsetX = e.clientX - button.offsetLeft;
+  offsetY = e.clientY - button.offsetTop;
+
+  document.addEventListener('mousemove', moveButton);
+  document.addEventListener('mouseup', stopDragging);
+});
+
+// Funkcija koja pomera dugme
+function moveButton(e) {
+  if (isDragging) {
+    button.style.left = `${e.clientX - offsetX}px`;
+    button.style.top = `${e.clientY - offsetY}px`;
+  }
 }
+
+// Kada prestaneš sa prevlačenjem
+function stopDragging() {
+  isDragging = false;
+  document.removeEventListener('mousemove', moveButton);
+  document.removeEventListener('mouseup', stopDragging);
+}
+
