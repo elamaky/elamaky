@@ -141,4 +141,18 @@ socket.on('updateGuestList', function(users) {
             }
         }
     });
+
+    // Dodaj nove goste
+    users.forEach(nickname => {
+        const guestId = `guest-${nickname}`;
+        if (!guestsData[guestId]) {
+            const newGuest = document.createElement('div');
+            newGuest.className = 'guest';
+            newGuest.textContent = nickname;
+            newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
+            
+            guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
+            guestList.appendChild(newGuest); // Dodaj novog gosta u listu
+        }
+    });
 });
