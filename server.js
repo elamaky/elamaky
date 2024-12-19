@@ -7,7 +7,7 @@ const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodu
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const konobaricaModul = require('./konobaricamodul'); // Uvoz konobaricamodul.js
 const slikemodul = require('./slikemodul');
-const { memoryRouter } = require('./memorymodul');
+const router = require('./memorymodul'); // Uvoz ruta iz memorymodul.js
 const pingService = require('./ping');
 const privateModule = require('./privatmodul'); // Podesi putanju ako je u drugom folderu
 require('dotenv').config();
@@ -16,11 +16,9 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
 slikemodul.setSocket(io);
-
 
 // Middleware za parsiranje JSON podataka i serviranje statičkih fajlova
 app.use(express.json());
@@ -28,8 +26,6 @@ app.use(express.static(__dirname + '/public'));
 app.use('/guests', uuidRouter); // Dodavanje ruta u aplikaciju
 app.set('trust proxy', true);
 app.use('/api', router); // Mount ruta na /api
-app.use('/memory', memoryRouter);
-
 
 // Rute za registraciju i prijavu
 app.post('/register', (req, res) => register(req, res, io));
