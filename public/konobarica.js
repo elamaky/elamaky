@@ -77,10 +77,13 @@ let offsetX, offsetY;
 button.addEventListener('mousedown', (e) => {
   isDragging = true;
 
-  // Izračunaj razliku između pozicije kursora i početne pozicije dugmeta
+  // Računaj razliku između pozicije kursora i početne pozicije dugmeta
   offsetX = e.clientX - button.offsetLeft;
   offsetY = e.clientY - button.offsetTop;
 
+  button.style.cursor = 'grabbing'; // Promeni kursor dok se dugme prevlači
+
+  // Dodaj događaj za pomeranje
   document.addEventListener('mousemove', moveButton);
   document.addEventListener('mouseup', stopDragging);
 });
@@ -88,6 +91,7 @@ button.addEventListener('mousedown', (e) => {
 // Funkcija koja pomera dugme
 function moveButton(e) {
   if (isDragging) {
+    // Postavi novu poziciju dugmeta na osnovu pozicije kursora
     button.style.left = `${e.clientX - offsetX}px`;
     button.style.top = `${e.clientY - offsetY}px`;
   }
@@ -96,7 +100,7 @@ function moveButton(e) {
 // Kada prestaneš sa prevlačenjem
 function stopDragging() {
   isDragging = false;
+  button.style.cursor = 'grab'; // Vrati kursor na originalnu poziciju
   document.removeEventListener('mousemove', moveButton);
   document.removeEventListener('mouseup', stopDragging);
 }
-
