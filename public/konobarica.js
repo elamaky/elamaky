@@ -29,7 +29,7 @@ konobaricaItem.classList.add('guest-konobarica');
 konobaricaItem.innerHTML = 'Konobarica'; // Dodajemo samo tekst bez tagova
 guestList.appendChild(konobaricaItem);
 
-// GOSTI MODAL 
+
 // GOSTI MODAL
 var modal = document.getElementById("gostimodal");
 var btn = document.getElementById("GBtn");
@@ -53,7 +53,6 @@ window.onclick = function(event) {
     }
 }
 
-// Dragable funkcionalnost za modal
 draggable.onmousedown = function(e) {
     e.preventDefault();
 
@@ -72,7 +71,6 @@ draggable.onmousedown = function(e) {
         document.onmouseup = null;
     };
 };
-
 
 // Funkcija za uvećanje fonta
 function increaseFontSize() {
