@@ -30,9 +30,11 @@ konobaricaItem.innerHTML = 'Konobarica'; // Dodajemo samo tekst bez tagova
 guestList.appendChild(konobaricaItem);
 
 // GOSTI MODAL 
+// GOSTI MODAL
 var modal = document.getElementById("gostimodal");
 var btn = document.getElementById("GBtn");
 var span = document.getElementsByClassName("close")[0];
+var draggable = document.getElementById("draggable");
 
 // Otvori modal kada klikneš na dugme GBtn
 btn.onclick = function() {
@@ -50,6 +52,27 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
+
+// Dragable funkcionalnost za modal
+draggable.onmousedown = function(e) {
+    e.preventDefault();
+
+    // Početna pozicija kursora
+    var offsetX = e.clientX - draggable.getBoundingClientRect().left;
+    var offsetY = e.clientY - draggable.getBoundingClientRect().top;
+
+    // Pomeranje modala
+    document.onmousemove = function(e) {
+        draggable.style.left = e.clientX - offsetX + 'px';
+        draggable.style.top = e.clientY - offsetY + 'px';
+    };
+
+    document.onmouseup = function() {
+        document.onmousemove = null;
+        document.onmouseup = null;
+    };
+};
+
 
 // Funkcija za uvećanje fonta
 function increaseFontSize() {
