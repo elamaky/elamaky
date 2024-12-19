@@ -1,43 +1,64 @@
 const virtualGuests = [
-    { nickname: '-Robert-', messages: ['Pozdrav svima, stigao sam! Idemooooooooooooooooooooo!'], color: 'white' },
-    { nickname: '_Mr Glück_', messages: ['Hej druže! Opaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'blue' },
+   
+    { nickname: 'Sanja', messages: ['Ćao svima, Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'violet' },
+    { nickname: 'Bojan', messages: ['Pozdrav društvo! Idemooooooooooooooooooooo!'], color: 'lime' },
+    { nickname: 'Gost-7721', messages: ['Evo mene! Jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'teal' },
     { nickname: '°Sladja°', messages: ['Hej hej, Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'magenta' },
-     { nickname: 'Gost-6353', messages: ['Ćao svima, Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'green' },
-    { nickname: '**Sanella**', messages: ['Pozz ekipa! Jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'red' },
-    { nickname: 'Gost-4545', messages: ['Zdravo ekipo! Idemooooooooooooooooooooo!'], color: 'gray' },
+   { nickname: 'Gost-5582', messages: ['Ćao društvo! Opaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'yellow' },
+    { nickname: 'Boxer', messages: ['Veliki pozdrav, Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'pink' },
+    { nickname: 'Gost-8644', messages: ['Ćao, društvo! Opaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'turquoise' },
+    { nickname: '<<Kristina>>', messages: ['Hello, Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'blue' },
+    { nickname: '/Sanella/', messages: ['Hej ekipo, Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'cyan' },
+    
 ];
 
-// Kombinuj normalne goste i virtuelne goste
-const allGuests = [...normalGuests, ...virtualGuests];
+function sendMessageToChat(guest, message) {
+    const messageArea = document.getElementById('messageArea');
 
-// Funkcija za nasumično mešanje gostiju
-function shuffleGuests(guests) {
-    for (let i = guests.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [guests[i], guests[j]] = [guests[j], guests[i]]; // Swap
-    }
+    const messageElement = document.createElement('div');
+    messageElement.innerHTML = `<span style="color: ${guest.color}; font-weight: bold; font-style: italic;">${guest.nickname}: ${message}</span>`;
+    
+    messageArea.insertBefore(messageElement, messageArea.firstChild);
+
+    const spacingElement = document.createElement('div');
+    spacingElement.style.height = '10px';
+    messageArea.insertBefore(spacingElement, messageArea.firstChild.nextSibling);
+
+    messageArea.scrollTop = 0;
 }
 
-// Mešaj sve goste
-shuffleGuests(allGuests);
-
-// Prikazivanje pomešanih gostiju na stranici
 function addGuestsToList() {
     const guestList = document.getElementById('guestList');
-    guestList.innerHTML = ''; // Očisti listu pre nego što dodaš nove
+    
+    virtualGuests.forEach(guest => {
+        if (!Array.from(guestList.children).some(el => el.textContent === guest.nickname)) {
+            const guestElement = document.createElement('div');
+            guestElement.classList.add('guest');
+            guestElement.textContent = guest.nickname;
+            guestElement.style.color = guest.color;
+            guestElement.style.fontWeight = 'bold';
+            guestElement.style.fontStyle = 'italic';
 
-    allGuests.forEach(guest => {
-        const guestElement = document.createElement('div');
-        guestElement.classList.add('guest');
-        guestElement.textContent = guest.nickname;
-        guestElement.style.color = guest.color;
-        guestElement.style.fontWeight = 'bold';
-        guestElement.style.fontStyle = 'italic';
-
-        guestList.appendChild(guestElement);
+            guestList.appendChild(guestElement);
+        }
     });
+}
+
+function startVirtualGuests() {
+    virtualGuests.forEach((guest, index) => {
+        setTimeout(() => {
+            guest.messages.forEach((message, msgIndex) => {
+                setTimeout(() => {
+                    sendMessageToChat(guest, message);
+                }, msgIndex * 300000); // 5 minuta razmaka između poruka
+            });
+        }, index * 300000); // 5 minuta razmaka između gostiju
+    });
+
+    setTimeout(startVirtualGuests, virtualGuests.length * 300000);
 }
 
 window.onload = () => {
     addGuestsToList();
+    startVirtualGuests();
 };
