@@ -189,14 +189,39 @@ document.addEventListener('mouseup', () => {
             }
         });
 
-        function playSong(index) {
-            if (index >= 0 && index < songs.length) {
-                currentSongIndex = index;
-                audioPlayer.src = songs[index].url;
-                audioPlayer.style.display = 'block';
-                audioPlayer.play();
-            }
-        }
+       function playSong(index) {
+    if (index >= 0 && index < songs.length) {
+        currentSongIndex = index;
+        audioPlayer.src = songs[index].url;
+        audioPlayer.style.display = 'block';
+        audioPlayer.play();
+
+        const audioContext = new AudioContext();
+        const source = audioContext.createMediaElementSource(audioPlayer);
+        const processor = audioContext.createScriptProcessor(4096, 1, 1);
+
+        source.connect(processor);
+        processor.connect(audioContext.destination);
+
+        processor.onaudioprocess = (event) => {
+            const audioData = event.inputBuffer.getChannelData(0); // Uhvati audio podatke
+            socket.emit('audio-stream', audioData.buffer); // Pošalji ih serveru
+        };
+    }
+}
+
+// Reprodukuj primljeni audio od servera
+const audioContext = new AudioContext();
+const speaker = audioContext.createScriptProcessor(4096, 1, 1);
+
+speaker.connect(audioContext.destination);
+
+socket.on('audio-stream', (chunk) => {
+    const audioBuffer = new Float32Array(chunk);
+    speaker.onaudioprocess = (event) => {
+        event.outputBuffer.getChannelData(0).set(audioBuffer);
+    };
+});
 
      audioPlayer.addEventListener('ended', () => {
     // Izbriši trenutnu pesmu
