@@ -2,13 +2,13 @@ const virtualGuests = [
    
     { nickname: 'Sanja', messages: ['Ćao svima, Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'violet' },
     { nickname: 'Bojan', messages: ['Pozdrav društvo! Idemooooooooooooooooooooo!'], color: 'lime' },
-    { nickname: 'Gost-7721', messages: ['Evo mene! Jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'teal' },
+    { nickname: 'Gost-7721', messages: ['Evo mene! Jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'white' },
     { nickname: '°Sladja°', messages: ['Hej hej, Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'magenta' },
-   { nickname: 'Gost-5582', messages: ['Ćao društvo! Opaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'yellow' },
-    { nickname: 'Boxer', messages: ['Veliki pozdrav, Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'pink' },
-    { nickname: 'Gost-8644', messages: ['Ćao, društvo! Opaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'turquoise' },
-    { nickname: '<<Kristina>>', messages: ['Hello, Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'blue' },
-    { nickname: '/Sanella/', messages: ['Hej ekipo, Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'cyan' },
+   { nickname: 'Gost-5582', messages: ['Ćao društvo! Opaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'white' },
+    { nickname: 'Boxer', messages: ['Veliki pozdrav, Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'braun' },
+    { nickname: 'Gost-8644', messages: ['Ćao, društvo! Opaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'white' },
+    { nickname: '<<Kristina>>', messages: ['Hello, Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'pink' },
+    { nickname: '/Sanella/', messages: ['Hej ekipo, Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'red' },
     
 ];
 
