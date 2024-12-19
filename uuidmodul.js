@@ -1,13 +1,27 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
+const mongoose = require('mongoose');
 const router = express.Router();
 
-// Objekat za privremeno skladištenje podataka (možeš koristiti bazu umesto ovoga)
-const guestData = {};
+// Konekcija sa MongoDB
+mongoose.connect('mongodb://localhost:27017/guests', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => console.log("Povezan na MongoDB"))
+  .catch(err => console.error("Greška pri povezivanju na MongoDB:", err));
+
+// Definisanje modela za goste
+const guestSchema = new mongoose.Schema({
+    uuid: { type: String, required: true, unique: true },
+    nickname: { type: String, required: true },
+    ipAddress: { type: String, required: true },
+    timeIn: { type: Date, default: Date.now },
+    timeOut: { type: Date, default: null }
+});
+
+const Guest = mongoose.model('Guest', guestSchema);
 
 // POST ruta za čuvanje podataka gostiju
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     const { nickname, uuid } = req.body;
 
     // Validacija podataka
@@ -18,47 +32,39 @@ router.post('/', (req, res) => {
     // Dobijanje IP adrese
     const ipAddress = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket?.remoteAddress;
 
-// Logovanje IP adrese
-console.log('X-Forwarded-For:', req.headers['x-forwarded-for']);  // Logujemo sadržaj zaglavlja
-console.log('IP adresa korisnika:', ipAddress);  // Logujemo IP koju smo dobili
+    console.log('IP adresa korisnika:', ipAddress);
 
-    // Čuvanje podataka sa `uuid` kao ključem
-    guestData[uuid] = { nickname, ipAddress };
-
-    console.log('Podaci uspešno primljeni i sačuvani:');
-    console.log(`UUID: ${uuid}, Nickname: ${nickname}, IP: ${ipAddress}`);
-
-    // Logovanje u fajl
-    const logEntry = `UUID: ${uuid}, Nickname: ${nickname}, IP: ${ipAddress}\n`;
-    const logPath = path.join(__dirname, 'evidencija.txt');
-
-    // Kreiranje fajla ako ne postoji i zapisivanje podataka
-    fs.mkdir(path.dirname(logPath), { recursive: true }, (err) => {
-        if (err) {
-            console.error('Greška pri kreiranju direktorijuma:', err);
-            return res.status(500).json({ error: 'Greška pri kreiranju direktorijuma' });
-        }
-
-        fs.appendFile(logPath, logEntry, (err) => {
-            if (err) {
-                console.error('Greška pri zapisivanju u fajl:', err);
-                return res.status(500).json({ error: 'Greška pri zapisivanju podataka' });
-            }
-            res.status(200).send('Podaci primljeni i zapisani');
-        });
-    });
+    try {
+        // Čuvanje podataka u MongoDB
+        const guest = new Guest({ uuid, nickname, ipAddress });
+        await guest.save();
+        
+        console.log('Podaci uspešno sačuvani u MongoDB:', `UUID: ${uuid}, Nickname: ${nickname}, IP: ${ipAddress}`);
+        
+        res.status(200).send('Podaci primljeni i sačuvani');
+    } catch (err) {
+        console.error('Greška pri čuvanju podataka:', err);
+        res.status(500).json({ error: 'Greška pri čuvanju podataka' });
+    }
 });
 
 // GET ruta za dobijanje podataka po UUID-u
-router.get('/:uuid', (req, res) => {
+router.get('/:uuid', async (req, res) => {
     const { uuid } = req.params;
 
-    // Provera da li podaci postoje
-    if (!guestData[uuid]) {
-        return res.status(404).json({ error: 'Podaci za dati UUID nisu pronađeni' });
-    }
+    try {
+        // Dohvatanje podataka iz MongoDB
+        const guest = await Guest.findOne({ uuid });
 
-    res.status(200).json(guestData[uuid]);
+        if (!guest) {
+            return res.status(404).json({ error: 'Podaci za dati UUID nisu pronađeni' });
+        }
+
+        res.status(200).json(guest);
+    } catch (err) {
+        console.error('Greška pri dohvatanju podataka:', err);
+        res.status(500).json({ error: 'Greška pri dohvatanju podataka' });
+    }
 });
 
 module.exports = router;
