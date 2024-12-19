@@ -43,10 +43,10 @@
 .modal {
     display: none;
     position: absolute;  
-    cursor: move;        
+    cursor: grab;        
     z-index: 1;
-    left: 200px;
-    top: 200px;
+    left: 10px;
+    top: 10px;
     transform: translate(-50%, -50%);
     width: 400px;
     height: auto;
