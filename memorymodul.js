@@ -53,38 +53,14 @@ router.get('/api/getPages', async (req, res) => {
 
   try {
     console.log(`[INFO] Pokušaj dobijanja stranica za korisnika - userId: ${userId}`);
-    const pages = await Page.find({ userId });  // Tražimo stranice po userId
-    console.log(`[INFO] Stranice za korisnika učitane - userId: ${userId}`);
-    res.status(200).json({ success: true, pages });  // Vraćamo listu svih stranica
+    const pages = await Page.find({ userId });
+
+    res.status(200).json({ success: true, pages });
   } catch (error) {
-    console.error(`[ERROR] Greška pri dobijanju stranica - userId: ${userId}`, error);
-    res.status(500).json({ success: false, message: "Greška pri dobijanju stranica.", error });
-  }
-});
-
-// Ruta za učitavanje sadržaja stranice
-router.get('/api/getPage', async (req, res) => {
-  const { name } = req.query;
-
-  if (!name) {
-    return res.status(400).json({ success: false, message: "Naziv stranice je obavezan." });
-  }
-
-  try {
-    console.log(`[INFO] Pokušaj učitavanja stranice - name: ${name}`);
-
-    const page = await Page.findOne({ name });
-    if (page) {
-      console.log(`[INFO] Stranica učitana - name: ${name}`);
-      res.status(200).json({ success: true, page });  // Vraćamo podatke stranice
-    } else {
-      console.log(`[INFO] Stranica nije pronađena - name: ${name}`);
-      res.status(404).json({ success: false, message: "Stranica nije pronađena." });
-    }
-  } catch (error) {
-    console.error(`[ERROR] Greška pri učitavanju stranice - name: ${name}`, error);
-    res.status(500).json({ success: false, message: "Greška pri učitavanju stranice.", error });
+    console.error(`[ERROR] Greška pri učitavanju stranica za userId: ${userId}`, error);
+    res.status(500).json({ success: false, message: "Greška pri učitavanju stranica." });
   }
 });
 
 module.exports = router;
+
