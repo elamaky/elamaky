@@ -1,9 +1,9 @@
 const virtualGuests = [
-    { nickname: '-Tigar-', messages: ['Pozdrav svima, stigao sam! Idemooooooooooooooooooooo!'], color: 'orange' },
-    { nickname: '_Car_', messages: ['Hej druže! Opaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'blue' },
+    { nickname: '-Robert-', messages: ['Pozdrav svima, stigao sam! Idemooooooooooooooooooooo!'], color: 'white' },
+    { nickname: '_Mr Glück_', messages: ['Hej druže! Opaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'blue' },
     { nickname: '°Sladja°', messages: ['Hej hej, Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'magenta' },
-     { nickname: 'Gost-6353', messages: ['Ćao svima, Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'black' },
-    { nickname: '**Jeka**', messages: ['Pozz ekipa! Jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'silver' },
+     { nickname: 'Gost-6353', messages: ['Ćao svima, Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'green' },
+    { nickname: '**Sanella**', messages: ['Pozz ekipa! Jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'red' },
     { nickname: 'Gost-4545', messages: ['Zdravo ekipo! Idemooooooooooooooooooooo!'], color: 'gray' },
 ];
 
