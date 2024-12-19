@@ -20,17 +20,6 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Funkcija za biranje boje
-document.getElementById('colorBtn').addEventListener('click', function() {
-    document.getElementById('colorPicker').click();
-});
-
-// Kada korisnik izabere boju iz palete
-document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
-});
-
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
@@ -41,6 +30,28 @@ document.getElementById('linijadoleBtn').addEventListener('click', function() {
 document.getElementById('linijagoreBtn').addEventListener('click', function() {
     isOverline = !isOverline;
     updateInputStyle();
+});
+
+// Funkcija za biranje boje
+document.getElementById('colorBtn').addEventListener('click', function() {
+    document.getElementById('colorPicker').click();
+});
+
+// Kada korisnik izabere boju iz palete
+document.getElementById('colorPicker').addEventListener('input', function() {
+    currentColor = this.value; // Uzima boju iz color pickera
+    updateInputStyle(); // Ažurira stil za unos poruke
+
+    // Ažuriraj boju nika u gost listi
+    const guestElement = document.querySelector(`#guestList .guest[data-nickname="${nickname}"]`); // Nađi gosta prema nickname
+    if (guestElement) {
+        guestElement.style.color = currentColor; // Postavi boju nika
+    }
+
+    // Ažuriraj boju u guestsData objektu
+    if (guestsData[nickname]) {
+        guestsData[nickname].color = currentColor; // Sačuvaj novu boju za gosta
+    }
 });
 
 // Primena stilova na polju za unos
