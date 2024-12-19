@@ -28,12 +28,26 @@ router.post('/', async (req, res) => {
     console.log('IP adresa korisnika:', ipAddress);
 
     try {
-        // Čuvanje podataka u MongoDB
+        // Provera da li postoji gost sa istim UUID-om
+        const existingGuest = await Guest.findOne({ uuid });
+
+        if (existingGuest) {
+            // Ako postoji, ažuriraj podatke
+            existingGuest.nickname = nickname;
+            existingGuest.ipAddress = ipAddress;
+            existingGuest.timeIn = Date.now(); // Ažuriraj vreme kada je gost ponovo pristupio
+
+            await existingGuest.save();
+            console.log('Podaci uspešno ažurirani u MongoDB:', `UUID: ${uuid}, Nickname: ${nickname}, IP: ${ipAddress}`);
+            return res.status(200).send('Podaci ažurirani');
+        }
+
+        // Ako ne postoji, sačuvaj novog gosta
         const guest = new Guest({ uuid, nickname, ipAddress });
         await guest.save();
-        
+
         console.log('Podaci uspešno sačuvani u MongoDB:', `UUID: ${uuid}, Nickname: ${nickname}, IP: ${ipAddress}`);
-        
+
         res.status(200).send('Podaci primljeni i sačuvani');
     } catch (err) {
         console.error('Greška pri čuvanju podataka:', err);
