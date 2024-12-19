@@ -45,6 +45,4 @@ router.get('/api/getPages', async (req, res) => {
   }
 });
 
-// Export rutera
-module.exports = router;
-
+module.exports.memoryRouter = router;
