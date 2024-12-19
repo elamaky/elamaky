@@ -7,6 +7,8 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+    
+    }
 
   #authContainer {
     background-color: black; /* Crna pozadina */
