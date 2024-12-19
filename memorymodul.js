@@ -2,14 +2,6 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-// Definisanje šeme za stranicu
-const pageSchema = new mongoose.Schema({
-  userId: { type: String, required: true },
-  name: { type: String, required: true }
-}, { timestamps: true });
-
-const Page = mongoose.model('Page', pageSchema);
-
 // Ruta za spremanje stranice
 router.post('/api/savePage', async (req, res) => {  // Dodaj async ovde
   const { userId, name } = req.body;
@@ -23,7 +15,15 @@ router.post('/api/savePage', async (req, res) => {  // Dodaj async ovde
   }
 });
 
-  if (!userId || !name) {
+// Definisanje šeme za stranicu
+const pageSchema = new mongoose.Schema({
+  userId: { type: String, required: true },
+  name: { type: String, required: true }
+}, { timestamps: true });
+
+const Page = mongoose.model('Page', pageSchema);
+
+ if (!userId || !name) {
     return res.status(400).json({ success: false, message: "UserId i name su obavezni." });
   }
 
