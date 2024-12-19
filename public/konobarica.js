@@ -53,25 +53,6 @@ window.onclick = function(event) {
     }
 }
 
-draggable.onmousedown = function(e) {
-    e.preventDefault();
-
-    // Početna pozicija kursora
-    var offsetX = e.clientX - draggable.getBoundingClientRect().left;
-    var offsetY = e.clientY - draggable.getBoundingClientRect().top;
-
-    // Pomeranje modala
-    document.onmousemove = function(e) {
-        draggable.style.left = e.clientX - offsetX + 'px';
-        draggable.style.top = e.clientY - offsetY + 'px';
-    };
-
-    document.onmouseup = function() {
-        document.onmousemove = null;
-        document.onmouseup = null;
-    };
-};
-
 // Funkcija za uvećanje fonta
 function increaseFontSize() {
     var messageArea = document.getElementById("messageArea");
