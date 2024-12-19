@@ -60,4 +60,7 @@ router.get('/:uuid', async (req, res) => {
     }
 });
 
+await Guest.updateOne({ uuid }, { $set: { nickname, ipAddress } }, { upsert: true });
+
+
 module.exports = router;
