@@ -91,7 +91,10 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const pageData = { name: pageName };
+        const pageData = { 
+            name: pageName,
+            userId: localStorage.getItem('userId') // Dodaj userId
+        };
 
         fetch('/api/savePage', {
             method: 'POST',
@@ -178,3 +181,4 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.style.display = 'none';
     });
 });
+
