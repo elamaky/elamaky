@@ -141,3 +141,4 @@ socket.on('updateGuestList', function(users) {
             }
         }
     });
+});
