@@ -41,7 +41,10 @@ document.getElementById('colorPicker').addEventListener('input', function() {
         if (guestElement) {
             guestElement.style.color = currentColor;
         }
+        console.log(`Boja za ${nickname} promenjena na ${currentColor}`); // Log
         socket.emit('colorSelected', { nickname, color: currentColor }); // Emituj odabranu boju serveru
+    } else {
+        console.error('Nickname nije definisan tokom biranja boje');
     }
 });
 
