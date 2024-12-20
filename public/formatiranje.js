@@ -77,6 +77,7 @@ socket.on('updateNicknameColor', function(socketId, color) {
         }
     }
 });
+
 // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
     let messageArea = document.getElementById('messageArea');
@@ -112,7 +113,7 @@ socket.on('private_message', function(data) {
 
 // Funkcija za dodavanje stilova gostima
 function addGuestStyles(guestElement, guestId) {
-    guestElement.style.color = guestsData[guestId]?; // Boja gosta
+    guestElement.style.color = guestsData[guestId]?.color; // Boja gosta
 }
 
 // Kada nov gost dođe
@@ -125,7 +126,7 @@ socket.on('newGuest', function(nickname) {
 
     // Dodaj novog gosta u guestsData ako ne postoji
     if (!guestsData[guestId]) {
-        guestsData[guestId] = { nickname, color:}; // Ako ne postoji, dodajemo ga sa podrazumevanom bojom
+        guestsData[guestId] = { nickname, color: '#FFFFFF' }; // Ako ne postoji, dodajemo ga sa podrazumevanom bojom
     }
 
     newGuest.style.color = guestsData[guestId].color;
