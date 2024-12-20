@@ -39,15 +39,22 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 
 // Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value; // Uzima boju iz color pickera
-    updateInputStyle(); // Ažurira stil za unos poruke
-
-  // Pronađi gosta u listi po nickname-u i primeni boju
-    const guestElement = document.querySelector(`[data-nickname="${guestsData[guestId].nickname}"]`);
-    if (guestElement) {
-        guestElement.style.color = currentColor; // Promeni boju nika
-    }
+    const currentColor = this.value;
+    socket.emit('changeColor', currentColor); // Pošaljite boju serveru
 });
+
+// Prikazivanje ažurirane boje u listi gostiju
+socket.on('updateGuestList', (guestList) => {
+    const guestListElement = document.getElementById('guestList');
+    guestListElement.innerHTML = ''; // Očisti listu
+    guestList.forEach(guest => {
+        const guestItem = document.createElement('div');
+        guestItem.textContent = guest.nickname;
+        guestItem.style.color = guest.color; // Postavi boju
+        guestListElement.appendChild(guestItem);
+    });
+});
+
 
 
 // Primena stilova na polju za unos
