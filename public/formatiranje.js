@@ -33,7 +33,7 @@ document.getElementById('colorPicker').addEventListener('input', function() {
 });
 
 // Kada server pošalje boju za nickname
-socket.on('updateNicknameColor', (socketId, color) => {
+socket.on('updatenicknameColor', (socketId, color) => {
     if (socket.id === socketId) {
         // Pronaći odgovarajući nickname i primeniti boju
         let nicknameElement = document.querySelector(`#nickname-${socketId}`);
