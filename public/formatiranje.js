@@ -3,10 +3,18 @@ let isItalic = false;
 let currentColor = '#FFFFFF';
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
+let nickname = ''; // Varijabla koja će držati nickname
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
 const colorPrefs = {};
+
+// Kada server pošalje nickname
+socket.on('setNickname', function(receivedNickname) {
+    nickname = receivedNickname; // Dodeljujemo nickname koji je server poslao
+    console.log('Dobijeni nickname:', nickname); // Verifikacija
+});
+
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
@@ -29,7 +37,7 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
-    colorPrefs[nickname] = currentColor;  // Ažuriraj boju samo za trenutnog gosta
+    colorPrefs[guest] = currentColor;  // Ažuriraj boju za trenutnog gosta
     updateGuestColors(); // Ažuriraj boje gostiju u listi
 });
 
