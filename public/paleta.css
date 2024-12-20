@@ -1,7 +1,9 @@
 /* Stilizacija palete sa kockicama */
 .colorPalette {
-    width: 200px;
-    height: 200px;
+    width: 240px;
+    height: 240px;
+    bottom: 10px;
+    left: 10px;
     background-color: black;
     display: grid;
     grid-template-columns: repeat(6, 1fr); /* 6 kolona */
@@ -15,8 +17,8 @@
 
 /* Stilizacija boja kockica */
 .color-box {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     cursor: pointer;
     border: 1px solid #FFF; /* Bela granica oko kockica */
     transition: transform 0.2s;
