@@ -3,7 +3,7 @@ let isItalic = false;
 let currentColor = '#FFFFFF';
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
-let currentGuestId = socket.id; // Socket ID je jedinstven za svakog korisnika
+
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
@@ -21,26 +21,6 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     isItalic = !isItalic;
     updateInputStyle();
 });
-
-// Kada korisnik klikne na dugme za odabir boje
-document.getElementById('colorBtn').addEventListener('click', function() {
-    document.getElementById('colorPickerButton').click();
-});
-
-// Kada korisnik izabere boju
-document.getElementById('colorPickerButton').addEventListener('input', function() {
-    const selectedColor = this.value;
-    // Emitovanje boje ka serveru sa guestId
-    socket.emit('colorChange', { guestId: currentGuestId, color: selectedColor });
-});
-
-// Funkcija za dodavanje stilova gostima
-function addGuestStyles(guestElement, guestId) {
-    // Dodavanje boje u element gostu
-    guestElement.style.color = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja ako nije dodeljena
-
-    // Ne kreiramo novi colorPickerButton ovde jer svi koriste jedan
-}
 
 // Kada server pošalje boje svih korisnika
 socket.on('updateColors', function(guestColors) {
