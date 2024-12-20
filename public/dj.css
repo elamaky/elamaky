@@ -2,8 +2,7 @@
 .guest {
     display: flex;
     align-items: center;
-    
-    margin: 5px 0;
+     margin: 5px 0;
     padding-left: 20px;
     font-weight: bold;
     font-style: italic;
