@@ -104,12 +104,24 @@ function getCurrentGuestId() {
   return "someGuestId"; // Primer ID-a
 }
 
-socket.on('updateNicknameColor', function(socketId, color) {
+// Kada klikneš na dugme 'OK', boja se primenjuje na gosta, a paleta se zatvara
+applyColorBtn.addEventListener('click', function() {
+  if (selectedColor) {
+    // Primenjujemo boju na ime gosta u listi
+    let guestList = document.getElementById('guestList');
+    let guests = guestList.getElementsByClassName('guest');
+    
+    for (let guest of guests) {
+      // Možete dodati logiku da se boja primeni samo na specifičnog gosta, npr. na onog koji je odabrao
+      guest.style.color = selectedColor;
+    }
+  }
+  colorPalette.style.display = 'none';  // Sakrivanje palete
+});
+
+socket.on('updatenicknameColor', function(socketId, color) {
   let guest = document.querySelector(`.guest[data-socket-id="${socketId}"]`);
   if (guest) {
     guest.style.color = color;
   }
 });
-
-
-
