@@ -32,17 +32,16 @@ document.getElementById('colorPicker').addEventListener('input', function() {
 
     // Ažuriraj boju samo za trenutnog korisnika
     if (nickname) {
-        const guestId = `guest-${nickname}`;
-        if (!guestsData[guestId]) {
-            guestsData[guestId] = { nickname, color: currentColor };
+        if (!guestsData[nickname]) {
+            guestsData[nickname] = { nickname, color: currentColor };
         } else {
-            guestsData[guestId].color = currentColor;
+            guestsData[nickname].color = currentColor;
         }
         const guestElement = document.querySelector(`#guestList .guest[data-nickname='${nickname}']`);
         if (guestElement) {
             guestElement.style.color = currentColor;
         }
-        socket.emit('colorSelected', currentColor); // Emituj odabranu boju serveru
+        socket.emit('colorSelected', { nickname, color: currentColor }); // Emituj odabranu boju serveru
     }
 });
 
@@ -121,7 +120,10 @@ socket.on('newGuest', function(nicknameFromServer) {
     if (!nickname) {
         nickname = nicknameFromServer; // Postavi lokalni nickname samo jednom
     }
-    const guestId = `guest-${nicknameFromServer}`;
+    if (!guestsData[nicknameFromServer]) {
+        guestsData[nicknameFromServer] = { nickname: nicknameFromServer, color: currentColor };
+    }
+    const guestId = nicknameFromServer;
     const guestList = document.getElementById('guestList');
     const newGuest = document.createElement('div');
     newGuest.classList.add('guest');
@@ -144,7 +146,7 @@ socket.on('updateGuestList', function(users) {
     // Ukloni goste koji više nisu u listi
     currentGuests.forEach(nickname => {
         if (!users.includes(nickname)) {
-            delete guestsData[`guest-${nickname}`]; // Ukloni iz objekta
+            delete guestsData[nickname]; // Ukloni iz objekta
             
             // Ukloni iz DOM-a
             const guestElement = Array.from(guestList.children).find(guest => guest.textContent === nickname);
@@ -156,9 +158,8 @@ socket.on('updateGuestList', function(users) {
 
     // Dodaj nove goste
     users.forEach(nickname => {
-        const guestId = `guest-${nickname}`;
-        if (!guestsData[guestId]) {
-            guestsData[guestId] = { nickname, color: currentColor }; // Dodaj gosta u objekat
+        if (!guestsData[nickname]) {
+            guestsData[nickname] = { nickname, color: currentColor }; // Dodaj gosta u objekat
         }
 
         let guestElement = document.querySelector(`#guestList .guest[data-nickname='${nickname}']`);
@@ -171,8 +172,8 @@ socket.on('updateGuestList', function(users) {
         }
 
         // Postavi boju iz guestsData
-        if (guestsData[guestId].color) {
-            guestElement.style.color = guestsData[guestId].color;
+        if (guestsData[nickname].color) {
+            guestElement.style.color = guestsData[nickname].color;
         }
     });
 });
