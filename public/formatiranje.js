@@ -187,7 +187,7 @@ socket.on("updateGuestList", (guests) => {
         guestList.appendChild(guestElement);
 
         console.log(`Gost dodat u listu: ${nickname}, ID: guest-${nickname}, Boja: ${color}`); // Log
-    });
+
 });
 
     // Ukloni goste koji više nisu u listi
