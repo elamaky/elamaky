@@ -25,28 +25,30 @@ document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPicker').click();
 });
 
-// Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
+    console.log('Biranje boje za:', nickname); // Log
     currentColor = this.value;
     updateInputStyle();  // Ažuriraj stil inputa
 
-    // Ažuriraj boju samo za trenutnog korisnika
     if (nickname) {
         if (!guestsData[nickname]) {
             guestsData[nickname] = { nickname, color: currentColor };
+            console.log('Gost dodat u guestsData pri biranju boje:', guestsData[nickname]); // Log
         } else {
             guestsData[nickname].color = currentColor;
+            console.log('Gostu je ažurirana boja:', guestsData[nickname]); // Log
         }
         const guestElement = document.querySelector(`#guestList .guest[data-nickname='${nickname}']`);
         if (guestElement) {
             guestElement.style.color = currentColor;
+            console.log('Boja gosta u DOM-u promenjena na:', currentColor); // Log
         }
-        console.log(`Boja za ${nickname} promenjena na ${currentColor}`); // Log
         socket.emit('colorSelected', { nickname, color: currentColor }); // Emituj odabranu boju serveru
     } else {
         console.error('Nickname nije definisan tokom biranja boje');
     }
 });
+
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
@@ -118,13 +120,15 @@ socket.on('private_message', function(data) {
     messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
 
-// Kada nov gost dođe
 socket.on('newGuest', function(nicknameFromServer) {
+    console.log('Primljen nickname od servera:', nicknameFromServer); // Log
     if (!nickname) {
         nickname = nicknameFromServer; // Postavi lokalni nickname samo jednom
+        console.log('Lokalni nickname postavljen na:', nickname); // Log
     }
     if (!guestsData[nicknameFromServer]) {
         guestsData[nicknameFromServer] = { nickname: nicknameFromServer, color: currentColor };
+        console.log('Gost dodat u guestsData:', guestsData[nicknameFromServer]); // Log
     }
     const guestId = nicknameFromServer;
     const guestList = document.getElementById('guestList');
@@ -139,7 +143,9 @@ socket.on('newGuest', function(nicknameFromServer) {
     }
 
     guestList.appendChild(newGuest); // Dodaj novog gosta u listu
+    console.log('Gost dodat u DOM sa bojom:', newGuest.style.color); // Log
 });
+
 
 // Ažuriranje liste gostiju bez resetovanja stilova
 socket.on('updateGuestList', function(users) {
