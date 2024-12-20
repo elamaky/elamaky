@@ -45,11 +45,11 @@ function updateInputStyle() {
     inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
 }
 
-// Kada klikneš na dugme za boju
-document.getElementById('colorBtn').addEventListener('click', function() {
+// Kreiranje color picker-a
+function createColorPicker() {
     const colorPicker = document.createElement('input');
     colorPicker.type = 'color';
-    colorPicker.value = currentColor;
+    colorPicker.value = currentColor || '#000000'; // Postavi početnu vrednost boje
 
     // Kada odabereš boju
     colorPicker.addEventListener('input', function() {
@@ -62,7 +62,7 @@ document.getElementById('colorBtn').addEventListener('click', function() {
     // Prikazi color picker
     document.body.appendChild(colorPicker);
     colorPicker.click(); // Otvori color picker
-});
+}
 
 // Kada server pošalje novu boju
 socket.on('updateNicknameColor', function(socketId, color) {
