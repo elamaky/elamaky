@@ -1,0 +1,42 @@
+/* Stilizacija palete sa kockicama */
+.colorPalette {
+    width: 200px;
+    height: 200px;
+    background-color: black;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6 kolona */
+    grid-template-rows: repeat(4, 1fr); /* 4 reda */
+    gap: 5px;
+    padding: 5px;
+    border: 2px solid white; /* Bela neon granica */
+    display: none; /* Početno skriveno */
+    box-shadow: 0 0 10px 2px white; /* Neon efekat */
+}
+
+/* Stilizacija boja kockica */
+.color-box {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    border: 1px solid #FFF; /* Bela granica oko kockica */
+    transition: transform 0.2s;
+}
+
+/* Efekat kada se kockica boje pređe mišem */
+.color-box:hover {
+    transform: scale(1.1);
+}
+
+/* Dugme za paletu */
+#colorBtn {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#colorBtn:hover {
+    background-color: #444;
+}
