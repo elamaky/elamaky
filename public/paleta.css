@@ -2,8 +2,10 @@
 .colorPalette {
     width: 240px;
     height: 240px;
-    bottom: 10px;
-    left: 10px;
+    position: fixed; /* Pozicioniraj na celoj stranici */
+    bottom: 0; /* Pozicija sa dna stranice */
+    left: 50%; /* Poravnanje na sredinu stranice */
+    transform: translateX(-50%); /* Precizno centriranje */
     background-color: black;
     display: grid;
     grid-template-columns: repeat(6, 1fr); /* 6 kolona */
