@@ -30,14 +30,10 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
     
-    // Dodaj novi deo za prikazivanje imena gosta u izabranoj boji
-    const guestList = document.getElementById('guestList');
-    const nicknameElement = document.createElement('span'); // Kreiraj span element za ime gosta
-    nicknameElement.textContent = 'Gost'; // Ovde možeš promeniti tekst na ime gosta
-    nicknameElement.style.color = currentColor; // Postavi boju teksta na odabranu boju
-    guestList.appendChild(nicknameElement); // Dodaj ime gosta u guest list
+    // Prikazivanje odabrane boje pored imena gosta
+    const guestNicknameElement = document.getElementById('guestNickname'); // Pretpostavljam da imaš element za ime gosta
+    guestNicknameElement.style.color = currentColor; // Postavi boju teksta na odabranu boju
 });
-
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
