@@ -6,6 +6,7 @@ let isOverline = false;   // Dodano za overline
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
+let nickname = null; // Dodano za praćenje nadimka
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
@@ -28,17 +29,21 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();  // Ažuriraj stil inputa
-    updateGuestColors(); // Ažuriraj boje gostiju na osnovu njihove odabrane boje
-});
 
-// Funkcija za ažuriranje boje gostiju u listi
-function updateGuestColors() {
-    const guestList = document.getElementById('guestList');
-    Array.from(guestList.children).forEach(guest => {
-        const guestId = `guest-${guest.textContent}`;
-        guest.style.color = guestsData[guestId]?.color || currentColor;
-    });
-}
+    // Ažuriraj boju samo za trenutnog korisnika
+    if (nickname) {
+        if (!guestsData[nickname]) {
+            guestsData[nickname] = { nickname, color: currentColor };
+        } else {
+            guestsData[nickname].color = currentColor;
+        }
+        const guestElement = document.querySelector(`#guestList .guest[data-nickname='${nickname}']`);
+        if (guestElement) {
+            guestElement.style.color = currentColor;
+        }
+        socket.emit('colorSelected', { nickname, color: currentColor }); // Emituj odabranu boju serveru
+    }
+});
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
@@ -60,6 +65,7 @@ function updateInputStyle() {
     inputField.style.color = currentColor;
     inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
 }
+
 // Kada korisnik pritisne Enter
 document.getElementById('chatInput').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
@@ -83,8 +89,8 @@ socket.on('chatMessage', function(data) {
     newMessage.classList.add('message');
     newMessage.style.fontWeight = data.bold ? 'bold' : 'normal';
     newMessage.style.fontStyle = data.italic ? 'italic' : 'normal';
-    newGuest.style.color = guestsData[`guest-${nickname}`]?.color || currentColor;
-   newMessage.style.textDecoration = (data.underline ? 'underline ' : '') + (data.overline ? 'overline' : '');
+    newMessage.style.color = data.color;
+    newMessage.style.textDecoration = (data.underline ? 'underline ' : '') + (data.overline ? 'overline' : '');
     newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
     messageArea.prepend(newMessage);
     messageArea.scrollTop = 0; // Automatsko skrolovanje
@@ -110,19 +116,23 @@ socket.on('private_message', function(data) {
 });
 
 // Kada nov gost dođe
-socket.on('newGuest', function(nickname) {
-    const guestId = `guest-${nickname}`;
+socket.on('newGuest', function(nicknameFromServer) {
+    if (!nickname) {
+        nickname = nicknameFromServer; // Postavi lokalni nickname samo jednom
+    }
+    if (!guestsData[nicknameFromServer]) {
+        guestsData[nicknameFromServer] = { nickname: nicknameFromServer, color: currentColor };
+    }
+    const guestId = nicknameFromServer;
     const guestList = document.getElementById('guestList');
     const newGuest = document.createElement('div');
     newGuest.classList.add('guest');
-    newGuest.textContent = nickname;
+    newGuest.setAttribute('data-nickname', nicknameFromServer);
+    newGuest.textContent = nicknameFromServer;
 
-    // Postavi boju specifičnu za gosta ili trenutnu boju
-    newGuest.style.color = guestsData[guestId]?.color || currentColor;
-
-    // Dodaj novog gosta u guestsData ako ne postoji
-    if (!guestsData[guestId]) {
-        guestsData[guestId] = { nickname, color: currentColor }; // Dodaj gosta sa trenutnom bojom
+    // Postavi boju iz guestsData ako postoji
+    if (guestsData[guestId]) {
+        newGuest.style.color = guestsData[guestId].color;
     }
 
     guestList.appendChild(newGuest); // Dodaj novog gosta u listu
@@ -136,7 +146,7 @@ socket.on('updateGuestList', function(users) {
     // Ukloni goste koji više nisu u listi
     currentGuests.forEach(nickname => {
         if (!users.includes(nickname)) {
-            delete guestsData[`guest-${nickname}`]; // Ukloni iz objekta
+            delete guestsData[nickname]; // Ukloni iz objekta
             
             // Ukloni iz DOM-a
             const guestElement = Array.from(guestList.children).find(guest => guest.textContent === nickname);
@@ -148,15 +158,22 @@ socket.on('updateGuestList', function(users) {
 
     // Dodaj nove goste
     users.forEach(nickname => {
-    const guestId = `guest-${nickname}`;
-    if (!guestsData[guestId]) {
-        const newGuest = document.createElement('div');
-        newGuest.className = 'guest';
-        newGuest.textContent = nickname;
-        newGuest.style.color = guestsData[guestId]?.color || currentColor; // Postavi specifičnu boju
+        if (!guestsData[nickname]) {
+            guestsData[nickname] = { nickname, color: currentColor }; // Dodaj gosta u objekat
+        }
 
-        guestsData[guestId] = { nickname, color: currentColor }; // Dodaj gosta u objekat
-        guestList.appendChild(newGuest); // Dodaj novog gosta u listu
-      }
+        let guestElement = document.querySelector(`#guestList .guest[data-nickname='${nickname}']`);
+        if (!guestElement) {
+            guestElement = document.createElement('div');
+            guestElement.className = 'guest';
+            guestElement.setAttribute('data-nickname', nickname);
+            guestElement.textContent = nickname;
+            guestList.appendChild(guestElement);
+        }
+
+        // Postavi boju iz guestsData
+        if (guestsData[nickname].color) {
+            guestElement.style.color = guestsData[nickname].color;
+        }
     });
 });
