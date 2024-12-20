@@ -1,6 +1,6 @@
 let isBold = false;
 let isItalic = false;
-let currentColor;
+let currentColor; // Nema početne boje
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
 
@@ -19,6 +19,11 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
+// Funkcija za biranje boje
+document.getElementById('colorBtn').addEventListener('click', function() {
+    createColorPicker(); // Kreiraj color picker dinamički
+});
+
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
@@ -31,16 +36,26 @@ document.getElementById('linijagoreBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Funkcija za biranje boje
-document.getElementById('colorBtn').addEventListener('click', function() {
-    createColorPicker(); // Kreiraj color picker dinamički
-});
+// Primena stilova na polju za unos
+function updateInputStyle() {
+    let inputField = document.getElementById('chatInput');
+    inputField.style.fontWeight = isBold ? 'bold' : 'normal';
+    inputField.style.fontStyle = isItalic ? 'italic' : 'normal';
+    inputField.style.color = currentColor || 'black'; // Ako nema boje, podrazumevano crna
+    inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
+}
 
 // Kreiranje color picker-a
 function createColorPicker() {
+    // Ukloni prethodni color picker ako postoji
+    const existingPicker = document.querySelector('input[type="color"]');
+    if (existingPicker) {
+        existingPicker.remove();
+    }
+
     const colorPicker = document.createElement('input');
     colorPicker.type = 'color';
-    colorPicker.value = currentColor || '#000000'; // Postavi početnu vrednost boje
+    colorPicker.value = currentColor || '#000000'; // Postavi početnu vrednost boje na crnu
 
     // Kada odabereš boju
     colorPicker.addEventListener('input', function() {
@@ -69,16 +84,6 @@ socket.on('updateNicknameColor', function(socketId, color) {
     }
 });
 
-
-// Primena stilova na polju za unos
-function updateInputStyle() {
-    let inputField = document.getElementById('chatInput');
-    inputField.style.fontWeight = isBold ? 'bold' : 'normal';
-    inputField.style.fontStyle = isItalic ? 'italic' : 'normal';
-    inputField.style.color = currentColor;
-    inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
-}
-
 // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
     let messageArea = document.getElementById('messageArea');
@@ -86,7 +91,7 @@ socket.on('chatMessage', function(data) {
     newMessage.classList.add('message');
     newMessage.style.fontWeight = data.bold ? 'bold' : 'normal';
     newMessage.style.fontStyle = data.italic ? 'italic' : 'normal';
-    newMessage.style.color = data.color;
+    newMessage.style.color = data.color || 'black'; // Ako nema boje, podrazumevano crna
     newMessage.style.textDecoration = (data.underline ? 'underline ' : '') + (data.overline ? 'overline' : '');
     newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
     messageArea.prepend(newMessage);
@@ -102,7 +107,7 @@ socket.on('private_message', function(data) {
     // Formatiranje privatne poruke
     newMessage.style.fontWeight = data.bold ? 'bold' : 'normal';
     newMessage.style.fontStyle = data.italic ? 'italic' : 'normal';
-    newMessage.style.color = data.color;
+    newMessage.style.color = data.color || 'black'; // Ako nema boje, podrazumevano crna
     newMessage.style.textDecoration = (data.underline ? 'underline ' : '') + (data.overline ? 'overline' : '');
     
     newMessage.innerHTML = `<strong>${data.from} (Privatno):</strong> ${data.message} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
@@ -114,7 +119,7 @@ socket.on('private_message', function(data) {
 
 // Funkcija za dodavanje stilova gostima
 function addGuestStyles(guestElement, guestId) {
-    guestElement.style.color = guestsData[guestId]?.color; // Boja gosta
+    guestElement.style.color = guestsData[guestId]?.color || 'black'; // Ako nema boje, podrazumevano crna
 }
 
 // Kada nov gost dođe
@@ -127,10 +132,10 @@ socket.on('newGuest', function(nickname) {
 
     // Dodaj novog gosta u guestsData ako ne postoji
     if (!guestsData[guestId]) {
-        guestsData[guestId] = { nickname, color: '#FFFFFF' }; // Ako ne postoji, dodajemo ga sa podrazumevanom bojom
+        guestsData[guestId] = { nickname }; // Nema boje uopšte
     }
 
-    newGuest.style.color = guestsData[guestId].color;
+    newGuest.style.color = guestsData[guestId].color || 'black'; // Ako nema boje, podrazumevano crna
     
     // Dodaj stilove za gosta
     addGuestStyles(newGuest, guestId);
@@ -163,9 +168,9 @@ socket.on('updateGuestList', function(users) {
             const newGuest = document.createElement('div');
             newGuest.className = 'guest';
             newGuest.textContent = nickname;
-            newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
+            newGuest.style.color = 'black'; // Nema boje, podrazumevano crna
             
-            guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
+            guestsData[guestId] = { nickname }; // Nema boje
             addGuestStyles(newGuest, guestId); // Dodaj stilove
             guestList.appendChild(newGuest); // Dodaj novog gosta u listu
         }
