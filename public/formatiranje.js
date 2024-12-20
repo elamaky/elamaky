@@ -23,7 +23,7 @@ document.getElementById('italicBtn').addEventListener('click', function() {
 
 // Funkcija za biranje boje
 document.getElementById('colorBtn').addEventListener('click', function() {
-    document.getElementById('colorPicker').click();
+    document.getElementById('colorPickerButton').click();
 });
 
 // Kada korisnik izabere boju iz palete
