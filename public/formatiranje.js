@@ -26,12 +26,13 @@ document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPickerButton').click();
 });
 
-// Kada korisnik izabere boju iz palete
+// Kada korisnik izabere boju
 document.getElementById('colorPickerButton').addEventListener('input', function() {
     const selectedColor = this.value;
-    // Emitovanje boje sa njegovim guestId prema serveru
+    // Emitovanje boje ka serveru sa guestId
     socket.emit('colorChange', { guestId: currentGuestId, color: selectedColor });
 });
+
 
 
 // Funkcija za dodavanje stilova gostima
