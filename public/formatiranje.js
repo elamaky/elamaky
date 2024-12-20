@@ -24,10 +24,7 @@ document.getElementById('italicBtn').addEventListener('click', function() {
 
 // Funkcija za biranje boje putem standardnog color pickera
 document.getElementById('colorBtn').addEventListener('click', function() {
-    console.log('Kliknuto na dugme za biranje boje.');
     document.getElementById('colorPicker').click(); // Otvori color picker
-    document.getElementById('colorPalette').style.display = 'grid'; // Prikazuje paletu sa kockicama
-    console.log('Paleta sa kockicama prikazana.');
 });
 
 // Kada korisnik izabere boju iz standardne palete
