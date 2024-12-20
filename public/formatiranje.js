@@ -21,12 +21,21 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-          document.getElementById('applyColorBtn').addEventListener('click', function() {
-            let colorPicker = document.getElementById('colorPicker');
-            textColor = colorPicker.value;
-            currentTextColor = textColor;
-            updateTextStyle();
-             });
+   // Funkcija za biranje boje
+    document.getElementById('colorBtn').addEventListener('click', function() {
+        document.getElementById('colorPicker').click();
+    });
+
+    // Kada korisnik izabere boju iz palete
+    document.getElementById('colorPicker').addEventListener('input', function() {
+        currentColor = this.value; // Uzmi izabranu boju
+        updateNicknameColor(); // Ažuriraj boju nadimka
+    });
+
+    // Funkcija za ažuriranje boje nadimka
+    function updateNicknameColor() {
+        document.getElementById('nickname').style.color = currentColor; // Podesi boju nadimka
+    }     
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
