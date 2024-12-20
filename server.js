@@ -100,8 +100,7 @@ io.on('connection', (socket) => {
         guests[socket.id].color = color; // Ažuriraj boju za ovog gosta
         io.emit('updateGuestList', Object.values(guests)); // Ažuriraj listu gostiju
     });
-});
-     // Obrada diskonekcije korisnika
+   // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
