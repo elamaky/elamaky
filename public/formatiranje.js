@@ -83,8 +83,8 @@ socket.on('chatMessage', function(data) {
     newMessage.classList.add('message');
     newMessage.style.fontWeight = data.bold ? 'bold' : 'normal';
     newMessage.style.fontStyle = data.italic ? 'italic' : 'normal';
-    newMessage.style.color = data.color;
-    newMessage.style.textDecoration = (data.underline ? 'underline ' : '') + (data.overline ? 'overline' : '');
+    newGuest.style.color = guestsData[`guest-${nickname}`]?.color || currentColor;
+   newMessage.style.textDecoration = (data.underline ? 'underline ' : '') + (data.overline ? 'overline' : '');
     newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
     messageArea.prepend(newMessage);
     messageArea.scrollTop = 0; // Automatsko skrolovanje
@@ -146,15 +146,15 @@ socket.on('updateGuestList', function(users) {
 
     // Dodaj nove goste
     users.forEach(nickname => {
-        const guestId = `guest-${nickname}`;
-        if (!guestsData[guestId]) {
-            const newGuest = document.createElement('div');
-            newGuest.className = 'guest';
-            newGuest.textContent = nickname;
-            newGuest.style.color = currentColor; // Postavi trenutnu boju
+    const guestId = `guest-${nickname}`;
+    if (!guestsData[guestId]) {
+        const newGuest = document.createElement('div');
+        newGuest.className = 'guest';
+        newGuest.textContent = nickname;
+        newGuest.style.color = guestsData[guestId]?.color || currentColor; // Postavi specifičnu boju
 
-            guestsData[guestId] = { nickname, color: currentColor }; // Dodaj gosta u objekat
-            guestList.appendChild(newGuest); // Dodaj novog gosta u listu
-        }
-    });
+        guestsData[guestId] = { nickname, color: currentColor }; // Dodaj gosta u objekat
+        guestList.appendChild(newGuest); // Dodaj novog gosta u listu
+    }
 });
+
