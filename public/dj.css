@@ -200,3 +200,19 @@ h1 {
     color: black;
     box-shadow: 0 0 15px 2px rgba(255, 255, 255, 1);
 }
+
+
+/* X za zatvaranje */
+#gostimodal .close {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+}
+
+#gostimodal .close:hover {
+    color: red;
+}
