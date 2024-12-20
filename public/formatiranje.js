@@ -49,13 +49,17 @@ function addGuestStyles(guestElement, guestId) {
     guestElement.appendChild(colorPickerButton);
 }
 
-// Kada server pošalje novu boju za nekog gosta
-socket.on('updateColor', function(data) {
-    if (data.guestId === currentGuestId) {
-        // Samo lokalno za trenutnog gosta
-        document.getElementById('guest' + data.guestId).style.color = data.color;
-    }
+// Kada server pošalje boje svih korisnika
+socket.on('updateColors', function(guestColors) {
+    // Ažuriramo boje na osnovu guestId
+    Object.keys(guestColors).forEach((guestId) => {
+        const guestElement = document.getElementById('guest' + guestId);
+        if (guestElement) {
+            guestElement.style.color = guestColors[guestId]; // Boja se primenjuje samo za odgovarajućeg gosta
+        }
+    });
 });
+
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
