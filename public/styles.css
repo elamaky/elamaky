@@ -126,8 +126,10 @@ body {
   z-index: 10000; /* Osigurava da slika bude iznad iframe-a */
 }
 
+
+ /* MOJA PALETA ZA BOJE*/
 #colorPalette {
-  display: flex;
+  display: none; /* Skrivena dok se ne aktivira */
   flex-direction: column;
   align-items: center;
   background-color: black;
