@@ -72,7 +72,15 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-    // Obrada slanja chat poruka
+// Kada gost odabere boju
+socket.on('changeColor', (color) => {
+    colorPrefs[socket.id] = color; // Čuvanje boje za gosta
+    io.emit('updateGuestList', Object.values(guests).map(nickname => {
+        return { nickname, color: colorPrefs[socket.id] || '#000000' }; // Podesi boju nadimka
+    }));
+});
+
+     // Obrada slanja chat poruka
     socket.on('chatMessage', (msgData) => {
         const time = new Date().toLocaleTimeString();
         const messageToSend = {
