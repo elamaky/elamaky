@@ -155,6 +155,6 @@ socket.on('updateGuestList', function(users) {
 
         guestsData[guestId] = { nickname, color: currentColor }; // Dodaj gosta u objekat
         guestList.appendChild(newGuest); // Dodaj novog gosta u listu
-    }
+      }
+    });
 });
-
