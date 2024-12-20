@@ -56,11 +56,19 @@ io.on('connection', (socket) => {
     guests[socket.id] = nickname; // Dodajemo korisnika u guest list
     console.log(`${nickname} se povezao.`);
 
-    // Prijem promene boje od gosta
+   const io = require('socket.io')(server);
+
+let guestColors = {};  // Čuvamo boje gostiju
+
+io.on('connection', (socket) => {
+    console.log('User connected');
+
+    // Kada gost izabere boju, šaljemo boju svima
     socket.on('colorChange', (data) => {
-        // Emitovanje samo tog gosta, ostali neće primiti ovu promenu
-        socket.broadcast.emit('updateColor', data);  // Poslaće svim ostalim korisnicima osim onog koji je promenio
+        guestColors[data.guestId] = data.color;  // Čuvanje boje za tog gosta
+        io.emit('updateColors', guestColors);    // Šaljemo boje svim korisnicima
     });
+});
 
  // Emitovanje događaja da bi ostali korisnici videli novog gosta
     socket.broadcast.emit('newGuest', nickname);
