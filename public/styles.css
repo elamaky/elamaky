@@ -115,7 +115,7 @@ body {
     padding: 5px;
     border-bottom: 1px solid white;
     cursor: pointer;
-    color: inherit; /* Ensure dynamic color from JS is applied */
+    
 }
 .overlay {
   position: absolute;
