@@ -1,6 +1,6 @@
 let isBold = false;
 let isItalic = false;
-let currentColor = '#FFFFFF';
+let currentColor ="#D3D3D3" ;
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
 
@@ -19,9 +19,9 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Funkcija za biranje boje
+// Kada klikneš na dugme "Color" otvara se color picker
 document.getElementById('colorBtn').addEventListener('click', function() {
-    createColorPicker(); // Kreiraj color picker dinamički
+    openColorPicker(); // Otvori color picker
 });
 
 // Funkcija za UNDERLINE formatiranje
@@ -45,32 +45,25 @@ function updateInputStyle() {
     inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
 }
 
-// Kreiraj color picker i dodaj ga na DOM
-function createColorPicker() {
-    const existingColorPicker = document.querySelector('.dynamic-color-picker');
-    if (existingColorPicker) return; // Ako već postoji, ne kreiraj ponovo
-
+// Otvori color picker
+function openColorPicker() {
     const colorPicker = document.createElement('input');
     colorPicker.type = 'color';
-    colorPicker.classList.add('dynamic-color-picker'); // Dodajemo klasu da bi smo pratili
-    colorPicker.value = currentColor; // Postavi trenutnu boju
+    colorPicker.value = currentColor;
+
     colorPicker.addEventListener('input', function() {
         currentColor = this.value;
         updateInputStyle();
-        updateGuestColors(); // Ažuriraj boje svih gostiju u chat porukama
+        // Kada odabereš boju, promeni boju samo za tvoj nickname u listi
+        let myGuest = document.getElementById('myGuest'); // Pretpostavljamo da je tvoj guest sa id 'myGuest'
+        if (myGuest) {
+            myGuest.style.color = currentColor;
+            guestsData['myGuest'].color = currentColor; // Ažuriraj podatke o tvojoj boji
+        }
     });
 
-    document.body.appendChild(colorPicker); // Dodaj color picker u telo stranice
-}
-
-// Ažuriraj boje svih gostiju u listi
-function updateGuestColors() {
-    const guestList = document.getElementById('guestList');
-    const guests = guestList.getElementsByClassName('guest');
-
-    for (let guest of guests) {
-        guest.style.color = currentColor; // Ova boja se primenjuje na ime gosta u listi
-    }
+    // Prikazi color picker u DOM-u
+    document.body.appendChild(colorPicker);
 }
 
 // Kada server pošalje poruku
@@ -118,6 +111,7 @@ socket.on('newGuest', function(nickname) {
     const newGuest = document.createElement('div');
     newGuest.classList.add('guest');
     newGuest.textContent = nickname;
+    newGuest.id = guestId; // Dodaj ID gosta za lakšu referencu
 
     // Dodaj novog gosta u guestsData ako ne postoji
     if (!guestsData[guestId]) {
@@ -128,7 +122,6 @@ socket.on('newGuest', function(nickname) {
     
     // Dodaj stilove za gosta
     addGuestStyles(newGuest, guestId);
-    
     guestList.appendChild(newGuest); // Dodaj novog gosta u listu
 });
 
