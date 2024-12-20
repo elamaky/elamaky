@@ -7,13 +7,12 @@
     padding-left: 20px;
     font-weight: bold;
     font-style: italic;
-    color: inherit;
+    
 }
 
 /* Stil za ostale goste */
 .guest::before {
     content: "•"; 
-    color: white;   
     margin-right: 10px;
     font-size: 18px;
 }
