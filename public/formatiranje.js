@@ -19,11 +19,6 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Funkcija za biranje boje
-document.getElementById('colorBtn').addEventListener('click', function() {
-    createColorPicker(); // Kreiraj color picker dinamički
-});
-
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
@@ -35,15 +30,6 @@ document.getElementById('linijagoreBtn').addEventListener('click', function() {
     isOverline = !isOverline;
     updateInputStyle();
 });
-
-// Primena stilova na polju za unos
-function updateInputStyle() {
-    let inputField = document.getElementById('chatInput');
-    inputField.style.fontWeight = isBold ? 'bold' : 'normal';
-    inputField.style.fontStyle = isItalic ? 'italic' : 'normal';
-    inputField.style.color = currentColor;
-    inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
-}
 
 // Kreiranje color picker-a
 function createColorPicker() {
@@ -77,6 +63,16 @@ socket.on('updateNicknameColor', function(socketId, color) {
         }
     }
 });
+
+
+// Primena stilova na polju za unos
+function updateInputStyle() {
+    let inputField = document.getElementById('chatInput');
+    inputField.style.fontWeight = isBold ? 'bold' : 'normal';
+    inputField.style.fontStyle = isItalic ? 'italic' : 'normal';
+    inputField.style.color = currentColor;
+    inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
+}
 
 // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
