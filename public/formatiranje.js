@@ -21,15 +21,24 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Funkcija za biranje boje
-document.getElementById('colorBtn').addEventListener('click', function() {
-    document.getElementById('colorPicker').click();
+// Prikazivanje palete boja
+document.getElementById("colorBtn").addEventListener("click", () => {
+    const colorPicker = document.getElementById("colorPicker");
+    colorPicker.click();
 });
 
-// Kada korisnik izabere boju iz palete
-document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
+// Kada korisnik izabere boju
+document.getElementById("colorPicker").addEventListener("change", (event) => {
+    const selectedColor = event.target.value; // Izabrana boja
+    socket.emit("colorChange", selectedColor); // Šaljemo serveru
+});
+
+// Ažuriranje liste gostiju na osnovu primljenih boja
+socket.on("updateGuestColor", ({ nickname, color }) => {
+    const guestElement = document.querySelector(`#guest-${nickname}`);
+    if (guestElement) {
+        guestElement.style.color = color;
+    }
 });
 
 // Funkcija za UNDERLINE formatiranje
