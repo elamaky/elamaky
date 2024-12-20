@@ -50,16 +50,18 @@
         <button class="toolbarBtn" id="colorBtn">Color</button>
         <!-- Color picker sa širim spektrom boja i kockicama -->
         <input type="color" id="colorPicker" style="display: none;">
-        
-        <!-- Dodaj druge dugmice po potrebi -->
-       <button class="toolbarBtn" id="plusBtn" onclick="increaseFontSize()">+</button>
-<button class="toolbarBtn" id="minusBtn" onclick="decreaseFontSize()">-</button>
-<button class="toolbarBtn" id="linijadoleBtn">Temelj</button>
-<button class="toolbarBtn" id="linijagoreBtn">Krov</button>
-
-
+         <button class="toolbarBtn" id="plusBtn" onclick="increaseFontSize()">+</button>
+        <button class="toolbarBtn" id="minusBtn" onclick="decreaseFontSize()">-</button>
+        <button class="toolbarBtn" id="linijadoleBtn">Temelj</button>
+        <button class="toolbarBtn" id="linijagoreBtn">Krov</button>
+        </div>
 </div>
-</div>
+
+        <div id="colorPickerContainer">
+                <input type="color" id="colorPicker">
+                <button id="applyColorBtn">OK</button>
+            </div>
+
 <div id="functionModal" class="modal" style="display: none;" draggable="true">
     <div class="modal-content">
         <span class="close" id="closeModal">&times;</span>
