@@ -27,9 +27,17 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 
 // Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
+    const currentColor = this.value; // Uzmi izabranu boju
+    socket.emit('changeNicknameColor', currentColor); // Pošaljemo boju serveru
+    updateInputStyle(currentColor); // Ažuriraj stil za unos
 });
+
+// Ažuriranje stila unosa (ako je potrebno)
+function updateInputStyle(color) {
+    // Ovde možeš da dodaš logiku za promena stila unosa, ako treba
+    document.getElementById('colorPicker').style.backgroundColor = color;
+}
+
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
