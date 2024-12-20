@@ -27,7 +27,7 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 });
 
 // Kada korisnik izabere boju iz palete
-document.getElementById('colorPicker').addEventListener('input', function() {
+document.getElementById('colorPickerButton').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
 });
@@ -35,7 +35,7 @@ document.getElementById('colorPicker').addEventListener('input', function() {
 // Funkcija za dodavanje stilova gostima
 function addGuestStyles(guestElement, guestId) {
     colorPickerButton.type = 'color';
-    colorPickerButton.classList.add('colorPicker');
+    colorPickerButton.classList.add('colorPickerButton');
     colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja
 
     colorPickerButton.addEventListener('input', function() {
