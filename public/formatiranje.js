@@ -6,8 +6,6 @@ let isOverline = false;   // Dodano za overline
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
-const colorPrefs = {};
-
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
@@ -23,13 +21,7 @@ document.getElementById('italicBtn').addEventListener('click', function() {
 
 // Funkcija za biranje boje
 document.getElementById('colorBtn').addEventListener('click', function() {
-    document.getElementById('colorPicker').click();
-});
-
-// Kada korisnik izabere boju iz palete
-document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
+    createColorPicker(); // Kreiraj color picker dinamički
 });
 
 // Funkcija za UNDERLINE formatiranje
@@ -44,7 +36,6 @@ document.getElementById('linijagoreBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-
 // Primena stilova na polju za unos
 function updateInputStyle() {
     let inputField = document.getElementById('chatInput');
@@ -54,37 +45,33 @@ function updateInputStyle() {
     inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
 }
 
+// Kreiraj color picker i dodaj ga na DOM
+function createColorPicker() {
+    const existingColorPicker = document.querySelector('.dynamic-color-picker');
+    if (existingColorPicker) return; // Ako već postoji, ne kreiraj ponovo
 
-document.getElementById('chatInput').addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-        let message = this.value;
+    const colorPicker = document.createElement('input');
+    colorPicker.type = 'color';
+    colorPicker.classList.add('dynamic-color-picker'); // Dodajemo klasu da bi smo pratili
+    colorPicker.value = currentColor; // Postavi trenutnu boju
+    colorPicker.addEventListener('input', function() {
+        currentColor = this.value;
+        updateInputStyle();
+        updateGuestColors(); // Ažuriraj boje svih gostiju u chat porukama
+    });
 
-        // Ako je aktiviran privatni chat
-        if (isPrivateChatEnabled && selectedGuest) {
-            let time = new Date().toLocaleTimeString();
-            // Emituj privatnu poruku na server
-            socket.emit('private_message', {
-                to: selectedGuest.textContent,  // Ime gosta kojem šalješ
-                message: message,
-                time: time
-            });
-        } else {
-            // Emituj standardnu chat poruku
-            socket.emit('chatMessage', {
-                text: message,
-                bold: isBold,
-                italic: isItalic,
-                color: currentColor,
-                underline: isUnderline,
-                overline: isOverline
-            });
-        }
-        this.value = ''; // Isprazni polje za unos
+    document.body.appendChild(colorPicker); // Dodaj color picker u telo stranice
+}
+
+// Ažuriraj boje svih gostiju u listi
+function updateGuestColors() {
+    const guestList = document.getElementById('guestList');
+    const guests = guestList.getElementsByClassName('guest');
+
+    for (let guest of guests) {
+        guest.style.color = currentColor; // Ova boja se primenjuje na ime gosta u listi
     }
-});
-
-
+}
 
 // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
@@ -119,21 +106,9 @@ socket.on('private_message', function(data) {
     messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
 
-
-
 // Funkcija za dodavanje stilova gostima
 function addGuestStyles(guestElement, guestId) {
-    const colorPickerButton = document.createElement('input');
-    colorPickerButton.type = 'color';
-    colorPickerButton.classList.add('colorPicker');
-    colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja
-
-    colorPickerButton.addEventListener('input', function() {
-        guestElement.style.color = this.value;
-        guestsData[guestId].color = this.value; // Ažuriraj boju u objektu
-    });
-
-    guestElement.appendChild(colorPickerButton);
+    guestElement.style.color = guestsData[guestId]?.color || '#FFFFFF'; // Boja gosta
 }
 
 // Kada nov gost dođe
@@ -184,9 +159,9 @@ socket.on('updateGuestList', function(users) {
             newGuest.textContent = nickname;
             newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
             
-                      guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
+            guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
             addGuestStyles(newGuest, guestId); // Dodaj stilove
             guestList.appendChild(newGuest); // Dodaj novog gosta u listu
         }
     });
-});  
+});
