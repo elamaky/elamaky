@@ -27,9 +27,18 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 // Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
-    updateInputStyle();
-    updateGuestColors(); // Ažuriraj boje gostiju
+    updateInputStyle();  // Ažuriraj stil inputa
+    updateGuestColors(); // Ažuriraj boje gostiju na osnovu njihove odabrane boje
 });
+
+// Funkcija za ažuriranje boje gostiju u listi
+function updateGuestColors() {
+    const guestList = document.getElementById('guestList');
+    Array.from(guestList.children).forEach(guest => {
+        const guestId = `guest-${guest.textContent}`;
+        guest.style.color = guestsData[guestId]?.color || currentColor;
+    });
+}
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
@@ -116,13 +125,15 @@ socket.on('newGuest', function(nickname) {
     const newGuest = document.createElement('div');
     newGuest.classList.add('guest');
     newGuest.textContent = nickname;
-    
+
+    // Postavi boju specifičnu za gosta ili trenutnu boju
+    newGuest.style.color = guestsData[guestId]?.color || currentColor;
+
     // Dodaj novog gosta u guestsData ako ne postoji
     if (!guestsData[guestId]) {
         guestsData[guestId] = { nickname, color: currentColor }; // Dodaj gosta sa trenutnom bojom
     }
 
-    newGuest.style.color = currentColor;
     guestList.appendChild(newGuest); // Dodaj novog gosta u listu
 });
 
