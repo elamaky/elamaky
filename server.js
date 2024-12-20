@@ -56,9 +56,7 @@ io.on('connection', (socket) => {
     guests[socket.id] = nickname; // Dodajemo korisnika u guest list
     console.log(`${nickname} se povezao.`);
 
-   const io = require('socket.io')(server);
-
-let guestColors = {};  // Čuvamo boje gostiju
+ let guestColors = {};  // Čuvamo boje gostiju
 
 io.on('connection', (socket) => {
     console.log('User connected');
