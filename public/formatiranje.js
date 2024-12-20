@@ -3,7 +3,6 @@ let isItalic = false;
 let currentColor = '#FFFFFF';
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
-let nickname = false;
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
@@ -22,34 +21,15 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Funkcija za biranje boje putem standardnog color pickera
+// Funkcija za biranje boje
 document.getElementById('colorBtn').addEventListener('click', function() {
-    document.getElementById('colorPicker').click(); // Otvori color picker
+    document.getElementById('colorPicker').click();
 });
 
-// Kada korisnik izabere boju iz standardne palete
+// Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
-    let currentColor = this.value; // Spremi izabranu boju
-    console.log('Izabrana boja:', currentColor);
-    socket.emit('colorSelected', currentColor); // Pošaljemo boju serveru
-    console.log('Boja poslata serveru.');
-});
-
-// Kada server pošalje boju za nickname, primenjujemo boju
-socket.on('updatenicknameColor', (socketId, color) => {
-    console.log('Primljen događaj od servera. Socket ID:', socketId, 'Boja:', color);
-    if (socket.id === socketId) {
-        console.log('Boja se primenjuje na trenutni nickname.');
-        let nicknameElement = document.querySelector(`#nickname-${socketId}`);
-        if (nicknameElement) {
-            nicknameElement.style.color = color;
-            console.log('Boja uspešno primenjena na nickname.');
-        } else {
-            console.log('Element za nickname nije pronađen.');
-        }
-    } else {
-        console.log('Događaj nije za trenutnog korisnika.');
-    }
+    currentColor = this.value;
+    updateInputStyle();
 });
 
 // Funkcija za UNDERLINE formatiranje
