@@ -7,9 +7,8 @@
    <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="styles.css"> <!-- Povezivanje CSS datoteke -->
     <link rel="stylesheet" href="dj.css"> <!-- Povezivanje dj.css sa index.html -->
-    <link rel="stylesheet" href="paleta.css">
-
-    <script>
+   
+   <script>
         window.socket = io(); // Inicializacija socket-a
     </script>
      
@@ -50,6 +49,7 @@
         <button class="toolbarBtn" id="italicBtn">Italic</button>
         <!-- Dugme za boju koje sadrži paletu boja -->
         <button class="toolbarBtn" id="colorBtn">Color</button>
+         <input type="color" id="colorPicker" style="display: none;">
 
          <!-- Dodaj druge dugmice po potrebi -->
        <button class="toolbarBtn" id="plusBtn" onclick="increaseFontSize()">+</button>
