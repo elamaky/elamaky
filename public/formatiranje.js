@@ -31,6 +31,11 @@ document.getElementById('linijagoreBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
+// Funkcija za biranje boje
+document.getElementById('colorBtn').addEventListener('click', function() {
+    createColorPicker(); // Kreiraj color picker dinamički
+});
+
 // Kreiranje color picker-a
 function createColorPicker() {
     const colorPicker = document.createElement('input');
