@@ -24,23 +24,34 @@ document.getElementById('italicBtn').addEventListener('click', function() {
 
 // Funkcija za biranje boje putem standardnog color pickera
 document.getElementById('colorBtn').addEventListener('click', function() {
+    console.log('Kliknuto na dugme za biranje boje.');
     document.getElementById('colorPicker').click(); // Otvori color picker
     document.getElementById('colorPalette').style.display = 'grid'; // Prikazuje paletu sa kockicama
+    console.log('Paleta sa kockicama prikazana.');
 });
 
 // Kada korisnik izabere boju iz standardne palete
 document.getElementById('colorPicker').addEventListener('input', function() {
     let currentColor = this.value; // Spremi izabranu boju
+    console.log('Izabrana boja:', currentColor);
     socket.emit('colorSelected', currentColor); // Pošaljemo boju serveru
+    console.log('Boja poslata serveru.');
 });
 
 // Kada server pošalje boju za nickname, primenjujemo boju
 socket.on('updatenicknameColor', (socketId, color) => {
+    console.log('Primljen događaj od servera. Socket ID:', socketId, 'Boja:', color);
     if (socket.id === socketId) {
+        console.log('Boja se primenjuje na trenutni nickname.');
         let nicknameElement = document.querySelector(`#nickname-${socketId}`);
         if (nicknameElement) {
             nicknameElement.style.color = color;
+            console.log('Boja uspešno primenjena na nickname.');
+        } else {
+            console.log('Element za nickname nije pronađen.');
         }
+    } else {
+        console.log('Događaj nije za trenutnog korisnika.');
     }
 });
 
