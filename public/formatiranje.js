@@ -22,27 +22,34 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Funkcija za biranje boje
+// Funkcija za biranje boje putem standardnog color pickera
 document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPicker').click(); // Otvori color picker
+    document.getElementById('colorPalette').style.display = 'grid'; // Prikazuje paletu sa kockicama
 });
 
-// Kada korisnik izabere boju iz palete
+// Kada korisnik izabere boju iz standardne palete
 document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value; // Spremi izabranu boju
+    let currentColor = this.value; // Spremi izabranu boju
     socket.emit('colorSelected', currentColor); // Pošaljemo boju serveru
 });
 
-// Kada server pošalje boju za nickname
+// Kada server pošalje boju za nickname, primenjujemo boju
 socket.on('updatenicknameColor', (socketId, color) => {
     if (socket.id === socketId) {
-        // Pronaći odgovarajući nickname i primeniti boju
         let nicknameElement = document.querySelector(`#nickname-${socketId}`);
         if (nicknameElement) {
             nicknameElement.style.color = color;
         }
     }
 });
+
+// Funkcija za primenu boje sa kockica
+function applyColor(color) {
+    socket.emit('colorSelected', color); // Pošaljemo izabranu boju serveru
+    document.getElementById('colorPalette').style.display = 'none'; // Sakrij paletu nakon izbora
+}
+
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
