@@ -104,10 +104,12 @@ function getCurrentGuestId() {
   return "someGuestId"; // Primer ID-a
 }
 
+socket.on('updateNicknameColor', function(socketId, color) {
+  let guest = document.querySelector(`.guest[data-socket-id="${socketId}"]`);
+  if (guest) {
+    guest.style.color = color;
+  }
+});
 
-document.getElementById('colorPalette').style.position = 'absolute';
-document.getElementById('colorPalette').style.top = '20px'; // Možeš prilagoditi visinu
-document.getElementById('colorPalette').style.left = '50%'; // Centriranje horizontalno
-document.getElementById('colorPalette').style.transform = 'translateX(-50%)'; // Da bude centrirano
 
 
