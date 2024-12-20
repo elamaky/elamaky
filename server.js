@@ -61,7 +61,6 @@ io.on('connection', (socket) => {
         // Emitovanje samo tog gosta, ostali neće primiti ovu promenu
         socket.broadcast.emit('updateColor', data);  // Poslaće svim ostalim korisnicima osim onog koji je promenio
     });
-});
 
  // Emitovanje događaja da bi ostali korisnici videli novog gosta
     socket.broadcast.emit('newGuest', nickname);
