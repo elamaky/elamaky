@@ -69,59 +69,53 @@ function decreaseFontSize() {
     messageArea.style.fontSize = newSize + "px";
 } 
 
-//PALETA ZA BOJE  
 let selectedColor = null;
 
-// Kada klikneš na color picker
-document.getElementById('colorPicker').addEventListener('input', function() {
-  selectedColor = this.value; // Ažurira boju na selektovanu iz color pickera
+// Prikazivanje ili sakrivanje palete kada se klikne na dugme 'Color'
+document.getElementById('colorBtn').addEventListener('click', function() {
+  const colorPalette = document.getElementById('colorPalette');
+  colorPalette.style.display = (colorPalette.style.display === 'none' || colorPalette.style.display === '') ? 'flex' : 'none';
+});
+
+// Kada klikneš na neku boju, postavlja se kao selektovana boja
+const colorBoxes = document.querySelectorAll('.color-box');
+colorBoxes.forEach(function(box) {
+  box.addEventListener('click', function() {
+    selectedColor = box.style.backgroundColor; // Postavi selektovanu boju
+  });
 });
 
 // Kada klikneš na dugme "OK", boja se primenjuje na odabranog gosta
 document.getElementById('applyColorBtn').addEventListener('click', function() {
   if (selectedColor) {
-    // Pronađi gosta koji je odabrao boju (koristi socketId ili neki drugi način identifikacije)
-    let guestId = getCurrentGuestId(); // Funkcija koja vrati ID trenutnog gosta
+    let guestId = getCurrentGuestId(); // Funkcija koja vraća ID trenutnog gosta
     
     if (guestId) {
-      // Ažuriraj boju imena gosta
       let guest = document.querySelector(`.guest[data-socket-id="${guestId}"]`);
       if (guest) {
         guest.style.color = selectedColor; // Promeni boju gosta
       }
 
-      // Emituj boju serveru (ako je potrebno da svi vide promene)
-      socket.emit('colorSelected', selectedColor);
+      socket.emit('colorSelected', selectedColor); // Emituj boju serveru (ako treba)
     }
   }
+
+  // Sakrij paletu i dugme 'OK'
+  document.getElementById('colorPalette').style.display = 'none';
+  document.getElementById('applyColorBtn').style.display = 'none';
 });
 
 // Ova funkcija treba da se implementira na osnovu trenutnog gosta
 function getCurrentGuestId() {
-  // Pretpostavimo da postoji neki način da se identifikuje trenutni gost
-  // Na primer, koristi se socketId ili nickname trenutnog gosta
-  // Ovdje vraćaš ID trenutnog gosta koji je odabrao boju
-  return "someGuestId"; // Primer ID-a
+  // Pretpostavljamo da postoji neki način da se identifikuje trenutni gost
+  return "someGuestId"; // Primer ID-a trenutnog gosta
 }
 
-// Kada klikneš na dugme 'OK', boja se primenjuje na gosta, a paleta se zatvara
-applyColorBtn.addEventListener('click', function() {
-  if (selectedColor) {
-    // Primenjujemo boju na ime gosta u listi
-    let guestList = document.getElementById('guestList');
-    let guests = guestList.getElementsByClassName('guest');
-    
-    for (let guest of guests) {
-      // Možete dodati logiku da se boja primeni samo na specifičnog gosta, npr. na onog koji je odabrao
-      guest.style.color = selectedColor;
-    }
-  }
-  colorPalette.style.display = 'none';  // Sakrivanje palete
-});
-
+// Ažuriranje boje imena gosta na osnovu servera
 socket.on('updatenicknameColor', function(socketId, color) {
   let guest = document.querySelector(`.guest[data-socket-id="${socketId}"]`);
   if (guest) {
     guest.style.color = color;
   }
 });
+
