@@ -69,6 +69,8 @@ function decreaseFontSize() {
     messageArea.style.fontSize = newSize + "px";
 } 
 
+//PALETA ZA BOJE  
+
 const basicColors = [
   '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', 
   '#000000', '#FFFFFF', '#C0C0C0', '#808080', '#800000', '#808000',
@@ -95,11 +97,37 @@ document.getElementById('colorPicker').addEventListener('input', function() {
   selectedColor = this.value; // Ažurira boju na selektovanu iz color pickera
 });
 
-// Kada klikneš na dugme "OK", boja se primenjuje
+// Kada klikneš na dugme "OK", boja se primenjuje na odabranog gosta
 document.getElementById('applyColorBtn').addEventListener('click', function() {
   if (selectedColor) {
-    // Primenjuje boju na telo stranice (ili na specifičan element)
-    document.body.style.backgroundColor = selectedColor;
+    // Pronađi gosta koji je odabrao boju (koristi socketId ili neki drugi način identifikacije)
+    let guestId = getCurrentGuestId(); // Funkcija koja vrati ID trenutnog gosta
+    
+    if (guestId) {
+      // Ažuriraj boju imena gosta
+      let guest = document.querySelector(`.guest[data-socket-id="${guestId}"]`);
+      if (guest) {
+        guest.style.color = selectedColor; // Promeni boju gosta
+      }
+
+      // Emituj boju serveru (ako je potrebno da svi vide promene)
+      socket.emit('colorSelected', selectedColor);
+    }
   }
 });
+
+// Ova funkcija treba da se implementira na osnovu trenutnog gosta
+function getCurrentGuestId() {
+  // Pretpostavimo da postoji neki način da se identifikuje trenutni gost
+  // Na primer, koristi se socketId ili nickname trenutnog gosta
+  // Ovdje vraćaš ID trenutnog gosta koji je odabrao boju
+  return "someGuestId"; // Primer ID-a
+}
+
+
+document.getElementById('colorPalette').style.position = 'absolute';
+document.getElementById('colorPalette').style.top = '20px'; // Možeš prilagoditi visinu
+document.getElementById('colorPalette').style.left = '50%'; // Centriranje horizontalno
+document.getElementById('colorPalette').style.transform = 'translateX(-50%)'; // Da bude centrirano
+
 
