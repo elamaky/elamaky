@@ -21,15 +21,10 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Prikazivanje palete boja
-document.getElementById("colorBtn").addEventListener("click", () => {
-    const colorPicker = document.getElementById("colorPicker");
-    colorPicker.click();
-});
-
 // Kada korisnik izabere boju
 document.getElementById("colorPicker").addEventListener("change", (event) => {
     const selectedColor = event.target.value; // Izabrana boja
+    console.log("Izabrana boja:", selectedColor); // Log izabrane boje
     socket.emit("colorChange", selectedColor); // Šaljemo serveru
 });
 
@@ -44,11 +39,15 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     updateInputStyle();
 });
 
-// Ažuriranje liste gostiju na osnovu primljenih boja
+// Kada se boja ažurira na klijentskoj strani
 socket.on("updateGuestColor", ({ nickname, color }) => {
+    console.log("Primljen update:", { nickname, color }); // Log primljenih podataka
     const guestElement = document.querySelector(`#guest-${nickname}`);
     if (guestElement) {
-        guestElement.style.color = color;
+        guestElement.style.color = color; // Ažuriranje boje
+        console.log(`Boja primenjena na ${nickname}: ${color}`); // Log za uspeh
+    } else {
+        console.warn(`Gost ${nickname} nije pronađen u listi.`); // Log za grešku
     }
 });
 
