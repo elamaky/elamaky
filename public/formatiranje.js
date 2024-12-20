@@ -33,20 +33,12 @@ document.getElementById('colorPickerButton').addEventListener('input', function(
     socket.emit('colorChange', { guestId: currentGuestId, color: selectedColor });
 });
 
-
-
 // Funkcija za dodavanje stilova gostima
 function addGuestStyles(guestElement, guestId) {
-    colorPickerButton.type = 'color';
-    colorPickerButton.classList.add('colorPickerButton');
-    colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja
+    // Dodavanje boje u element gostu
+    guestElement.style.color = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja ako nije dodeljena
 
-    colorPickerButton.addEventListener('input', function() {
-        guestElement.style.color = this.value;
-        guestsData[guestId].color = this.value; // Ažuriraj boju u objektu
-    });
-
-    guestElement.appendChild(colorPickerButton);
+    // Ne kreiramo novi colorPickerButton ovde jer svi koriste jedan
 }
 
 // Kada server pošalje boje svih korisnika
