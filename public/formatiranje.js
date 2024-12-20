@@ -44,13 +44,6 @@ socket.on('updatenicknameColor', (socketId, color) => {
     }
 });
 
-// Funkcija za primenu boje sa kockica
-function applyColor(color) {
-    socket.emit('colorSelected', color); // Pošaljemo izabranu boju serveru
-    document.getElementById('colorPalette').style.display = 'none'; // Sakrij paletu nakon izbora
-}
-
-
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
