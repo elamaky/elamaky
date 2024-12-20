@@ -3,6 +3,7 @@ let isItalic = false;
 let currentColor = '#FFFFFF';
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
+let nickname = false;
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
@@ -20,18 +21,12 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-  document.getElementById('colorBtn').addEventListener('click', function() {
-            let colorPickerContainer = document.getElementById('colorPickerContainer');
-            colorPickerContainer.style.display = 'block';
-        });
-
-        document.getElementById('applyColorBtn').addEventListener('click', function() {
+          document.getElementById('applyColorBtn').addEventListener('click', function() {
             let colorPicker = document.getElementById('colorPicker');
             textColor = colorPicker.value;
             currentTextColor = textColor;
             updateTextStyle();
-            document.getElementById('colorPickerContainer').style.display = 'none';
-        });
+             });
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
