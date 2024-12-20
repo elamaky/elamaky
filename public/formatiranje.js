@@ -23,13 +23,24 @@ document.getElementById('italicBtn').addEventListener('click', function() {
 
 // Funkcija za biranje boje
 document.getElementById('colorBtn').addEventListener('click', function() {
-    document.getElementById('colorPicker').click();
+    document.getElementById('colorPicker').click(); // Otvori color picker
 });
 
 // Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
+    currentColor = this.value; // Spremi izabranu boju
+    socket.emit('colorSelected', currentColor); // Pošaljemo boju serveru
+});
+
+// Kada server pošalje boju za nickname
+socket.on('updateNicknameColor', (socketId, color) => {
+    if (socket.id === socketId) {
+        // Pronaći odgovarajući nickname i primeniti boju
+        let nicknameElement = document.querySelector(`#nickname-${socketId}`);
+        if (nicknameElement) {
+            nicknameElement.style.color = color;
+        }
+    }
 });
 
 // Funkcija za UNDERLINE formatiranje
