@@ -21,16 +21,18 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Funkcija za biranje boje
+// Kada korisnik klikne na dugme za odabir boje
 document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPickerButton').click();
 });
 
 // Kada korisnik izabere boju iz palete
 document.getElementById('colorPickerButton').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
+    const selectedColor = this.value;
+    // Emitovanje boje sa njegovim guestId prema serveru
+    socket.emit('colorChange', { guestId: currentGuestId, color: selectedColor });
 });
+
 
 // Funkcija za dodavanje stilova gostima
 function addGuestStyles(guestElement, guestId) {
@@ -46,7 +48,13 @@ function addGuestStyles(guestElement, guestId) {
     guestElement.appendChild(colorPickerButton);
 }
 
-
+// Kada server pošalje novu boju za nekog gosta
+socket.on('updateColor', function(data) {
+    if (data.guestId === currentGuestId) {
+        // Samo lokalno za trenutnog gosta
+        document.getElementById('guest' + data.guestId).style.color = data.color;
+    }
+});
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
