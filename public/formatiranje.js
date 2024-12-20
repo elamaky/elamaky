@@ -20,20 +20,19 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Funkcija za biranje boje
-document.getElementById('colorBtn').addEventListener('click', function() {
-    document.getElementById('colorPicker').click();
-});
+  document.getElementById('colorBtn').addEventListener('click', function() {
+            let colorPickerContainer = document.getElementById('colorPickerContainer');
+            colorPickerContainer.style.display = 'block';
+        });
 
-// Kada korisnik izabere boju iz palete
-document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
-    
-    // Prikazivanje odabrane boje pored imena gosta
-    const guestNicknameElement = document.getElementById('guestNickname'); // Pretpostavljam da imaš element za ime gosta
-    guestNicknameElement.style.color = currentColor; // Postavi boju teksta na odabranu boju
-});
+        document.getElementById('applyColorBtn').addEventListener('click', function() {
+            let colorPicker = document.getElementById('colorPicker');
+            textColor = colorPicker.value;
+            currentTextColor = textColor;
+            updateTextStyle();
+            document.getElementById('colorPickerContainer').style.display = 'none';
+        });
+
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
@@ -53,6 +52,7 @@ function updateInputStyle() {
     inputField.style.fontStyle = isItalic ? 'italic' : 'normal';
     inputField.style.color = currentColor;
     inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
+    document.getElementById('Nickname').style.color = currentTextColor;
 }
 
 // Kada korisnik pritisne Enter
