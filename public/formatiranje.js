@@ -176,11 +176,8 @@ socket.on('newGuest', function(nickname) {
     guestList.appendChild(newGuest); // Dodaj novog gosta u listu
 });
 
-// Ažuriranje liste gostiju bez resetovanja stilova
 socket.on("updateGuestList", (guests) => {
     const guestList = document.getElementById("guestList");
-    socket.on('updateGuestList', function(users) {
-    const currentGuests = Array.from(guestList.children).map(guest => guest.textContent);
     guestList.innerHTML = ""; // Očisti trenutnu listu
     Object.values(guests).forEach(({ nickname, color }) => {
         const guestElement = document.createElement("div");
@@ -192,6 +189,7 @@ socket.on("updateGuestList", (guests) => {
         console.log(`Gost dodat u listu: ${nickname}, ID: guest-${nickname}, Boja: ${color}`); // Log
     });
 });
+
     // Ukloni goste koji više nisu u listi
     currentGuests.forEach(nickname => {
         if (!users.includes(nickname)) {
