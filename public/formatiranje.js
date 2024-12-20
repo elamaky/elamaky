@@ -6,6 +6,7 @@ let isOverline = false;   // Dodano za overline
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
+let nickname = null; // Dodano za praćenje nadimka
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
@@ -36,6 +37,7 @@ document.getElementById('colorPicker').addEventListener('input', function() {
         if (guestElement) {
             guestElement.style.color = currentColor;
         }
+        socket.emit('colorSelected', currentColor); // Emituj odabranu boju serveru
     }
 });
 
@@ -110,7 +112,8 @@ socket.on('private_message', function(data) {
 });
 
 // Kada nov gost dođe
-socket.on('newGuest', function(nickname) {
+socket.on('newGuest', function(nicknameFromServer) {
+    nickname = nicknameFromServer; // Postavi lokalni nickname
     const guestId = `guest-${nickname}`;
     const guestList = document.getElementById('guestList');
     const newGuest = document.createElement('div');
