@@ -33,6 +33,17 @@ document.getElementById("colorPicker").addEventListener("change", (event) => {
     socket.emit("colorChange", selectedColor); // Šaljemo serveru
 });
 
+// Funkcija za biranje boje
+document.getElementById('colorBtn').addEventListener('click', function() {
+    document.getElementById('colorPicker').click();
+});
+
+// Kada korisnik izabere boju iz palete
+document.getElementById('colorPicker').addEventListener('input', function() {
+    currentColor = this.value;
+    updateInputStyle();
+});
+
 // Ažuriranje liste gostiju na osnovu primljenih boja
 socket.on("updateGuestColor", ({ nickname, color }) => {
     const guestElement = document.querySelector(`#guest-${nickname}`);
