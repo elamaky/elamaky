@@ -52,7 +52,7 @@ function updateInputStyle() {
     inputField.style.fontStyle = isItalic ? 'italic' : 'normal';
     inputField.style.color = currentColor;
     inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
-    document.getElementById('Nickname').style.color = currentTextColor;
+    document.getElementById('nickname').style.color = currentTextColor;
 }
 
 // Kada korisnik pritisne Enter
