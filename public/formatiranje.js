@@ -1,6 +1,5 @@
 let isBold = false;
 let isItalic = false;
-let currentColor; // Nema početne boje
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
 
@@ -17,11 +16,6 @@ document.getElementById('boldBtn').addEventListener('click', function() {
 document.getElementById('italicBtn').addEventListener('click', function() {
     isItalic = !isItalic;
     updateInputStyle();
-});
-
-// Funkcija za biranje boje
-document.getElementById('colorBtn').addEventListener('click', function() {
-    createColorPicker(); // Kreiraj color picker dinamički
 });
 
 // Funkcija za UNDERLINE formatiranje
@@ -44,45 +38,6 @@ function updateInputStyle() {
     inputField.style.color = currentColor || 'black'; // Ako nema boje, podrazumevano crna
     inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
 }
-
-// Kreiranje color picker-a
-function createColorPicker() {
-    // Ukloni prethodni color picker ako postoji
-    const existingPicker = document.querySelector('input[type="color"]');
-    if (existingPicker) {
-        existingPicker.remove();
-    }
-
-    const colorPicker = document.createElement('input');
-    colorPicker.type = 'color';
-    colorPicker.value = currentColor || '#000000'; // Postavi početnu vrednost boje na crnu
-
-    // Kada odabereš boju
-    colorPicker.addEventListener('input', function() {
-        currentColor = this.value; // Spremi odabranu boju
-
-        // Emituj boju serveru
-        socket.emit('colorSelected', currentColor);
-    });
-
-    // Prikazi color picker
-    document.body.appendChild(colorPicker);
-    colorPicker.click(); // Otvori color picker
-}
-
-// Kada server pošalje novu boju
-socket.on('updateNicknameColor', function(socketId, color) {
-    // Nađe gosta po ID-u
-    let guestList = document.getElementById('guestList');
-    let guests = guestList.getElementsByClassName('guest');
-    
-    for (let guest of guests) {
-        if (guest.dataset.socketId === socketId) { // Proveri ID gosta
-            guest.style.color = color; // Primeni boju na ime gosta
-            break;
-        }
-    }
-});
 
 // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
