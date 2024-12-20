@@ -83,6 +83,7 @@ io.on('connection', (socket) => {
              underline: msgData.underline,
             overline: msgData.overline,
             nickname: guests[socket.id],
+            nicknameColor: guests[socket.id].color, // Dodajemo boju nickname-a u poruku
             time: time,
         };
         io.emit('chatMessage', messageToSend);
@@ -94,7 +95,13 @@ io.on('connection', (socket) => {
         io.emit('chat-cleared');
     });
 
- // Obrada diskonekcije korisnika
+// Kada gost promeni boju
+    socket.on('changeNicknameColor', (color) => {
+        guests[socket.id].color = color; // Ažuriraj boju za ovog gosta
+        io.emit('updateGuestList', Object.values(guests)); // Ažuriraj listu gostiju
+    });
+});
+     // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
