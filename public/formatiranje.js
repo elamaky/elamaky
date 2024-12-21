@@ -16,9 +16,7 @@ const newGuest = (nickname) => {
 
 const addGuestStyles = (guestDiv, color) => {
   guestDiv.style.color = color;  // Dinamičko postavljanje boje
-  guestDiv.style.fontWeight = isBold ? 'bold' : 'normal';  // BOLD
-  guestDiv.style.fontStyle = isItalic ? 'italic' : 'normal';  // ITALIC
-  guestDiv.style.textDecoration = isUnderline ? 'underline' : isOverline ? 'overline' : 'none';  // Underline/Overline
+   guestDiv.style.textDecoration = isUnderline ? 'underline' : isOverline ? 'overline' : 'none';  // Underline/Overline
 };
 
 document.getElementById('boldBtn').addEventListener('click', function() {
