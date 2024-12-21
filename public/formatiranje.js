@@ -92,24 +92,17 @@ function changeColor(color) {
     socket.emit('colorChange', { color: color });
 }
 
-// Kada server pošalje boju
-socket.on('colorChange', (data) => {
-    console.log(`Primljena boja od korisnika ${data.nickname}: ${data.color}`);
-    // Dodajemo ili ažuriramo gosta u listi
-    if (!guestColors[data.nickname]) {
-        // Ako gost nije ranije dodan
-        const guestDiv = newGuest(data.nickname);
-        guestColors[data.nickname] = data.color;
-        addGuestStyles(guestDiv, data.color);
-    } else {
-        // Ako već postoji, samo ažuriramo boju
-        guestColors[data.nickname] = data.color;
-        const guestDiv = guestList.querySelector(`div:contains('${data.nickname}')`);
-        if (guestDiv) {
-            addGuestStyles(guestDiv, data.color);
-        }
+// Funkcija za ažuriranje boje gosta
+function changeColor(color, nickname) {
+    const guestId = `guest-${nickname}`;
+    guestColors[guestId].color = color;
+
+    const guestDiv = Array.from(guestListDOM.children).find(guest => guest.textContent === nickname);
+    if (guestDiv) {
+        guestDiv.style.color = color;  // Ažuriramo boju gosta u DOM-u
     }
-});
+}
+
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
