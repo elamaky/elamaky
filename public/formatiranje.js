@@ -8,6 +8,7 @@ let isOverline = false;   // Dodano za overline
 const guestsData = {};
 const colorPrefs = {};
 const colorPicker = document.getElementById('colorPicker');
+const nickname = `Gost-${uniqueNumber}`;
 
 // Slušaj za nickname sa servera
 socket.on('setNickname', function(nickname) {
