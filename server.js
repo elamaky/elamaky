@@ -58,25 +58,17 @@ io.on('connection', (socket) => {
 
  let guestColors = {};  // Čuvamo boje gostiju
 
-  // Kada server pošalje boju
-socket.on('colorChange', (data) => {
-    console.log(`Primljena boja od korisnika ${data.nickname}: ${data.color}`);
-    // Dodajemo ili ažuriramo gosta u listi
-    if (!guestColors[data.nickname]) {
-        // Ako gost nije ranije dodan
-        const guestDiv = newGuest(data.nickname);
-        guestColors[data.nickname] = data.color;
-        addGuestStyles(guestDiv, data.color);
-    } else {
-        // Ako već postoji, samo ažuriramo boju
-        guestColors[data.nickname] = data.color;
-        const guestDiv = findGuestDiv(data.nickname);
-        if (guestDiv) {
-            addGuestStyles(guestDiv, data.color);
-        }
-    }
-});
+  // Šaljemo nadimak klijentu
+    socket.emit('assignNickname', { nickname });
 
+    console.log(`${nickname} se povezao.`);
+
+    socket.on('colorChange', (data) => {
+        guestColors[socket.id] = data.color;
+        console.log(`Korisnik ${nickname} je izabrao boju: ${data.color}`);
+        io.emit('colorChange', { nickname, color: data.color });
+    });
+});
     // Emitovanje događaja da bi ostali korisnici videli novog gosta
     socket.broadcast.emit('newGuest', nickname);
     io.emit('updateGuestList', Object.values(guests));
