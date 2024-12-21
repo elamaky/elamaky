@@ -31,6 +31,7 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
+// Funkcija za biranje boje
 document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPicker').click();
 });
@@ -41,22 +42,16 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     changeColor(currentColor);  // Po izboru boje, šaljemo boju serveru
 });
 
-socket.on('guestInfo', (data) => {
-    guestNickname = data.nickname;
-    guestColors = data.guestColors;
-    console.log('Dobio nadimak:', guestNickname);
-});
-
-socket.on('colorChange', (data) => {
-    if (data.socketId === socket.id) {
-      document.getElementById('nickname').style.color = data.color; // Primenjujemo boju na nadimak
-    }
-});
-
+// Funkcija za slanje boje serveru
 function changeColor(color) {
     socket.emit('colorChange', color); // Emitujemo promenu boje na server
 }
 
+socket.on('colorChange', (data) => {
+    if (data.socketId === socket.id) {
+        document.getElementById('nickname').style.color = data.color; // Primenjujemo boju na nadimak
+    }
+});
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
