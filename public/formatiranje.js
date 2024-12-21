@@ -2,6 +2,7 @@ let isBold = false;
 let isItalic = false;
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
+let guest = {};  // Definisanje objekta guest na klijentu
 let currentColor;
 let guestNickname;
 let guestColors = {};
