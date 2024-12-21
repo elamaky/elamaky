@@ -106,7 +106,7 @@ socket.on('private_message', function(data) {
 
 
 // Pretpostavljam da imate globalnu varijablu nickname
-let nickname = "someGuest";  // Ovo treba da bude ime trenutnog gosta, dinamički postavljeno
+let nickname;  // Ovo treba da bude ime trenutnog gosta, dinamički postavljeno
 
 // Funkcija za dodavanje stilova gostima
 function addGuestStyles(guestElement, guestId) {
@@ -116,7 +116,7 @@ function addGuestStyles(guestElement, guestId) {
     colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja
 
     // Ako je trenutni gost, omogućiti color picker
-    if (guestId !== `guest-${nickname}`) {  // Ispravljeno poređenje
+    if (guestId !== nickname) {  // Poređenje sa socket ID (nickname)
         colorPickerButton.disabled = true;  // Onemogući color picker za druge goste
     }
 
@@ -128,6 +128,7 @@ function addGuestStyles(guestElement, guestId) {
 
     guestElement.appendChild(colorPickerButton);
 }
+
 
 // Kada nov gost dođe
 socket.on('newGuest', function(nickname) {
