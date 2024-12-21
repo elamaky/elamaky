@@ -54,7 +54,7 @@ io.on('connection', (socket) => {
     const uniqueNumber = generateUniqueNumber();
     const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
     guests[socket.id] = nickname; // Dodajemo korisnika u guest list
-    console.log(`${nickname} se povezao.`);
+    socket.emit('setNickname', nickname);
 
  let guestColors = {};  // Čuvamo boje gostiju
 
