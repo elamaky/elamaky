@@ -7,7 +7,7 @@ let currentColor;
 let guestNickname;
 let nickname;
 let guestColors = {};
-const guestId
+const guestId = nickname;
 
 // Kada nov gost dođe
 socket.on('newGuest', function(nickname) {
