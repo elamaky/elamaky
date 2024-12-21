@@ -35,33 +35,37 @@ document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPicker').click();
 });
 
-document.getElementById('colorPicker').addEventListener('change', function() {
-    currentColor = this.value;
-    console.log('Izabrana boja:', currentColor);  // Log za izabranu boju
-    updateInputStyle();
-    changeColor(currentColor);  // Po izboru boje, šaljemo boju serveru
+// Kada korisnik izabere boju
+document.getElementById('colorPicker').addEventListener('input', function() {
+    const color = this.value;
+    console.log(`Izabrana boja: ${color}`);
+    changeColor(color);
 });
 
+// Šaljemo boju serveru
 function changeColor(color) {
-    // Koristimo guestNickname za identifikaciju koji gost šalje boju
-    console.log(`Korisnik ${guestNickname} je izabrao boju: ${color}`);
-    guestColors[guestNickname] = color;  // Čuvamo boju za gosta
-
-    // Šaljemo boju i ime gosta na server
-    socket.emit('colorChange', { nickname: guestNickname, color: color });
+    console.log(`Korisnik ${nickname} šalje boju: ${color}`);
+    socket.emit('colorChange', { color: color });
 }
 
+// Kada server pošalje boju
 socket.on('colorChange', (data) => {
-    console.log('Primio boju od servera:', data);  // Log za primanje boje sa servera
-    if (data.nickname === guestNickname) {
-        const nicknameDiv = document.getElementById('nickname'); // Pronađi element sa ID-om "nickname"
-        if (nicknameDiv) {
-            nicknameDiv.style.color = data.color; // Primenjujemo boju na nadimak
-            console.log(`Boja za ${data.nickname} promenjena na:`, data.color);  // Log za primenjenu boju
+    console.log(`Primljena boja od korisnika ${data.nickname}: ${data.color}`);
+    // Dodajemo ili ažuriramo gosta u listi
+    if (!guestColors[data.nickname]) {
+        // Ako gost nije ranije dodan
+        const guestDiv = newGuest(data.nickname);
+        guestColors[data.nickname] = data.color;
+        addGuestStyles(guestDiv, data.color);
+    } else {
+        // Ako već postoji, samo ažuriramo boju
+        guestColors[data.nickname] = data.color;
+        const guestDiv = guestList.querySelector(`div:contains('${data.nickname}')`);
+        if (guestDiv) {
+            addGuestStyles(guestDiv, data.color);
         }
     }
 });
-
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
