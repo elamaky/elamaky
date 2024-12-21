@@ -4,6 +4,7 @@ let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
 let currentColor;
 
+ const uniqueNumber;
  const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
     guests[socket.id] = nickname; // Dodajemo korisnika u guest list
 
