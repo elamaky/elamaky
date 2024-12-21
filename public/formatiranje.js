@@ -27,8 +27,7 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 // Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
-    updateInputStyle();  // Ažuriraj stil inputa
-    updateGuestColors(); // Ažuriraj boje gostiju na osnovu njihove odabrane boje
+    updateInputStyle();
 });
 
 // Funkcija za ažuriranje boje gostiju u listi
