@@ -113,13 +113,28 @@ function addGuestStyles(guestElement, guestId) {
     colorPickerButton.classList.add('colorPicker');
     colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja
 
-    colorPickerButton.addEventListener('input', function() {
-        guestElement.style.color = this.value;
-        guestsData[guestId].color = this.value; // Ažuriraj boju u objektu
-    });
+     // Ako nije trenutni gost, onemogući color picker
+    if (guestId !== `guest-${nickname}`) {
+        colorPickerButton.disabled = true;  // Onemogući color picker za druge goste
+    }
+
+   colorPickerButton.addEventListener('input', function() {
+    guestElement.style.color = this.value;
+    guestsData[guestId].color = this.value; // Ažuriraj boju u objektu
+    socket.emit('updateGuestColor', { guestId, color: this.value }); // Pošaljite promenu boje serveru
+});
+
 
     guestElement.appendChild(colorPickerButton);
 }
+
+socket.on('updateGuestColor', function(data) {
+    const guestElement = document.getElementById(`guest-${data.guestId}`);
+    if (guestElement) {
+        guestElement.style.color = data.color; // Ažuriraj boju gosta u listi
+    }
+});
+
 
 // Kada nov gost dođe
 socket.on('newGuest', function(nickname) {
