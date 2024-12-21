@@ -8,12 +8,10 @@ let isOverline = false;   // Dodano za overline
 const guestsData = {};
 const colorPrefs = {};
 const colorPicker = document.getElementById('colorPicker');
-const nickname = `Gost-${uniqueNumber}`;
 
-// Slušaj za nickname sa servera
-socket.on('setNickname', function(nickname) {
+socket.on('setNickname', function(guest) {
+    const nickname = guest; // Ovde dodeljuješ vrednost "guest" u nickname
     console.log('Tvoj nickname:', nickname);
-    // Sada možeš koristiti nickname
 });
 
 // Funkcija za BOLD formatiranje
