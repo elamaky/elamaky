@@ -92,16 +92,22 @@ function changeColor(color) {
     socket.emit('colorChange', { color: color });
 }
 
-// Funkcija za ažuriranje boje gosta
 function changeColor(color, nickname) {
     const guestId = `guest-${nickname}`;
-    guestColors[guestId].color = color;
+
+    // Proveravamo da li objekat postoji, ako ne postoji, kreiramo ga
+    if (!guestColors[guestId]) {
+        guestColors[guestId] = { nickname: nickname, color: '#FFFFFF' };  // Inicijalizujemo boju kao #FFFFFF ako ne postoji
+    }
+
+    guestColors[guestId].color = color;  // Sada sigurno možemo da dodelimo boju
 
     const guestDiv = Array.from(guestListDOM.children).find(guest => guest.textContent === nickname);
     if (guestDiv) {
         guestDiv.style.color = color;  // Ažuriramo boju gosta u DOM-u
     }
 }
+
 
 
 // Funkcija za UNDERLINE formatiranje
