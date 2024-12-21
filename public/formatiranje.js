@@ -124,7 +124,7 @@ function addGuestStyles(guestElement, guestId) {
     const colorPickerButton = document.createElement('input');
     colorPickerButton.type = 'color';
     colorPickerButton.classList.add('colorPicker');
-    colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF';
+    colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Postavljanje boje na osnovu podataka
 
     // Proverite da li je trenutni korisnik vlasnik koristeći socket.id
     if (socket.id === guestId) {
@@ -134,11 +134,11 @@ function addGuestStyles(guestElement, guestId) {
             // Pošaljite novu boju serveru
             socket.emit('colorChange', { guestId: guestId, color: this.value });
         });
+        guestElement.appendChild(colorPickerButton); // Dodajte color picker u DOM
     } else {
         colorPickerButton.disabled = true; // Onemogući za ostale
+        guestElement.appendChild(colorPickerButton); // Dodajte color picker u DOM
     }
-
-    guestElement.appendChild(colorPickerButton);
 }
 
 // Kada nov gost dođe
@@ -208,4 +208,3 @@ socket.on('updateColors', function(guestColors) {
         }
     }
 });
-
