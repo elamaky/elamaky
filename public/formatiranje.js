@@ -4,6 +4,9 @@ let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
 let currentColor;
 
+ const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
+    guests[socket.id] = nickname; // Dodajemo korisnika u guest list
+
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
