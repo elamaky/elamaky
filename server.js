@@ -63,9 +63,8 @@ io.on('connection', (socket) => {
         guestColors[data.guestId] = data.color;  // Čuvanje boje za tog gosta
         io.emit('updateColors', guestColors);    // Šaljemo boje svim korisnicima
     });
-});
 
- // Emitovanje događaja da bi ostali korisnici videli novog gosta
+    // Emitovanje događaja da bi ostali korisnici videli novog gosta
     socket.broadcast.emit('newGuest', nickname);
     io.emit('updateGuestList', Object.values(guests));
 
