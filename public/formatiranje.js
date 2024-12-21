@@ -4,11 +4,9 @@ let currentColor = '#FFFFFF';
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
 
-
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
 const colorPrefs = {};
-
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
@@ -33,7 +31,6 @@ socket.on('updateColors', function(guestColors) {
     });
 });
 
-
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
@@ -46,7 +43,6 @@ document.getElementById('linijagoreBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-
 // Primena stilova na polju za unos
 function updateInputStyle() {
     let inputField = document.getElementById('chatInput');
@@ -55,7 +51,6 @@ function updateInputStyle() {
     inputField.style.color = currentColor;
     inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
 }
-
 
 document.getElementById('chatInput').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
@@ -85,8 +80,6 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
         this.value = ''; // Isprazni polje za unos
     }
 });
-
-
 
 // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
@@ -159,3 +152,4 @@ socket.on('updateGuestList', function(users) {
             }
         }
     });
+});
