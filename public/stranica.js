@@ -31,15 +31,15 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.appendChild(modal);
 
     const pageList = modal.querySelector('#pageList');
+    const pageContentContainer = document.createElement('div'); // Div za prikaz sadržaja stranice
+    document.body.appendChild(pageContentContainer); // Dodajemo div u telo stranice
 
-    // Otvori modal kada klikneš na dugme "Spremi Stranicu"
+    // Dugme za otvaranje modala
     const openModalButton = document.getElementById('openModalButton');
-    if (openModalButton) {
-        openModalButton.addEventListener('click', () => {
-            modal.style.display = 'block';
-            loadSavedPages();  // Učitaj sačuvane stranice
-        });
-    }
+    openModalButton.addEventListener('click', () => {
+        modal.style.display = 'block';
+        loadSavedPages();  // Učitaj sačuvane stranice
+    });
 
     // Zatvori modal
     document.getElementById('closeModalButton').addEventListener('click', function () {
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Učitaj sadržaj stranice
     function loadPageContent(page) {
         console.log(`Stranica učitana: ${page.name}`);
-        alert(`Stranica "${page.name}" je učitana!\n\nSadržaj: ${page.content}`);
+        pageContentContainer.innerHTML = `<h2 style="color: #00ffff;">${page.name}</h2><p style="color: #00ffff;">${page.content}</p>`;
     }
 
     // Učitavanje stranice iz lokalnog fajla
