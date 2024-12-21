@@ -116,7 +116,7 @@ function addGuestStyles(guestElement, guestId) {
     colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja
 
     // Ako je trenutni gost, omogućiti color picker
-    if (guestId !== `guest-${nickname}`) {
+    if (guestId !== `guest-${nickname}`) {  // Ispravljeno poređenje
         colorPickerButton.disabled = true;  // Onemogući color picker za druge goste
     }
 
