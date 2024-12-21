@@ -8,6 +8,7 @@ let isOverline = false;   // Dodano za overline
 const guestsData = {};
 const colorPrefs = {};
 
+
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
@@ -20,15 +21,15 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Kada server pošalje boje svih korisnika
-socket.on('updateColors', function(guestColors) {
-    // Ažuriramo boje na osnovu guestId
-    Object.keys(guestColors).forEach((guestId) => {
-        const guestElement = document.getElementById('guest' + guestId);
-        if (guestElement) {
-            guestElement.style.color = guestColors[guestId]; // Boja se primenjuje samo za odgovarajućeg gosta
-        }
-    });
+// Funkcija za biranje boje
+document.getElementById('colorBtn').addEventListener('click', function() {
+    document.getElementById('colorPicker').click();
+});
+
+// Kada korisnik izabere boju iz palete
+document.getElementById('colorPicker').addEventListener('input', function() {
+    currentColor = this.value;
+    updateInputStyle();
 });
 
 // Funkcija za UNDERLINE formatiranje
@@ -43,6 +44,7 @@ document.getElementById('linijagoreBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
+
 // Primena stilova na polju za unos
 function updateInputStyle() {
     let inputField = document.getElementById('chatInput');
@@ -51,6 +53,7 @@ function updateInputStyle() {
     inputField.style.color = currentColor;
     inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
 }
+
 
 document.getElementById('chatInput').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
@@ -80,6 +83,8 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
         this.value = ''; // Isprazni polje za unos
     }
 });
+
+
 
 // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
@@ -113,6 +118,23 @@ socket.on('private_message', function(data) {
     messageArea.prepend(newMessage);
     messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
+
+
+
+// Funkcija za dodavanje stilova gostima
+function addGuestStyles(guestElement, guestId) {
+    const colorPickerButton = document.createElement('input');
+    colorPickerButton.type = 'color';
+    colorPickerButton.classList.add('colorPicker');
+    colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja
+
+    colorPickerButton.addEventListener('input', function() {
+        guestElement.style.color = this.value;
+        guestsData[guestId].color = this.value; // Ažuriraj boju u objektu
+    });
+
+    guestElement.appendChild(colorPickerButton);
+}
 
 // Kada nov gost dođe
 socket.on('newGuest', function(nickname) {
@@ -152,4 +174,19 @@ socket.on('updateGuestList', function(users) {
             }
         }
     });
-});
+
+    // Dodaj nove goste
+    users.forEach(nickname => {
+        const guestId = `guest-${nickname}`;
+        if (!guestsData[guestId]) {
+            const newGuest = document.createElement('div');
+            newGuest.className = 'guest';
+            newGuest.textContent = nickname;
+            newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
+            
+                      guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
+            addGuestStyles(newGuest, guestId); // Dodaj stilove
+            guestList.appendChild(newGuest); // Dodaj novog gosta u listu
+        }
+    });
+});  
