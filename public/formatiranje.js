@@ -7,23 +7,30 @@ let currentColor;
 let guestNickname;
 let nickname;
 let guestColors = {};
-const guestList = document.getElementById('guestlist');
 
-
-const newGuest = (nickname) => {
-  const guestDiv = Array.from(guestList.children).find(div => div.textContent === nickname);
-  if (guestDiv) {
-    guestDiv.textContent = nickname;
-  } else {
-    // Ako ne postoji, kreiramo novog gosta
-    const newDiv = document.createElement('div');
-    newDiv.textContent = nickname;
-    guestList.appendChild(newDiv);
-    return newDiv;
+document.addEventListener('DOMContentLoaded', function() {
+  const guestList = document.getElementById('guestlist');
+  
+  // Proverite da li je guestList validan pre nego što ga koristite
+  if (!guestList) {
+    console.error('Element "guestlist" nije pronađen!');
+    return;
   }
-  return guestDiv;
-};
 
+  const newGuest = (nickname) => {
+    const guestDiv = Array.from(guestList.children).find(div => div.textContent === nickname);
+    if (guestDiv) {
+      guestDiv.textContent = nickname;
+    } else {
+      // Ako ne postoji, kreiramo novog gosta
+      const newDiv = document.createElement('div');
+      newDiv.textContent = nickname;
+      guestList.appendChild(newDiv);
+      return newDiv;
+    }
+    return guestDiv;
+  };
+});
 
 const addGuestStyles = (guestDiv, color) => {
   guestDiv.style.color = color;  // Dinamičko postavljanje boje
