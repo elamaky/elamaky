@@ -127,7 +127,10 @@ function addGuestStyles(guestElement, guestId) {
     colorPickerButton.classList.add('colorPicker');
     colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja
 
-    // Dozvoli promenu boje samo ako je korisnik vlasnik (koristi socket.id za poređenje)
+    // Logovanje za debugging
+    console.log(`socket.id: ${socket.id}, guestId: ${guestId}`);
+
+    // Proveri da li je trenutni korisnik vlasnik
     if (socket.id === guestId) { 
         colorPickerButton.addEventListener('input', function() {
             guestElement.style.color = this.value;
