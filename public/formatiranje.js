@@ -7,10 +7,11 @@ let currentColor;
 let guestNickname;
 let nickname;
 let guestColors = {};
-const guestId = nickname;
+const guestList = document.getElementById('guestlist');
 
 // Kada nov gost dođe
 socket.on('newGuest', function(nickname) {
+    const guestId = `guest-${nickname}`;
     const guestList = document.getElementById('guestList');
     const newGuest = document.createElement('div');
     newGuest.classList.add('guest');
@@ -64,6 +65,16 @@ socket.on('updateGuestList', function(users) {
 });  
 
 
+const newGuest = (nickname) => {
+  const guestDiv = document.createElement('div');
+  guestDiv.textContent = nickname;
+  return guestDiv;
+};
+
+const addGuestStyles = (guestDiv, color) => {
+  guestDiv.style.color = color;  // Dinamičko postavljanje boje
+   guestDiv.style.textDecoration = isUnderline ? 'underline' : isOverline ? 'overline' : 'none';  // Underline/Overline
+};
 
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
@@ -80,11 +91,8 @@ document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPicker').click();
 });
 
-// Kada korisnik izabere boju iz palete
+// Kada korisnik izabere boju
 document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
-
     const color = this.value;
     console.log(`Izabrana boja: ${color}`);
     changeColor(color);
