@@ -64,18 +64,6 @@ socket.on('updateGuestList', function(users) {
     });
 });  
 
-
-const newGuest = (nickname) => {
-  const guestDiv = document.createElement('div');
-  guestDiv.textContent = nickname;
-  return guestDiv;
-};
-
-const addGuestStyles = (guestDiv, color) => {
-  guestDiv.style.color = color;  // Dinamičko postavljanje boje
-   guestDiv.style.textDecoration = isUnderline ? 'underline' : isOverline ? 'overline' : 'none';  // Underline/Overline
-};
-
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
     updateInputStyle();
