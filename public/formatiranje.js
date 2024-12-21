@@ -3,10 +3,8 @@ let isItalic = false;
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
 let currentColor;
-
- const uniqueNumber;
- const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
-    guests[socket.id] = nickname; // Dodajemo korisnika u guest list
+let guestNickname;
+let guestColors = {};
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
@@ -30,6 +28,24 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
 });
+
+socket.on('guestInfo', (data) => {
+    guestNickname = data.nickname;
+    guestColors = data.guestColors;
+    console.log('Dobio nadimak:', guestNickname);
+  });
+
+  // Prikazivanje boje specifične za gosta
+  socket.on('colorChange', (data) => {
+    if (data.socketId === socket.id) {
+      document.getElementById('nickname').style.color = data.color; // Primenjujemo boju na nadimak
+    }
+  });
+
+  // Menjanje boje
+  function changeColor(color) {
+    socket.emit('colorChange', color); // Emitujemo promenu boje na server
+  }
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
