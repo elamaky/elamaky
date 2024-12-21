@@ -7,9 +7,17 @@ let currentColor;
 let guestNickname;
 let guestColors = {};
 const guestList = document.getElementById('guestlist');
-const newGuest = {}; // Definicija newGuest
-const addGuestStyles = {}; // Definicija addGuestStyle
 
+const newGuest = (nickname) => {
+  const guestDiv = document.createElement('div');
+  guestDiv.textContent = nickname;
+  return guestDiv;
+};
+
+const addGuestStyles = (guestDiv) => {
+  guestDiv.style.color = 'blue';  // Primer stila
+  guestDiv.style.fontWeight = 'bold';  // Drugi stil
+};
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
