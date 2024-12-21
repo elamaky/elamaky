@@ -6,6 +6,8 @@ let guest = {};  // Definisanje objekta guest na klijentu
 let currentColor;
 let guestNickname;
 let guestColors = {};
+const guestList = document.getElementById('guestlist');
+
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
@@ -177,13 +179,13 @@ socket.on('updateGuestList', function(users) {
     // Dodaj nove goste
     users.forEach(nickname => {
         const guestId = `guest-${nickname}`;
-        if (!guestsList[guestId]) {
+        if (!guestList[guestId]) {
             const newGuest = document.createElement('div');
             newGuest.className = 'guest';
             newGuest.textContent = nickname;
             newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
             
-                      guestsList[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
+                      guestList[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
             addGuestStyles(newGuest, guestId); // Dodaj stilove
             guestList.appendChild(newGuest); // Dodaj novog gosta u listu
         }
