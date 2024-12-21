@@ -43,7 +43,8 @@ document.getElementById('colorPicker').addEventListener('change', function() {
 
 function changeColor(color) {
     console.log('Šaljem boju na server:', color);  // Log za slanje boje serveru
-    socket.emit('colorChange', color); // Emitujemo promenu boje na server
+    // Dodajemo socket.id koji označava koji korisnik šalje boju
+    socket.emit('colorChange', { color: color, socketId: socket.id }); 
 }
 
 socket.on('colorChange', (data) => {
@@ -56,7 +57,6 @@ socket.on('colorChange', (data) => {
         }
     }
 });
-
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
