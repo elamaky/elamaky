@@ -108,7 +108,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // Učitaj sadržaj stranice
     function loadPageContent(page) {
         console.log(`Stranica učitana: ${page.name}`);
-        pageContentContainer.innerHTML = `<h2 style="color: #00ffff;">${page.name}</h2><p style="color: #00ffff;">${page.content}</p>`;
+        pageContentContainer.innerHTML = `
+            <h2 style="color: #00ffff;">${page.name}</h2>
+            <p style="color: #00ffff;">${page.content}</p>
+        `;
     }
 
     // Učitavanje stranice iz lokalnog fajla
@@ -123,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const reader = new FileReader();
         reader.onload = function (e) {
             const pageData = JSON.parse(e.target.result);
-            loadPageContent(pageData);
+            loadPageContent(pageData);  // Učitaj sadržaj stranice iz fajla
         };
         reader.readAsText(file);
     });
