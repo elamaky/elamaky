@@ -1,8 +1,8 @@
 let isBold = false;
 let isItalic = false;
-let isUnderline = false;  // Dodano za underline
-let isOverline = false;   // Dodano za overline
-let guest = {};  // Definisanje objekta guest na klijentu
+let isUnderline = false;  
+let isOverline = false;   
+let guest = {};  
 let currentColor;
 let guestNickname;
 let guestColors = {};
@@ -16,50 +16,47 @@ const newGuest = (nickname) => {
 
 const addGuestStyles = (guestDiv, color) => {
   guestDiv.style.color = color;  // Dinamičko postavljanje boje
-  guestDiv.style.fontWeight = 'bold';  // Stil za nadimak
+  guestDiv.style.fontWeight = isBold ? 'bold' : 'normal';  // BOLD
+  guestDiv.style.fontStyle = isItalic ? 'italic' : 'normal';  // ITALIC
+  guestDiv.style.textDecoration = isUnderline ? 'underline' : isOverline ? 'overline' : 'none';  // Underline/Overline
 };
 
-
-// Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
     updateInputStyle();
 });
 
-// Funkcija za ITALIC formatiranje
 document.getElementById('italicBtn').addEventListener('click', function() {
     isItalic = !isItalic;
     updateInputStyle();
 });
 
-// Funkcija za biranje boje
 document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPicker').click();
 });
 
-// Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
+    changeColor(currentColor);  // Po izboru boje, šaljemo boju serveru
 });
 
 socket.on('guestInfo', (data) => {
     guestNickname = data.nickname;
     guestColors = data.guestColors;
     console.log('Dobio nadimak:', guestNickname);
-  });
+});
 
-  // Prikazivanje boje specifične za gosta
-  socket.on('colorChange', (data) => {
+socket.on('colorChange', (data) => {
     if (data.socketId === socket.id) {
       document.getElementById('nickname').style.color = data.color; // Primenjujemo boju na nadimak
     }
-  });
+});
 
-  // Menjanje boje
-  function changeColor(color) {
+function changeColor(color) {
     socket.emit('colorChange', color); // Emitujemo promenu boje na server
-  }
+}
+
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
