@@ -10,8 +10,8 @@ let guestColors = {};
 const guestList = document.getElementById('guestlist');
 
 const newGuest = (nickname) => {
-  const guestDiv = document.createElement('div');
-  guestDiv.textContent = nickname;
+  const guestDiv = Array.from(guestList.children).find(div => div.textContent === data.nickname);
+ guestDiv.textContent = nickname;
   return guestDiv;
 };
 
@@ -28,11 +28,6 @@ document.getElementById('boldBtn').addEventListener('click', function() {
 document.getElementById('italicBtn').addEventListener('click', function() {
     isItalic = !isItalic;
     updateInputStyle();
-});
-
-// Funkcija za biranje boje
-document.getElementById('colorBtn').addEventListener('click', function() {
-    document.getElementById('colorPicker').click();
 });
 
 // Funkcija za biranje boje
