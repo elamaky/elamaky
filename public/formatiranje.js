@@ -48,20 +48,6 @@ function changeColor(color) {
     socket.emit('colorChange', { color: color });
 }
 
-// Inicijalizujemo nadimak korisnika nakon povezivanja
-socket.on('connect', () => {
-    socket.on('assignNickname', (data) => {
-        nickname = data.nickname; // Server šalje nadimak
-        console.log(`Dobijen nadimak: ${nickname}`);
-    });
-});
-
-// Funkcija za pretragu elementa u listi
-function findGuestDiv(nickname) {
-    const guestDivs = document.querySelectorAll('#guestlist div');
-    return Array.from(guestDivs).find(div => div.textContent.includes(nickname));
-}
-
 // Kada server pošalje boju
 socket.on('colorChange', (data) => {
     console.log(`Primljena boja od korisnika ${data.nickname}: ${data.color}`);
@@ -74,13 +60,12 @@ socket.on('colorChange', (data) => {
     } else {
         // Ako već postoji, samo ažuriramo boju
         guestColors[data.nickname] = data.color;
-        const guestDiv = findGuestDiv(data.nickname);
+        const guestDiv = guestList.querySelector(`div:contains('${data.nickname}')`);
         if (guestDiv) {
             addGuestStyles(guestDiv, data.color);
         }
     }
 });
-
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
