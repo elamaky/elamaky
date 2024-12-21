@@ -125,13 +125,10 @@ function addGuestStyles(guestElement, guestId) {
     const colorPickerButton = document.createElement('input');
     colorPickerButton.type = 'color';
     colorPickerButton.classList.add('colorPicker');
-    colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja
+    colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF';
 
-    // Logovanje za debugging
-    console.log(`socket.id: ${socket.id}, guestId: ${guestId}`);
-
-    // Proveri da li je trenutni korisnik vlasnik
-    if (socket.id === guestId) { 
+    // Proverite da li je trenutni korisnik vlasnik koristeći socket.id
+    if (socket.id === guestId) {
         colorPickerButton.addEventListener('input', function() {
             guestElement.style.color = this.value;
             guestsData[guestId].color = this.value; // Ažuriraj boju u objektu
@@ -143,26 +140,25 @@ function addGuestStyles(guestElement, guestId) {
     guestElement.appendChild(colorPickerButton);
 }
 
+
 // Kada nov gost dođe
 socket.on('newGuest', function(nickname) {
-    const guestId = `guest-${nickname}`;
+    const guestId = socket.id; // Koristi socket.id kao identifikator
     const guestList = document.getElementById('guestList');
     const newGuest = document.createElement('div');
     newGuest.classList.add('guest');
     newGuest.textContent = nickname;
 
-    // Dodaj novog gosta u guestsData ako ne postoji
+    // Dodaj novog gosta u guestsData koristeći socket.id
     if (!guestsData[guestId]) {
-        guestsData[guestId] = { nickname, color: '#FFFFFF' }; // Ako ne postoji, dodajemo ga sa podrazumevanom bojom
+        guestsData[guestId] = { nickname, color: '#FFFFFF' }; // Dodajemo boju
     }
 
     newGuest.style.color = guestsData[guestId].color;
-    
-    // Dodaj stilove za gosta
-    addGuestStyles(newGuest, guestId);
-    
-    guestList.appendChild(newGuest); // Dodaj novog gosta u listu
+    addGuestStyles(newGuest, guestId);  // Prosledjujemo socket.id kao guestId
+    guestList.appendChild(newGuest);
 });
+
 
 // Ažuriranje liste gostiju bez resetovanja stilova
 socket.on('updateGuestList', function(users) {
