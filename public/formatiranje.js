@@ -42,21 +42,25 @@ document.getElementById('colorPicker').addEventListener('change', function() {
 });
 
 function changeColor(color) {
-    console.log('Šaljem boju na server:', color);  // Log za slanje boje serveru
-    // Dodajemo socket.id koji označava koji korisnik šalje boju
-    socket.emit('colorChange', { color: color, socketId: socket.id }); 
+    // Koristimo guestNickname za identifikaciju koji gost šalje boju
+    console.log(`Korisnik ${guestNickname} je izabrao boju: ${color}`);
+    guestColors[guestNickname] = color;  // Čuvamo boju za gosta
+
+    // Šaljemo boju i ime gosta na server
+    socket.emit('colorChange', { nickname: guestNickname, color: color });
 }
 
 socket.on('colorChange', (data) => {
     console.log('Primio boju od servera:', data);  // Log za primanje boje sa servera
-    if (data.socketId === socket.id) {
+    if (data.nickname === guestNickname) {
         const nicknameDiv = document.getElementById('nickname'); // Pronađi element sa ID-om "nickname"
         if (nicknameDiv) {
             nicknameDiv.style.color = data.color; // Primenjujemo boju na nadimak
-            console.log('Boja promenjena na:', data.color);  // Log za primenjenu boju
+            console.log(`Boja za ${data.nickname} promenjena na:`, data.color);  // Log za primenjenu boju
         }
     }
 });
+
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
