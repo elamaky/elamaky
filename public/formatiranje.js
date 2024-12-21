@@ -9,6 +9,11 @@ const guestsData = {};
 const colorPrefs = {};
 const colorPicker = document.getElementById('colorPicker');
 
+// Slušaj za nickname sa servera
+socket.on('setNickname', function(nickname) {
+    console.log('Tvoj nickname:', nickname);
+    // Sada možeš koristiti nickname
+});
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
