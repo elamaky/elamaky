@@ -164,7 +164,16 @@ socket.on('updateGuestList', function(users) {
         }
     });
 
-    // Dodaj nove goste
+function addGuestStyles(guestElement, guestId) {
+    guestElement.style.fontWeight = 'bold'; // Bold
+    guestElement.style.fontStyle = 'italic'; // Italic
+    guestElement.style.textDecoration = 'underline overline'; // Underline i Overline
+    guestElement.style.color = guestElement.style.color || ''; // Koristi već postavljenu boju, ostavi prazno ako nije
+
+    console.log(`Stilovi dodani za: ${guestId}`);
+}
+
+     // Dodaj nove goste
     users.forEach(nickname => {
         const guestId = `guest-${nickname}`;
         if (!guestsData[guestId]) {
