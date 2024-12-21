@@ -34,7 +34,7 @@ document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPicker').click();
 });
 
-document.getElementById('colorPicker').addEventListener('input', function() {
+document.getElementById('colorPicker').addEventListener('change', function() {
     currentColor = this.value;
     console.log('Izabrana boja:', currentColor);  // Log za izabranu boju
     updateInputStyle();
@@ -49,10 +49,14 @@ function changeColor(color) {
 socket.on('colorChange', (data) => {
     console.log('Primio boju od servera:', data);  // Log za primanje boje sa servera
     if (data.socketId === socket.id) {
-        document.getElementById('nickname').style.color = data.color; // Primenjujemo boju na nadimak
-        console.log('Boja promenjena na:', data.color);  // Log za primenjenu boju
+        const nicknameDiv = document.getElementById('nickname'); // Pronađi element sa ID-om "nickname"
+        if (nicknameDiv) {
+            nicknameDiv.style.color = data.color; // Primenjujemo boju na nadimak
+            console.log('Boja promenjena na:', data.color);  // Log za primenjenu boju
+        }
     }
 });
+
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
