@@ -36,18 +36,21 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
+    console.log('Izabrana boja:', currentColor);  // Log za izabranu boju
     updateInputStyle();
     changeColor(currentColor);  // Po izboru boje, šaljemo boju serveru
 });
 
-// Funkcija za slanje boje serveru
 function changeColor(color) {
+    console.log('Šaljem boju na server:', color);  // Log za slanje boje serveru
     socket.emit('colorChange', color); // Emitujemo promenu boje na server
 }
 
 socket.on('colorChange', (data) => {
+    console.log('Primio boju od servera:', data);  // Log za primanje boje sa servera
     if (data.socketId === socket.id) {
         document.getElementById('nickname').style.color = data.color; // Primenjujemo boju na nadimak
+        console.log('Boja promenjena na:', data.color);  // Log za primenjenu boju
     }
 });
 
