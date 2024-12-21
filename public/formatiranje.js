@@ -7,6 +7,8 @@ let currentColor;
 let guestNickname;
 let guestColors = {};
 const guestList = document.getElementById('guestlist');
+const newGuest = {}; // Definicija newGuest
+const addGuestStyles = {}; // Definicija addGuestStyle
 
 
 // Funkcija za BOLD formatiranje
