@@ -8,35 +8,6 @@ let guestNickname;
 let nickname;
 let guestColors = {};
 
-document.addEventListener('DOMContentLoaded', function() {
-  const guestList = document.getElementById('guestlist');
-  
-  // Proverite da li je guestList validan pre nego što ga koristite
-  if (!guestList) {
-    console.error('Element "guestlist" nije pronađen!');
-    return;
-  }
-
-  const newGuest = (nickname) => {
-    const guestDiv = Array.from(guestList.children).find(div => div.textContent === nickname);
-    if (guestDiv) {
-      guestDiv.textContent = nickname;
-    } else {
-      // Ako ne postoji, kreiramo novog gosta
-      const newDiv = document.createElement('div');
-      newDiv.textContent = nickname;
-      guestList.appendChild(newDiv);
-      return newDiv;
-    }
-    return guestDiv;
-  };
-});
-
-const addGuestStyles = (guestDiv, color) => {
-  guestDiv.style.color = color;  // Dinamičko postavljanje boje
-   guestDiv.style.textDecoration = isUnderline ? 'underline' : isOverline ? 'overline' : 'none';  // Underline/Overline
-};
-
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
     updateInputStyle();
