@@ -53,9 +53,7 @@ document.getElementById('colorPicker').addEventListener('input', function() {
             }
         });
 
-        // Inicijalno obavesti server o ulasku
-        socket.emit('newGuest', { nickname, color: '#FFFFFF' });
-
+       
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
