@@ -14,10 +14,11 @@ const newGuest = (nickname) => {
   return guestDiv;
 };
 
-const addGuestStyles = (guestDiv) => {
-  guestDiv.style.color = 'blue';  // Primer stila
-  guestDiv.style.fontWeight = 'bold';  // Drugi stil
+const addGuestStyles = (guestDiv, color) => {
+  guestDiv.style.color = color;  // Dinamičko postavljanje boje
+  guestDiv.style.fontWeight = 'bold';  // Stil za nadimak
 };
+
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
