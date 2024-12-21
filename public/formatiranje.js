@@ -5,6 +5,7 @@ let isOverline = false;
 let guest = {};  
 let currentColor;
 let guestNickname;
+let nickname;
 let guestColors = {};
 const guestList = document.getElementById('guestlist');
 
