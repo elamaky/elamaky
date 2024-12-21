@@ -104,8 +104,6 @@ socket.on('private_message', function(data) {
     messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
 
-
-
 // Funkcija za dodavanje stilova gostima i njihovih color pickera
 function addGuestStyles(guestElement, guestId) {
     // Kreiraj color picker za ovog gosta
@@ -114,16 +112,18 @@ function addGuestStyles(guestElement, guestId) {
     colorPickerButton.classList.add('colorPicker');
     colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja
 
+    // Dodeli event listener za promenu boje
     colorPickerButton.addEventListener('input', function() {
         guestElement.style.color = this.value; // Promeni boju za trenutnog gosta
         guestsData[guestId].color = this.value; // Ažuriraj boju u objektu
+
         // Pošaljemo novu boju serveru
         socket.emit('colorChanged', { guestId, color: this.value });
     });
 
-    guestElement.appendChild(colorPickerButton); // Dodaj color picker za ovog gosta
+    // Dodaj color picker za ovog gosta
+    guestElement.appendChild(colorPickerButton);
 }
-
 socket.on('updateGuestColor', function(data) {
     const guestElement = document.querySelector(`#guest-${data.guestId}`);
     if (guestElement) {
