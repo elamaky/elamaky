@@ -68,7 +68,7 @@ io.on('connection', (socket) => {
         console.log(`Korisnik ${nickname} je izabrao boju: ${data.color}`);
         io.emit('colorChange', { nickname, color: data.color });
     });
-});
+
     // Emitovanje događaja da bi ostali korisnici videli novog gosta
     socket.broadcast.emit('newGuest', nickname);
     io.emit('updateGuestList', Object.values(guests));
