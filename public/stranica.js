@@ -100,17 +100,22 @@ document.addEventListener('DOMContentLoaded', function () {
             li.style.borderBottom = '1px solid #00ffff';
 
             li.addEventListener('click', function () {
-                // Samo zameni src za slike
-                const allImages = document.querySelectorAll('img');
-                const newImages = page.images;
+                // Proveri da li su slike učitane
+                if (page.images && page.images.length > 0) {
+                    // Zameni src za slike
+                    const allImages = document.querySelectorAll('img');
+                    const newImages = page.images;
 
-                newImages.forEach((newSrc, index) => {
-                    if (allImages[index]) {
-                        allImages[index].src = newSrc;
-                    }
-                });
+                    newImages.forEach((newSrc, index) => {
+                        if (allImages[index]) {
+                            allImages[index].src = newSrc;
+                        }
+                    });
 
-                alert(`Verzija "${page.name}" je učitana.`);
+                    alert(`Verzija "${page.name}" je učitana.`);
+                } else {
+                    alert('Nema slika u verziji.');
+                }
             });
 
             pageList.appendChild(li);
