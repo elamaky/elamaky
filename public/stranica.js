@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
         reader.readAsText(file);
     });
 
-   function renderPageList() {
+  function renderPageList() {
     pageList.innerHTML = '';
     pages.forEach((page, index) => {
         const li = document.createElement('li');
@@ -117,3 +117,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
         pageList.appendChild(li);
     });
+}
