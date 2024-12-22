@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.style.display = 'none';
     });
 
-    // Čuvanje stranice u localStorage
+    // Čuvanje stranice u JSON (ili u localStorage)
     document.getElementById('saveNewPageButton').addEventListener('click', function () {
         const pageName = document.getElementById('newPageNameInput').value;
         if (!pageName) {
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const pageData = {
             name: pageName,
-            content: 'Ovo je sadržaj stranice' // Dodajte sadržaj stranice
+            images: [] // Dodaj slike i njihove pozicije/dimenzije ovde
         };
 
         let savedPages = JSON.parse(localStorage.getItem('pages')) || [];
@@ -85,15 +85,55 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Dinamičko učitavanje sadržaja na postojeću stranicu
     function loadPageContent(page) {
-        const mainContent = document.getElementById('mainContent'); // Glavni kontejner
-        if (mainContent) {
-            mainContent.innerHTML = `
-                <h2 style="color: #00ffff;">${page.name}</h2>
-                <p style="color: #00ffff;">${page.content}</p>
-            `;
-        } else {
-            console.error('Element sa ID-jem "mainContent" nije pronađen.');
-        }
-    }
-});
+        const body = document.body;
 
+        // Očisti trenutnu stranicu (izbriši sve slike)
+        const existingImages = document.querySelectorAll('img');
+        existingImages.forEach(img => img.remove());
+
+        // Dodaj slike iz sačuvane verzije
+        page.images.forEach(data => {
+            const img = document.createElement('img');
+            img.src = data.src;
+            img.style.position = 'absolute';
+            img.style.top = data.top;
+            img.style.left = data.left;
+            img.style.width = data.width;
+            img.style.height = data.height;
+            body.appendChild(img);
+        });
+    }
+
+    // Funkcija za preuzimanje i čuvanje fajla sa stranicom u JSON formatu
+    document.getElementById('saveFileButton').addEventListener('click', function () {
+        const savedPages = JSON.parse(localStorage.getItem('pages')) || [];
+        const pageData = JSON.stringify(savedPages, null, 2); // Formatiran JSON
+
+        const blob = new Blob([pageData], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'pages.json';
+        a.click();
+    });
+
+    // Učitavanje fajla sa računara
+    document.getElementById('loadFileButton').addEventListener('click', function () {
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+
+        if (!file) {
+            alert('Morate odabrati fajl!');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const pagesData = JSON.parse(event.target.result);
+            localStorage.setItem('pages', JSON.stringify(pagesData));
+            loadSavedPages(); // Ponovno učitaj stranice nakon učitavanja fajla
+            alert('Fajl učitan!');
+        };
+        reader.readAsText(file);
+    });
+});
