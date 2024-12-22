@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const modal = document.createElement('div');
-    modal.id = 'modalContainer'; // Jedinstveni ID za modal
+    modal.id = 'modalContainer';
     modal.style.display = 'none';
     modal.style.position = 'fixed';
     modal.style.width = '400px';
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     modal.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="color: #00ffff;">Memoriši ili Učitaj Stranicu</h3>
+            <h3 style="color: #00ffff;">Memoriši ili Učitaj Slike</h3>
             <button id="closeModalButton" style="color: #00ffff; background: none; border: 1px solid #00ffff; padding: 5px; cursor: pointer;">Zatvori</button>
         </div>
         <input type="text" id="newPageNameInput" placeholder="Naziv verzije" style="width: 100%; margin: 10px 0; padding: 10px; background: black; color: #00ffff; border: 1px solid #00ffff;" />
@@ -28,9 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
     `;
     document.body.appendChild(modal);
 
-    // Dugme za otvaranje modala
-    const openModalButton = document.getElementById('stranica'); // Promenjeno na novi ID dugmeta
-
+    const openModalButton = document.getElementById('stranica');
     const pageList = modal.querySelector('#pageList');
     const pages = [];
 
@@ -50,10 +48,12 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        // Čuvanje slika
+        const images = Array.from(document.querySelectorAll('img')).map(img => img.src);
+
         const pageData = {
             name: pageName,
-            content: document.body.innerHTML,
-            scripts: [] // Sačuvajte ovde sve potrebne skripte
+            images: images
         };
 
         pages.push(pageData);
@@ -61,10 +61,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const blob = new Blob([JSON.stringify(pages, null, 2)], { type: 'application/json' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'verzije_stranica.json';
+        a.download = 'verzije_slika.json';
         a.click();
 
-        alert('Verzija stranice je sačuvana u JSON fajl.');
+        alert('Verzija slika je sačuvana u JSON fajl.');
     });
 
     document.getElementById('loadFromFileButton').addEventListener('click', function () {
@@ -100,13 +100,14 @@ document.addEventListener('DOMContentLoaded', function () {
             li.style.borderBottom = '1px solid #00ffff';
 
             li.addEventListener('click', function () {
-                document.body.innerHTML = page.content;
+                // Zamena slika
+                const allImages = document.querySelectorAll('img');
+                const newImages = page.images;
 
-                // Ponovno učitajte i izvršite skripte
-                page.scripts.forEach(script => {
-                    const scriptTag = document.createElement('script');
-                    scriptTag.textContent = script;
-                    document.body.appendChild(scriptTag);
+                allImages.forEach((img, index) => {
+                    if (newImages[index]) {
+                        img.src = newImages[index];
+                    }
                 });
 
                 alert(`Verzija "${page.name}" je učitana.`);
@@ -116,4 +117,5 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
 
