@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Omogućavanje uređivanja stranice odmah
+    document.body.contentEditable = true;
+});
     const modal = document.createElement('div');
     modal.id = 'memoryModal';
     modal.style.display = 'none';
