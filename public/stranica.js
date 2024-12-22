@@ -89,29 +89,32 @@ document.addEventListener('DOMContentLoaded', function () {
         reader.readAsText(file);
     });
 
-    function renderPageList() {
-        pageList.innerHTML = '';
-        pages.forEach((page, index) => {
-            const li = document.createElement('li');
-            li.textContent = page.name;
-            li.style.cursor = 'pointer';
-            li.style.padding = '10px';
-            li.style.borderBottom = '1px solid #00ffff';
+   function renderPageList() {
+    pageList.innerHTML = '';
+    pages.forEach((page, index) => {
+        const li = document.createElement('li');
+        li.textContent = page.name;
+        li.style.cursor = 'pointer';
+        li.style.padding = '10px';
+        li.style.borderBottom = '1px solid #00ffff';
 
-          
-li.addEventListener('click', function () {
-    if (page.images && page.images.length > 0) {
-        const allImages = document.querySelectorAll('img');
-        const newImages = page.images;
+        li.addEventListener('click', function () {
+            if (page.images && page.images.length > 0) {
+                const allImages = document.querySelectorAll('img');
+                const newImages = page.images;
 
-        newImages.forEach((newSrc, index) => {
-            if (allImages[index]) {
-                allImages[index].src = newSrc;
+                newImages.forEach((newSrc, index) => {
+                    if (allImages[index]) {
+                        allImages[index].src = newSrc;
+                    }
+                });
+
+                alert(`Verzija "${page.name}" je učitana.`);
+            } else {
+                alert('Nema slika u verziji.');
             }
         });
 
-        alert(`Verzija "${page.name}" je učitana.`);
-    } else {
-        alert('Nema slika u verziji.');
-    }
-});
+        pageList.appendChild(li);
+    });
+}
