@@ -25,20 +25,16 @@ document.addEventListener('DOMContentLoaded', function () {
         <input type="text" id="newPageNameInput" placeholder="Naziv stranice" style="width: 100%; margin: 10px 0; padding: 10px; background: black; color: #00ffff; border: 1px solid #00ffff;"/>
         <button id="saveNewPageButton" style="width: 100%; padding: 10px; background: black; color: #00ffff; border: 1px solid #00ffff; cursor: pointer;">Spremi stranicu</button>
         <ul id="pageList" style="margin-top: 20px; color: #00ffff; padding: 0; list-style: none;"></ul>
-        <button id="loadFileButtonTrigger" style="width: 100%; padding: 10px; background: black; color: #00ffff; border: 1px solid #00ffff; cursor: pointer;">Učitaj stranicu iz fajla</button>
-        <input type="file" id="loadFileButton" style="display:none;">
     `;
     document.body.appendChild(modal);
 
     const pageList = modal.querySelector('#pageList');
-    const pageContentContainer = document.createElement('div'); // Div za prikaz sadržaja stranice
-    document.body.appendChild(pageContentContainer); // Dodajemo div u telo stranice
 
     // Dugme za otvaranje modala
     const openModalButton = document.getElementById('openModalButton');
     openModalButton.addEventListener('click', () => {
         modal.style.display = 'block';
-        loadSavedPages();  // Učitaj sačuvane stranice
+        loadSavedPages(); // Učitaj sačuvane stranice
     });
 
     // Zatvori modal
@@ -46,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.style.display = 'none';
     });
 
-    // Čuvanje stranice u localStorage ili kao lokalni fajl
+    // Čuvanje stranice u localStorage
     document.getElementById('saveNewPageButton').addEventListener('click', function () {
         const pageName = document.getElementById('newPageNameInput').value;
         if (!pageName) {
@@ -56,39 +52,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const pageData = {
             name: pageName,
-            content: 'Sadržaj stranice'  // Ovde dodaj sadržaj stranice
+            content: 'Ovo je sadržaj stranice' // Dodajte sadržaj stranice
         };
 
-        // Prikazivanje opcija za čuvanje
-        const saveOption = confirm('Da li želite da sačuvate stranicu u Storage? (Cancel za čuvanje kao fajl)');
-
-        if (saveOption) {
-            // Čuvanje u localStorage
-            let savedPages = JSON.parse(localStorage.getItem('pages')) || [];
-            savedPages.push(pageData);
-            localStorage.setItem('pages', JSON.stringify(savedPages));
-            alert('Stranica je sačuvana u Storage!');
-        } else {
-            // Čuvanje kao lokalni JSON fajl
-            const blob = new Blob([JSON.stringify(pageData)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${pageName}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            alert('Stranica je sačuvana kao fajl!');
-        }
-
-        // Očisti unos
+        let savedPages = JSON.parse(localStorage.getItem('pages')) || [];
+        savedPages.push(pageData);
+        localStorage.setItem('pages', JSON.stringify(savedPages));
+        alert('Stranica je sačuvana!');
         document.getElementById('newPageNameInput').value = '';
     });
 
     // Učitavanje sačuvanih stranica iz localStorage
     function loadSavedPages() {
         const savedPages = JSON.parse(localStorage.getItem('pages')) || [];
-        pageList.innerHTML = '';  // Očisti pređašnju listu
+        pageList.innerHTML = ''; // Očisti pređašnju listu
 
         savedPages.forEach(page => {
             const li = document.createElement('li');
@@ -98,36 +75,25 @@ document.addEventListener('DOMContentLoaded', function () {
             li.style.borderBottom = '1px solid #00ffff';
 
             li.addEventListener('click', function () {
-                loadPageContent(page);  // Učitaj sadržaj stranice
+                loadPageContent(page); // Učitaj sadržaj stranice
+                modal.style.display = 'none'; // Zatvori modal
             });
 
             pageList.appendChild(li);
         });
     }
 
-    // Učitaj sadržaj stranice
+    // Dinamičko učitavanje sadržaja na postojeću stranicu
     function loadPageContent(page) {
-        console.log(`Stranica učitana: ${page.name}`);
-        pageContentContainer.innerHTML = `
-            <h2 style="color: #00ffff;">${page.name}</h2>
-            <p style="color: #00ffff;">${page.content}</p>
-        `;
+        const mainContent = document.getElementById('mainContent'); // Glavni kontejner
+        if (mainContent) {
+            mainContent.innerHTML = `
+                <h2 style="color: #00ffff;">${page.name}</h2>
+                <p style="color: #00ffff;">${page.content}</p>
+            `;
+        } else {
+            console.error('Element sa ID-jem "mainContent" nije pronađen.');
+        }
     }
-
-    // Učitavanje stranice iz lokalnog fajla
-    document.getElementById('loadFileButtonTrigger').addEventListener('click', function() {
-        document.getElementById('loadFileButton').click();
-    });
-
-    document.getElementById('loadFileButton').addEventListener('change', function (event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const pageData = JSON.parse(e.target.result);
-            loadPageContent(pageData);  // Učitaj sadržaj stranice iz fajla
-        };
-        reader.readAsText(file);
-    });
 });
+
