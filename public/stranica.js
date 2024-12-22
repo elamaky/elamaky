@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const modal = document.createElement('div');
-    modal.id = 'modalContainer';
+    modal.id = 'memoryModal';
     modal.style.display = 'none';
     modal.style.position = 'fixed';
     modal.style.width = '400px';
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     modal.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="color: #00ffff;">Memoriši ili Učitaj Slike</h3>
+            <h3 style="color: #00ffff;">Memoriši ili Učitaj Stranicu</h3>
             <button id="closeModalButton" style="color: #00ffff; background: none; border: 1px solid #00ffff; padding: 5px; cursor: pointer;">Zatvori</button>
         </div>
         <input type="text" id="newPageNameInput" placeholder="Naziv verzije" style="width: 100%; margin: 10px 0; padding: 10px; background: black; color: #00ffff; border: 1px solid #00ffff;" />
@@ -28,8 +28,8 @@ document.addEventListener('DOMContentLoaded', function () {
     `;
     document.body.appendChild(modal);
 
-    const openModalButton = document.getElementById('stranica');
     const pageList = modal.querySelector('#pageList');
+    const openModalButton = document.getElementById('stranica');
     const pages = [];
 
     openModalButton.addEventListener('click', () => {
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Sačuvaj slike sa njihovim src atributima
+        // Sačuvaj samo slike sa njihovim src atributima
         const images = Array.from(document.querySelectorAll('img')).map(img => img.src);
 
         const pageData = {
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
         a.download = 'verzije_slika.json';
         a.click();
 
-        alert('Verzija slika je sačuvana u JSON fajl.');
+        alert('Verzija stranice je sačuvana u JSON fajl.');
     });
 
     document.getElementById('loadFromFileButton').addEventListener('click', function () {
