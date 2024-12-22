@@ -111,11 +111,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 alert(`Verzija "${page.name}" je učitana.`);
+
+                // Ovde se čuva nova verzija stranice koja uključuje samo slike
+                document.body.dataset.pageVersion = page.name;
             });
 
             pageList.appendChild(li);
         });
     }
 });
-
-
