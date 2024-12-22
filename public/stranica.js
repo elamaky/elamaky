@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const modal = document.createElement('div');
-    modal.id = 'modalContainer';
+    modal.id = 'modalContainer'; // Jedinstveni ID za modal
     modal.style.display = 'none';
     modal.style.position = 'fixed';
     modal.style.width = '400px';
@@ -28,18 +28,8 @@ document.addEventListener('DOMContentLoaded', function () {
     `;
     document.body.appendChild(modal);
 
-    const openModalButton = document.createElement('button');
-    openModalButton.textContent = 'Otvori Modal';
-    openModalButton.style.position = 'fixed';
-    openModalButton.style.top = '10px';
-    openModalButton.style.right = '10px';
-    openModalButton.style.padding = '10px';
-    openModalButton.style.backgroundColor = 'black';
-    openModalButton.style.color = '#00ffff';
-    openModalButton.style.border = '1px solid #00ffff';
-    openModalButton.style.cursor = 'pointer';
-    openModalButton.id = 'openModalButton';
-    document.body.appendChild(openModalButton);
+    // Dugme za otvaranje modala
+    const openModalButton = document.getElementById('stranica'); // Promenjeno na novi ID dugmeta
 
     const pageList = modal.querySelector('#pageList');
     const pages = [];
@@ -126,3 +116,4 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
