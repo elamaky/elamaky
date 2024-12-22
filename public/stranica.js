@@ -104,16 +104,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 const allImages = document.querySelectorAll('img');
                 const newImages = page.images;
 
-                allImages.forEach((img, index) => {
-                    if (newImages[index]) {
+                if (newImages.length === allImages.length) {
+                    allImages.forEach((img, index) => {
                         img.src = newImages[index];
-                    }
-                });
+                    });
 
-                alert(`Verzija "${page.name}" je učitana.`);
-
-                // Ovde se čuva nova verzija stranice koja uključuje samo slike
-                document.body.dataset.pageVersion = page.name;
+                    alert(`Verzija "${page.name}" je učitana.`);
+                } else {
+                    alert("Broj slika se ne poklapa!");
+                }
             });
 
             pageList.appendChild(li);
