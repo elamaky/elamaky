@@ -29,10 +29,9 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.appendChild(modal);
 
     const pageList = modal.querySelector('#pageList');
-    const openModalButton = document.getElementById('openModalButton');
     const pages = [];
 
-    openModalButton.addEventListener('click', () => {
+    document.getElementById('openModalButton').addEventListener('click', () => {
         modal.style.display = 'block';
         renderPageList();
     });
@@ -50,7 +49,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const pageData = {
             name: pageName,
-            content: document.body.innerHTML, // Ovo hvata celokupni sadržaj stranice
+            content: document.body.innerHTML,
+            scripts: [] // Sačuvajte ovde sve potrebne skripte
         };
 
         pages.push(pageData);
@@ -98,6 +98,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
             li.addEventListener('click', function () {
                 document.body.innerHTML = page.content;
+
+                // Ponovno učitajte i izvršite skripte
+                page.scripts.forEach(script => {
+                    const scriptTag = document.createElement('script');
+                    scriptTag.textContent = script;
+                    document.body.appendChild(scriptTag);
+                });
+
                 alert(`Verzija "${page.name}" je učitana.`);
             });
 
@@ -105,3 +113,4 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
