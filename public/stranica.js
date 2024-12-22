@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     modal.style.display = 'none';
     modal.style.position = 'fixed';
     modal.style.width = '400px';
-    modal.style.height = '400px';
+    modal.style.height = 'auto';
     modal.style.top = '50%';
     modal.style.left = '50%';
     modal.style.transform = 'translate(-50%, -50%)';
@@ -15,19 +15,23 @@ document.addEventListener('DOMContentLoaded', function () {
     modal.style.zIndex = '1000';
     modal.style.padding = '20px';
     modal.style.overflow = 'auto';
+    modal.style.borderRadius = '8px';
 
     modal.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="color: #00ffff;">Upravljanje verzijama</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="color: #00ffff; margin: 0;">Upravljanje verzijama</h3>
             <button id="closeModalButton" style="color: #00ffff; background: none; border: 1px solid #00ffff; padding: 5px; cursor: pointer;">Zatvori</button>
         </div>
-        <input type="file" id="loadFileInput" accept="application/json" style="width: 100%; margin: 10px 0; padding: 10px; background: black; color: #00ffff; border: 1px solid #00ffff;"/>
-        <ul id="pageList" style="margin-top: 20px; color: #00ffff; padding: 0; list-style: none;"></ul>
+        <input type="text" id="pageNameInput" placeholder="Naziv stranice" style="width: 100%; margin: 10px 0; padding: 10px; background: black; color: #00ffff; border: 1px solid #00ffff; border-radius: 4px;"/>
+        <button id="savePageButton" style="width: 100%; padding: 10px; margin-bottom: 10px; background: black; color: #00ffff; border: 1px solid #00ffff; cursor: pointer; border-radius: 4px;">Memoriši stranicu</button>
+        <input type="file" id="loadFileInput" accept="application/json" style="width: 100%; margin-bottom: 10px; padding: 10px; background: black; color: #00ffff; border: 1px solid #00ffff; border-radius: 4px;"/>
+        <ul id="pageList" style="margin-top: 10px; color: #00ffff; padding: 0; list-style: none; max-height: 200px; overflow-y: auto; border-top: 1px solid #00ffff; padding-top: 10px;"></ul>
     `;
     document.body.appendChild(modal);
 
     const pageList = modal.querySelector('#pageList');
     const openModalButton = document.getElementById('openModalButton');
+    let currentPageContent = '';
 
     // Dugme za otvaranje modala
     openModalButton.addEventListener('click', () => {
@@ -37,6 +41,34 @@ document.addEventListener('DOMContentLoaded', function () {
     // Dugme za zatvaranje modala
     document.getElementById('closeModalButton').addEventListener('click', function () {
         modal.style.display = 'none';
+    });
+
+    // Dugme za memorisanje stranice
+    document.getElementById('savePageButton').addEventListener('click', function () {
+        const pageName = document.getElementById('pageNameInput').value;
+        const mainContent = document.getElementById('mainContent');
+
+        if (!pageName) {
+            alert('Unesite naziv stranice pre memorisanja.');
+            return;
+        }
+
+        if (!mainContent) {
+            alert('Glavni sadržaj nije pronađen.');
+            return;
+        }
+
+        const pageData = {
+            name: pageName,
+            content: mainContent.innerHTML
+        };
+
+        const blob = new Blob([JSON.stringify(pageData)], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${pageName}.json`;
+        link.click();
+        alert('Stranica je memorisana!');
     });
 
     // Učitavanje JSON fajla
