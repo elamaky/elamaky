@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Kreiraj modal
     const modal = document.createElement('div');
     modal.id = 'memoryModal';
     modal.style.display = 'none';
@@ -17,91 +18,78 @@ document.addEventListener('DOMContentLoaded', function () {
 
     modal.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="color: #00ffff;">Memoriši ili Učitaj Stranicu</h3>
+            <h3 style="color: #00ffff;">Upravljanje verzijama</h3>
             <button id="closeModalButton" style="color: #00ffff; background: none; border: 1px solid #00ffff; padding: 5px; cursor: pointer;">Zatvori</button>
         </div>
-        <input type="text" id="newPageNameInput" placeholder="Naziv verzije" style="width: 100%; margin: 10px 0; padding: 10px; background: black; color: #00ffff; border: 1px solid #00ffff;" />
-        <button id="saveToFileButton" style="width: 100%; padding: 10px; background: black; color: #00ffff; border: 1px solid #00ffff; cursor: pointer;">Sačuvaj kao JSON</button>
-        <input type="file" id="loadFromFileInput" style="margin-top: 10px; width: 100%; color: #00ffff;" />
-        <button id="loadFromFileButton" style="width: 100%; padding: 10px; background: black; color: #00ffff; border: 1px solid #00ffff; cursor: pointer;">Učitaj JSON fajl</button>
+        <input type="file" id="loadFileInput" accept="application/json" style="width: 100%; margin: 10px 0; padding: 10px; background: black; color: #00ffff; border: 1px solid #00ffff;"/>
         <ul id="pageList" style="margin-top: 20px; color: #00ffff; padding: 0; list-style: none;"></ul>
     `;
     document.body.appendChild(modal);
 
     const pageList = modal.querySelector('#pageList');
     const openModalButton = document.getElementById('openModalButton');
-    const pages = [];
 
+    // Dugme za otvaranje modala
     openModalButton.addEventListener('click', () => {
         modal.style.display = 'block';
-        renderPageList();
     });
 
+    // Dugme za zatvaranje modala
     document.getElementById('closeModalButton').addEventListener('click', function () {
         modal.style.display = 'none';
     });
 
-    document.getElementById('saveToFileButton').addEventListener('click', function () {
-        const pageName = document.getElementById('newPageNameInput').value;
-        if (!pageName) {
-            alert('Morate uneti naziv verzije.');
-            return;
+    // Učitavanje JSON fajla
+    document.getElementById('loadFileInput').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const jsonData = JSON.parse(e.target.result);
+                    addVersionToList(jsonData);
+                } catch (error) {
+                    alert('Greška prilikom učitavanja fajla. Proverite format.');
+                }
+            };
+            reader.readAsText(file);
         }
-
-        const pageData = {
-            name: pageName,
-            content: document.body.innerHTML, // Ovo hvata celokupni sadržaj stranice
-        };
-
-        pages.push(pageData);
-
-        const blob = new Blob([JSON.stringify(pages, null, 2)], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'verzije_stranica.json';
-        a.click();
-
-        alert('Verzija stranice je sačuvana u JSON fajl.');
     });
 
-    document.getElementById('loadFromFileButton').addEventListener('click', function () {
-        const fileInput = document.getElementById('loadFromFileInput');
-        const file = fileInput.files[0];
-        if (!file) {
-            alert('Morate izabrati JSON fajl.');
-            return;
-        }
+    // Dodavanje verzije u listu
+    function addVersionToList(data) {
+        const li = document.createElement('li');
+        li.textContent = data.name || 'Nepoznata verzija';
+        li.style.cursor = 'pointer';
+        li.style.padding = '10px';
+        li.style.borderBottom = '1px solid #00ffff';
 
-        const reader = new FileReader();
-        reader.onload = function (event) {
-            try {
-                const loadedPages = JSON.parse(event.target.result);
-                pages.length = 0;
-                pages.push(...loadedPages);
-                renderPageList();
-                alert('Fajl učitan uspešno.');
-            } catch (error) {
-                alert('Greška prilikom učitavanja fajla.');
-            }
-        };
-        reader.readAsText(file);
-    });
-
-    function renderPageList() {
-        pageList.innerHTML = '';
-        pages.forEach((page, index) => {
-            const li = document.createElement('li');
-            li.textContent = page.name;
-            li.style.cursor = 'pointer';
-            li.style.padding = '10px';
-            li.style.borderBottom = '1px solid #00ffff';
-
-            li.addEventListener('click', function () {
-                document.body.innerHTML = page.content;
-                alert(`Verzija "${page.name}" je učitana.`);
-            });
-
-            pageList.appendChild(li);
+        li.addEventListener('click', function () {
+            loadPageContent(data); // Učitaj sadržaj verzije
+            modal.style.display = 'none'; // Zatvori modal
         });
+
+        pageList.appendChild(li);
+    }
+
+    // Dinamičko učitavanje sadržaja na postojeću stranicu
+    function loadPageContent(data) {
+        const mainContent = document.getElementById('mainContent'); // Glavni kontejner
+        if (mainContent) {
+            mainContent.innerHTML = data.content || '<p style="color: #00ffff;">Sadržaj nije pronađen.</p>';
+
+            // Omogući izmene učitane verzije
+            enableEditing(mainContent);
+        } else {
+            console.error('Element sa ID-jem "mainContent" nije pronađen.');
+        }
+    }
+
+    // Omogućavanje uređivanja učitane verzije
+    function enableEditing(container) {
+        container.contentEditable = true;
+        container.style.border = '1px dashed #00ffff';
+        container.style.padding = '10px';
+        alert('Sada možete uređivati učitanu verziju direktno na stranici.');
     }
 });
