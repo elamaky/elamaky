@@ -46,21 +46,21 @@ document.addEventListener('DOMContentLoaded', function () {
     // Dugme za memorisanje stranice
     document.getElementById('savePageButton').addEventListener('click', function () {
         const pageName = document.getElementById('pageNameInput').value;
-        const mainContent = document.getElementById('mainContent');
+        const editableContent = document.querySelector('[contenteditable="true"]');
 
         if (!pageName) {
             alert('Unesite naziv stranice pre memorisanja.');
             return;
         }
 
-        if (!mainContent) {
-            alert('Glavni sadržaj nije pronađen.');
+        if (!editableContent) {
+            alert('Nema sadržaja za memorisanje.');
             return;
         }
 
         const pageData = {
             name: pageName,
-            content: mainContent.innerHTML
+            content: editableContent.innerHTML
         };
 
         const blob = new Blob([JSON.stringify(pageData)], { type: 'application/json' });
@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 try {
                     const jsonData = JSON.parse(e.target.result);
                     addVersionToList(jsonData);
+                    loadPageContent(jsonData); // Automatski učitaj sadržaj
                 } catch (error) {
                     alert('Greška prilikom učitavanja fajla. Proverite format.');
                 }
@@ -106,15 +107,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Dinamičko učitavanje sadržaja na postojeću stranicu
     function loadPageContent(data) {
-        const mainContent = document.getElementById('mainContent'); // Glavni kontejner
-        if (mainContent) {
-            mainContent.innerHTML = data.content || '<p style="color: #00ffff;">Sadržaj nije pronađen.</p>';
+        const container = document.createElement('div');
+        container.innerHTML = data.content || '<p style="color: #00ffff;">Sadržaj nije pronađen.</p>';
 
-            // Omogući izmene učitane verzije
-            enableEditing(mainContent);
-        } else {
-            console.error('Element sa ID-jem "mainContent" nije pronađen.');
-        }
+        // Omogući izmene učitane verzije
+        enableEditing(container);
+
+        document.body.appendChild(container);
     }
 
     // Omogućavanje uređivanja učitane verzije
@@ -122,6 +121,9 @@ document.addEventListener('DOMContentLoaded', function () {
         container.contentEditable = true;
         container.style.border = '1px dashed #00ffff';
         container.style.padding = '10px';
+        container.style.margin = '10px auto';
+        container.style.maxWidth = '80%';
+        container.style.backgroundColor = 'black';
         alert('Sada možete uređivati učitanu verziju direktno na stranici.');
     }
 });
