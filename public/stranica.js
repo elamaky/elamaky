@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const modal = document.createElement('div');
-    modal.id = 'openModalButton';
+    modal.id = 'modalContainer';
     modal.style.display = 'none';
     modal.style.position = 'fixed';
     modal.style.width = '400px';
@@ -28,10 +28,23 @@ document.addEventListener('DOMContentLoaded', function () {
     `;
     document.body.appendChild(modal);
 
+    const openModalButton = document.createElement('button');
+    openModalButton.textContent = 'Otvori Modal';
+    openModalButton.style.position = 'fixed';
+    openModalButton.style.top = '10px';
+    openModalButton.style.right = '10px';
+    openModalButton.style.padding = '10px';
+    openModalButton.style.backgroundColor = 'black';
+    openModalButton.style.color = '#00ffff';
+    openModalButton.style.border = '1px solid #00ffff';
+    openModalButton.style.cursor = 'pointer';
+    openModalButton.id = 'openModalButton';
+    document.body.appendChild(openModalButton);
+
     const pageList = modal.querySelector('#pageList');
     const pages = [];
 
-    document.getElementById('openModalButton').addEventListener('click', () => {
+    openModalButton.addEventListener('click', () => {
         modal.style.display = 'block';
         renderPageList();
     });
@@ -113,4 +126,3 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
-
