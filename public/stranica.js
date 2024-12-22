@@ -98,27 +98,20 @@ document.addEventListener('DOMContentLoaded', function () {
             li.style.padding = '10px';
             li.style.borderBottom = '1px solid #00ffff';
 
-            li.addEventListener('click', function () {
-                if (page.images && page.images.length > 0) {
-                    const allImages = document.querySelectorAll('img');
-                    const newImages = page.images;
+          
+li.addEventListener('click', function () {
+    if (page.images && page.images.length > 0) {
+        const allImages = document.querySelectorAll('img');
+        const newImages = page.images;
 
-                    if (newImages.length !== allImages.length) {
-                        alert('Broj slika u verziji ne odgovara broju slika na stranici.');
-                        return;
-                    }
-
-                    newImages.forEach((newSrc, index) => {
-                        allImages[index].src = newSrc;
-                    });
-
-                    alert(`Verzija "${page.name}" je učitana.`);
-                } else {
-                    alert('Nema slika u verziji.');
-                }
-            });
-
-            pageList.appendChild(li);
+        newImages.forEach((newSrc, index) => {
+            if (allImages[index]) {
+                allImages[index].src = newSrc;
+            }
         });
+
+        alert(`Verzija "${page.name}" je učitana.`);
+    } else {
+        alert('Nema slika u verziji.');
     }
 });
