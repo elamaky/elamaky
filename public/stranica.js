@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Čuvanje slika
+        // Sačuvaj slike sa njihovim src atributima
         const images = Array.from(document.querySelectorAll('img')).map(img => img.src);
 
         const pageData = {
@@ -100,19 +100,17 @@ document.addEventListener('DOMContentLoaded', function () {
             li.style.borderBottom = '1px solid #00ffff';
 
             li.addEventListener('click', function () {
-                // Zamena slika
+                // Samo zameni src za slike
                 const allImages = document.querySelectorAll('img');
                 const newImages = page.images;
 
-                if (newImages.length === allImages.length) {
-                    allImages.forEach((img, index) => {
-                        img.src = newImages[index];
-                    });
+                newImages.forEach((newSrc, index) => {
+                    if (allImages[index]) {
+                        allImages[index].src = newSrc;
+                    }
+                });
 
-                    alert(`Verzija "${page.name}" je učitana.`);
-                } else {
-                    alert("Broj slika se ne poklapa!");
-                }
+                alert(`Verzija "${page.name}" je učitana.`);
             });
 
             pageList.appendChild(li);
