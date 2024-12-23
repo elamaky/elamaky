@@ -1,6 +1,6 @@
 let isBold = false;
 let isItalic = false;
-let currentColor = '#FFFFFF';
+let currentColor; // Promenjena promenljiva
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
 
@@ -33,9 +33,10 @@ document.getElementById('colorPicker').addEventListener('input', function() {
 });
 
 // Kreiraj element za nadimak sa bojom
-    const nicknameSpan = document.createElement('span');
-    guestsSpan.textContent = `${guests}: `;
-    guestsSpan.style.color = color;
+const guest = document.createElement('span');
+guestsSpan.textContent = `${guests}: `;
+guestsSpan.style.color = currentColor;  // Koristi currentColor umesto color
+
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
