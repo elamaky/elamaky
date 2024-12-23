@@ -3,13 +3,13 @@ let isItalic = false;
 let currentColor;
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
-let myGuestElement = document.getElementById(`guest-${nickname}`);
+let guestId = "guest-" + nickname;  // Ili neki drugi način za formiranje ID-a
+let newColor; 
+changeGuestColor(guestId, newColor);  // Pozivanje funkcije
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
 const colorPrefs = {};
-const guests = []; // Lista gostiju
-const guestListContainer = document.getElementById('guestList');
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
@@ -34,19 +34,12 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     updateInputStyle();
 });
 
-socket.emit('changeColor', currentColor);
-if (myGuestElement) {
-    myGuestElement.style.color = currentColor;
-}
-
-socket.on('colorUpdated', function(guestId, newColor) {
-    // Na osnovu guestId, nađeš odgovarajući div u guest listi i ažuriraš boju
+function changeGuestColor(guestId, color) {
     let guestElement = document.getElementById(guestId);
     if (guestElement) {
-        guestElement.style.color = newColor;
+        guestElement.style.color = color;
     }
-});
-
+}
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
