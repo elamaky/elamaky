@@ -33,7 +33,7 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     updateInputStyle();
 });
 
- colorPickerButton.addEventListener('input', function() {
+ colorBtn.addEventListener('input', function() {
         guestElement.style.color = this.value;
         guestsData[guestId].color = this.value; // Ažuriraj boju u objektu
     });
