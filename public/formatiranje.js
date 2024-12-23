@@ -38,8 +38,10 @@ document.getElementById('colorPicker').addEventListener('input', function() {
 
 function changeGuestColor(guestId, color) {
     let guestElement = document.getElementById(guestId);
-    if (guestElement) {
-        guestElement.style.color = color;
+    let nicknameElement = guestElement.querySelector('.nickname'); // Pretpostavljamo da je nadimak unutar elementa sa klasom 'nickname'
+    
+    if (nicknameElement) {
+        nicknameElement.style.color = color;
     }
 }
 
