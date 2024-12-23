@@ -74,28 +74,11 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
             bold: isBold,
             italic: isItalic,
             color: currentColor,
-            nickname: nickname // Pošalji ime gosta
+            nickname: nickname = #n(replace)// Pošalji ime gosta
         });
         this.value = ''; // Isprazni polje za unos
     }
 });
-
-socket.on('chatMessage', (msg) => {
-    const Nickname = "MOJE_IME";  // Ime trenutnog korisnika na klijentu
-    const processedText = msg.text.replace(/#n/g, Nickname);  // Zamenjuje #n sa svojim imenom
-
-    // Prikaz poruke
-    displayMessage({
-        ...msg,
-        text: processedText,  // Tekst sa zamenjenim #n
-    });
-});
-
-function displayMessage(message) {
-    // Prikazivanje poruke u interfejsu
-    console.log(`[${message.time}] ${message.nickname}: ${message.text}`);
-}
-
 
 // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
