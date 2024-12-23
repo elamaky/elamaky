@@ -80,6 +80,23 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
     }
 });
 
+socket.on('chatMessage', (msg) => {
+    const Nickname = "MOJE_IME";  // Ime trenutnog korisnika na klijentu
+    const processedText = msg.text.replace(/#n/g, userNickname);  // Zamenjuje #n sa svojim imenom
+
+    // Prikaz poruke
+    displayMessage({
+        ...msg,
+        text: processedText,  // Tekst sa zamenjenim #n
+    });
+});
+
+function displayMessage(message) {
+    // Prikazivanje poruke u interfejsu
+    console.log(`[${message.time}] ${message.nickname}: ${message.text}`);
+}
+
+
 // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
     let messageArea = document.getElementById('messageArea');
