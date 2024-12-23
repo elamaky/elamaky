@@ -1,16 +1,13 @@
-let nickname;
 let isBold = false;
 let isItalic = false;
-let currentColor;
+let currentColor = '#FFFFFF';
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
-let guestId = "guest-" + nickname;  // Ili neki drugi način za formiranje ID-a
-let newColor; 
-let changeGuestColor;
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
 const colorPrefs = {};
+
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
@@ -34,13 +31,6 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
 });
-
-document.getElementById('colorPicker').addEventListener('input', function() {
-    let color = this.value;
-    let guestId; // ID gosta koji bira boju
-    document.getElementById(guestId).querySelector('.nickname').style.color = color;
-});
-
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
@@ -74,11 +64,12 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
             bold: isBold,
             italic: isItalic,
             color: currentColor,
-            nickname: nickname = #n(replace)// Pošalji ime gosta
+            nickname: nickname // Pošalji ime gosta
         });
         this.value = ''; // Isprazni polje za unos
     }
 });
+
 
 // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
