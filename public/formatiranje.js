@@ -36,14 +36,12 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     updateInputStyle();
 });
 
-function changeGuestColor(guestId, color) {
-    let guestElement = document.getElementById(guestId);
-    let nicknameElement = guestElement.querySelector('.nickname'); // Pretpostavljamo da je nadimak unutar elementa sa klasom 'nickname'
-    
-    if (nicknameElement) {
-        nicknameElement.style.color = color;
-    }
-}
+document.getElementById('colorPicker').addEventListener('input', function() {
+    let color = this.value;
+    let guestId; // ID gosta koji bira boju
+    document.getElementById(guestId).querySelector('.nickname').style.color = color;
+});
+
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
