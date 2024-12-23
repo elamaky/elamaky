@@ -3,7 +3,7 @@ let isItalic = false;
 let currentColor;
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
-let nickname = "guests";
+let myGuestElement = document.getElementById(`guest-${nickname}`);
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
