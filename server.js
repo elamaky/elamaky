@@ -82,11 +82,7 @@ socket.on('colorChanged', function(data) {
 socket.on('chatMessage', (msgData) => {
     const time = new Date().toLocaleTimeString();
     
-    // Zamenjuj #n sa imenom svakog korisnika
-    let messageText = msgData.text;
-    const nickname = guests[socket.id]; // trenutni korisnik
-
-    // Zamenjuj #n u poruci sa imenom svakog korisnika
+   // Zamenjuj #n u poruci sa imenom svakog korisnika
     messageText = messageText.replace(/#n/g, nickname);
 
     const messageToSend = {
