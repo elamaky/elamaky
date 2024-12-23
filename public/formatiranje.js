@@ -8,11 +8,6 @@ let isOverline = false;   // Dodano za overline
 const guestsData = {};
 const colorPrefs = {};
 
-socket.on('setNickname', (nickname) => {
-    console.log('Dobio sam nickname:', nickname);
-    // Sada koristi nickname u aplikaciji
-});
-
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
@@ -38,8 +33,8 @@ document.getElementById('colorPicker').addEventListener('input', function() {
 
 // Kreiraj element za nadimak sa bojom
     const nicknameSpan = document.createElement('span');
-    nicknameSpan.textContent = `${nickname}: `;
-    nicknameSpan.style.color = color;
+    guestsSpan.textContent = `${guests}: `;
+    guestsSpan.style.color = color;
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
