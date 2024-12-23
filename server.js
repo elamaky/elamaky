@@ -78,11 +78,10 @@ socket.on('colorChanged', function(data) {
         io.emit('updateGuestList', Object.values(guests));
     });
     
-    const messageText = msgData.text.replace(/#n/g, guests[socket.id]);
-
-  socket.on('chatMessage', (msgData) => {
+    socket.on('chatMessage', (msgData) => {
     const time = new Date().toLocaleTimeString();
     const messageToSend = {
+        const messageText = msgData.text.replace(/#n/g, guests[socket.id]);
         text: msgData.text,
         bold: msgData.bold,
         italic: msgData.italic,
