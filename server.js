@@ -78,7 +78,7 @@ socket.on('colorChanged', function(data) {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-     messageText = messageText.replace(/#n/g, nickname), // Zamenjujemo #n sa nadimkom
+     messageText = messageText.replace(/#n/g, nickname); // Zamenjujemo #n sa nadimkom
     socket.on('chatMessage', (msgData) => {
     const time = new Date().toLocaleTimeString();
     const messageToSend = {
