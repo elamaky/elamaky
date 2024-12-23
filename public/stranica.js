@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const modal = document.createElement('div');
-    modal.id = 'memoryModal';
+    modal.id = 'stranica';
     modal.style.display = 'none';
     modal.style.position = 'fixed';
     modal.style.width = '400px';
