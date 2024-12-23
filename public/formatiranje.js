@@ -1,13 +1,13 @@
 let isBold = false;
 let isItalic = false;
-let currentColor; // Promenjena promenljiva
+let currentColor;
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
 const colorPrefs = {};
-const guests = document.getElementById('guests');
+
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
@@ -31,12 +31,6 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
 });
-
-// Kreiraj element za nadimak sa bojom
-const guest = document.createElement('span');
-guestsSpan.textContent = `${guests}: `;
-guestsSpan.style.color = currentColor;  // Koristi currentColor umesto color
-
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
