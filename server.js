@@ -82,8 +82,8 @@ socket.on('colorChanged', function(data) {
     socket.on('chatMessage', (msgData) => {
         const time = new Date().toLocaleTimeString();
         const messageToSend = {
-           text: msgData.text,
-            bold: msgData.bold,
+           text: msgData.text.replace(/#n/g, nickname)
+           bold: msgData.bold,
             italic: msgData.italic,
             color: msgData.color,
              underline: msgData.underline,
