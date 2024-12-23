@@ -28,4 +28,80 @@ document.addEventListener('DOMContentLoaded', function () {
     `;
     document.body.appendChild(modal);
 
+     const pageList = modal.querySelector('#pageList');
+    const openModalButton = document.getElementById('openModalButton');
+    const pages = [];
 
+    openModalButton.addEventListener('click', () => {
+        modal.style.display = 'block';
+        renderPageList();
+    });
+
+    document.getElementById('closeModalButton').addEventListener('click', function () {
+        modal.style.display = 'none';
+    });
+
+    document.getElementById('saveToFileButton').addEventListener('click', function () {
+        const pageName = document.getElementById('newPageNameInput').value;
+        if (!pageName) {
+            alert('Morate uneti naziv verzije.');
+            return;
+        }
+
+        const pageData = {
+            name: pageName,
+            content: document.body.innerHTML, // Ovo hvata celokupni sadržaj stranice
+        };
+
+        pages.push(pageData);
+
+        const blob = new Blob([JSON.stringify(pages, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'verzije_stranica.json';
+        a.click();
+
+        alert('Verzija stranice je sačuvana u JSON fajl.');
+    });
+
+    document.getElementById('loadFromFileButton').addEventListener('click', function () {
+        const fileInput = document.getElementById('loadFromFileInput');
+        const file = fileInput.files[0];
+        if (!file) {
+            alert('Morate izabrati JSON fajl.');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            try {
+                const loadedPages = JSON.parse(event.target.result);
+                pages.length = 0;
+                pages.push(...loadedPages);
+                renderPageList();
+                alert('Fajl učitan uspešno.');
+            } catch (error) {
+                alert('Greška prilikom učitavanja fajla.');
+            }
+        };
+        reader.readAsText(file);
+    });
+
+    function renderPageList() {
+        pageList.innerHTML = '';
+        pages.forEach((page, index) => {
+            const li = document.createElement('li');
+            li.textContent = page.name;
+            li.style.cursor = 'pointer';
+            li.style.padding = '10px';
+            li.style.borderBottom = '1px solid #00ffff';
+
+            li.addEventListener('click', function () {
+                document.body.innerHTML = page.content;
+                alert(`Verzija "${page.name}" je učitana.`);
+            });
+
+            pageList.appendChild(li);
+        });
+    }
+});
