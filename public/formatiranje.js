@@ -7,7 +7,8 @@ let isOverline = false;   // Dodano za overline
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
 const colorPrefs = {};
-
+const guests = []; // Lista gostiju
+const guestListContainer = document.getElementById('guestList');
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
