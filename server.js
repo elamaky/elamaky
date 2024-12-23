@@ -78,25 +78,23 @@ socket.on('colorChanged', function(data) {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-     messageText = messageText.replace(/#n/g, nickname); // Zamenjujemo #n sa nadimkom
-    socket.on('chatMessage', (msgData) => {
+    // Obrada slanja chat poruka
+socket.on('chatMessage', (msgData) => {
     const time = new Date().toLocaleTimeString();
-    const messageToSend = {
-         text: msgData.text,
-         bold: msgData.bold,
+     messageText = messageText.replace(/#n/g, nickname);
+     const messageToSend = {
+        text: messageText,
+        bold: msgData.bold,
         italic: msgData.italic,
         color: msgData.color,
         underline: msgData.underline,
         overline: msgData.overline,
-        nickname: guests[socket.id],
+        nickname: nickname,
         time: time,
     };
+
     io.emit('chatMessage', messageToSend);
 });
-
-     
-    messageText = messageText.replace(/#n/g, nickname); // Zamenjujemo #n sa nadimkom
-  
   // Obrada za čišćenje chata
     socket.on('clear-chat', () => {
         console.log('Chat cleared');
