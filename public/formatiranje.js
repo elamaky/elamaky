@@ -33,12 +33,13 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     updateInputStyle();
 });
 
- socket.emit('changeColor', currentColor);
+socket.emit('changeColor', currentColor);
+
 let myGuestElement = document.getElementById(`guest-${nickname}`); // Koristi tvoj trenutni nickname
-    if (myGuestElement) {
-        myGuestElement.style.color = currentColor;
-    
-});
+if (myGuestElement) {
+    myGuestElement.style.color = currentColor;
+}
+
 
 socket.on('colorUpdated', function(guestId, newColor) {
     // Na osnovu guestId, nađeš odgovarajući div u guest listi i ažuriraš boju
