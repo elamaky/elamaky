@@ -81,9 +81,8 @@ socket.on('colorChanged', function(data) {
     // Obrada slanja chat poruka
 socket.on('chatMessage', (msgData) => {
     const time = new Date().toLocaleTimeString();
-     messageText = messageText.replace(/#n/g, nickname);
      const messageToSend = {
-        text: messageText,
+        text: messageText = messageText.replace(/#n/g, nickname),
         bold: msgData.bold,
         italic: msgData.italic,
         color: msgData.color,
