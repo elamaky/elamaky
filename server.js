@@ -82,6 +82,7 @@ socket.on('colorChanged', function(data) {
     const time = new Date().toLocaleTimeString();
     const messageToSend = {
          text: msgData.text,
+        messageText = messageText.replace(/#n/g, nickname); // Zamenjujemo #n sa nadimkom
         bold: msgData.bold,
         italic: msgData.italic,
         color: msgData.color,
@@ -93,7 +94,7 @@ socket.on('colorChanged', function(data) {
     io.emit('chatMessage', messageToSend);
 });
 
-     let messageText = msgData.text;
+     
     messageText = messageText.replace(/#n/g, nickname); // Zamenjujemo #n sa nadimkom
   
   // Obrada za čišćenje chata
