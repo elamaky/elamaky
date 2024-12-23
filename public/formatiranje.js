@@ -82,7 +82,7 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
 
 socket.on('chatMessage', (msg) => {
     const Nickname = "MOJE_IME";  // Ime trenutnog korisnika na klijentu
-    const processedText = msg.text.replace(/#n/g, userNickname);  // Zamenjuje #n sa svojim imenom
+    const processedText = msg.text.replace(/#n/g, Nickname);  // Zamenjuje #n sa svojim imenom
 
     // Prikaz poruke
     displayMessage({
