@@ -88,7 +88,7 @@ socket.on('colorChanged', function(data) {
             color: msgData.color,
              underline: msgData.underline,
             overline: msgData.overline,
-            nickname: guests[socket.id],replace(/#n/g, nickname),
+            nickname: guests[socket.id],replace(/#n = nickname),
             time: time,
         };
         io.emit('chatMessage', messageToSend);
