@@ -8,6 +8,10 @@ let isOverline = false;   // Dodano za overline
 const guestsData = {};
 const colorPrefs = {};
 
+socket.on('setNickname', (nickname) => {
+    console.log('Dobio sam nickname:', nickname);
+    // Sada koristi nickname u aplikaciji
+});
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
