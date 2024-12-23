@@ -78,12 +78,13 @@ socket.on('colorChanged', function(data) {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-   // Obrada slanja chat poruka
+// Obrada slanja chat poruka
 socket.on('chatMessage', (msgData) => {
     const time = new Date().toLocaleTimeString();
-    
-   // Zamenjuj #n u poruci sa imenom svakog korisnika
-    messageText = messageText.replace(/#n/g, nickname);
+    const nickname = guests[socket.id]; // Pretpostavljam da koristiš ovaj način za dodelu nadimka
+
+    let messageText = msgData.text;
+    messageText = messageText.replace(/#n/g, nickname); // Zamenjujemo #n sa nadimkom
 
     const messageToSend = {
         text: messageText,
