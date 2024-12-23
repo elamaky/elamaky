@@ -87,11 +87,20 @@ socket.on('colorChanged', function(data) {
         color: msgData.color,
         underline: msgData.underline,
         overline: msgData.overline,
-        nickname: guests[socket.id].replace(/#n/g, "MOJ_NICKNAME"),
+        nickname: guests[socket.id],
         time: time,
     };
     io.emit('chatMessage', messageToSend);
 });
+    function replaceShortcodes(message, nickname, guestCount) {
+  message = message.replace(/#n/g, nickname);        // Zameni #n sa nickname
+  message = message.replace(/#t/g, new Date().toLocaleTimeString()); // Zameni #t sa vremenom
+  message = message.replace(/#g/g, guestCount);      // Zameni #g sa brojem gostiju
+  return message;
+}
+let guestCount = 0;
+
+    
 
    // Obrada za čišćenje chata
     socket.on('clear-chat', () => {
