@@ -1,3 +1,4 @@
+let nickname;
 let isBold = false;
 let isItalic = false;
 let currentColor;
@@ -6,7 +7,7 @@ let isOverline = false;   // Dodano za overline
 let guestId = "guest-" + nickname;  // Ili neki drugi način za formiranje ID-a
 let newColor; 
 changeGuestColor(guestId, newColor);  // Pozivanje funkcije
-let nickname;
+
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
