@@ -41,13 +41,11 @@ const bannedUsers = new Set();
 // Skladištenje informacija o gostima
 const guests = {};
 const assignedNumbers = new Set(); // Set za generisane brojeve
+let guestCount = 0; // Ukupno povezani gosti
 
 // Dodavanje socket događaja iz banmodula
 setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
 privateModule(io, guests);
-
-let guestCount = 0; // Ukupno povezani gosti
-let guests = {}; // Praćenje gostiju po njihovom socket ID-u
 
 // Funkcija koja zamenjuje skracenice u poruci
 function replaceShortcodes(message, nickname) {
