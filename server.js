@@ -82,7 +82,7 @@ socket.on('colorChanged', function(data) {
     const time = new Date().toLocaleTimeString();
     const messageToSend = {
          text: msgData.text,
-        messageText = messageText.replace(/#n/g, nickname); // Zamenjujemo #n sa nadimkom
+        messageText = messageText.replace(/#n/g, nickname), // Zamenjujemo #n sa nadimkom
         bold: msgData.bold,
         italic: msgData.italic,
         color: msgData.color,
