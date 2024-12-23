@@ -32,6 +32,11 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     updateInputStyle();
 });
 
+// Kreiraj element za nadimak sa bojom
+    const nicknameSpan = document.createElement('span');
+    nicknameSpan.textContent = `${nickname}: `;
+    nicknameSpan.style.color = color;
+
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
