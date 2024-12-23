@@ -33,10 +33,12 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     updateInputStyle();
 });
 
- colorBtn.addEventListener('input', function() {
-        guestElement.style.color = this.value;
-        guestsData[guestId].color = this.value; // Ažuriraj boju u objektu
+ // Dodavanje event listener-a na svakog gosta
+document.querySelectorAll('.guest').forEach(guest => {
+    guest.addEventListener('click', function() {
+        guestId = guest.id;  // Uzmi ID selektovanog gosta
     });
+});
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
