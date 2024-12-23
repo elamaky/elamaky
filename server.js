@@ -46,6 +46,17 @@ const assignedNumbers = new Set(); // Set za generisane brojeve
 setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
 privateModule(io, guests);
 
+let guestCount = 0; // Ukupno povezani gosti
+let guests = {}; // Praćenje gostiju po njihovom socket ID-u
+
+// Funkcija koja zamenjuje skracenice u poruci
+function replaceShortcodes(message, nickname) {
+  message = message.replace(/#n/g, nickname);        // Zameni #n sa nickname
+  message = message.replace(/#t/g, new Date().toLocaleTimeString()); // Zameni #t sa vremenom
+  message = message.replace(/#g/g, guestCount);      // Zameni #g sa brojem gostiju
+  return message;
+}
+
 // Socket.io događaji
 io.on('connection', (socket) => {
     // Generisanje jedinstvenog broja za gosta
@@ -92,17 +103,8 @@ socket.on('colorChanged', function(data) {
     };
     io.emit('chatMessage', messageToSend);
 });
-    function replaceShortcodes(message, nickname, guestCount) {
-  message = message.replace(/#n/g, nickname);        // Zameni #n sa nickname
-  message = message.replace(/#t/g, new Date().toLocaleTimeString()); // Zameni #t sa vremenom
-  message = message.replace(/#g/g, guestCount);      // Zameni #g sa brojem gostiju
-  return message;
-}
-let guestCount = 0;
-
-    
-
-   // Obrada za čišćenje chata
+  
+  // Obrada za čišćenje chata
     socket.on('clear-chat', () => {
         console.log('Chat cleared');
         io.emit('chat-cleared');
