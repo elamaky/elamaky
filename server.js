@@ -77,13 +77,13 @@ socket.on('colorChanged', function(data) {
         }
         io.emit('updateGuestList', Object.values(guests));
     });
-    
+
+     messageText = messageText.replace(/#n/g, nickname), // Zamenjujemo #n sa nadimkom
     socket.on('chatMessage', (msgData) => {
     const time = new Date().toLocaleTimeString();
     const messageToSend = {
          text: msgData.text,
-        messageText = messageText.replace(/#n/g, nickname), // Zamenjujemo #n sa nadimkom
-        bold: msgData.bold,
+         bold: msgData.bold,
         italic: msgData.italic,
         color: msgData.color,
         underline: msgData.underline,
