@@ -1,71 +1,78 @@
-let pages = [];
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('memoryForm');
+    const openModalButton = document.getElementById('memorija');
+    const savePageButton = document.getElementById('savePageButton');
+    const savedPagesMenu = document.getElementById('savedPagesMenu');
 
-// Funkcija za otvaranje modala
-document.getElementById('stranica').onclick = function() {
-    document.getElementById('modal').style.display = 'block';
-};
+    let savedPages = [];
 
-// Funkcija za zatvaranje modala
-document.getElementById('closeModalButton').onclick = function() {
-    document.getElementById('modal').style.display = 'none';
-};
+    openModalButton.addEventListener('click', () => {
+        modal.style.display = 'block';
+    });
 
-// Funkcija za čuvanje stranice
-document.getElementById('savePageButton').onclick = function() {
-    const pageName = document.getElementById('pageNameInput').value;
-    if (!pageName) {
-        alert('Morate uneti naziv stranice.');
-        return;
+    savePageButton.addEventListener('click', () => {
+        const pageNameInput = document.getElementById('pageNameInput');
+        const pageName = pageNameInput.value.trim();
+
+        if (!pageName) {
+            alert('Unesite naziv stranice.');
+            return;
+        }
+
+        const images = Array.from(document.querySelectorAll('img')).map(img => {
+            const rect = img.getBoundingClientRect();
+            return {
+                src: img.src,
+                top: rect.top + window.scrollY,
+                left: rect.left + window.scrollX,
+                width: rect.width,
+                height: rect.height
+            };
+        });
+
+        savedPages.push({ name: pageName, images });
+        updateSavedPagesMenu();
+        pageNameInput.value = '';
+        modal.style.display = 'none';
+        alert('Stranica je sačuvana.');
+    });
+
+    function updateSavedPagesMenu() {
+        savedPagesMenu.innerHTML = '';
+
+        savedPages.forEach((page, index) => {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = page.name;
+            pageButton.style.display = 'block';
+            pageButton.style.margin = '5px 0';
+
+            pageButton.addEventListener('click', () => {
+                loadPage(index);
+            });
+
+            savedPagesMenu.appendChild(pageButton);
+        });
     }
 
-    const imagesData = Array.from(document.querySelectorAll('.page-image')).map(img => ({
-        src: img.src,
-        top: img.style.top,
-        left: img.style.left,
-    }));
+    function loadPage(index) {
+        const page = savedPages[index];
 
-    const pageData = {
-        name: pageName,
-        images: imagesData,
-    };
+        document.querySelectorAll('img.saved-image').forEach(img => img.remove());
 
-    pages.push(pageData);
-    document.getElementById('pageNameInput').value = ''; // Očisti input
-    document.getElementById('modal').style.display = 'none'; // Zatvori modal
-    renderSavedPages(); // Ažuriraj listu sačuvanih stranica
-};
+        page.images.forEach(imageData => {
+            const img = document.createElement('img');
+            img.src = imageData.src;
+            img.style.position = 'absolute';
+            img.style.top = `${imageData.top}px`;
+            img.style.left = `${imageData.left}px`;
+            img.style.width = `${imageData.width}px`;
+            img.style.height = `${imageData.height}px`;
+            img.classList.add('saved-image');
 
-// Funkcija za prikaz sačuvanih stranica
-function renderSavedPages() {
-    const savedPagesMenu = document.getElementById('savedPagesMenu');
-    savedPagesMenu.innerHTML = ''; // Očisti postojeće stavke
-    pages.forEach((page, index) => {
-        const li = document.createElement('li');
-        li.textContent = page.name;
-        li.style.cursor = 'pointer';
-        li.onclick = () => loadPage(index); // Učitaj stranicu po kliku
-        savedPagesMenu.appendChild(li);
-    });
-}
+            document.body.appendChild(img);
+        });
 
-// Funkcija za učitavanje stranice
-function loadPage(index) {
-    const page = pages[index];
-    
-    // Očisti trenutne slike
-    document.querySelectorAll('.page-image').forEach(img => img.remove());
+        alert(`Stranica "${page.name}" je učitana.`);
+    }
+});
 
-    // Učitaj slike iz sačuvane stranice
-    page.images.forEach(image => {
-        const img = document.createElement('img');
-        img.className = 'page-image';
-        img.src = image.src;
-        img.style.position = 'absolute';
-        img.style.top = image.top;
-        img.style.left = image.left;
-
-        document.getElementById('imageContainer').appendChild(img);
-    });
-
-    alert(`Stranica "${page.name}" je učitana.`);
-}
