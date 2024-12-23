@@ -37,7 +37,7 @@ document.getElementById('colorPicker').addEventListener('input', function() {
 let myGuestElement = document.getElementById(`guest-${nickname}`); // Koristi tvoj trenutni nickname
     if (myGuestElement) {
         myGuestElement.style.color = currentColor;
-    }
+    
 });
 
 socket.on('colorUpdated', function(guestId, newColor) {
