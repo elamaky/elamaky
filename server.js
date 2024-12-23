@@ -41,19 +41,13 @@ const bannedUsers = new Set();
 // Skladištenje informacija o gostima
 const guests = {};
 const assignedNumbers = new Set(); // Set za generisane brojeve
-let guestCount = 0; // Ukupno povezani gosti
 
 // Dodavanje socket događaja iz banmodula
 setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
 privateModule(io, guests);
 
-// Funkcija koja zamenjuje skracenice u poruci
-function replaceShortcodes(message, nickname) {
-  message = message.replace(/#n/g, nickname);        // Zameni #n sa nickname
-  message = message.replace(/#t/g, new Date().toLocaleTimeString()); // Zameni #t sa vremenom
-  message = message.replace(/#g/g, guestCount);      // Zameni #g sa brojem gostiju
-  return message;
-}
+ let messageText = msgData.text;
+    messageText = messageText.replace(/#n/g, nickname); // Zamenjujemo #n sa nadimkom
 
 // Socket.io događaji
 io.on('connection', (socket) => {
