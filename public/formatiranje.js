@@ -33,12 +33,21 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     updateInputStyle();
 });
 
- // Dodavanje event listener-a na svakog gosta
-document.querySelectorAll('.guest').forEach(guest => {
-    guest.addEventListener('click', function() {
-        guestId = guest.id;  // Uzmi ID selektovanog gosta
-    });
+ socket.emit('changeColor', currentColor);
+let myGuestElement = document.getElementById(`guest-${nickname}`); // Koristi tvoj trenutni nickname
+    if (myGuestElement) {
+        myGuestElement.style.color = currentColor;
+    }
 });
+
+socket.on('colorUpdated', function(guestId, newColor) {
+    // Na osnovu guestId, nađeš odgovarajući div u guest listi i ažuriraš boju
+    let guestElement = document.getElementById(guestId);
+    if (guestElement) {
+        guestElement.style.color = newColor;
+    }
+});
+
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
