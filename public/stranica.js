@@ -1,120 +1,71 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const modal = document.createElement('div');
-    modal.id = 'stranica';
-    modal.style.display = 'none';
-    modal.style.position = 'fixed';
-    modal.style.width = '400px';
-    modal.style.height = '400px';
-    modal.style.top = '50%';
-    modal.style.left = '50%';
-    modal.style.transform = 'translate(-50%, -50%)';
-    modal.style.backgroundColor = 'black';
-    modal.style.border = '2px solid #00ffff';
-    modal.style.boxShadow = '0 0 20px #00ffff';
-    modal.style.zIndex = '1000';
-    modal.style.padding = '20px';
-    modal.style.overflow = 'auto';
+let pages = [];
 
-    modal.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="color: #00ffff;">Memoriši ili Učitaj Stranicu</h3>
-            <button id="closeModalButton" style="color: #00ffff; background: none; border: 1px solid #00ffff; padding: 5px; cursor: pointer;">Zatvori</button>
-        </div>
-        <input type="text" id="newPageNameInput" placeholder="Naziv verzije" style="width: 100%; margin: 10px 0; padding: 10px; background: black; color: #00ffff; border: 1px solid #00ffff;" />
-        <button id="saveToFileButton" style="width: 100%; padding: 10px; background: black; color: #00ffff; border: 1px solid #00ffff; cursor: pointer;">Sačuvaj kao JSON</button>
-        <input type="file" id="loadFromFileInput" style="margin-top: 10px; width: 100%; color: #00ffff;" />
-        <button id="loadFromFileButton" style="width: 100%; padding: 10px; background: black; color: #00ffff; border: 1px solid #00ffff; cursor: pointer;">Učitaj JSON fajl</button>
-        <ul id="pageList" style="margin-top: 20px; color: #00ffff; padding: 0; list-style: none;"></ul>
-    `;
-    document.body.appendChild(modal);
+// Funkcija za otvaranje modala
+document.getElementById('stranica').onclick = function() {
+    document.getElementById('modal').style.display = 'block';
+};
 
-    const pageList = modal.querySelector('#pageList');
-    const openModalButton = document.getElementById('stranica');
-    const pages = [];
+// Funkcija za zatvaranje modala
+document.getElementById('closeModalButton').onclick = function() {
+    document.getElementById('modal').style.display = 'none';
+};
 
-    openModalButton.addEventListener('click', () => {
-        modal.style.display = 'block';
-        renderPageList();
-    });
+// Funkcija za čuvanje stranice
+document.getElementById('savePageButton').onclick = function() {
+    const pageName = document.getElementById('pageNameInput').value;
+    if (!pageName) {
+        alert('Morate uneti naziv stranice.');
+        return;
+    }
 
-    document.getElementById('closeModalButton').addEventListener('click', function () {
-        modal.style.display = 'none';
-    });
+    const imagesData = Array.from(document.querySelectorAll('.page-image')).map(img => ({
+        src: img.src,
+        top: img.style.top,
+        left: img.style.left,
+    }));
 
-    document.getElementById('saveToFileButton').addEventListener('click', function () {
-        const pageName = document.getElementById('newPageNameInput').value;
-        if (!pageName) {
-            alert('Morate uneti naziv verzije.');
-            return;
-        }
+    const pageData = {
+        name: pageName,
+        images: imagesData,
+    };
 
-        const images = Array.from(document.querySelectorAll('img')).map(img => img.src);
+    pages.push(pageData);
+    document.getElementById('pageNameInput').value = ''; // Očisti input
+    document.getElementById('modal').style.display = 'none'; // Zatvori modal
+    renderSavedPages(); // Ažuriraj listu sačuvanih stranica
+};
 
-        const pageData = {
-            name: pageName,
-            images: images
-        };
-
-        pages.push(pageData);
-
-        const blob = new Blob([JSON.stringify(pages, null, 2)], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'verzije_slika.json';
-        a.click();
-
-        alert('Verzija stranice je sačuvana u JSON fajl.');
-    });
-
-    document.getElementById('loadFromFileButton').addEventListener('click', function () {
-        const fileInput = document.getElementById('loadFromFileInput');
-        const file = fileInput.files[0];
-        if (!file) {
-            alert('Morate izabrati JSON fajl.');
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function (event) {
-            try {
-                const loadedPages = JSON.parse(event.target.result);
-                pages.length = 0;
-                pages.push(...loadedPages);
-                renderPageList();
-                alert('Fajl učitan uspešno.');
-            } catch (error) {
-                alert('Greška prilikom učitavanja fajla.');
-            }
-        };
-        reader.readAsText(file);
-    });
-
-  function renderPageList() {
-    pageList.innerHTML = '';
+// Funkcija za prikaz sačuvanih stranica
+function renderSavedPages() {
+    const savedPagesMenu = document.getElementById('savedPagesMenu');
+    savedPagesMenu.innerHTML = ''; // Očisti postojeće stavke
     pages.forEach((page, index) => {
         const li = document.createElement('li');
         li.textContent = page.name;
         li.style.cursor = 'pointer';
-        li.style.padding = '10px';
-        li.style.borderBottom = '1px solid #00ffff';
-
-        li.addEventListener('click', function () {
-            if (page.images && page.images.length > 0) {
-                const allImages = document.querySelectorAll('img');
-                const newImages = page.images;
-
-                newImages.forEach((newSrc, index) => {
-                    if (allImages[index]) {
-                        allImages[index].src = newSrc;
-                    }
-                });
-
-                alert(`Verzija "${page.name}" je učitana.`);
-            } else {
-                alert('Nema slika u verziji.');
-            }
-        });
-
-        pageList.appendChild(li);
+        li.onclick = () => loadPage(index); // Učitaj stranicu po kliku
+        savedPagesMenu.appendChild(li);
     });
+}
+
+// Funkcija za učitavanje stranice
+function loadPage(index) {
+    const page = pages[index];
+    
+    // Očisti trenutne slike
+    document.querySelectorAll('.page-image').forEach(img => img.remove());
+
+    // Učitaj slike iz sačuvane stranice
+    page.images.forEach(image => {
+        const img = document.createElement('img');
+        img.className = 'page-image';
+        img.src = image.src;
+        img.style.position = 'absolute';
+        img.style.top = image.top;
+        img.style.left = image.left;
+
+        document.getElementById('imageContainer').appendChild(img);
+    });
+
+    alert(`Stranica "${page.name}" je učitana.`);
 }
