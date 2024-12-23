@@ -54,15 +54,7 @@ io.on('connection', (socket) => {
     guests[socket.id] = nickname; // Dodajemo korisnika u guest list
     socket.emit('setNickname', nickname);
 
-socket.on('colorChanged', function(data) {
-    // Ažuriraj boju na serveru u odgovarajućem objektu
-    guestsData[data.guestId].color = data.color;
-
-    // Emituj promenu boje svim klijentima, ali samo za tog gosta
-    io.emit('updateGuestColor', data);
-});
-
- // Emitovanje događaja da bi ostali korisnici videli novog gosta
+  // Emitovanje događaja da bi ostali korisnici videli novog gosta
     socket.broadcast.emit('newGuest', nickname);
     io.emit('updateGuestList', Object.values(guests));
 
@@ -99,6 +91,13 @@ socket.on('colorChanged', function(data) {
         console.log('Chat cleared');
         io.emit('chat-cleared');
     });
+
+    socket.on('setColor', (color) => {
+  if (guests[socket.id]) {
+    guests[socket.id].color = color; // Ažuriraj boju za korisnika
+    io.emit('updateGuestList', guests); // Pošalji ažuriranu listu gostiju svima
+  }
+});
 
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
