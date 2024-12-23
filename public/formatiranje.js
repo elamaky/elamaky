@@ -80,7 +80,6 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
     }
 });
 
-
 // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
     let messageArea = document.getElementById('messageArea');
@@ -94,20 +93,6 @@ socket.on('chatMessage', function(data) {
     messageArea.prepend(newMessage);
     messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
-
-socket.on('chatMessage', (msgData) => {
-    if (msgData.text.trim()) { // Dodaj uslov da ne prikazuješ prazne poruke
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message');
-        messageElement.style.color = msgData.color;
-
-        // Prikazujemo poruku sa vremenom
-        messageElement.innerHTML = `<strong>${msgData.nickname}</strong>: ${msgData.text} <span class="time">(${msgData.time})</span>`;
-
-        document.getElementById('chatBox').appendChild(messageElement);
-    }
-});
-
 
 // Kada server pošalje privatnu poruku
 socket.on('private_message', function(data) {
