@@ -78,28 +78,21 @@ socket.on('colorChanged', function(data) {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-// Obrada slanja chat poruka
-socket.on('chatMessage', (msgData) => {
-    const time = new Date().toLocaleTimeString();
-    const nickname = guests[socket.id]; // Pretpostavljam da koristiš ovaj način za dodelu nadimka
-
-    let messageText = msgData.text;
-    messageText = messageText.replace(/#n/g, nickname); // Zamenjujemo #n sa nadimkom
-
-    const messageToSend = {
-        text: messageText,
-        bold: msgData.bold,
-        italic: msgData.italic,
-        color: msgData.color,
-        underline: msgData.underline,
-        overline: msgData.overline,
-        nickname: nickname,
-        time: time,
-    };
-
-    io.emit('chatMessage', messageToSend);
-});
-
+  // Obrada slanja chat poruka
+    socket.on('chatMessage', (msgData) => {
+        const time = new Date().toLocaleTimeString();
+        const messageToSend = {
+           text: msgData.text.replace(/#n/g, nickname),
+            bold: msgData.bold,
+            italic: msgData.italic,
+            color: msgData.color,
+             underline: msgData.underline,
+            overline: msgData.overline,
+            nickname: guests[socket.id],
+            time: time,
+        };
+        io.emit('chatMessage', messageToSend);
+    });
    // Obrada za čišćenje chata
     socket.on('clear-chat', () => {
         console.log('Chat cleared');
