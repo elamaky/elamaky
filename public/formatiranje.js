@@ -21,15 +21,16 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Funkcija za biranje boje
-document.getElementById('colorBtn').addEventListener('click', function() {
-    document.getElementById('colorPicker').click();
+const colorBtn = document.getElementById('colorBtn');
+const colorPickerContainer = document.getElementById('colorPickerContainer');
+const closeColorPicker = document.getElementById('closeColorPicker');
+
+colorBtn.addEventListener('click', function() {
+    colorPickerContainer.style.display = colorPickerContainer.style.display === 'none' ? 'block' : 'none';
 });
 
-// Kada korisnik izabere boju iz palete
-document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
+closeColorPicker.addEventListener('click', function() {
+    colorPickerContainer.style.display = 'none';
 });
 
 // Funkcija za UNDERLINE formatiranje
