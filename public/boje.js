@@ -1,11 +1,14 @@
+//   PRVI COLORPICKER
 let isBold = false;
 let isItalic = false;
-let currentColor = '#FFFFFF';  // Početna boja
-let isUnderline = false;  
-let isOverline = false;   
+let currentColor = '#FFFFFF';
+let isUnderline = false;  // Dodano za underline
+let isOverline = false;   // Dodano za overline
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
+const colorPrefs = {};
+
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
@@ -28,7 +31,6 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
-    updateGuestColors();  // Ažurira boju za sve goste
 });
 
 // Funkcija za UNDERLINE formatiranje
@@ -43,6 +45,7 @@ document.getElementById('linijagoreBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
+
 // Primena stilova na polju za unos
 function updateInputStyle() {
     let inputField = document.getElementById('chatInput');
@@ -52,11 +55,18 @@ function updateInputStyle() {
     inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
 }
 
-// Funkcija za ažuriranje boje svih gostiju
-function updateGuestColors() {
-    // Pretpostavljamo da su gosti predstavljeni kao elementi sa klasom 'guest'
-    const guestElements = document.querySelectorAll('.guest');
-    guestElements.forEach(guest => {
-        guest.style.color = currentColor;  // Postavi boju nik-a gostu
+// DRUGI COLORPICKER --DINAMICKI 
+// Funkcija za dodavanje stilova gostima
+function addGuestStyles(guestElement, guestId) {
+    const colorPickerButton = document.createElement('input');
+    colorPickerButton.type = 'color';
+    colorPickerButton.classList.add('colorPicker');
+    colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja
+
+    colorPickerButton.addEventListener('input', function() {
+        guestElement.style.color = this.value;
+        guestsData[guestId].color = this.value; // Ažuriraj boju u objektu
     });
+
+    guestElement.appendChild(colorPickerButton);
 }
