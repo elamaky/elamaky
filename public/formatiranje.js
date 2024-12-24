@@ -37,7 +37,6 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     document.querySelectorAll('#guestList div').forEach(guest => {
         guest.style.color = currentColor; // Primeni boju na svaki element u guestList
     });
-}
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
