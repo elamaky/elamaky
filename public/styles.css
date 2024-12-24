@@ -125,3 +125,32 @@ body {
   height: 78px;
   z-index: 10000; /* Osigurava da slika bude iznad iframe-a */
 }
+/* color picker kontenjer */
+.color-picker-container {
+    position: absolute; /* Podesite položaj prema potrebama */
+    top: 50px; /* Podesite po visini od dugmeta */
+    left: 20px; /* Podesite po širini prema potrebama */
+    background-color: black;
+    border: 3px solid black; /* Debela crna granica */
+    box-shadow: 0 0 10px white; /* Spoljne bele neon linije */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.color-picker-footer {
+    margin-top: 10px;
+}
+
+#confirmColor, #closeColorPicker {
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+#confirmColor:hover, #closeColorPicker:hover {
+    background-color: lightgray; /* Promena boje na hover */
+}
