@@ -28,8 +28,8 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 
 // Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value; // Ažuriranje trenutne boje
-    socket.emit('setColor', currentColor); // Šalje serveru odabranu boju
+    currentColor = this.value;
+    updateInputStyle();
 });
 
 // Funkcija za UNDERLINE formatiranje
