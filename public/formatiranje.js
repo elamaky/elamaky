@@ -32,24 +32,7 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value; // Ažuriraj trenutnu boju
     updateInputStyle(); // Ažuriraj stilove za unos
 
-    // Ažuriraj boju za trenutnog korisnika u guest listi
-    if (nickname) { // Proveri da li je nickname postavljen
-        const guestId = `guest-${nickname}`;
-        if (guestsData[guestId]) {
-            guestsData[guestId].color = currentColor; // Ažuriraj boju u guestsData
-            updateGuestColorInList(guestId); // Ažuriraj boju u guest listi
-        }
-    }
-});
-
-// Funkcija za ažuriranje boje gosta u guest listi
-function updateGuestColorInList(guestId) {
-    const guestElement = document.querySelector(`#guestList .guest:contains(${guestsData[guestId].nickname})`);
-    if (guestElement) {
-        guestElement.style.color = guestsData[guestId].color; // Primeni novu boju
-    }
-}
-// Funkcija za UNDERLINE formatiranje
+   // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
     updateInputStyle();
