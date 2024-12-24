@@ -1,14 +1,11 @@
-//   PRVI COLORPICKER
 let isBold = false;
 let isItalic = false;
 let currentColor = '#FFFFFF';
-let isUnderline = false;  // Dodano za underline
-let isOverline = false;   // Dodano za overline
+let isUnderline = false;  
+let isOverline = false;   
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
-const colorPrefs = {};
-
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
@@ -45,7 +42,6 @@ document.getElementById('linijagoreBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-
 // Primena stilova na polju za unos
 function updateInputStyle() {
     let inputField = document.getElementById('chatInput');
@@ -55,8 +51,7 @@ function updateInputStyle() {
     inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
 }
 
-// DRUGI COLORPICKER --DINAMICKI 
-// Funkcija za dodavanje stilova gostima
+// Funkcija za dodavanje stilova gostima sa jednim color picker-om
 function addGuestStyles(guestElement, guestId) {
     const colorPickerButton = document.createElement('input');
     colorPickerButton.type = 'color';
@@ -70,3 +65,4 @@ function addGuestStyles(guestElement, guestId) {
 
     guestElement.appendChild(colorPickerButton);
 }
+
