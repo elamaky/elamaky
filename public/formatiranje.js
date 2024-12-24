@@ -31,6 +31,7 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value; // Ažuriraj trenutnu boju
     updateInputStyle(); // Ažuriraj stilove za unos
+    });
 
    // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
