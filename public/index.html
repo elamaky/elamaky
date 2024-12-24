@@ -7,8 +7,7 @@
    <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="styles.css"> <!-- Povezivanje CSS datoteke -->
     <link rel="stylesheet" href="dj.css"> <!-- Povezivanje dj.css sa index.html -->
-   
-   <script>
+    <script>
         window.socket = io(); // Inicializacija socket-a
     </script>
      
@@ -32,9 +31,7 @@
 </div>
 
 <div id="chatContainer">
-   <div id="guestList">
-</div>
- <div id="toolbar">
+    <div id="toolbar">
         
         <button id="openModal" class="toolbarBtn">D</button>
         <button class="toolbarBtn" id="smilesBtn">😊</button>
@@ -51,19 +48,14 @@
         <button class="toolbarBtn" id="italicBtn">Italic</button>
         <!-- Dugme za boju koje sadrži paletu boja -->
         <button class="toolbarBtn" id="colorBtn">Color</button>
-<div id="colorPickerContainer" class="color-picker-container" style="display: none;">
-    <input type="color" id="colorPicker">
-    <div class="color-picker-footer">
-        <button id="confirmColor">OK</button>
-        <button id="closeColorPicker">Zatvori</button>
-    </div>
-</div>
-
+        <!-- Color picker sa širim spektrom boja i kockicama -->
+        <input type="color" id="colorPicker" style="display: none;">
+        
         <!-- Dodaj druge dugmice po potrebi -->
        <button class="toolbarBtn" id="plusBtn" onclick="increaseFontSize()">+</button>
 <button class="toolbarBtn" id="minusBtn" onclick="decreaseFontSize()">-</button>
-<button class="toolbarBtn" id="linijadoleBtn">LINIJA DOLE</button>
-<button class="toolbarBtn" id="linijagoreBtn">LINIJA GORE</button>
+<button class="toolbarBtn" id="linijadoleBtn">Temelj</button>
+<button class="toolbarBtn" id="linijagoreBtn">Krov</button>
 
 
 </div>
@@ -84,9 +76,9 @@
              <button id="memorija">memorija</button>
             <button id="addVideo"> video </button>
             <button id="enableCamera"> kamera </button>
-            <button id="openModalButton">Otvorite modal</button>
+            
 
-         </div>
+     </div>
     </div>
 </div>
 
@@ -103,18 +95,23 @@
         <textarea id="chatInput" rows="1" placeholder="Ispeci Pa Reci...Godjaja Lafi.....               ❤️"></textarea>
     </div>
 
+
+    <div id="guestList">
+</div>
+ </div>
+  
+<script src="virtual.js"></script>
  <script src="konobarica.js"></script>
 <script src="formatiranje.js"></script> 
  <script src="regist.js"></script>
 <script src="smile.js"></script> 
 <script src="funkcije.js"></script>
 <script src="slike.js"></script>
- <script src="stranica.js"></script>
+ <script src="memorija.js"></script>
  <script src="uuid.js"></script>
  <script src="poruke.js"></script>
- <script src="privat.js"></script>
-
-    <iframe src="https://zeno.fm/player/radio-galaksija?autoplay=true&muted=true" 
+    <script src="privat.js"></script>
+   <iframe src="https://zeno.fm/player/radio-galaksija?autoplay=true&muted=true" 
         width="300" height="139" frameborder="5" scrolling="no"
         style="position: fixed; top: 0; right: 0; z-index: 9998;"></iframe>
 
