@@ -1,6 +1,6 @@
 let isBold = false;
 let isItalic = false;
-let currentColor = '#FFFFFF';
+let currentColor;
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
 let nickname;
@@ -126,7 +126,7 @@ function addGuestStyles(guestElement, guestId) {
     const colorPickerButton = document.createElement('input');
     colorPickerButton.type = 'color';
     colorPickerButton.classList.add('colorPicker');
-    colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja
+    colorPickerButton.value = guestsData[guestId]?.color; // Podrazumevana boja
 
     colorPickerButton.addEventListener('input', function() {
         guestElement.style.color = this.value;
