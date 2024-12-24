@@ -13,20 +13,6 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
     }
 });
 
-// Kada server pošalje poruku
-socket.on('chatMessage', function(data) {
-    let messageArea = document.getElementById('messageArea');
-    let newMessage = document.createElement('div');
-    newMessage.classList.add('message');
-    newMessage.style.fontWeight = data.bold ? 'bold' : 'normal';
-    newMessage.style.fontStyle = data.italic ? 'italic' : 'normal';
-    newMessage.style.color = data.color;
-    newMessage.style.textDecoration = (data.underline ? 'underline ' : '') + (data.overline ? 'overline' : '');
-    newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
-    messageArea.prepend(newMessage);
-    messageArea.scrollTop = 0; // Automatsko skrolovanje
-});
-
 // Kada server pošalje privatnu poruku
 socket.on('private_message', function(data) {
     let messageArea = document.getElementById('messageArea');
