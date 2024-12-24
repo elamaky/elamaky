@@ -127,9 +127,6 @@ body {
 }
 /* color picker kontenjer */
 .color-picker-container {
-    position: absolute; /* Podesite položaj prema potrebama */
-    top: 50px; /* Podesite po visini od dugmeta */
-    left: 20px; /* Podesite po širini prema potrebama */
     background-color: black;
     border: 3px solid black; /* Debela crna granica */
     box-shadow: 0 0 10px white; /* Spoljne bele neon linije */
