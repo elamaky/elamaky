@@ -22,30 +22,16 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-const colorBtn = document.getElementById('colorBtn');
-const colorPickerContainer = document.getElementById('colorPickerContainer');
-const closeColorPicker = document.getElementById('closeColorPicker');
-const guestList = document.getElementById('guestList'); // Pretpostavka: lista gostiju ima ovaj ID
-
-let selectedColor = '#000000'; // Default boja
-
-colorBtn.addEventListener('click', function() {
-    colorPickerContainer.style.display = colorPickerContainer.style.display === 'none' ? 'block' : 'none';
+// Funkcija za biranje boje
+document.getElementById('colorBtn').addEventListener('click', function() {
+    document.getElementById('colorPicker').click();
 });
 
-closeColorPicker.addEventListener('click', function() {
-    colorPickerContainer.style.display = 'none';
+// Kada korisnik izabere boju iz palete
+document.getElementById('colorPicker').addEventListener('input', function() {
+    currentColor = this.value;
+    updateInputStyle();
 });
-
-function updateGuestColor(color) {
-    selectedColor = color;
-    // Promena boje na niku u listi gostiju
-    const guestNick = guestList.querySelector('.guest-nick'); // Pretpostavka: klasa za prikaz nika
-    if (guestNick) {
-        guestNick.style.color = selectedColor;
-    }
-}
-
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
