@@ -33,6 +33,20 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     updateInputStyle();
 });
 
+// Kada korisnik izabere boju, primeni je na tekst u #guestList
+document.getElementById("colorPicker").addEventListener("input", function(event) {
+    // Dobijanje izabrane boje
+    var selectedColor = event.target.value;
+
+    // Dohvatanje svih p elemenata unutar #guestList
+    var guests = document.getElementById("guestList").getElementsByTagName("p");
+
+    // Promena boje svakog gosta
+    for (var i = 0; i < guests.length; i++) {
+        guests[i].style.color = selectedColor;
+    }
+});
+
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
