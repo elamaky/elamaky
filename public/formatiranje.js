@@ -26,7 +26,6 @@ const colorBtn = document.getElementById('colorBtn');
 const colorPickerContainer = document.getElementById('colorPickerContainer');
 const closeColorPicker = document.getElementById('closeColorPicker');
 const guestList = document.getElementById('guestList'); // Pretpostavka: lista gostiju ima ovaj ID
-const colorInput = document.getElementById('colorInput'); // Pretpostavka: input za odabir boje
 
 let selectedColor = '#000000'; // Default boja
 
@@ -38,18 +37,15 @@ closeColorPicker.addEventListener('click', function() {
     colorPickerContainer.style.display = 'none';
 });
 
-colorInput.addEventListener('input', function(event) {
-    selectedColor = event.target.value;
-    updateGuestColor();
-});
-
-function updateGuestColor() {
+function updateGuestColor(color) {
+    selectedColor = color;
     // Promena boje na niku u listi gostiju
     const guestNick = guestList.querySelector('.guest-nick'); // Pretpostavka: klasa za prikaz nika
     if (guestNick) {
         guestNick.style.color = selectedColor;
     }
 }
+
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
