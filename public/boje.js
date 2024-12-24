@@ -4,11 +4,7 @@ let isItalic = false;
 let currentColor = '#FFFFFF';
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
-
-// Objekat za čuvanje podataka o gostima
-const guestsData = {};
 const colorPrefs = {};
-
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
