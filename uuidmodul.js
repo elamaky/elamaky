@@ -2,6 +2,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
 
+// Lista banovanih UUID-ova
+const bannedUuids = [
+  '681ed98a-77f8-48d5-b43c-8cc882cc82fb', 
+  'uuid2', 
+  'uuid3', 
+  'uuid4', 
+  'uuid5'
+];
+
 // Definisanje modela za goste
 const guestSchema = new mongoose.Schema({
     uuid: { type: String, required: true, unique: true },
@@ -16,6 +25,11 @@ const Guest = mongoose.model('Guest', guestSchema);
 // POST ruta za čuvanje podataka gostiju
 router.post('/', async (req, res) => {
     const { nickname, uuid } = req.body;
+
+      // Provera da li je UUID banovan
+    if (bannedUuids.includes(uuid)) {
+        return res.status(403).json({ error: 'Korisnik je banovan' });
+    }
 
     // Validacija podataka
     if (!nickname || !uuid) {
