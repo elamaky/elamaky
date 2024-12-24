@@ -1,4 +1,5 @@
 let nickname;
+const guestsData = {};
 
 // Kada korisnik pritisne Enter
 document.getElementById('chatInput').addEventListener('keydown', function(event) {
@@ -10,9 +11,25 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
             bold: isBold,
             italic: isItalic,
             color: currentColor,
+            nickname: nickname // Pošalji ime gosta
         });
         this.value = ''; // Isprazni polje za unos
     }
+});
+
+
+// Kada server pošalje poruku
+socket.on('chatMessage', function(data) {
+    let messageArea = document.getElementById('messageArea');
+    let newMessage = document.createElement('div');
+    newMessage.classList.add('message');
+    newMessage.style.fontWeight = data.bold ? 'bold' : 'normal';
+    newMessage.style.fontStyle = data.italic ? 'italic' : 'normal';
+    newMessage.style.color = data.color;
+    newMessage.style.textDecoration = (data.underline ? 'underline ' : '') + (data.overline ? 'overline' : '');
+    newMessage.innerHTML = `<strong>${data.nickname}:</strong> ${data.text} <span style="font-size: 0.8em; color: gray;">(${data.time})</span>`;
+    messageArea.prepend(newMessage);
+    messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
 
 // Kada server pošalje privatnu poruku
@@ -46,7 +63,13 @@ socket.on('newGuest', function(nickname) {
     if (!guestsData[guestId]) {
         guestsData[guestId] = { nickname, color: '#FFFFFF' }; // Ako ne postoji, dodajemo ga sa podrazumevanom bojom
     }
-    guestList.appendChild(newGuest);  // Dodaj gosta u listu
+
+    newGuest.style.color = guestsData[guestId].color;
+    
+    // Dodaj stilove za gosta
+    addGuestStyles(newGuest, guestId);
+    
+    guestList.appendChild(newGuest); // Dodaj novog gosta u listu
 });
 
 // Ažuriranje liste gostiju bez resetovanja stilova
@@ -76,8 +99,9 @@ socket.on('updateGuestList', function(users) {
             newGuest.textContent = nickname;
             newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
             
-            guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
+                      guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
+            addGuestStyles(newGuest, guestId); // Dodaj stilove
             guestList.appendChild(newGuest); // Dodaj novog gosta u listu
         }
     });
-});
+});  
