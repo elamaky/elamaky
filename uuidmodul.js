@@ -53,7 +53,8 @@ router.post('/', async (req, res) => {
 
             await existingGuest.save();
             console.log('Podaci uspešno ažurirani u MongoDB:', `UUID: ${uuid}, Nickname: ${nickname}, IP: ${ipAddress}`);
-            return res.status(200).send('Podaci ažurirani');
+          res.status(200).json({ message: 'Podaci primljeni i sačuvani' });
+
         }
 
         // Ako ne postoji, sačuvaj novog gosta
@@ -62,7 +63,8 @@ router.post('/', async (req, res) => {
 
         console.log('Podaci uspešno sačuvani u MongoDB:', `UUID: ${uuid}, Nickname: ${nickname}, IP: ${ipAddress}`);
 
-        res.status(200).send('Podaci primljeni i sačuvani');
+       res.status(200).json({ message: 'Podaci primljeni i sačuvani' });
+
     } catch (err) {
         console.error('Greška pri čuvanju podataka:', err);
         res.status(500).json({ error: 'Greška pri čuvanju podataka' });
