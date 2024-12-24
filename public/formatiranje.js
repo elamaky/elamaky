@@ -33,19 +33,11 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     updateInputStyle();
 });
 
-// Kada korisnik izabere boju, primeni je na tekst u #guestList
-document.getElementById("colorPicker").addEventListener("input", function(event) {
-    // Dobijanje izabrane boje
-    var selectedColor = event.target.value;
-
-    // Dohvatanje svih p elemenata unutar #guestList
-    var guests = document.getElementById("guestList").getElementsByTagName("p");
-
-    // Promena boje svakog gosta
-    for (var i = 0; i < guests.length; i++) {
-        guests[i].style.color = selectedColor;
-    }
-});
+ // Ažuriraj stil za goste u guestList
+    document.querySelectorAll('#guestList div').forEach(guest => {
+        guest.style.color = currentColor; // Primeni boju na svaki element u guestList
+    });
+}
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
@@ -182,7 +174,7 @@ socket.on('updateGuestList', function(users) {
             const newGuest = document.createElement('div');
             newGuest.className = 'guest';
             newGuest.textContent = nickname;
-            newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
+            newGuest.style.color; // Podrazumevana boja ako nije postavljena
             
                       guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
             addGuestStyles(newGuest, guestId); // Dodaj stilove
