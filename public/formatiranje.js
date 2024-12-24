@@ -1,9 +1,9 @@
 let isBold = false;
 let isItalic = false;
-let currentColor;
+let currentColor = '#FFFFFF';
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
-let nickname;
+let nickname
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
@@ -27,13 +27,13 @@ document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPicker').click();
 });
 
-// Kada korisnik izabere boju iz palete za poruke
+// Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value; // Ažuriraj trenutnu boju
-    updateInputStyle(); // Ažuriraj stilove za unos
-    });
+    currentColor = this.value;
+    updateInputStyle();
+});
 
-   // Funkcija za UNDERLINE formatiranje
+// Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
     updateInputStyle();
@@ -112,7 +112,7 @@ function addGuestStyles(guestElement, guestId) {
     const colorPickerButton = document.createElement('input');
     colorPickerButton.type = 'color';
     colorPickerButton.classList.add('colorPicker');
-    colorPickerButton.value = guestsData[guestId]?.color; // Podrazumevana boja
+    colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja
 
     colorPickerButton.addEventListener('input', function() {
         guestElement.style.color = this.value;
@@ -168,7 +168,7 @@ socket.on('updateGuestList', function(users) {
             const newGuest = document.createElement('div');
             newGuest.className = 'guest';
             newGuest.textContent = nickname;
-            newGuest.style.color; // Podrazumevana boja ako nije postavljena
+            newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
             
                       guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
             addGuestStyles(newGuest, guestId); // Dodaj stilove
