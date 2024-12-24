@@ -2,15 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
 
-// Lista banovanih UUID-ova
-const bannedUuids = [
-  '681ed98a-77f8-48d5-b43c-8cc882cc82fb', 
-  'uuid2', 
-  'uuid3', 
-  'uuid4', 
-  'uuid5'
-];
-
 // Definisanje modela za goste
 const guestSchema = new mongoose.Schema({
     uuid: { type: String, required: true, unique: true },
@@ -25,11 +16,6 @@ const Guest = mongoose.model('Guest', guestSchema);
 // POST ruta za čuvanje podataka gostiju
 router.post('/', async (req, res) => {
     const { nickname, uuid } = req.body;
-
-      // Provera da li je UUID banovan
-    if (bannedUuids.includes(uuid)) {
-        return res.status(403).json({ error: 'Korisnik je banovan' });
-    }
 
     // Validacija podataka
     if (!nickname || !uuid) {
@@ -53,8 +39,7 @@ router.post('/', async (req, res) => {
 
             await existingGuest.save();
             console.log('Podaci uspešno ažurirani u MongoDB:', `UUID: ${uuid}, Nickname: ${nickname}, IP: ${ipAddress}`);
-          res.status(200).json({ message: 'Podaci primljeni i sačuvani' });
-
+            return res.status(200).send('Podaci ažurirani');
         }
 
         // Ako ne postoji, sačuvaj novog gosta
@@ -63,8 +48,7 @@ router.post('/', async (req, res) => {
 
         console.log('Podaci uspešno sačuvani u MongoDB:', `UUID: ${uuid}, Nickname: ${nickname}, IP: ${ipAddress}`);
 
-       res.status(200).json({ message: 'Podaci primljeni i sačuvani' });
-
+        res.status(200).send('Podaci primljeni i sačuvani');
     } catch (err) {
         console.error('Greška pri čuvanju podataka:', err);
         res.status(500).json({ error: 'Greška pri čuvanju podataka' });
