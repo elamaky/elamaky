@@ -27,17 +27,28 @@ document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPicker').click();
 });
 
-// Kada korisnik izabere boju iz palete
+// Kada korisnik izabere boju iz palete za poruke
 document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
+    currentColor = this.value; // Ažuriraj trenutnu boju
+    updateInputStyle(); // Ažuriraj stilove za unos
+
+    // Ažuriraj boju za trenutnog korisnika u guest listi
+    if (nickname) { // Proveri da li je nickname postavljen
+        const guestId = `guest-${nickname}`;
+        if (guestsData[guestId]) {
+            guestsData[guestId].color = currentColor; // Ažuriraj boju u guestsData
+            updateGuestColorInList(guestId); // Ažuriraj boju u guest listi
+        }
+    }
 });
 
- // Ažuriraj stil za goste u guestList
-    document.querySelectorAll('#guestList div').forEach(guest => {
-        guest.style.color = currentColor; // Primeni boju na svaki element u guestList
-    });
-
+// Funkcija za ažuriranje boje gosta u guest listi
+function updateGuestColorInList(guestId) {
+    const guestElement = document.querySelector(`#guestList .guest:contains(${guestsData[guestId].nickname})`);
+    if (guestElement) {
+        guestElement.style.color = guestsData[guestId].color; // Primeni novu boju
+    }
+}
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
