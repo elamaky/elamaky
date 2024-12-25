@@ -126,19 +126,22 @@ body {
 }
 
  /* CSS ZA MIXER DODATAK IZ HTML MIXER */
-    position:absolute;
+    #mixer {
+    position: fixed;  /* Osigurava da mixer bude vezan za ekran */
+    top: 20px;        /* Postavljanje početne pozicije */
+    left: 20px;       /* Postavljanje početne pozicije */
     background-color: black;
     color: white;
-    width: 350px; /* Prilagođena širina */
-    height: auto; /* Automatska visina */
+    width: 300px;
+    height: auto;
     padding: 10px;
-    border: 5px solid white; 
+    border: 5px solid white;
     cursor: move;
-    box-shadow: 0 0 10px white; 
-    border-radius: 10px; 
-    resize: both; /* Omogućava promenu veličine */
-    overflow: hidden; /* Održava prikaz unutar okvira */
+    box-shadow: 0 0 10px white;
+    border-radius: 10px;
+    z-index: 9999; /* Osigurava da mixer bude iznad drugih elemenata */
 }
+
 
 button {
     background-color: black;
