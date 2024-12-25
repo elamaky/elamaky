@@ -127,6 +127,9 @@ body {
 }
 
  /* CSS ZA MIXER DODATAK IZ HTML MIXER */
+body {
+    position: relative;
+}
  #mixer {
     background-color: black;
     color: white;
@@ -134,7 +137,6 @@ body {
     height: auto; /* Automatska visina */
     padding: 10px;
     border: 5px solid white; 
-    position: absolute;
     cursor: move;
     box-shadow: 0 0 10px white; 
     border-radius: 10px; 
