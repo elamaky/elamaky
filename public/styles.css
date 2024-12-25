@@ -190,21 +190,17 @@ body {
 button {
     background-color: black;
     color: white;
-    border: 2px solid white;
-    padding: 10px;
+    border: 2px solid white; 
+    padding: 6px 12px; /* Smanjeni padding */
     cursor: pointer;
+    margin: 3px; /* Smanjena margina */
     text-transform: uppercase;
-    box-shadow: 0 0 10px white;
-    font-size: 12px;
-    width: 80px;  /* Širina dugmadi */
+    box-shadow: 0 0 5px white; /* Manji senka */
+    width: auto; /* Automatska širina */
+    font-size: 10px; /* Smanjen font */
 }
 
 button:hover {
     background-color: white;
     color: black;
-}
-
-/* Dugmici na hover efektu */
-button:active {
-    transform: scale(0.95);
 }
