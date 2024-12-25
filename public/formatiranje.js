@@ -32,12 +32,12 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     updateInputStyle();
 });
 
- // Ažuriraj boju nika u guestList
-    const guestElement = document.getElementById(guestId); // Pronađi svog gosta po ID-u
-    if (guestElement) {
-        guestElement.style.color = selectedColor; // Ažuriraj boju nika
-        guestsData[guestId] = { color: selectedColor };
-});
+// Ažuriraj boju nika u guestList
+const guestElement = document.getElementById(guestId); // Pronađi svog gosta po ID-u
+if (guestElement) {
+    guestElement.style.color = selectedColor; // Ažuriraj boju nika
+    guestsData[guestId] = { color: selectedColor };
+}
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
