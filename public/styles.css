@@ -177,12 +177,6 @@ body {
     font-style: italic;
 }
 
-#mixer-buttons {
-    display: flex;
-    justify-content: space-evenly; /* Raspršivanje dugmadi ravnomerno */
-    margin-top: 10px;
-}
-
 button {
     background-color: black;
     color: white;
@@ -190,14 +184,12 @@ button {
     padding: 8px;
     cursor: pointer;
     margin: 2px;
-    text-transform: uppercase;
-    box-shadow: 0 0 10px white;
     width: 70px;
+     height: 20px; /* Visina dugmadi */
     font-size: 10px;
     border-radius: 5px;
-    transition: background-color 0.3s;
+    bottom: 5px;
 }
-
 button:hover {
     background-color: white;
     color: black;
