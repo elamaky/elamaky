@@ -130,7 +130,7 @@ body {
  #mixer {
     background-color: black;
     color: white;
-    width: 300px; /* Prilagođena širina */
+    width: 350px; /* Prilagođena širina */
     height: auto; /* Automatska visina */
     padding: 10px;
     border: 5px solid white; 
