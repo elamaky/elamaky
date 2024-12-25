@@ -63,7 +63,7 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
             text: message,
             bold: isBold,
             italic: isItalic,
-            color: currentColor,
+            color: currentColor
             
         });
         this.value = ''; // Isprazni polje za unos
