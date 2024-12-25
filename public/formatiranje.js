@@ -87,10 +87,10 @@ document.getElementById('colorPicker').addEventListener('input', function() {
 });
 
 // Ažuriraj boju nika u guestList
-const guestElement = document.getElementById(guestId); // Pronađi svog gosta po ID-u
+const guestElement = document.querySelector('.guest'); // Pronađi prvog gosta sa klasom 'guest'
 if (guestElement) {
     guestElement.style.color = selectedColor; // Ažuriraj boju nika
-    guestsData[guestId] = { color: selectedColor };
+    guestsData[guestElement.textContent] = { color: selectedColor }; // Koristi textContent kao ključ
 }
 
 // Funkcija za UNDERLINE formatiranje
