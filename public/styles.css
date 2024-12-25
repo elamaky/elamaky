@@ -126,7 +126,7 @@ body {
 }
 
  /* CSS ZA MIXER DODATAK IZ HTML MIXER */
-    position: fixed;
+    position:absolute;
     background-color: black;
     color: white;
     width: 350px; /* Prilagođena širina */
