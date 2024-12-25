@@ -84,20 +84,8 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value; // Dodeli izabranu boju
     updateInputStyle(); // Ažuriraj stil za input (poruke)
-    updateGuestListColor(); // Ažuriraj boju nika u guest listi
+    updateguestList(); // Ažuriraj boju nika u guest listi
 });
-
-// Funkcija koja ažurira boju nika u guest listi
-function updateGuestListColor() {
-    const guestList = document.getElementById('guestList');
-    const guestId = `guest-${nickname}`; // Pretpostavljam da koristiš nickname kao identifikator
-    const guestElement = guestList.querySelector(`#${guestId}`); // Pronađi gosta po ID-u
-
-    if (guestElement) {
-        guestElement.style.color = currentColor; // Ažuriraj boju nika
-    }
-}
-
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
