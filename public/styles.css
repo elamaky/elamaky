@@ -130,7 +130,7 @@ body {
   #mixer {
     background-color: black;
     color: white;
-    width: 300px; /* Prilagođena širina */
+    width: 350px; /* Prilagođena širina */
     height: auto; /* Automatska visina */
     padding: 10px;
     border: 5px solid white; 
@@ -153,8 +153,8 @@ button {
     margin: 5px;
     text-transform: uppercase;
     box-shadow: 0 0 10px white; 
-    width: 60px; /* Usklađena širina */
-    font-size: 12px;
+    width: 40px; /* Usklađena širina */
+    font-size: 10px;
     bottom: 2px;
 }
 
