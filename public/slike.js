@@ -54,20 +54,20 @@ socket.on('update-images', (updatedImages) => {
 
 // Funkcija za dodavanje slike na DOM
 function addImageToDOM(imageUrl, position, dimensions) {
-    let existingImage = document.querySelector(`img[src="${imageUrl}"]`);
-    if (!existingImage) {
-        const newImage = document.createElement('img');
-        newImage.src = imageUrl;
-        newImage.style.width = dimensions.width + 'px';
-        newImage.style.height = dimensions.height + 'px';
-        newImage.style.position = "absolute";
-        newImage.style.left = position.x + 'px';
-        newImage.style.top = position.y + 'px';
-        newImage.style.zIndex = "1000";
-        newImage.classList.add('draggable', 'resizable');
-        newImage.style.border = "none";
+    const newImage = document.createElement('img');
+    newImage.src = imageUrl;
+    newImage.style.width = dimensions.width + 'px';
+    newImage.style.height = dimensions.height + 'px';
+    newImage.style.position = "absolute";
+    newImage.style.left = position.x + 'px';
+    newImage.style.top = position.y + 'px';
+    newImage.style.zIndex = "1000";
+    newImage.classList.add('draggable', 'resizable');
+    newImage.style.border = "none";
 
-        // Selektovanje slike
+}
+
+ // Selektovanje slike
         function selectImage(image) {
             if (selectedImage && selectedImage !== image) {
                 selectedImage.style.border = "none"; // Ukloni indikator sa prethodne selekcije
