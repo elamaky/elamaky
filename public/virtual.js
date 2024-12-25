@@ -1,15 +1,10 @@
 const virtualGuests = [
-   
-    { nickname: 'Sanja', messages: [ 'Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'violet' },
-    { nickname: 'Bojan', messages: ['Poz svima , no pc'], color: 'lime' },
-    { nickname: 'Gost-7721', messages: ['Jaaaaaaaaaaaaasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'white' },
-    { nickname: '°Sladja°', messages: ['Romalen jasaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'magenta' },
-   { nickname: 'Gost-5582', messages: [' Opaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!'], color: 'white' },
-    { nickname: 'Boxer', messages: [''], color: 'braun' },
-    { nickname: 'Gost-8644', messages: [''], color: 'white' },
-    { nickname: '<<Kristina>>', messages: [''], color: 'pink' },
-    { nickname: '/Sanella/', messages: [''], color: 'red' },
-    
+    { nickname: 'cuceklika 1', messages: ['Poz Svima', 'jasaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'], color: 'deepskyblue' },
+    { nickname: 'cuceklika 2', messages: ['Zdravo Sarinenge', 'opaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'], color: 'purple' },
+    { nickname: 'cuceklika 3', messages: ['Selami sarinenge', 'tooOOOOOOOOOOOOOOOOOOOOOOO'], color: 'red' },
+    { nickname: 'cuceklika 1', messages: ['*__X__* Mangava tu ❤️'], color: 'deepskyblue' },
+    { nickname: 'cuceklika 2', messages: ['Nas olestar cuceklike 1, Merava tuke *__X__* ❤️💋'], color: 'purple' },
+    { nickname: 'cuceklika 3', messages: ['Dzabe tumen cupinen pe taro bala OV TANO SAMO MLO'], color: 'red' },
 ];
 
 function sendMessageToChat(guest, message) {
@@ -18,47 +13,54 @@ function sendMessageToChat(guest, message) {
     const messageElement = document.createElement('div');
     messageElement.innerHTML = `<span style="color: ${guest.color}; font-weight: bold; font-style: italic;">${guest.nickname}: ${message}</span>`;
     
+    // Dodavanje poruke na vrh
     messageArea.insertBefore(messageElement, messageArea.firstChild);
-
+    
+    // Dodavanje razmaka između poruka
     const spacingElement = document.createElement('div');
-    spacingElement.style.height = '10px';
-    messageArea.insertBefore(spacingElement, messageArea.firstChild.nextSibling);
+    spacingElement.style.height = '10px'; // Podešavanje visine razmaka
+    messageArea.insertBefore(spacingElement, messageArea.firstChild.nextSibling); // Razmak nakon poruke
 
-    messageArea.scrollTop = 0;
+    messageArea.scrollTop = 0; // Skrolovanje na vrh
 }
 
-function addGuestsToList() {
+function addGuestToList(guest) {
     const guestList = document.getElementById('guestList');
     
-    virtualGuests.forEach(guest => {
-        if (!Array.from(guestList.children).some(el => el.textContent === guest.nickname)) {
-            const guestElement = document.createElement('div');
-            guestElement.classList.add('guest');
-            guestElement.textContent = guest.nickname;
-            guestElement.style.color = guest.color;
-            guestElement.style.fontWeight = 'bold';
-            guestElement.style.fontStyle = 'italic';
+    // Proveri da li gost već postoji u listi
+    if (!Array.from(guestList.children).some(el => el.textContent === guest.nickname)) {
+        const guestElement = document.createElement('div');
+        guestElement.classList.add('guest');
+        guestElement.textContent = guest.nickname;
+        guestElement.style.color = guest.color; // Postavljanje boje za gosta
 
-            guestList.appendChild(guestElement);
-        }
-    });
+        guestList.appendChild(guestElement);
+    }
 }
 
 function startVirtualGuests() {
-    virtualGuests.forEach((guest, index) => {
+    const messageTimings = [
+        { guestIndex: 0, messageIndex: 0, time: 0 },    // cuceklika 1: Poz Svima
+        { guestIndex: 0, messageIndex: 1, time: 5 },    // cuceklika 1: jasaaaaaaaaaaaaaaaaa
+        { guestIndex: 1, messageIndex: 0, time: 60 },   // cuceklika 2: Zdravo Sarinenge
+        { guestIndex: 1, messageIndex: 1, time: 65 },   // cuceklika 2: opaaaaaaaaaaaaaaaaaaa
+        { guestIndex: 2, messageIndex: 0, time: 120 },  // cuceklika 3: Selami sarinenge
+        { guestIndex: 2, messageIndex: 1, time: 125 },  // cuceklika 3: tooOOOOOOOOOOOOOOOOOOO
+        { guestIndex: 0, messageIndex: 0, time: 180 },  // cuceklika 1: *__X__* Mangava tu ❤️
+        { guestIndex: 1, messageIndex: 1, time: 200 },  // cuceklika 2: Nas olestar cuceklike 1...
+        { guestIndex: 2, messageIndex: 1, time: 220 },  // cuceklika 3: Dzabe tumen cupinen...
+    ];
+
+    messageTimings.forEach(({ guestIndex, messageIndex, time }) => {
         setTimeout(() => {
-            guest.messages.forEach((message, msgIndex) => {
-                setTimeout(() => {
-                    sendMessageToChat(guest, message);
-                }, msgIndex * 300000); // 5 minuta razmaka između poruka
-            });
-        }, index * 300000); // 5 minuta razmaka između gostiju
+            sendMessageToChat(virtualGuests[guestIndex], virtualGuests[guestIndex].messages[messageIndex]);
+            addGuestToList(virtualGuests[guestIndex]); // Dodavanje gosta u listu
+        }, time * 1000); // Konvertovanje sekundi u milisekunde
     });
 
-    setTimeout(startVirtualGuests, virtualGuests.length * 300000);
+    // Pauza od 240 sekundi pre ponovnog ciklusa
+    setTimeout(startVirtualGuests, 240 * 1000);
 }
 
-window.onload = () => {
-    addGuestsToList();
-    startVirtualGuests();
-};
+// Pokretanje virtuelnih gostiju kada se stranica učita
+window.onload = startVirtualGuests;
