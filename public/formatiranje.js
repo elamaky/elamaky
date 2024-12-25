@@ -8,13 +8,6 @@ let isOverline = false;   // Dodano za overline
 const guestsData = {};
 const colorPrefs = {};
 
-socket.on('setNickname', (nickname) => {
-    console.log('Dobijen nickname:', nickname);
-   
-});
-
-
-
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
@@ -66,11 +59,12 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
         event.preventDefault();
         let message = this.value;
         socket.emit('chatMessage', {
+            nickname: nickname, // Pošalji ime gosta
             text: message,
             bold: isBold,
             italic: isItalic,
-            color: currentColor,
-            nickname: nickname // Pošalji ime gosta
+            color: currentColor;
+            
         });
         this.value = ''; // Isprazni polje za unos
     }
