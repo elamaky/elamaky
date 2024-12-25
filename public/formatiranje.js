@@ -82,15 +82,20 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 
 // Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
+    currentColor = this.value; // Dodeli izabranu boju
+    updateInputStyle(); // Ažuriraj stil za input (poruke)
+    updateGuestListColor(); // Ažuriraj boju nika u guest listi
 });
 
-// Ažuriraj boju nika u guestList
-const guestElement = document.querySelector('.guest'); // Pronađi prvog gosta sa klasom 'guest'
-if (guestElement) {
-    guestElement.style.color = selectedColor; // Ažuriraj boju nika
-    guestsData[guestElement.textContent] = { color: selectedColor }; // Koristi textContent kao ključ
+// Funkcija koja ažurira boju nika u guest listi
+function updateGuestListColor() {
+    const guestList = document.getElementById('guestList');
+    const guestId = `guest-${nickname}`; // Pretpostavljam da koristiš nickname kao identifikator
+    const guestElement = guestList.querySelector(`#${guestId}`); // Pronađi gosta po ID-u
+
+    if (guestElement) {
+        guestElement.style.color = currentColor; // Ažuriraj boju nika
+    }
 }
 
 // Funkcija za UNDERLINE formatiranje
