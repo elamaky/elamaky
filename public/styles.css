@@ -127,43 +127,51 @@ body {
 
  /* CSS ZA MIXER DODATAK IZ HTML MIXER */
  
-#mixer {
-    position: fixed;  /* Osigurava da mixer bude vezan za ekran */
-    top: 20px;        /* Početna pozicija od vrha ekrana */
-    left: 20px;       /* Početna pozicija sa leve strane ekrana */
+  #mixer {
     background-color: black;
     color: white;
-    width: 300px;
-    height: auto;
-    padding: 15px;  /* Povecana margina unutar mixera */
-    border: 5px solid white;
+    width: 300px; /* Prilagođena širina */
+    height: auto; /* Automatska visina */
+    padding: 10px;
+    border: 5px solid white; 
+    position: fixed;
+    z-index: 9999;
     cursor: move;
-    box-shadow: 0 0 10px white;
-    border-radius: 10px;
-    z-index: 9999; /* Osigurava da mixer bude iznad drugih elemenata */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    box-shadow: 0 0 10px white; 
+    border-radius: 10px; 
+    bottom: 20px;
+    resize: both; /* Omogućava promenu veličine */
+    overflow: hidden; /* Održava prikaz unutar okvira */
 }
 
-.title {
-    text-align: center;
+button {
+    background-color: black;
     color: white;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    font-weight: bold;
-    font-style: italic;
-    margin-bottom: 10px;
+    border: 2px solid white; 
+    padding: 10px; 
+    cursor: pointer;
+    margin: 5px;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px white; 
+    width: 60px; /* Usklađena širina */
+    font-size: 12px;
+    bottom: 2px;
+}
+
+button:hover {
+    background-color: white;
+    color: black;
 }
 
 #songList {
     list-style: none;
     padding: 0;
-    max-height: 150px; /* Prilagodjena visina liste */
-    overflow-y: auto;
+    max-height: calc(100% - 150px); /* Lista se prilagođava visini */
+    overflow-y: auto; 
     border: 1px solid white;
-    border-radius: 5px;
-    margin-bottom: 10px;
+    border-radius: 5px;  
+    margin-top: 100px; 
+    bottom: 40px; 
 }
 
 #songList li {
@@ -179,28 +187,22 @@ body {
     background-color: #333;
 }
 
+.title {
+    text-align: center;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0; 
+    margin-bottom: 10px; 
+    font-weight: bold; 
+    font-style: italic; 
+}
+
 #mixer-buttons {
     display: flex;
-    justify-content: space-between; /* Raspoređuje dugmadi ravnomerno */
-    gap: 10px;
-    margin-top: 10px;
-}
-
-/* Dugmici */
-button {
-    background-color: black;
-    color: white;
-    border: 2px solid white; 
-    padding: 6px 12px; /* Smanjeni padding */
-    cursor: pointer;
-    margin: 3px; /* Smanjena margina */
-    text-transform: uppercase;
-    box-shadow: 0 0 5px white; /* Manji senka */
-    width: auto; /* Automatska širina */
-    font-size: 10px; /* Smanjen font */
-}
-
-button:hover {
-    background-color: white;
-    color: black;
+    justify-content: space-around; 
+    position: relative; /* Omogućava pravilan raspored */
+    bottom: 0; /* Na samom dnu */
+    left: 0;
+    right: 0;
+    margin-top: 10px; /* Razmak od liste */
 }
