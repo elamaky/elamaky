@@ -32,6 +32,16 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     updateInputStyle();
 });
 
+document.getElementById('colorPicker').addEventListener('input', function() {
+    currentColor = this.value;
+    updateGuestListStyle();
+});
+
+function updateGuestListStyle() {
+    const guestList = document.getElementById('guestList');
+    guestList.style.color = currentColor;
+}
+
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
