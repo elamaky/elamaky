@@ -8,6 +8,10 @@ let isOverline = false;   // Dodano za overline
 const guestsData = {};
 const colorPrefs = {};
 
+ const uniqueNumber = generateUniqueNumber();
+    const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
+    guests[socket.id] = nickname;
+
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
