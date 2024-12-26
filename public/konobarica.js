@@ -247,6 +247,8 @@ const port = 80;
 const mountpoint = "/krdfduyswxhtv";
 const username = "source";
 const password = "hoRXuevt";
+import lamejs from 'lamejs';
+
 
 // LAME MP3 enkoder
 const mp3Encoder = new lamejs.Mp3Encoder(2, 44100, 128); // Stereo, 44.1kHz, 128kbps
