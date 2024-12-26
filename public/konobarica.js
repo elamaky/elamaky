@@ -296,8 +296,7 @@ if (songs.length > 0) {
         } else {
             console.error('Indeks pesme nije validan:', index); // Log za nevalidan indeks
         }
-    }
-});
+    });
 
 // Kada klijent primi stream sa servera
 socket.on('stream', (data) => {
