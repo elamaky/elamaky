@@ -302,15 +302,21 @@ socket.on('stream', (data) => {
     if (data.buffer && data.buffer.byteLength > 0) {
         console.log('Primljen buffer za pesmu:', data.name);
         
-        // Kreiraj URL za blob
-        const audio = new Audio();
-        const blob = new Blob([data.buffer], { type: 'audio/mpeg' });  // Postavi tip audio fajla
-        audio.src = URL.createObjectURL(blob);  // Kreiraj URL za blob
-        audio.play();
+        // Kreiraj Blob i postavi tip audio fajla
+        const blob = new Blob([data.buffer], { type: 'audio/mpeg' });
         
-        console.log('Pesma se reprodukuje:', data.name);
+        // Kreiraj URL za Blob
+        const audio = new Audio(URL.createObjectURL(blob)); 
+        
+        // Reprodukuj audio
+        audio.play().then(() => {
+            console.log('Pesma se reprodukuje:', data.name);
+        }).catch((err) => {
+            console.error('Greška pri reprodukciji pesme:', err);
+        });
     } else {
         console.error('Primljen buffer je prazan ili nevalidan za pesmu:', data.name);
     }
 });
+
 
