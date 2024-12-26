@@ -71,6 +71,7 @@ function decreaseFontSize() {
 
 //   MIXER SCRIPT IZ MIXER HTML DODAT OVDE
  const mixer = document.getElementById("mixer");
+const mixerButton = document.getElementById('mixer');
         const audioPlayer = document.getElementById('audioPlayer');
         const songList = document.getElementById('songList');
         const fileInput = document.getElementById('fileInput');
@@ -80,6 +81,15 @@ function decreaseFontSize() {
         const closeButton = document.getElementById('closeButton');
         let songs = [];
         let currentSongIndex = 0;
+
+mixerButton.addEventListener('click', function() {
+    if (mixer.style.display === 'none' || mixer.style.display === '') {
+        mixer.style.display = 'block';  // Otvara mixer
+    } else {
+        mixer.style.display = 'none';  // Sakriva mixer
+    }
+});
+
 
         let isDragging = false;
 let offsetX, offsetY;
