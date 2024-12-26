@@ -321,8 +321,3 @@ async function streamToIcecast() {
 const streamButton = document.createElement('button');
 streamButton.textContent = "Start Streaming";
 streamButton.onclick = streamToIcecast;
-
-// Prikazivanje dugmeta na stranici
-const mixer = document.createElement('div');
-mixer.appendChild(streamButton);
-document.body.appendChild(mixer);
