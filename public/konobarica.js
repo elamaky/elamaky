@@ -270,8 +270,8 @@ async function streamToIcecast() {
     const authHeader = btoa(`${username}:${password}`);
     const icecastUrl = `http://${server}:${port}${mountpoint}`;
 
-    const socket = new WebSocket(`ws://${server}:${port}${mountpoint}`, "icecast");
-    socket.binaryType = "arraybuffer";
+   const socket = new WebSocket(`wss://${server}:${port}${mountpoint}`, "icecast");
+   socket.binaryType = "arraybuffer";
 
     socket.onopen = () => {
         console.log("Povezan na Icecast server!");
