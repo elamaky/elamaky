@@ -243,7 +243,7 @@ function updateSongsOrder() {
             if (songs.length > 0) {
                 audioPlayer.src = songs[currentSongIndex];
                 audioPlayer.play();
-            }
+            
         });
 
         // Primanje strimovanih pesama
