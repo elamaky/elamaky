@@ -323,3 +323,11 @@ socket.on('stream', (data) => {
     }
 });
 
+window.onload = () => {
+    // Emituj 'startStream' događaj kada se stranica učita
+    socket.emit('startStream', {
+        buffer: yourBufferData,  // Prilagodi prema tome šta šalješ
+        name: 'someName.mp3'     // Ako je potrebno
+    });
+};
+
