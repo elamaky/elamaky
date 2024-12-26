@@ -259,10 +259,14 @@ if (songUrl) {
     audioPlayer.src = songUrl;
     audioPlayer.play();
 }
-// Primanje strimovane pesme
+// Dodaj logove kako bi proverio šta se dešava
 socket.on('streamSong', (songUrl) => {
-    console.log('Primljena pesma: ' + songUrl);  // Logovanje URL-a koji je primljen
-    audioPlayer.src = songUrl;  // Postavljanje nove pesme za strimovanje
-    audioPlayer.play();  // Početak strimovanja
+    console.log('Primljena pesma: ' + songUrl);  // Logovanje primljene pesme
+    if (songUrl) {
+        console.log('Postavljanje nove pesme na audioPlayer: ' + songUrl);
+        audioPlayer.src = songUrl;  // Postavljanje URL-a
+        audioPlayer.play();  // Početak strimovanja
+    } else {
+        console.log('Greška: URL pesme nije validan!');
+    }
 });
-
