@@ -264,20 +264,6 @@ document.addEventListener('click', function() {
     }
 });
 
-// Priključi audio plejer na miksovanje
-let isSourceConnected = false; // Provera da li je audio izvor već povezan
-const audioPlayer = document.createElement('audio'); // Dodajemo audio player
-audioPlayer.src = 'your-audio-file.mp3'; // Ovde postavi izvor audio fajla
-
-audioPlayer.addEventListener('play', () => {
-    if (!isSourceConnected) {
-        const source = audioContext.createMediaElementSource(audioPlayer);
-        source.connect(destination);
-        source.connect(audioContext.destination);
-        isSourceConnected = true; // Označi da je izvor povezan
-    }
-});
-
 // Funkcija za enkodovanje i slanje na Icecast server
 async function streamToIcecast() {
     const stream = destination.stream.getAudioTracks()[0];
