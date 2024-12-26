@@ -247,32 +247,28 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentSong) {
         console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
         console.log('Fetch URL:', currentSong.url);
-        fetch(currentSong.url)
-            .then((response) => {
-                console.log('Response:', response);
-                if (!response.ok) {
-                    throw new Error('Greška pri fetch-u pesme: ' + response.statusText);
-                }
-                return response.arrayBuffer();
-            })
-     .then((buffer) => {
-    console.log('Tip buffer-a:', buffer.constructor.name);  // Dodaj ovu liniju
-    console.log('Buffer pre slanja:', buffer);
-    if (buffer && buffer.byteLength > 0) {
-        socket.emit('stream', { 
-            buffer: buffer,  // Šaljemo ArrayBuffer direktno
-            name: currentSong.name 
-        });
-    
-     } else {
-                    console.error('Buffer je prazan! Proveri URL ili fajl.');
-                }
-            })
-            .catch((err) => console.error('Greška pri čitanju audio fajla:', err));
-    } else {
-        console.error('Nije pronađena trenutna pesma!'); // Log za slučaj kada pesma ne postoji
-    }
-});
+       fetch(currentSong.url)
+    .then((response) => {
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+            throw new Error('Greška pri fetch-u pesme: ' + response.statusText);
+        }
+        return response.arrayBuffer();
+    })
+    .then((buffer) => {
+        console.log('Tip buffer-a:', buffer.constructor.name);  
+        console.log('Buffer pre slanja:', buffer);
+        if (buffer && buffer.byteLength > 0) {
+            console.log('Šaljem strim sa klijenta:', buffer);
+            socket.emit('stream', { 
+                buffer: buffer,  
+                name: currentSong.name 
+            });
+        } else {
+            console.error('Buffer je prazan! Proveri URL ili fajl.');
+        }
+    })
+    .catch((err) => console.error('Greška pri čitanju audio fajla:', err));
 
 // Početno pokretanje pesme čim korisnik uđe na stranicu
 if (songs.length > 0) {
