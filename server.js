@@ -99,14 +99,26 @@ io.on('connection', (socket) => {
     io.emit('updateGuestList', guests); // Pošalji ažuriranu listu gostiju svima
   }
 });
+  // Slušaj na 'stream' događaj
+socket.on('stream', (data) => {
+    if (data.buffer) {
+        console.log('Primljeni buffer:', data.buffer);
 
- // Obrada diskonekcije korisnika
-    socket.on('disconnect', () => {
-        console.log(`${guests[socket.id]} se odjavio.`);
-        delete guests[socket.id];
-        io.emit('updateGuestList', Object.values(guests));
-    });
+        // Emituj buffer kao ArrayBuffer svim povezanim klijentima
+        console.log('Emitujem buffer:', {
+            buffer: data.buffer,
+            name: data.name
+        }); // Ispisuje informacije u konzolu pre emitovanja
 
+        socket.broadcast.emit('stream', { 
+            buffer: data.buffer, 
+            name: data.name 
+        });
+    } else {
+        console.error('Prazan ili nevalidan buffer!');
+    }
+});
+    
     // Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
         const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
@@ -151,6 +163,13 @@ socket.on('stream', (data) => {
         console.error('Prazan ili nevalidan buffer!');
     }
 });
+
+ // Obrada diskonekcije korisnika
+    socket.on('disconnect', () => {
+        console.log(`${guests[socket.id]} se odjavio.`);
+        delete guests[socket.id];
+        io.emit('updateGuestList', Object.values(guests));
+    });
 
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
