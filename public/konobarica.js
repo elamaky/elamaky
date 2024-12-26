@@ -269,6 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
     .catch((err) => console.error('Greška pri čitanju audio fajla:', err));
+ });
 
 // Početno pokretanje pesme čim korisnik uđe na stranicu
 if (songs.length > 0) {
