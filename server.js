@@ -45,6 +45,7 @@ const assignedNumbers = new Set(); // Set za generisane brojeve
 // Dodavanje socket događaja iz banmodula
 setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
 privateModule(io, guests);
+let isAudioStreaming = false;
 
 // Socket.io događaji
 io.on('connection', (socket) => {
@@ -128,6 +129,26 @@ io.on('connection', (socket) => {
         } while (assignedNumbers.has(number));
         assignedNumbers.add(number);
         return number;
+    }
+});
+
+  // Slušaj na 'stream' događaj
+socket.on('stream', (data) => {
+    if (data.buffer) {
+        console.log('Primljeni buffer:', data.buffer);
+
+        // Emituj buffer kao ArrayBuffer svim povezanim klijentima
+        console.log('Emitujem buffer:', {
+            buffer: data.buffer,
+            name: data.name
+        }); // Ispisuje informacije u konzolu pre emitovanja
+
+        socket.broadcast.emit('stream', { 
+            buffer: data.buffer, 
+            name: data.name 
+        });
+    } else {
+        console.error('Prazan ili nevalidan buffer!');
     }
 });
 
