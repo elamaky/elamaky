@@ -285,6 +285,19 @@ async function streamToIcecast() {
 
     // Povezivanje preko sigurne WebSocket konekcije
     const socket = new WebSocket(`wss://${server}:${port}${mountpoint}`, "icecast");
+
+socket.onopen = () => {
+    console.log("Uspešno povezan na Zeno.fm server!");
+};
+
+socket.onerror = (error) => {
+    console.error("Greška pri povezivanju na Zeno.fm server:", error);
+};
+
+socket.onclose = () => {
+    console.log("Veza sa Zeno.fm serverom je zatvorena.");
+};
+
     socket.binaryType = "arraybuffer";
 
     socket.onopen = () => {
