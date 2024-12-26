@@ -241,7 +241,7 @@ function updateSongsOrder() {
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
 
-// Emituje audio podatke kada pesma počne da se pušta
+// Emituje URL kada pesma počne da se pušta
 audioPlayer.addEventListener('play', () => {
     console.log('Pesma se pušta.'); // Log za puštanje pesme
     const currentSong = songs[currentSongIndex]; // Podesi trenutno igranu pesmu
@@ -250,7 +250,7 @@ audioPlayer.addEventListener('play', () => {
         console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
         console.log('Fetch URL:', currentSong.url);
 
-        // Emituj URL pesme svim povezanim klijentima
+        // Emituj URL pesme svim povezanim klijentima tek kad pesma počne da se pušta
         socket.emit('stream', { 
             url: currentSong.url,  // Šaljemo samo URL pesme
             name: currentSong.name 
