@@ -255,6 +255,15 @@ const mp3Encoder = new lamejs.Mp3Encoder(2, 44100, 128); // Stereo, 44.1kHz, 128
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const destination = audioContext.createMediaStreamDestination();
 
+// Proveri da li je AudioContext blokiran, i ako jeste, resumi ga nakon korisničkog interfejsa
+document.addEventListener('click', function() {
+    if (audioContext.state === 'suspended') {
+        audioContext.resume().then(() => {
+            console.log('AudioContext is resumed!');
+        });
+    }
+});
+
 // Priključi audio plejer na miksovanje
 let isSourceConnected = false; // Provera da li je audio izvor već povezan
 audioPlayer.addEventListener('play', () => {
