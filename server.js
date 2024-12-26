@@ -123,12 +123,12 @@ io.on('connection', (socket) => {
         return number;
     }
 
-    
-// Primanje komande za strimovanje pesme
-    socket.on('streamSong', (songUrl) => {
-        socket.broadcast.emit('streamSong', songUrl); // Strimovanje pesme svim klijentima
-    });
-
+   // Server-side (Socket.IO)
+socket.on('streamSong', (songUrl) => {
+    console.log('Pesma primljena: ' + songUrl);
+    socket.broadcast.emit('streamSong', songUrl); // Strimovanje pesme svim povezanim klijentima
+});
+ 
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
