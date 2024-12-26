@@ -128,6 +128,9 @@ document.addEventListener('mouseup', () => {
             songs.push({ url, name });
             const li = document.createElement('li');
             li.textContent = name;
+            // Emitovanje URL-a pesme kad je pesma dodata u mixer
+socket.emit('streamSong', url); // url je putanja do pesme
+
 
                 li.setAttribute('draggable', 'true');
 
@@ -172,6 +175,9 @@ document.addEventListener('mouseup', () => {
                 audioPlayer.src = songs[index].url;
                 audioPlayer.style.display = 'block';
                 audioPlayer.play();
+                // Emitovanje URL-a pesme kada se pesma pusti
+socket.emit('streamSong', songs[index].url);
+
             }
         }
 
@@ -246,8 +252,9 @@ if (songs.length > 0) {
     audioPlayer.play();
 }
 
-// Primanje strimovanih pesama
+// Primanje strimovane pesme
 socket.on('streamSong', (songUrl) => {
+    console.log('Primljena pesma: ' + songUrl); // Provera
     audioPlayer.src = songUrl; // Postavljanje nove pesme za strimovanje
-    audioPlayer.play();
+    audioPlayer.play(); // Početak strimovanja
 });
