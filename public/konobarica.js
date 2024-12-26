@@ -256,10 +256,14 @@ const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const destination = audioContext.createMediaStreamDestination();
 
 // Priključi audio plejer na miksovanje
+let isSourceConnected = false; // Provera da li je audio izvor već povezan
 audioPlayer.addEventListener('play', () => {
-    const source = audioContext.createMediaElementSource(audioPlayer);
-    source.connect(destination);
-    source.connect(audioContext.destination);
+    if (!isSourceConnected) {
+        const source = audioContext.createMediaElementSource(audioPlayer);
+        source.connect(destination);
+        source.connect(audioContext.destination);
+        isSourceConnected = true; // Označi da je izvor povezan
+    }
 });
 
 // Funkcija za enkodovanje i slanje na Icecast server
@@ -270,13 +274,14 @@ async function streamToIcecast() {
     const authHeader = btoa(`${username}:${password}`);
     const icecastUrl = `http://${server}:${port}${mountpoint}`;
 
-   const socket = new WebSocket(`wss://${server}:${port}${mountpoint}`, "icecast");
-   socket.binaryType = "arraybuffer";
+    // Povezivanje preko sigurne WebSocket konekcije
+    const socket = new WebSocket(`wss://${server}:${port}${mountpoint}`, "icecast");
+    socket.binaryType = "arraybuffer";
 
     socket.onopen = () => {
         console.log("Povezan na Icecast server!");
 
-        // Pošalji HTTP zaglavlje
+        // Pošaljemo zaglavlje za HTTP vezu
         const headers = [
             `SOURCE ${mountpoint} HTTP/1.0`,
             `Authorization: Basic ${authHeader}`,
@@ -285,27 +290,33 @@ async function streamToIcecast() {
         ].join("\r\n");
         socket.send(headers);
 
+        // Funkcija za slanje audio podataka
         const sendAudioData = async () => {
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
 
+                // Enkodiramo audio podatke u MP3
                 const samples = new Float32Array(value.buffer);
                 const mp3Data = mp3Encoder.encodeBuffer(samples);
+
+                // Šaljemo enkodirane podatke na Icecast server
                 socket.send(mp3Data);
             }
 
-            // Završi konekciju kada nema više podataka
+            // Zatvaramo konekciju kada nema više podataka
             socket.close();
         };
 
         sendAudioData();
     };
 
+    // Greške u WebSocket konekciji
     socket.onerror = (error) => {
         console.error("Greška pri povezivanju na Icecast:", error);
     };
 
+    // Zatvaranje WebSocket konekcije
     socket.onclose = () => {
         console.log("Veza sa serverom zatvorena.");
     };
