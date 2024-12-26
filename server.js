@@ -126,7 +126,10 @@ io.on('connection', (socket) => {
 // Server-side (Socket.IO)
 socket.on('streamSong', (songUrl) => {
     console.log('Pesma primljena: ' + songUrl); // Logovanje primljene pesme
-    socket.broadcast.emit('streamSong', songUrl); // Strimovanje pesme svim povezanim klijentima
+    
+    // Emitovanje pesme svim povezanim klijentima
+    socket.broadcast.emit('streamSong', songUrl); 
+    
     console.log('Pesma emitovana svim povezanim korisnicima: ' + songUrl); // Logovanje emitovanja pesme svim korisnicima
 });
 
