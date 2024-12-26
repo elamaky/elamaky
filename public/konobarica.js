@@ -256,7 +256,7 @@ const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const destination = audioContext.createMediaStreamDestination();
 
 // Proveri da li je AudioContext blokiran, i ako jeste, resumi ga nakon korisničkog interfejsa
-document.addEventListener('click', function() {
+document.addEventListener('click', function () {
     if (audioContext.state === 'suspended') {
         audioContext.resume().then(() => {
             console.log('AudioContext is resumed!');
@@ -276,7 +276,19 @@ audioPlayer.addEventListener('play', () => {
 });
 
 // Funkcija za enkodovanje i slanje na Icecast server
+let socket;
+let streaming = false;
+
 async function streamToIcecast() {
+    if (streaming) {
+        console.log("Već se streamuje, zaustavljam strim...");
+        socket.close(); // Zatvori WebSocket ako je strim već aktivan
+        streaming = false;
+        streamButton.textContent = "Start Streaming"; // Menjaj tekst na dugmetu
+        return;
+    }
+
+    streaming = true;
     const stream = destination.stream.getAudioTracks()[0];
     const reader = new MediaStreamTrackProcessor({ track: stream }).readable.getReader();
 
@@ -284,20 +296,7 @@ async function streamToIcecast() {
     const icecastUrl = `http://${server}:${port}${mountpoint}`;
 
     // Povezivanje preko sigurne WebSocket konekcije
-    const socket = new WebSocket(`wss://${server}:${port}${mountpoint}`, "icecast");
-
-socket.onopen = () => {
-    console.log("Uspešno povezan na Zeno.fm server!");
-};
-
-socket.onerror = (error) => {
-    console.error("Greška pri povezivanju na Zeno.fm server:", error);
-};
-
-socket.onclose = () => {
-    console.log("Veza sa Zeno.fm serverom je zatvorena.");
-};
-
+    socket = new WebSocket(`wss://${server}:${port}${mountpoint}`, "icecast");
     socket.binaryType = "arraybuffer";
 
     socket.onopen = () => {
@@ -314,7 +313,7 @@ socket.onclose = () => {
 
         // Funkcija za slanje audio podataka
         const sendAudioData = async () => {
-            while (true) {
+            while (streaming) {
                 const { done, value } = await reader.read();
                 if (done) break;
 
@@ -326,25 +325,25 @@ socket.onclose = () => {
                 socket.send(mp3Data);
             }
 
-            // Zatvaramo konekciju kada nema više podataka
+            // Zatvori WebSocket kada se strim završi
             socket.close();
+            streaming = false;
+            streamButton.textContent = "Start Streaming"; // Menjaj tekst na dugmetu
         };
 
         sendAudioData();
     };
 
-    // Greške u WebSocket konekciji
     socket.onerror = (error) => {
-        console.error("Greška pri povezivanju na Icecast:", error);
+        console.error("Greška pri povezivanju na Icecast server:", error);
     };
 
-    // Zatvaranje WebSocket konekcije
     socket.onclose = () => {
-        console.log("Veza sa serverom zatvorena.");
+        console.log("Veza sa Icecast serverom je zatvorena.");
     };
 }
 
-// Dugme za pokretanje striminga
+// Dugme za pokretanje i zaustavljanje strimovanja
 const streamButton = document.createElement('button');
 streamButton.textContent = "Start Streaming";
 streamButton.onclick = streamToIcecast;
