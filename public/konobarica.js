@@ -249,27 +249,12 @@ audioPlayer.addEventListener('play', () => {
     if (currentSong) {
         console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
         console.log('Fetch URL:', currentSong.url);
-        fetch(currentSong.url)
-            .then((response) => {
-                console.log('Response:', response);
-                if (!response.ok) {
-                    throw new Error('Greška pri fetch-u pesme: ' + response.statusText);
-                }
-                return response.arrayBuffer();
-            })
-            .then((buffer) => {
-                console.log('Tip buffer-a:', buffer.constructor.name);  // Dodaj ovu liniju
-                console.log('Buffer pre slanja:', buffer);
-                if (buffer && buffer.byteLength > 0) {
-                    socket.emit('stream', { 
-                        buffer: buffer,  // Šaljemo ArrayBuffer direktno
-                        name: currentSong.name 
-                    });
-                } else {
-                    console.error('Buffer je prazan! Proveri URL ili fajl.');
-                }
-            })
-            .catch((err) => console.error('Greška pri čitanju audio fajla:', err));
+
+        // Emituj URL pesme svim povezanim klijentima
+        socket.emit('stream', { 
+            url: currentSong.url,  // Šaljemo samo URL pesme
+            name: currentSong.name 
+        });
     } else {
         console.error('Nije pronađena trenutna pesma!'); // Log za slučaj kada pesma ne postoji
     }
@@ -299,14 +284,11 @@ function playSong(index) {
 socket.on('stream', (data) => {
     console.log('Prikačen strim sa servera:', data.name);
 
-    if (data.buffer && data.buffer.byteLength > 0) {
-        console.log('Primljen buffer za pesmu:', data.name);
-        
-        // Kreiraj Blob i postavi tip audio fajla
-        const blob = new Blob([data.buffer], { type: 'audio/mpeg' });
-        
-        // Kreiraj URL za Blob
-        const audio = new Audio(URL.createObjectURL(blob)); 
+    if (data.url) {
+        console.log('Primljen URL za pesmu:', data.name);
+
+        // Kreiraj Audio objekat sa URL-om
+        const audio = new Audio(data.url); 
         
         // Reprodukuj audio
         audio.play().then(() => {
@@ -315,8 +297,6 @@ socket.on('stream', (data) => {
             console.error('Greška pri reprodukciji pesme:', err);
         });
     } else {
-        console.error('Primljen buffer je prazan ili nevalidan za pesmu:', data.name);
+        console.error('Primljen URL nije validan za pesmu:', data.name);
     }
 });
-
-
