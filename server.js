@@ -123,27 +123,6 @@ io.on('connection', (socket) => {
         return number;
     }
 
-wss.on('connection', (ws) => {
-    clients.push(ws);
-
-    ws.on('message', (message) => {
-        const data = JSON.parse(message);
-        // Emituj poruku svim klijentima ukoliko je ‘action’ play
-        if (data.action === 'play') {
-            clients.forEach((client) => {
-                if (client !== ws && client.readyState === WebSocket.OPEN) {
-                    client.send(message);
-                }
-            });
-        }
-    });
-
-    ws.on('close', () => {
-        clients = clients.filter(client => client !== ws);
-    });
-});
-
-
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
