@@ -259,7 +259,8 @@ if (songUrl) {
     audioPlayer.src = songUrl;
     audioPlayer.play();
 }
-// Dodaj logove kako bi proverio šta se dešava
+
+// Klijent osluškuje 'streamSong' događaj
 socket.on('streamSong', (songUrl) => {
     console.log('Primljena pesma: ' + songUrl);  // Logovanje primljene pesme
     if (songUrl) {
