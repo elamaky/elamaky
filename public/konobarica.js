@@ -241,8 +241,8 @@ function updateSongsOrder() {
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
 
-   // Emituje audio podatke kada pesma počne da se pušta
- audioPlayer.addEventListener('play', () => {
+// Emituje audio podatke kada pesma počne da se pušta
+audioPlayer.addEventListener('play', () => {
     console.log('Pesma se pušta.'); // Log za puštanje pesme
     const currentSong = songs[currentSongIndex]; // Podesi trenutno igranu pesmu
 
@@ -257,16 +257,15 @@ function updateSongsOrder() {
                 }
                 return response.arrayBuffer();
             })
-     .then((buffer) => {
-    console.log('Tip buffer-a:', buffer.constructor.name);  // Dodaj ovu liniju
-    console.log('Buffer pre slanja:', buffer);
-    if (buffer && buffer.byteLength > 0) {
-        socket.emit('stream', { 
-            buffer: buffer,  // Šaljemo ArrayBuffer direktno
-            name: currentSong.name 
-        });
-    
-     } else {
+            .then((buffer) => {
+                console.log('Tip buffer-a:', buffer.constructor.name);  // Dodaj ovu liniju
+                console.log('Buffer pre slanja:', buffer);
+                if (buffer && buffer.byteLength > 0) {
+                    socket.emit('stream', { 
+                        buffer: buffer,  // Šaljemo ArrayBuffer direktno
+                        name: currentSong.name 
+                    });
+                } else {
                     console.error('Buffer je prazan! Proveri URL ili fajl.');
                 }
             })
@@ -284,41 +283,31 @@ if (songs.length > 0) {
     console.warn('Lista pesama je prazna!'); // Log za prazan niz pesama
 }
 
-
-
-  // Funkcija za pokretanje pesme na osnovu indeksa
-    function playSong(index) {
-        if (index >= 0 && index < songs.length) {
-            currentSongIndex = index;
-            console.log('Puštam pesmu sa indeksom:', index, 'Ime:', songs[index].name); // Log za validan indeks
-            audioPlayer.src = songs[index].url; // Postavljamo URL pesme
-            audioPlayer.play(); // Pokrećemo reprodukciju pesme
-        } else {
-            console.error('Indeks pesme nije validan:', index); // Log za nevalidan indeks
-        }
-    });
+// Funkcija za pokretanje pesme na osnovu indeksa
+function playSong(index) {
+    if (index >= 0 && index < songs.length) {
+        currentSongIndex = index;
+        console.log('Puštam pesmu sa indeksom:', index, 'Ime:', songs[index].name); // Log za validan indeks
+        audioPlayer.src = songs[index].url; // Postavljamo URL pesme
+        audioPlayer.play(); // Pokrećemo reprodukciju pesme
+    } else {
+        console.error('Indeks pesme nije validan:', index); // Log za nevalidan indeks
+    }
+}
 
 // Kada klijent primi stream sa servera
 socket.on('stream', (data) => {
     console.log('Prikačen strim sa servera:', data.name);
 
-    // Kreiraj AudioContext za dekodiranje i reprodukciju audio podataka
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
     if (data.buffer && data.buffer.byteLength > 0) {
-        console.log('Dekodiram audio podatke za pesmu:', data.name);
-
-        audioContext.decodeAudioData(data.buffer, (decodedData) => {
-            console.log('Audio podaci dekodirani uspešno za pesmu:', data.name);
-
-            const source = audioContext.createBufferSource();
-            source.buffer = decodedData; // Postavi dekodirane podatke
-            source.connect(audioContext.destination); // Poveži na zvučnike
-            source.start(); // Pokreni reprodukciju
-            console.log('Pesma se reprodukuje:', data.name);
-        }, (error) => {
-            console.error('Greška pri dekodiranju audio podataka za pesmu:', data.name, error);
-        });
+        console.log('Primljen buffer za pesmu:', data.name);
+        
+        // Kreiraj objekt za kreiranje audio playera
+        const audio = new Audio();
+        audio.src = URL.createObjectURL(new Blob([data.buffer]));
+        audio.play();
+        
+        console.log('Pesma se reprodukuje:', data.name);
     } else {
         console.error('Primljen buffer je prazan ili nevalidan za pesmu:', data.name);
     }
