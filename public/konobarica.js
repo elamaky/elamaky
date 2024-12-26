@@ -124,29 +124,53 @@ document.addEventListener('mouseup', () => {
             fileInput.value = '';
         });
 
-        function addSong(url, name) {
-            songs.push({ url, name });
-            const li = document.createElement('li');
-            li.textContent = name;
-            // Emitovanje URL-a pesme kad je pesma dodata u mixer
-socket.emit('streamSong', url); // url je putanja do pesme
+       function addSong(url, name) {
+    // Dodavanje pesme u listu
+    songs.push({ url, name });
+    const li = document.createElement('li');
+    li.textContent = name;
 
+    // Emitovanje URL-a pesme kada je pesma dodata u mixer
+    socket.emit('streamSong', url); // Emitovanje URL-a nove pesme
 
-                li.setAttribute('draggable', 'true');
+    // Postavljanje trenutnog indeksa na poslednju pesmu
+    currentSongIndex = songs.length - 1;
 
+    li.setAttribute('draggable', 'true');
 
-            li.addEventListener('click', (e) => {
-                if (e.ctrlKey || e.metaKey) {
-                    li.classList.toggle('selected');
-                } else {
-                    const selectedSongs = document.querySelectorAll('.selected');
-                    selectedSongs.forEach(song => song.classList.remove('selected'));
-                    li.classList.add('selected');
-                }
-            });
-
-            songList.appendChild(li); // Dodajemo pesmu u listu
+    li.addEventListener('click', (e) => {
+        if (e.ctrlKey || e.metaKey) {
+            li.classList.toggle('selected');
+        } else {
+            const selectedSongs = document.querySelectorAll('.selected');
+            selectedSongs.forEach(song => song.classList.remove('selected'));
+            li.classList.add('selected');
         }
+    });
+
+    songList.appendChild(li); // Dodavanje pesme u listu
+
+    // Ako su pesme prisutne, automatski pusti poslednju pesmu
+    if (songs.length > 0) {
+        audioPlayer.src = songs[currentSongIndex].url;
+        audioPlayer.play();
+    }
+}
+
+// Funkcija za automatsko ažuriranje trenutne pesme nakon što je završena
+audioPlayer.addEventListener('ended', () => {
+    // Ako postoji sledeća pesma, postavi je kao trenutnu i puštaj je
+    if (currentSongIndex < songs.length - 1) {
+        currentSongIndex++; // Prebaci na sledeću pesmu
+        audioPlayer.src = songs[currentSongIndex].url;
+        audioPlayer.play();
+    } else {
+        currentSongIndex = 0; // Ako je poslednja pesma, vrati se na prvu
+        audioPlayer.src = songs[currentSongIndex].url;
+        audioPlayer.play();
+    }
+});
+
 
         deleteSelectedButton.addEventListener('click', () => {
             const selectedSongs = document.querySelectorAll('.selected');
