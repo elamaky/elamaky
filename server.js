@@ -125,13 +125,13 @@ io.on('connection', (socket) => {
 
 // Server-side (Socket.IO)
 socket.on('streamSong', (songUrl) => {
-    console.log('Pesma primljena: ' + songUrl); // Logovanje primljene pesme
-    
-    // Emitovanje pesme svim povezanim klijentima
-    socket.broadcast.emit('streamSong', songUrl); 
-    
-    console.log('Pesma emitovana svim povezanim korisnicima: ' + songUrl); // Logovanje emitovanja pesme svim korisnicima
+    console.log('Pesma primljena i spremna za emitovanje: ' + songUrl);
+
+    // Emitovanje pesme samo kad je korisnik pokrene
+    socket.broadcast.emit('streamSong', songUrl);
+    console.log('Pesma emitovana svim povezanim korisnicima: ' + songUrl);
 });
+
 
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
