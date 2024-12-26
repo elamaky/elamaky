@@ -236,18 +236,7 @@ function updateSongsOrder() {
 }
 
 // KODOVI ZA STRIMOVANJE 
-const mixerButton = document.getElementById('pesme');
-        const audioPlayer = document.getElementById('audioPlayer');
-        let songs = [];
-        let currentSongIndex = 0;
-
-        // Kada korisnik doda pesmu u mixer
-        mixerButton.addEventListener('click', () => {
-            // Simulacija dodavanja pesme sa URL-om
-            const songUrl = 'path_to_your_song.mp3'; // Putanja do pesme koju želiš da dodaš
-            songs.push(songUrl);
-
-            // Slanje URL-a pesme na server
+// Slanje URL-a pesme na server
             socket.emit('streamSong', songUrl);
 
             // Automatski počni strimovanje
