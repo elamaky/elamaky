@@ -241,62 +241,78 @@ function updateSongsOrder() {
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
 
-// Emituje URL kada pesma počne da se pušta
+// Icecast server podaci
+const server = "link.zeno.fm";
+const port = 80;
+const mountpoint = "/krdfduyswxhtv";
+const username = "source";
+const password = "hoRXuevt";
+
+// LAME MP3 enkoder
+const mp3Encoder = new lamejs.Mp3Encoder(2, 44100, 128); // Stereo, 44.1kHz, 128kbps
+
+// Kreiraj audio kontekst
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const destination = audioContext.createMediaStreamDestination();
+
+// Priključi audio plejer na miksovanje
 audioPlayer.addEventListener('play', () => {
-    console.log('Pesma se pušta.'); // Log za puštanje pesme
-    const currentSong = songs[currentSongIndex]; // Podesi trenutno igranu pesmu
-
-    if (currentSong) {
-        console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
-        console.log('Fetch URL:', currentSong.url);
-
-        // Emituj URL pesme svim povezanim klijentima tek kad pesma počne da se pušta
-        socket.emit('stream', { 
-            url: currentSong.url,  // Šaljemo samo URL pesme
-            name: currentSong.name 
-        });
-    } else {
-        console.error('Nije pronađena trenutna pesma!'); // Log za slučaj kada pesma ne postoji
-    }
+    const source = audioContext.createMediaElementSource(audioPlayer);
+    source.connect(destination);
+    source.connect(audioContext.destination);
 });
 
-// Početno pokretanje pesme čim korisnik uđe na stranicu
-if (songs.length > 0) {
-    console.log('Automatsko puštanje prve pesme:', songs[0].name); // Log za automatsko puštanje
-    playSong(0); // Automatski pustimo prvu pesmu
-} else {
-    console.warn('Lista pesama je prazna!'); // Log za prazan niz pesama
+// Funkcija za enkodovanje i slanje na Icecast server
+async function streamToIcecast() {
+    const stream = destination.stream.getAudioTracks()[0];
+    const reader = new MediaStreamTrackProcessor({ track: stream }).readable.getReader();
+
+    const authHeader = btoa(`${username}:${password}`);
+    const icecastUrl = `http://${server}:${port}${mountpoint}`;
+
+    const socket = new WebSocket(`ws://${server}:${port}${mountpoint}`, "icecast");
+    socket.binaryType = "arraybuffer";
+
+    socket.onopen = () => {
+        console.log("Povezan na Icecast server!");
+
+        // Pošalji HTTP zaglavlje
+        const headers = [
+            `SOURCE ${mountpoint} HTTP/1.0`,
+            `Authorization: Basic ${authHeader}`,
+            `Content-Type: audio/mpeg`,
+            `\r\n`,
+        ].join("\r\n");
+        socket.send(headers);
+
+        const sendAudioData = async () => {
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const samples = new Float32Array(value.buffer);
+                const mp3Data = mp3Encoder.encodeBuffer(samples);
+                socket.send(mp3Data);
+            }
+
+            // Završi konekciju kada nema više podataka
+            socket.close();
+        };
+
+        sendAudioData();
+    };
+
+    socket.onerror = (error) => {
+        console.error("Greška pri povezivanju na Icecast:", error);
+    };
+
+    socket.onclose = () => {
+        console.log("Veza sa serverom zatvorena.");
+    };
 }
 
-// Funkcija za pokretanje pesme na osnovu indeksa
-function playSong(index) {
-    if (index >= 0 && index < songs.length) {
-        currentSongIndex = index;
-        console.log('Puštam pesmu sa indeksom:', index, 'Ime:', songs[index].name); // Log za validan indeks
-        audioPlayer.src = songs[index].url; // Postavljamo URL pesme
-        audioPlayer.play(); // Pokrećemo reprodukciju pesme
-    } else {
-        console.error('Indeks pesme nije validan:', index); // Log za nevalidan indeks
-    }
-}
-
-// Kada klijent primi stream sa servera
-socket.on('stream', (data) => {
-    console.log('Prikačen strim sa servera:', data.name);
-
-    if (data.url) {
-        console.log('Primljen URL za pesmu:', data.name);
-
-        // Kreiraj Audio objekat sa URL-om
-        const audio = new Audio(data.url); 
-        
-        // Reprodukuj audio
-        audio.play().then(() => {
-            console.log('Pesma se reprodukuje:', data.name);
-        }).catch((err) => {
-            console.error('Greška pri reprodukciji pesme:', err);
-        });
-    } else {
-        console.error('Primljen URL nije validan za pesmu:', data.name);
-    }
-});
+// Dugme za pokretanje striminga
+const streamButton = document.createElement('button');
+streamButton.textContent = "Start Streaming";
+streamButton.onclick = streamToIcecast;
+mixer.appendChild(streamButton);
