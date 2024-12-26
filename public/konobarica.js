@@ -235,19 +235,19 @@ function updateSongsOrder() {
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
 
-// KODOVI ZA STRIMOVANJE 
+// KODOVI ZA STRIMOVANJE
+
 // Slanje URL-a pesme na server
-            socket.emit('streamSong', songUrl);
+socket.emit('streamSong', songUrl);
 
-            // Automatski počni strimovanje
-            if (songs.length > 0) {
-                audioPlayer.src = songs[currentSongIndex];
-                audioPlayer.play();
-            
-        });
+// Automatski počni strimovanje
+if (songs.length > 0) {
+    audioPlayer.src = songs[currentSongIndex];
+    audioPlayer.play();
+}
 
-        // Primanje strimovanih pesama
-        socket.on('streamSong', (songUrl) => {
-            audioPlayer.src = songUrl; // Postavljanje nove pesme za strimovanje
-            audioPlayer.play();
-        });
+// Primanje strimovanih pesama
+socket.on('streamSong', (songUrl) => {
+    audioPlayer.src = songUrl; // Postavljanje nove pesme za strimovanje
+    audioPlayer.play();
+});
