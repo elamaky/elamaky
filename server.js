@@ -123,17 +123,32 @@ io.on('connection', (socket) => {
         return number;
     }
 
- socket.on('stream', (data) => {
-        console.log('Primljen stream:', data); // Ovaj log bi trebalo da se pojavi
-        if (data && data.buffer) {
-            socket.broadcast.emit('stream', { 
-                buffer: data.buffer, 
-                name: data.name 
-            });
-        } else {
-            console.error('Prazan ili nevalidan buffer!');
-        }
-    });
+socket.on('stream', (data) => {
+    console.log('Primljen stream:', data); // Ovaj log bi trebalo da se pojavi
+    if (data) {
+        console.log('Podaci primljeni:', data);
+    } else {
+        console.error('Nema podataka!'); // Ako podaci nisu poslati
+    }
+
+    if (data && data.buffer) {
+        console.log('Buffer pronađen:', data.buffer);
+        
+        // Emituj buffer svim povezanim korisnicima
+        console.log('Emitujem stream sa bufferom:', {
+            buffer: data.buffer,
+            name: data.name
+        });
+        
+        socket.broadcast.emit('stream', { 
+            buffer: data.buffer, 
+            name: data.name 
+        });
+    } else {
+        console.error('Prazan ili nevalidan buffer!');
+    }
+});
+
 
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
