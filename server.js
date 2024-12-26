@@ -134,9 +134,8 @@ io.on('connection', (socket) => {
             console.error('Prazan ili nevalidan buffer!');
         }
     });
-});
 
- // Obrada diskonekcije korisnika
+// Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
