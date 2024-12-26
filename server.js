@@ -123,13 +123,24 @@ io.on('connection', (socket) => {
         return number;
     }
 
-// Server-side (Socket.IO)
-socket.on('streamSong', (songUrl) => {
-    console.log('Pesma primljena i spremna za emitovanje: ' + songUrl);
+wss.on('connection', (ws) => {
+    clients.push(ws);
 
-    // Emitovanje pesme samo kad je korisnik pokrene
-    socket.broadcast.emit('streamSong', songUrl);
-    console.log('Pesma emitovana svim povezanim korisnicima: ' + songUrl);
+    ws.on('message', (message) => {
+        const data = JSON.parse(message);
+        // Emituj poruku svim klijentima ukoliko je ‘action’ play
+        if (data.action === 'play') {
+            clients.forEach((client) => {
+                if (client !== ws && client.readyState === WebSocket.OPEN) {
+                    client.send(message);
+                }
+            });
+        }
+    });
+
+    ws.on('close', () => {
+        clients = clients.filter(client => client !== ws);
+    });
 });
 
 
