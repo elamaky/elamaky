@@ -242,13 +242,12 @@ function updateSongsOrder() {
 }
 
 // KODOVI ZA STRIMOVANJE
-
 // Slanje URL-a pesme na server
-socket.emit('streamSong', songUrl);
+socket.emit('streamSong', songs[currentSongIndex].url); // Emitovanje URL-a trenutne pesme
 
 // Automatski počni strimovanje
 if (songs.length > 0) {
-    audioPlayer.src = songs[currentSongIndex];
+    audioPlayer.src = songs[currentSongIndex].url; // Ispravka: koristimo URL iz niza
     audioPlayer.play();
 }
 
@@ -258,3 +257,5 @@ socket.on('streamSong', (songUrl) => {
     audioPlayer.src = songUrl; // Postavljanje nove pesme za strimovanje
     audioPlayer.play(); // Početak strimovanja
 });
+
+
