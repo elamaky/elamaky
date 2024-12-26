@@ -123,13 +123,14 @@ io.on('connection', (socket) => {
         return number;
     }
 
-   // Server-side (Socket.IO)
+// Server-side (Socket.IO)
 socket.on('streamSong', (songUrl) => {
-    console.log('Pesma primljena: ' + songUrl);
+    console.log('Pesma primljena: ' + songUrl); // Logovanje primljene pesme
     socket.broadcast.emit('streamSong', songUrl); // Strimovanje pesme svim povezanim klijentima
+    console.log('Pesma emitovana svim povezanim korisnicima: ' + songUrl); // Logovanje emitovanja pesme svim korisnicima
 });
- 
-// Obrada diskonekcije korisnika
+
+ // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
