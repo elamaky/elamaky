@@ -149,6 +149,7 @@ io.on('connection', (socket) => {
         delete guests[socket.id];
         io.emit('updateGuestList', Object.values(guests));
     });
+     });
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
