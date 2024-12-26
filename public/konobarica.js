@@ -124,29 +124,26 @@ document.addEventListener('mouseup', () => {
             fileInput.value = '';
         });
 
-        function addSong(url, name) {
-            songs.push({ url, name });
-            const li = document.createElement('li');
-            li.textContent = name;
-            // Emitovanje URL-a pesme kad je pesma dodata u mixer
-socket.emit('streamSong', url); // url je putanja do pesme
-
-
-                li.setAttribute('draggable', 'true');
-
-
-            li.addEventListener('click', (e) => {
-                if (e.ctrlKey || e.metaKey) {
-                    li.classList.toggle('selected');
-                } else {
-                    const selectedSongs = document.querySelectorAll('.selected');
-                    selectedSongs.forEach(song => song.classList.remove('selected'));
-                    li.classList.add('selected');
-                }
-            });
-
-            songList.appendChild(li); // Dodajemo pesmu u listu
+        // Emitovanje URL-a pesme kada se pesma doda u mixer
+function addSong(url, name) {
+    songs.push({ url, name });
+    const li = document.createElement('li');
+    li.textContent = name;
+    
+    li.setAttribute('draggable', 'true');
+    
+    li.addEventListener('click', (e) => {
+        if (e.ctrlKey || e.metaKey) {
+            li.classList.toggle('selected');
+        } else {
+            const selectedSongs = document.querySelectorAll('.selected');
+            selectedSongs.forEach(song => song.classList.remove('selected'));
+            li.classList.add('selected');
         }
+    });
+
+    songList.appendChild(li); // Dodajemo pesmu u listu
+};
 
         deleteSelectedButton.addEventListener('click', () => {
             const selectedSongs = document.querySelectorAll('.selected');
@@ -169,19 +166,29 @@ socket.emit('streamSong', url); // url je putanja do pesme
             }
         });
 
-        function playSong(index) {
-            if (index >= 0 && index < songs.length) {
-                currentSongIndex = index;
-                audioPlayer.src = songs[index].url;
-                audioPlayer.style.display = 'block';
-                audioPlayer.play();
-                // Emitovanje URL-a pesme kada se pesma pusti
-socket.emit('streamSong', songs[index].url);
+       // Emitovanje URL-a pesme kada se pesma pusti
+function playSong(index) {
+    if (index >= 0 && index < songs.length) {
+        currentSongIndex = index;
+        audioPlayer.src = songs[index].url;
+        audioPlayer.style.display = 'block';
+        audioPlayer.play();
+        
+        // Emitovanje pesme putem WebSocket veze
+        socket.send(JSON.stringify({ action: 'play', url: songs[index].url }));
+    }
+}
 
-            }
-        }
-
-     audioPlayer.addEventListener('ended', () => {
+// Kada klijent primi poruku, pristupiće je
+socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if (data.action === 'play') {
+        // Reprodukujemo pesmu na klijentu
+        const audio = new Audio(data.url);
+        audio.play();
+    }
+};
+ audioPlayer.addEventListener('ended', () => {
     // Izbriši trenutnu pesmu
     songs.splice(currentSongIndex, 1);
     songList.removeChild(songList.children[currentSongIndex]);
@@ -240,84 +247,3 @@ function updateSongsOrder() {
 
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
-
-// Icecast server podaci
-const server = "link.zeno.fm";
-const port = 80;
-const mountpoint = "/krdfduyswxhtv";
-const username = "source";
-const password = "hoRXuevt";
-
-// LAME MP3 enkoder
-const mp3Encoder = new lamejs.Mp3Encoder(2, 44100, 128); // Stereo, 44.1kHz, 128kbps
-
-// Kreiraj audio kontekst
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-const destination = audioContext.createMediaStreamDestination();
-
-// Proveri da li je AudioContext blokiran, i ako jeste, resumi ga nakon korisničkog interfejsa
-document.addEventListener('click', function() {
-    if (audioContext.state === 'suspended') {
-        audioContext.resume().then(() => {
-            console.log('AudioContext is resumed!');
-        });
-    }
-});
-
-// Funkcija za enkodovanje i slanje na Icecast server
-async function streamToIcecast() {
-    const stream = destination.stream.getAudioTracks()[0];
-    const reader = new MediaStreamTrackProcessor({ track: stream }).readable.getReader();
-
-    const authHeader = btoa(`${username}:${password}`);
-    const icecastUrl = `http://${server}:${port}${mountpoint}`;
-
-    // Povezivanje preko HTTP
-    const socket = new WebSocket(`ws://${server}:${port}`, "icecast");
-
-    socket.onopen = () => {
-        console.log("Uspešno povezan na Zeno.fm server!");
-
-        // Pošaljemo zaglavlje za HTTP vezu
-        const headers = [
-            `SOURCE ${mountpoint} HTTP/1.0`,
-            `Authorization: Basic ${authHeader}`,
-            `Content-Type: audio/mpeg`,
-            `\r\n`,
-        ].join("\r\n");
-        socket.send(headers);
-
-        // Funkcija za slanje audio podataka
-        const sendAudioData = async () => {
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-
-                // Enkodiramo audio podatke u MP3
-                const samples = new Float32Array(value.buffer);
-                const mp3Data = mp3Encoder.encodeBuffer(samples);
-
-                // Šaljemo enkodirane podatke na Icecast server
-                socket.send(mp3Data);
-            }
-
-            // Zatvaramo konekciju kada nema više podataka
-            socket.close();
-        };
-
-        sendAudioData();
-    };
-
-    socket.onerror = (error) => {
-        console.error("Greška pri povezivanju na Zeno.fm server:", error);
-    };
-
-    socket.onclose = () => {
-        console.log("Veza sa Zeno.fm serverom je zatvorena.");
-    };
-}
-
-// Dugme za pokretanje striminga
-const streamButton = document.createElement('button');
-streamButton.textContent = "Start Streaming";
-streamButton.onclick = streamToIcecast;
