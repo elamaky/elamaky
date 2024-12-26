@@ -250,14 +250,15 @@ if (songUrl) {
     console.log('Emituje pesmu: ' + songUrl);  // Logovanje URL-a koji se šalje
     socket.emit('streamSong', songUrl);
     
-    // Automatski počni strimovanje
-    console.log('Pocinjem strimovanje pesme sa indeksom: ' + currentSongIndex);  // Logovanje trenutne pesme
+   // Definisanje songUrl pre upotrebe
+let songUrl = songs[currentSongIndex] ? songs[currentSongIndex].url : null;  // Proveriti da li postoji pesma sa trenutnim indeksom
+
+// Ako pesma postoji, emitujte je i počnite strimovanje
+if (songUrl) {
+    socket.emit('streamSong', songUrl);
     audioPlayer.src = songUrl;
     audioPlayer.play();
-} else {
-    console.log('Nema pesme sa trenutnim indeksom.');
 }
-
 // Primanje strimovane pesme
 socket.on('streamSong', (songUrl) => {
     console.log('Primljena pesma: ' + songUrl);  // Logovanje URL-a koji je primljen
