@@ -70,8 +70,8 @@ function decreaseFontSize() {
 } 
 
 //   MIXER SCRIPT IZ MIXER HTML DODAT OVDE
- const mixer = document.getElementById("mixer");
-const mixerButton = document.getElementById('mixer');
+const mixerButton = document.getElementById('pesme');
+const mixer = document.getElementById('mixer');
         const audioPlayer = document.getElementById('audioPlayer');
         const songList = document.getElementById('songList');
         const fileInput = document.getElementById('fileInput');
@@ -83,10 +83,11 @@ const mixerButton = document.getElementById('mixer');
         let currentSongIndex = 0;
 
 mixerButton.addEventListener('click', function() {
+    // Ako je mixer skriven, prikaži ga, inače sakrij
     if (mixer.style.display === 'none' || mixer.style.display === '') {
-        mixer.style.display = 'block';  // Otvara mixer
+        mixer.style.display = 'block';  // Prikazuje mixer
     } else {
-        mixer.style.display = 'none';  // Sakriva mixer
+        mixer.style.display = 'none';   // Sakriva mixer
     }
 });
 
