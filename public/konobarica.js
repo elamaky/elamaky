@@ -266,6 +266,9 @@ document.addEventListener('click', function() {
 
 // Priključi audio plejer na miksovanje
 let isSourceConnected = false; // Provera da li je audio izvor već povezan
+const audioPlayer = document.createElement('audio'); // Dodajemo audio player
+audioPlayer.src = 'your-audio-file.mp3'; // Ovde postavi izvor audio fajla
+
 audioPlayer.addEventListener('play', () => {
     if (!isSourceConnected) {
         const source = audioContext.createMediaElementSource(audioPlayer);
@@ -283,25 +286,11 @@ async function streamToIcecast() {
     const authHeader = btoa(`${username}:${password}`);
     const icecastUrl = `http://${server}:${port}${mountpoint}`;
 
-    // Povezivanje preko sigurne WebSocket konekcije
-    const socket = new WebSocket(`wss://${server}:${port}${mountpoint}`, "icecast");
-
-socket.onopen = () => {
-    console.log("Uspešno povezan na Zeno.fm server!");
-};
-
-socket.onerror = (error) => {
-    console.error("Greška pri povezivanju na Zeno.fm server:", error);
-};
-
-socket.onclose = () => {
-    console.log("Veza sa Zeno.fm serverom je zatvorena.");
-};
-
-    socket.binaryType = "arraybuffer";
+    // Povezivanje preko HTTP
+    const socket = new WebSocket(`ws://${server}:${port}`, "icecast");
 
     socket.onopen = () => {
-        console.log("Povezan na Icecast server!");
+        console.log("Uspešno povezan na Zeno.fm server!");
 
         // Pošaljemo zaglavlje za HTTP vezu
         const headers = [
@@ -333,14 +322,12 @@ socket.onclose = () => {
         sendAudioData();
     };
 
-    // Greške u WebSocket konekciji
     socket.onerror = (error) => {
-        console.error("Greška pri povezivanju na Icecast:", error);
+        console.error("Greška pri povezivanju na Zeno.fm server:", error);
     };
 
-    // Zatvaranje WebSocket konekcije
     socket.onclose = () => {
-        console.log("Veza sa serverom zatvorena.");
+        console.log("Veza sa Zeno.fm serverom je zatvorena.");
     };
 }
 
@@ -348,4 +335,8 @@ socket.onclose = () => {
 const streamButton = document.createElement('button');
 streamButton.textContent = "Start Streaming";
 streamButton.onclick = streamToIcecast;
+
+// Prikazivanje dugmeta na stranici
+const mixer = document.createElement('div');
 mixer.appendChild(streamButton);
+document.body.appendChild(mixer);
