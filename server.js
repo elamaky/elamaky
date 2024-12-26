@@ -123,27 +123,21 @@ io.on('connection', (socket) => {
         return number;
     }
 
-    // Slušaj na 'stream' događaj
-    socket.on('stream', (data) => {
-        if (data.buffer) {
-            console.log('Primljeni buffer:', data.buffer);
+   socket.on('startStream', (data) => {
+    if (data && data.buffer) {
+        console.log('Primljeni buffer:', data.buffer);
 
-            // Emituj buffer kao ArrayBuffer svim povezanim klijentima
-            console.log('Emitujem buffer:', {
-                buffer: data.buffer,
-                name: data.name
-            });
+        // Emituj buffer svim povezanim klijentima
+        socket.broadcast.emit('stream', { 
+            buffer: data.buffer, 
+            name: data.name 
+        });
+    } else {
+        console.error('Prazan ili nevalidan buffer!');
+    }
+});
 
-            socket.broadcast.emit('stream', { 
-                buffer: data.buffer, 
-                name: data.name 
-            });
-        } else {
-            console.error('Prazan ili nevalidan buffer!');
-        }
-    });
-
-    // Obrada diskonekcije korisnika
+ // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
