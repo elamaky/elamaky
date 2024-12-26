@@ -302,9 +302,10 @@ socket.on('stream', (data) => {
     if (data.buffer && data.buffer.byteLength > 0) {
         console.log('Primljen buffer za pesmu:', data.name);
         
-        // Kreiraj objekt za kreiranje audio playera
+        // Kreiraj URL za blob
         const audio = new Audio();
-        audio.src = URL.createObjectURL(new Blob([data.buffer]));
+        const blob = new Blob([data.buffer], { type: 'audio/mpeg' });  // Postavi tip audio fajla
+        audio.src = URL.createObjectURL(blob);  // Kreiraj URL za blob
         audio.play();
         
         console.log('Pesma se reprodukuje:', data.name);
@@ -312,3 +313,4 @@ socket.on('stream', (data) => {
         console.error('Primljen buffer je prazan ili nevalidan za pesmu:', data.name);
     }
 });
+
