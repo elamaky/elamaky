@@ -242,31 +242,27 @@ function updateSongsOrder() {
 }
 
 // KODOVI ZA STRIMOVANJE
-// Definisanje songUrl pre upotrebe
-let songUrl = songs[currentSongIndex] ? songs[currentSongIndex].url : null;  // Proveriti da li postoji pesma sa trenutnim indeksom
+// Proveri da li postoje pesme u listi pre emitovanja
+if (songs.length > 0 && currentSongIndex < songs.length) {
+    let songUrl = songs[currentSongIndex].url;  // Dobijanje URL-a trenutne pesme
 
-// Ako pesma postoji, emitujte je
-if (songUrl) {
-    console.log('Emituje pesmu: ' + songUrl);  // Logovanje URL-a koji se šalje
-    socket.emit('streamSong', songUrl);
-    
-   // Definisanje songUrl pre upotrebe
-let songUrl = songs[currentSongIndex] ? songs[currentSongIndex].url : null;  // Proveriti da li postoji pesma sa trenutnim indeksom
+    console.log('Emituje pesmu: ' + songUrl);  // Logovanje URL-a pesme
+    socket.emit('streamSong', songUrl);  // Emitovanje pesme serveru
 
-// Ako pesma postoji, emitujte je i počnite strimovanje
-if (songUrl) {
-    socket.emit('streamSong', songUrl);
+    // Postavljanje i puštanje pesme na klijentu
     audioPlayer.src = songUrl;
     audioPlayer.play();
+} else {
+    console.log('Greška: Nema dostupnih pesama ili trenutni indeks nije validan.');
 }
 
-// Klijent osluškuje 'streamSong' događaj
+// Klijent osluškuje događaj 'streamSong' i preuzima pesmu
 socket.on('streamSong', (songUrl) => {
     console.log('Primljena pesma: ' + songUrl);  // Logovanje primljene pesme
     if (songUrl) {
         console.log('Postavljanje nove pesme na audioPlayer: ' + songUrl);
         audioPlayer.src = songUrl;  // Postavljanje URL-a
-        audioPlayer.play();  // Početak strimovanja
+        audioPlayer.play();  // Početak reprodukcije
     } else {
         console.log('Greška: URL pesme nije validan!');
     }
