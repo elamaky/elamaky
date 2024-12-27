@@ -70,7 +70,8 @@ function decreaseFontSize() {
 } 
 
 //   MIXER SCRIPT IZ MIXER HTML DODAT OVDE
-const mixer = document.getElementById("mixer");
+const mixerButton = document.getElementById('pesme');
+const mixer = document.getElementById('mixer');
         const audioPlayer = document.getElementById('audioPlayer');
         const songList = document.getElementById('songList');
         const fileInput = document.getElementById('fileInput');
@@ -80,6 +81,16 @@ const mixer = document.getElementById("mixer");
         const closeButton = document.getElementById('closeButton');
         let songs = [];
         let currentSongIndex = 0;
+
+mixerButton.addEventListener('click', function() {
+    // Ako je mixer skriven, prikaži ga, inače sakrij
+    if (mixer.style.display === 'none' || mixer.style.display === '') {
+        mixer.style.display = 'block';  // Prikazuje mixer
+    } else {
+        mixer.style.display = 'none';   // Sakriva mixer
+    }
+});
+
 
         let isDragging = false;
 let offsetX, offsetY;
@@ -117,6 +128,9 @@ document.addEventListener('mouseup', () => {
             songs.push({ url, name });
             const li = document.createElement('li');
             li.textContent = name;
+            // Emitovanje URL-a pesme kad je pesma dodata u mixer
+socket.emit('streamSong', url); // url je putanja do pesme
+
 
                 li.setAttribute('draggable', 'true');
 
@@ -155,39 +169,17 @@ document.addEventListener('mouseup', () => {
             }
         });
 
-       function playSong(index) {
-    if (index >= 0 && index < songs.length) {
-        currentSongIndex = index;
-        audioPlayer.src = songs[index].url;
-        audioPlayer.style.display = 'block';
-        audioPlayer.play();
+        function playSong(index) {
+            if (index >= 0 && index < songs.length) {
+                currentSongIndex = index;
+                audioPlayer.src = songs[index].url;
+                audioPlayer.style.display = 'block';
+                audioPlayer.play();
+                // Emitovanje URL-a pesme kada se pesma pusti
+socket.emit('streamSong', songs[index].url);
 
-        const audioContext = new AudioContext();
-        const source = audioContext.createMediaElementSource(audioPlayer);
-        const processor = audioContext.createScriptProcessor(4096, 1, 1);
-
-        source.connect(processor);
-        processor.connect(audioContext.destination);
-
-        processor.onaudioprocess = (event) => {
-            const audioData = event.inputBuffer.getChannelData(0); // Uhvati audio podatke
-            socket.emit('audio-stream', audioData.buffer); // Pošalji ih serveru
-        };
-    }
-}
-
-// Reprodukuj primljeni audio od servera
-const audioContext = new AudioContext();
-const speaker = audioContext.createScriptProcessor(4096, 1, 1);
-
-speaker.connect(audioContext.destination);
-
-socket.on('audio-stream', (chunk) => {
-    const audioBuffer = new Float32Array(chunk);
-    speaker.onaudioprocess = (event) => {
-        event.outputBuffer.getChannelData(0).set(audioBuffer);
-    };
-});
+            }
+        }
 
      audioPlayer.addEventListener('ended', () => {
     // Izbriši trenutnu pesmu
@@ -248,3 +240,21 @@ function updateSongsOrder() {
 
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
+
+// KODOVI ZA STRIMOVANJE
+// Slanje URL-a pesme na server
+socket.emit('streamSong', songs[currentSongIndex].url); // Emitovanje URL-a trenutne pesme
+
+// Automatski počni strimovanje
+if (songs.length > 0) {
+    audioPlayer.src = songs[currentSongIndex].url; // Ispravka: koristimo URL iz niza
+    audioPlayer.play();
+}
+
+// Primanje strimovane pesme
+socket.on('streamSong', (songUrl) => {
+    console.log('Primljena pesma: ' + songUrl); // Provera
+    audioPlayer.src = songUrl; // Postavljanje nove pesme za strimovanje
+    audioPlayer.play(); // Početak strimovanja
+});
+
