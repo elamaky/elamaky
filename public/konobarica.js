@@ -73,7 +73,6 @@ function decreaseFontSize() {
 const mixerButton = document.getElementById('pesme');
 const mixer = document.getElementById('mixer');
         const audioPlayer = document.getElementById('audioPlayer');
-        const mixerStream = audioPlayer.captureStream();  // Snimanje zvuka sa audioPlayer elementa
         const songList = document.getElementById('songList');
         const fileInput = document.getElementById('fileInput');
         const deleteSelectedButton = document.getElementById('deleteSelected');
@@ -258,24 +257,27 @@ function updateSongsOrder() {
 }
 
 // STRIMOVANJE  
-// Kreiranje MediaStream za snimanje sa miksera
-const mixerStream = mixer.captureStream();
+const mixerStream = audioPlayer.captureStream();  // Snimanje sa audioPlayer
 const audioContext = new AudioContext();
 const analyser = audioContext.createAnalyser();
 const source = audioContext.createMediaStreamSource(mixerStream);
 source.connect(analyser);
 analyser.connect(audioContext.destination);
 
-// Kreiraj MediaRecorder za snimanje podataka
-const mediaRecorder = new MediaRecorder(mixerStream);
-mediaRecorder.ondataavailable = (event) => {
-    const audioData = event.data;
-    // Emitujte podatke ka serveru
+// Emitujte audio stream podatke direktno serveru
+const socket = io(); // Pretpostavljam da je socket.io povezivanje već postavljeno
+const processor = audioContext.createScriptProcessor(2048, 1, 1);
+
+source.connect(processor);
+processor.connect(audioContext.destination);
+
+processor.onaudioprocess = (event) => {
+    const inputBuffer = event.inputBuffer;
+    const audioData = inputBuffer.getChannelData(0);  // Uzimanje podataka sa prvog kanala (ako je mono)
+    
+    // Emituj audio podatke serveru
     socket.emit('audioStream', audioData);
 };
-
-// Pokreni snimanje
-mediaRecorder.start(100);  // 100ms interval za snimanje
 
 // Kada korisnik primi audio podatke
 socket.on('audioStream', (audioData) => {
