@@ -10,7 +10,6 @@ const slikemodul = require('./slikemodul');
 const pingService = require('./ping');
 const privateModule = require('./privatmodul'); // Podesi putanju ako je u drugom folderu
 require('dotenv').config();
-const cors = require('cors');
 
 const app = express();
 const server = http.createServer(app);
@@ -46,7 +45,6 @@ const assignedNumbers = new Set(); // Set za generisane brojeve
 // Dodavanje socket događaja iz banmodula
 setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
 privateModule(io, guests);
-let isAudioStreaming = false;
 
 // Socket.io događaji
 io.on('connection', (socket) => {
@@ -94,14 +92,6 @@ io.on('connection', (socket) => {
         io.emit('chat-cleared');
     });
 
-  // Kada korisnik izabere boju
-socket.on('setColor', (color) => {
-    colorPrefs[socket.id] = color;  // Spremi boju za korisnika na serveru
-
-    // Emituj boju svim korisnicima
-    io.emit('updateColor', guests[socket.id], color);
-});
-
 // Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
         const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
@@ -125,15 +115,6 @@ socket.on('setColor', (color) => {
         assignedNumbers.add(number);
         return number;
     }
-
-// Kada server primi audio podatke
-socket.on('audioStream', (audioData) => {
-    console.log('Server primio audio podatke:', audioData);  // Log za primanje podataka
-
-    // Emituj podatke svim povezanim klijentima
-    socket.broadcast.emit('audioStream', audioData);
-    console.log('Server emituje audio podatke svim povezanim klijentima');  // Log za emitovanje podataka
-});
 
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
