@@ -198,7 +198,6 @@ async function playSong(index) {
         // Emitovanje pesme putem WebSocket-a
         socket.send(JSON.stringify({ action: 'play', url: songs[index].url }));
     }
-}
 
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
