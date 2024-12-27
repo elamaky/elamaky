@@ -270,6 +270,10 @@ audioPlayer.addEventListener('play', () => {
     }
 });
 socket.on('playStream', (url) => {
-    audioPlayer.src = url; // Postavi URL pesme
-    audioPlayer.play();    // Pusti pesmu automatski
+    if (url) {
+        audioPlayer.src = url; // Postavi URL pesme
+        audioPlayer.play().catch(error => console.error('Greška pri puštanju pesme:', error));
+    } else {
+        console.error('Nema URL-a za pesmu');
+    }
 });
