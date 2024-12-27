@@ -94,12 +94,14 @@ io.on('connection', (socket) => {
         io.emit('chat-cleared');
     });
 
-    socket.on('setColor', (color) => {
-  if (guests[socket.id]) {
-    guests[socket.id].color = color; // Ažuriraj boju za korisnika
-    io.emit('updateGuestList', guests); // Pošalji ažuriranu listu gostiju svima
-  }
+  // Kada korisnik izabere boju
+socket.on('setColor', (color) => {
+    colorPrefs[socket.id] = color;  // Spremi boju za korisnika na serveru
+
+    // Emituj boju svim korisnicima
+    io.emit('updateColor', guests[socket.id], color);
 });
+
 // Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
         const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
