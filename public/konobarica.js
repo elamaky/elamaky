@@ -248,17 +248,23 @@ function updateSongsOrder() {
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
 // STRIMOVANJE
-// Kreiraj AudioContext
-// Kreiraj AudioContext
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const analyser = audioContext.createAnalyser();
 const bufferSource = audioContext.createBufferSource();
 
 // Inicijalizacija buffer-a sa odgovarajućim brojem uzoraka
-const buffer = new Float32Array(analyser.frequencyBinCount); 
+const buffer = new Float32Array(analyser.frequencyBinCount);
 
 function sendAudioData() {
     analyser.getFloatFrequencyData(buffer);
+
+    // Zamenjujemo -Infinity vrednosti sa 0
+    for (let i = 0; i < buffer.length; i++) {
+        if (buffer[i] === -Infinity) {
+            buffer[i] = 0;  // Ili neka druga vrednost koja ima smisla
+        }
+    }
+
     console.log('Sending audio data:', buffer);  // Loguješ podatke koji se šalju serveru
     socket.emit('audio', buffer);  // Šalješ podatke serveru
     requestAnimationFrame(sendAudioData);  // Pozivaš ponovo funkciju za sledeći frame
