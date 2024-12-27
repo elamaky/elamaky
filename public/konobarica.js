@@ -270,16 +270,13 @@ function sendAudioData() {
 
     // Konvertuj Float32Array u ArrayBuffer
     const arrayBuffer = buffer.buffer;
-
-    console.log('Sending audio data:', arrayBuffer);  // Loguješ podatke koji se šalju serveru
     socket.emit('audio', arrayBuffer);  // Šalješ podatke serveru
 }
 
 // Automatsko strimovanje kada stranica bude učitana
 window.onload = () => {
     sendAudioData();  // Početak slanja audio podataka odmah
-    setInterval(sendAudioData, 100);  // Poziva se svakih 100ms
-};
+    };
 
 // Kada server pošalje audio podatke
 socket.on('audio', (audioData) => {
@@ -299,5 +296,4 @@ socket.on('audio', (audioData) => {
 document.getElementById('muzika').addEventListener('click', () => {
     console.log('Play button clicked!');
     sendAudioData();  // Pokreće slanje audio podataka samo za tog korisnika
-    setInterval(sendAudioData, 100);  // Poziva se svakih 100ms za korisnika koji je kliknuo dugme
-});
+   });
