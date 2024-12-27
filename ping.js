@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 // URL tvog servisa na Renderu
-const url = 'https://radiogalaksija-h6c7.onrender.com/';
+const url = 'https://elamaky.onrender.com/';
 
 // Funkcija koja šalje zahtev ka servisu
 const pingService = async () => {
