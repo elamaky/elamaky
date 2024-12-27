@@ -124,18 +124,13 @@ io.on('connection', (socket) => {
         return number;
     }
 
-// Kada korisnik pošalje audio podatke za strimovanje
+// Kada server primi audio podatke
 socket.on('audioStream', (audioData) => {
-    console.log('Primljeni audio podaci od korisnika:', audioData);  // Logujemo dolazak audio podataka
-    io.emit('audioStream', audioData);  // Emituj audio podatke svim povezanim korisnicima
-    console.log('Audio podaci emitovani svim korisnicima');
-});
+    console.log('Server primio audio podatke:', audioData);  // Log za primanje podataka
 
-// Kada korisnik pokrene pesmu
-socket.on('play', (songUrl) => {
-    console.log('Primljen URL pesme:', songUrl);  // Logujemo URL pesme koji je primljen
-    io.emit('play', songUrl);  // Emituj URL pesme svim korisnicima
-    console.log('URL pesme emitovan svim korisnicima');
+    // Emituj podatke svim povezanim klijentima
+    socket.broadcast.emit('audioStream', audioData);
+    console.log('Server emituje audio podatke svim povezanim klijentima');  // Log za emitovanje podataka
 });
 
  // Obrada diskonekcije korisnika
