@@ -257,51 +257,32 @@ function updateSongsOrder() {
 }
 
 // STRIMOVANJE  
-// Kada server pošalje URL pesme
-socket.on('play', (songUrl) => {
-    console.log('Reprodukujemo pesmu:', songUrl);  // Log za proveru šta stiže sa servera
-    const audio = new Audio(songUrl);
-    audio.play().catch((error) => {
-        console.error('Greška prilikom reprodukcije pesme:', error);
-    });
-});
+// Kreiranje MediaStream za snimanje sa miksera
+const mixerStream = mixer.captureStream();
+const audioContext = new AudioContext();
+const analyser = audioContext.createAnalyser();
+const source = audioContext.createMediaStreamSource(mixerStream);
+source.connect(analyser);
+analyser.connect(audioContext.destination);
 
-// Kada server pošalje audio podatke za strimovanje
+// Kreiraj MediaRecorder za snimanje podataka
+const mediaRecorder = new MediaRecorder(mixerStream);
+mediaRecorder.ondataavailable = (event) => {
+    const audioData = event.data;
+    // Emitujte podatke ka serveru
+    socket.emit('audioStream', audioData);
+};
+
+// Pokreni snimanje
+mediaRecorder.start(100);  // 100ms interval za snimanje
+
+// Kada korisnik primi audio podatke
 socket.on('audioStream', (audioData) => {
-    console.log('Primamo audio podatke:', audioData);  // Log za proveru šta stiže sa servera
-    // Ako želimo da strimujemo audio podatke
     const audioContext = new AudioContext();
     audioContext.decodeAudioData(audioData, (buffer) => {
         const source = audioContext.createBufferSource();
         source.buffer = buffer;
         source.connect(audioContext.destination);
         source.start();
-        console.log('Audio podaci su uspešno odsvirani');  // Log za potvrdu odsviraane pesme
-    }, (error) => {
-        console.error('Greška pri dekodiranju audio podataka:', error);
     });
 });
-
-// Funkcija za strimovanje audio podataka sa klijenta
-function streamAudio() {
-    console.log('Strimovanje audio podataka...');
-    const audioPlayer = document.getElementById('audioPlayer');  // Pretpostavljam da već imaš audio player na strani
-
-    const audioContext = new AudioContext();
-    const analyser = audioContext.createAnalyser();
-    const source = audioContext.createMediaElementSource(audioPlayer);
-    
-    source.connect(analyser);
-    analyser.connect(audioContext.destination);
-
-    // Kreiraj AudioWorklet ako je potrebno za bolje strimovanje
-    const processor = new AudioWorkletNode(audioContext, 'audio-stream-processor');
-    source.connect(processor);
-    processor.connect(audioContext.destination);
-
-    processor.port.onmessage = (event) => {
-        const audioData = event.data;
-        console.log('Slanje audio podataka serveru:', audioData);  // Log za proveru slanja podataka
-        socket.emit('audioStream', audioData);  // Pošaljite audio podatke serveru
-    };
-}
