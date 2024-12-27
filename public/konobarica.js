@@ -305,5 +305,3 @@ function streamAudio() {
         socket.emit('audioStream', audioData);  // Pošaljite audio podatke serveru
     };
 }
-
-
