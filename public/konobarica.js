@@ -124,14 +124,14 @@ document.addEventListener('mouseup', () => {
             fileInput.value = '';
         });
 
-function uploadSong(file) {             //  DODATAK ZA STRIM
+function uploadSong(file) {
     const formData = new FormData();
     formData.append('song', file);
 
-  fetch('/upload', {
-    method: 'POST',
-    body: formData
-})
+    fetch('/upload', {
+        method: 'POST',
+        body: formData
+    })
     .then(response => {
         if (!response.ok) {
             throw new Error('Upload failed');
@@ -143,7 +143,9 @@ function uploadSong(file) {             //  DODATAK ZA STRIM
             socket.emit('startStream', data.url); // Pošalji serveru URL nove pesme
         }
     })
-    .catch(err => console.error('Greška pri uploadu pesme:', err));    //  ZAVRSETAK DODATKA ZA STRIM
+    .catch(err => console.error('Greška pri uploadu pesme:', err));    
+} // Zatvaranje funkcije uploadSong
+
 
 function addSong(file, name) {         //  PROMENJENA FUNKCIJA NA UPLOAD  
     songs.push({ url: file.name, name });
@@ -184,8 +186,7 @@ function addSong(file, name) {         //  PROMENJENA FUNKCIJA NA UPLOAD
                 if (index > -1) {
                     playSong(index);
                 }
-            }
-        });
+             });
 
         function playSong(index) {
             if (index >= 0 && index < songs.length) {
@@ -194,8 +195,7 @@ function addSong(file, name) {         //  PROMENJENA FUNKCIJA NA UPLOAD
                 audioPlayer.style.display = 'block';
                 audioPlayer.play();
                
-     }
-        }
+      }
 
      audioPlayer.addEventListener('ended', () => {
     // Izbriši trenutnu pesmu
