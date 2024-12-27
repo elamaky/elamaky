@@ -128,18 +128,22 @@ function uploadSong(file) {             //  DODATAK ZA STRIM
     const formData = new FormData();
     formData.append('song', file);
 
-    fetch('/upload', {
-        method: 'POST',
-        body: formData
+  fetch('/upload', {
+    method: 'POST',
+    body: formData
+})
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Upload failed');
+        }
+        return response.json();
     })
-    .then(response => response.json())
     .then(data => {
         if (data.url) {
             socket.emit('startStream', data.url); // Pošalji serveru URL nove pesme
         }
     })
-    .catch(err => console.error('Greška pri uploadu pesme:', err));
-}       //  ZAVRSEN DODATAK ZA STRIM
+    .catch(err => console.error('Greška pri uploadu pesme:', err));    //  ZAVRSETAK DODATKA ZA STRIM
 
 function addSong(file, name) {         //  PROMENJENA FUNKCIJA NA UPLOAD  
     songs.push({ url: file.name, name });
