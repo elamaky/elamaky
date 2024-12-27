@@ -123,10 +123,14 @@ io.on('connection', (socket) => {
         return number;
     }
 
-     socket.on('audio', (audioData) => {
-        console.log('Received audio data:', audioData); // Loguješ podatke koji dolaze sa klijenta
-        socket.broadcast.emit('audio', audioData); // šalje svim drugim korisnicima
-    });
+   socket.on('audio', (audioData) => {
+    console.log('Received audio data from client:', audioData);
+
+    // Ako server treba da koristi Float32Array, konvertuj ArrayBuffer u Float32Array
+    const float32Data = new Float32Array(audioData);
+
+    // Dalja obrada sa float32Data
+});
 
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
