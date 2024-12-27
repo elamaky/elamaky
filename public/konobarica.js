@@ -249,16 +249,33 @@ function updateSongsOrder() {
 }
 // STRIMOVANJE
 // Kreiraj AudioContext
+// Kreiraj AudioContext
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const analyser = audioContext.createAnalyser();
 const bufferSource = audioContext.createBufferSource();
 
-// Kada server pošalje audio podatke, klijent ih prima
+// Inicijalizacija buffer-a sa odgovarajućim brojem uzoraka
+const buffer = new Float32Array(analyser.frequencyBinCount); 
+
+function sendAudioData() {
+    analyser.getFloatFrequencyData(buffer);
+    console.log('Sending audio data:', buffer);  // Loguješ podatke koji se šalju serveru
+    socket.emit('audio', buffer);  // Šalješ podatke serveru
+    requestAnimationFrame(sendAudioData);  // Pozivaš ponovo funkciju za sledeći frame
+}
+
+// Početak slanja audio podataka
+sendAudioData();
+
+// Kada server pošalje audio podatke
 socket.on('audio', (audioData) => {
-    // Pretpostavljamo da su podaci u Float32Array formatu
+    console.log('Received audio data from server:', audioData);  // Loguješ podatke koji dolaze sa servera
+
+    // Kreiraš audio buffer
     const audioBuffer = audioContext.createBuffer(1, audioData.length, audioContext.sampleRate);
     audioBuffer.getChannelData(0).set(audioData);
 
+    // Povezuješ audio buffer sa izlazom
     bufferSource.buffer = audioBuffer;
     bufferSource.connect(audioContext.destination);
     bufferSource.start();
