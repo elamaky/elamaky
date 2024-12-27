@@ -119,7 +119,6 @@ io.on('connection', (socket) => {
         console.log('Strimuj pesmu:', url);
         socket.broadcast.emit('playStream', url); // Pošalji svim ostalim klijentima
     });
-});
 
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
