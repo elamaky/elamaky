@@ -185,7 +185,7 @@ function addSong(file, name) {         //  PROMENJENA FUNKCIJA NA UPLOAD
                 const index = Array.from(songList.children).indexOf(selectedSongs[0]);
                 if (index > -1) {
                     playSong(index);
-                }
+                
              });
 
         function playSong(index) {
