@@ -16,3 +16,19 @@ module.exports = (io) => {
         });
     });
 };
+// existingModule.js
+const { spawn } = require('child_process');
+
+function existingFunction() {
+    // neki kod
+}
+
+function startStreaming(inputPath, rtmpUrl) {
+    const ffmpeg = spawn('ffmpeg', ['-i', inputPath, '-f', 'flv', rtmpUrl]);
+
+    ffmpeg.stdout.on('data', (data) => console.log(`Output: ${data}`));
+    ffmpeg.stderr.on('data', (data) => console.error(`Error: ${data}`));
+    ffmpeg.on('close', (code) => console.log(`FFmpeg exited with code ${code}`));
+
+    return ffmpeg;
+}
