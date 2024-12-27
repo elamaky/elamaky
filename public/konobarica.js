@@ -128,14 +128,9 @@ document.addEventListener('mouseup', () => {
             songs.push({ url, name });
             const li = document.createElement('li');
             li.textContent = name;
-            // Emitovanje URL-a pesme kad je pesma dodata u mixer
-socket.emit('streamSong', url); // url je putanja do pesme
+            li.setAttribute('draggable', 'true');
 
-
-                li.setAttribute('draggable', 'true');
-
-
-            li.addEventListener('click', (e) => {
+              li.addEventListener('click', (e) => {
                 if (e.ctrlKey || e.metaKey) {
                     li.classList.toggle('selected');
                 } else {
@@ -175,10 +170,8 @@ socket.emit('streamSong', url); // url je putanja do pesme
                 audioPlayer.src = songs[index].url;
                 audioPlayer.style.display = 'block';
                 audioPlayer.play();
-                // Emitovanje URL-a pesme kada se pesma pusti
-socket.emit('streamSong', songs[index].url);
-
-            }
+               
+     }
         }
 
      audioPlayer.addEventListener('ended', () => {
@@ -242,19 +235,18 @@ function updateSongsOrder() {
 }
 
 // KODOVI ZA STRIMOVANJE
-// Slanje URL-a pesme na server
-socket.emit('streamSong', songs[currentSongIndex].url); // Emitovanje URL-a trenutne pesme
-
-// Automatski počni strimovanje
-if (songs.length > 0) {
-    audioPlayer.src = songs[currentSongIndex].url; // Ispravka: koristimo URL iz niza
-    audioPlayer.play();
+function startStreaming(currentSongUrl) {
+    socket.emit('startStream', currentSongUrl); // Pošalji trenutni URL pesme na server
 }
 
-// Primanje strimovane pesme
-socket.on('streamSong', (songUrl) => {
-    console.log('Primljena pesma: ' + songUrl); // Provera
-    audioPlayer.src = songUrl; // Postavljanje nove pesme za strimovanje
-    audioPlayer.play(); // Početak strimovanja
+// Kada se pesma pokrene, pokreni strimovanje
+audioPlayer.addEventListener('play', () => {
+    const currentSong = songs[currentSongIndex];
+    if (currentSong) {
+        startStreaming(currentSong.url);
+    }
 });
-
+socket.on('playStream', (url) => {
+    audioPlayer.src = url; // Postavi URL pesme
+    audioPlayer.play();    // Pusti pesmu automatski
+});
