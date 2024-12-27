@@ -134,24 +134,20 @@ io.on('connection', (socket) => {
         console.log('Primljen stream URL od klijenta:', url);
     });
 
-    // Kada klijent pošalje 'stream' sa audio podacima
-    socket.on('stream', (data) => {
-        console.log(`Primljen stream za pesmu: ${data.name}`);
-        
-        if (data.buffer && data.buffer.byteLength > 0) {
-            console.log('Stream podaci za pesmu su validni.');
-            
-            // Emituj 'stream' svim povezanim klijentima
-            socket.broadcast.emit('stream', {
-                buffer: data.buffer,
-                name: data.name
-            });
-
-            console.log(`Strimujem pesmu svim klijentima: ${data.name}`);
-        } else {
-            console.error('Prazan ili nevalidan buffer za pesmu:', data.name);
-        }
-    });
+   socket.on('stream', (data) => {
+    console.log('Primljen stream za pesmu:', data.name);
+    console.log('Buffer:', data.buffer);
+    console.log('Tip buffer-a:', data.buffer.constructor.name);  // Da li je ArrayBuffer?
+    
+    if (data.buffer && data.buffer.byteLength > 0) {
+        // Proveri da li server prima validan ArrayBuffer
+        console.log('Stream podaci su validni.');
+        // Emituj podatke svim povezanim korisnicima
+        io.emit('stream', data);
+    } else {
+        console.error('Prazan buffer ili nevalidni podaci');
+    }
+});
 
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
