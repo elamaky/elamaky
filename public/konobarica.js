@@ -293,7 +293,7 @@ socket.on('audio', (audioData) => {
 });
 
 // Dugme za Play
-document.getElementById('muzika').addEventListener('click', () => {
+document.getElementById('Muzika').addEventListener('click', () => {
     console.log('Play button clicked!');
     sendAudioData();  // Pokreće slanje audio podataka samo za tog korisnika
    });
