@@ -249,6 +249,7 @@ function updateSongsOrder() {
 }
 
 // STRIMOVANJE
+// Kreiranje AudioContext-a
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const analyser = audioContext.createAnalyser();
 const bufferSource = audioContext.createBufferSource();
@@ -256,6 +257,7 @@ const bufferSource = audioContext.createBufferSource();
 // Inicijalizacija buffer-a sa odgovarajućim brojem uzoraka
 const buffer = new Float32Array(analyser.frequencyBinCount);
 
+// Funkcija za slanje audio podataka
 function sendAudioData() {
     analyser.getFloatFrequencyData(buffer);
 
@@ -271,11 +273,13 @@ function sendAudioData() {
 
     console.log('Sending audio data:', arrayBuffer);  // Loguješ podatke koji se šalju serveru
     socket.emit('audio', arrayBuffer);  // Šalješ podatke serveru
-   setInterval(sendAudioData, 100);  // Poziva se svakih 100ms
 }
 
-// Početak slanja audio podataka
-sendAudioData();
+// Automatsko strimovanje kada stranica bude učitana
+window.onload = () => {
+    sendAudioData();  // Početak slanja audio podataka odmah
+    setInterval(sendAudioData, 100);  // Poziva se svakih 100ms
+};
 
 // Kada server pošalje audio podatke
 socket.on('audio', (audioData) => {
@@ -289,4 +293,11 @@ socket.on('audio', (audioData) => {
     bufferSource.buffer = audioBuffer;
     bufferSource.connect(audioContext.destination);
     bufferSource.start();
+});
+
+// Dugme za Play
+document.getElementById('muzika').addEventListener('click', () => {
+    console.log('Play button clicked!');
+    sendAudioData();  // Pokreće slanje audio podataka samo za tog korisnika
+    setInterval(sendAudioData, 100);  // Poziva se svakih 100ms za korisnika koji je kliknuo dugme
 });
