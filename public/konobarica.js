@@ -249,11 +249,10 @@ function updateSongsOrder() {
 }
 
 // STRIMOVANJE
+const audioPlayer = document.getElementById('audioPlayer');  // Dobićeš audio element
 const audioContext = new AudioContext();
-const source = audioContext.createMediaElementSource(mixer);
+const source = audioContext.createMediaElementSource(audioPlayer);  // Koristi audio element
 const processor = audioContext.createScriptProcessor(4096, 1, 1);
-const mixer = new Audio();  // Create an HTMLAudioElement
-mixer.src = 'your-audio-file.mp3';  // Set the source of the audio
 
 // Procesiranje audio podataka u realnom vremenu
 source.connect(processor);
@@ -266,13 +265,5 @@ processor.onaudioprocess = (event) => {
 
 mixerButton.addEventListener('click', () => {
   console.log('Streaming started.');
-  mixer.play(); // Pokreće mikserski audio ako nije već pokrenut
-});
-
-socket.on('audioStream', (audioData) => {
-  const audioBuffer = new Float32Array(audioData);
-  const audioBlob = new Blob([audioBuffer], { type: 'audio/wav' });
-  const audioURL = URL.createObjectURL(audioBlob);
-  audioPlayer.src = audioURL;
-  audioPlayer.play();
+  audioPlayer.play(); // Pokreće mikserski audio ako nije već pokrenut
 });
