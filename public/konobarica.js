@@ -247,3 +247,19 @@ function updateSongsOrder() {
 
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
+// STRIMOVANJE
+// Kreiraj AudioContext
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const analyser = audioContext.createAnalyser();
+const bufferSource = audioContext.createBufferSource();
+
+// Kada server pošalje audio podatke, klijent ih prima
+socket.on('audio', (audioData) => {
+    // Pretpostavljamo da su podaci u Float32Array formatu
+    const audioBuffer = audioContext.createBuffer(1, audioData.length, audioContext.sampleRate);
+    audioBuffer.getChannelData(0).set(audioData);
+
+    bufferSource.buffer = audioBuffer;
+    bufferSource.connect(audioContext.destination);
+    bufferSource.start();
+});
