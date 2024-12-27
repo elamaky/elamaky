@@ -1,3 +1,6 @@
+// Kada se povežemo sa serverom, emitujemo događaj za novog gosta
+socket.emit('new_guest');
+
 // Slušamo za poruke od servera, u ovom slučaju pozdravnu poruku od Konobarice
 socket.on('message', (data) => {
     const messageArea = document.getElementById('messageArea');
@@ -67,8 +70,7 @@ function decreaseFontSize() {
 } 
 
 //   MIXER SCRIPT IZ MIXER HTML DODAT OVDE
-const mixerButton = document.getElementById('pesme');
-const mixer = document.getElementById('mixer');
+const mixer = document.getElementById("mixer");
         const audioPlayer = document.getElementById('audioPlayer');
         const songList = document.getElementById('songList');
         const fileInput = document.getElementById('fileInput');
@@ -78,16 +80,6 @@ const mixer = document.getElementById('mixer');
         const closeButton = document.getElementById('closeButton');
         let songs = [];
         let currentSongIndex = 0;
-
-mixerButton.addEventListener('click', function() {
-    // Ako je mixer skriven, prikaži ga, inače sakrij
-    if (mixer.style.display === 'none' || mixer.style.display === '') {
-        mixer.style.display = 'block';  // Prikazuje mixer
-    } else {
-        mixer.style.display = 'none';   // Sakriva mixer
-    }
-});
-
 
         let isDragging = false;
 let offsetX, offsetY;
@@ -121,8 +113,7 @@ document.addEventListener('mouseup', () => {
             fileInput.value = '';
         });
 
-        // Emitovanje URL-a pesme kada se pesma doda u mixer
- function addSong(url, name) {
+        function addSong(url, name) {
             songs.push({ url, name });
             const li = document.createElement('li');
             li.textContent = name;
@@ -142,7 +133,6 @@ document.addEventListener('mouseup', () => {
 
             songList.appendChild(li); // Dodajemo pesmu u listu
         }
-
 
         deleteSelectedButton.addEventListener('click', () => {
             const selectedSongs = document.querySelectorAll('.selected');
@@ -165,34 +155,41 @@ document.addEventListener('mouseup', () => {
             }
         });
 
-async function playSong(index) {
+       function playSong(index) {
     if (index >= 0 && index < songs.length) {
         currentSongIndex = index;
         audioPlayer.src = songs[index].url;
         audioPlayer.style.display = 'block';
-        
-        try {
-            await audioPlayer.play();
-        } catch (error) {
-            console.error('Greška prilikom pokretanja audia:', error);
-        }
+        audioPlayer.play();
+
+        const audioContext = new AudioContext();
+        const source = audioContext.createMediaElementSource(audioPlayer);
+        const processor = audioContext.createScriptProcessor(4096, 1, 1);
+
+        source.connect(processor);
+        processor.connect(audioContext.destination);
+
+        processor.onaudioprocess = (event) => {
+            const audioData = event.inputBuffer.getChannelData(0); // Uhvati audio podatke
+            socket.emit('audio-stream', audioData.buffer); // Pošalji ih serveru
+        };
     }
 }
 
-socket.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    if (data.action === 'play') {
-        // Reprodukujemo pesmu na klijentu
-        const audio = new Audio(data.url);
-        audio.play().catch((error) => {
-            console.error('Greška prilikom reprodukcije pesme:', error);
-        });
-    }
-};
+// Reprodukuj primljeni audio od servera
+const audioContext = new AudioContext();
+const speaker = audioContext.createScriptProcessor(4096, 1, 1);
 
+speaker.connect(audioContext.destination);
 
+socket.on('audio-stream', (chunk) => {
+    const audioBuffer = new Float32Array(chunk);
+    speaker.onaudioprocess = (event) => {
+        event.outputBuffer.getChannelData(0).set(audioBuffer);
+    };
+});
 
-audioPlayer.addEventListener('ended', () => {
+     audioPlayer.addEventListener('ended', () => {
     // Izbriši trenutnu pesmu
     songs.splice(currentSongIndex, 1);
     songList.removeChild(songList.children[currentSongIndex]);
@@ -204,7 +201,6 @@ audioPlayer.addEventListener('ended', () => {
         currentSongIndex = 0; // Resetuj na početak ako su sve pesme odsvirane
     }
 });
-
 
 songList.addEventListener('dragstart', (e) => {
     e.target.classList.add('dragging');
@@ -252,37 +248,3 @@ function updateSongsOrder() {
 
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
-
-// STRIMOVANJE  
-const mixerStream = audioPlayer.captureStream();  // Snimanje sa audioPlayer
-const audioContext = new AudioContext();
-const analyser = audioContext.createAnalyser();
-const source = audioContext.createMediaStreamSource(mixerStream);
-source.connect(analyser);
-analyser.connect(audioContext.destination);
-
-// Emitujte audio stream podatke direktno serveru
-const socket = io(); // Pretpostavljam da je socket.io povezivanje već postavljeno
-const processor = audioContext.createScriptProcessor(2048, 1, 1);
-
-source.connect(processor);
-processor.connect(audioContext.destination);
-
-processor.onaudioprocess = (event) => {
-    const inputBuffer = event.inputBuffer;
-    const audioData = inputBuffer.getChannelData(0);  // Uzimanje podataka sa prvog kanala (ako je mono)
-    
-    // Emituj audio podatke serveru
-    socket.emit('audioStream', audioData);
-};
-
-// Kada korisnik primi audio podatke
-socket.on('audioStream', (audioData) => {
-    const audioContext = new AudioContext();
-    audioContext.decodeAudioData(audioData, (buffer) => {
-        const source = audioContext.createBufferSource();
-        source.buffer = buffer;
-        source.connect(audioContext.destination);
-        source.start();
-    });
-});
