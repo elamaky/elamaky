@@ -249,6 +249,8 @@ audioPlayer.addEventListener('play', () => {
     if (currentSong) {
         console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
         console.log('Fetch URL:', currentSong.url);
+        
+        // Umesto blob URL-a, šaljemo pravi URL do pesme
         fetch(currentSong.url)
             .then((response) => {
                 console.log('Response:', response);
@@ -261,7 +263,8 @@ audioPlayer.addEventListener('play', () => {
                 console.log('Tip buffer-a:', buffer.constructor.name);  // Dodaj ovu liniju
                 console.log('Buffer pre slanja:', buffer);
                 if (buffer && buffer.byteLength > 0) {
-                    socket.emit('stream', { 
+                    // Emitovanje strima sa pravim URL-om pesme
+                    socket.emit('streamSong', { 
                         buffer: buffer,  // Šaljemo ArrayBuffer direktno
                         name: currentSong.name 
                     });
