@@ -253,11 +253,9 @@ navigator.mediaDevices.getUserMedia({ audio: true, video: false })
   .then((stream) => {
     const audioContext = new AudioContext();
     const source = audioContext.createMediaStreamSource(stream);
-    const mixerElement = audioContext.createMediaElementSource(mixer);
     const destination = audioContext.createMediaStreamDestination();
 
-    // Connect mixer element and input stream to the destination
-    mixerElement.connect(destination);
+    // Connect input stream to the destination
     source.connect(destination);
 
     const mediaRecorder = new MediaRecorder(destination.stream);
@@ -290,4 +288,3 @@ navigator.mediaDevices.getUserMedia({ audio: true, video: false })
   .catch((error) => {
     console.error('Greška pri pristupu mikseru ili audio ulazu:', error);
   });
-
