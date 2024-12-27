@@ -130,17 +130,15 @@ io.on('connection', (socket) => {
         return number;
     }
  
-// Kada klijent pošalje 'streamSong'
-socket.on('streamSong', (data) => {
-    console.log('Primljen stream od klijenta:', data.name);
-
-    if (data.buffer && data.buffer.byteLength > 0) {
-        // Pošaljite strim svim korisnicima
-        io.emit('stream', data);
+socket.on('stream', (data) => {
+    if (data && data.buffer) {
+        console.log('Primljen stream sa klijenta:', data.name);
+        socket.broadcast.emit('stream', data); // Emituj svim povezanim korisnicima
     } else {
         console.error('Prazan buffer ili URL!');
     }
 });
+
 
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
