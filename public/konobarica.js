@@ -249,42 +249,28 @@ function updateSongsOrder() {
 }
 
 // STRIMOVANJE
-navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-  .then((stream) => {
-    const audioContext = new AudioContext();
-    const source = audioContext.createMediaStreamSource(stream);
-    const destination = audioContext.createMediaStreamDestination();
+const audioContext = new AudioContext();
+const source = audioContext.createMediaElementSource(mixer);
+const processor = audioContext.createScriptProcessor(4096, 1, 1);
 
-    // Connect input stream to the destination
-    source.connect(destination);
+// Procesiranje audio podataka u realnom vremenu
+source.connect(processor);
+processor.connect(audioContext.destination);
 
-    const mediaRecorder = new MediaRecorder(destination.stream);
+processor.onaudioprocess = (event) => {
+  const inputBuffer = event.inputBuffer.getChannelData(0);
+  socket.emit("audioStream", inputBuffer.buffer); // Šalje sirove audio podatke preko websocket-a
+};
 
-    mediaRecorder.addEventListener("dataavailable", (event) => {
-      const audioChunk = event.data;
-      const fileReader = new FileReader();
+mixerButton.addEventListener('click', () => {
+  console.log('Streaming started.');
+  mixer.play(); // Pokreće mikserski audio ako nije već pokrenut
+});
 
-      fileReader.readAsDataURL(audioChunk);
-      fileReader.onloadend = () => {
-        const base64String = fileReader.result;
-        socket.emit("audioStream", base64String); // Šalje zvuk preko websocket-a
-      };
-    });
-
-    mixerButton.addEventListener('click', () => {
-      if (mediaRecorder.state === 'inactive') {
-        mediaRecorder.start(1000); // Snima i šalje podatke svakih 1 sekundu
-      }
-    });
-
-    socket.on('audioStream', (audioData) => {
-      const audio = new Audio(audioData);
-      if (!audio || document.hidden) {
-        return;
-      }
-      audio.play();
-    });
-  })
-  .catch((error) => {
-    console.error('Greška pri pristupu mikseru ili audio ulazu:', error);
-  });
+socket.on('audioStream', (audioData) => {
+  const audioBuffer = new Float32Array(audioData);
+  const audioBlob = new Blob([audioBuffer], { type: 'audio/wav' });
+  const audioURL = URL.createObjectURL(audioBlob);
+  audioPlayer.src = audioURL;
+  audioPlayer.play();
+});
