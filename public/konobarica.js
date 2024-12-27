@@ -249,51 +249,45 @@ function updateSongsOrder() {
 }
 
 // STRIMOVANJE
-// Kreiranje AudioContext-a
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-const analyser = audioContext.createAnalyser();
-const bufferSource = audioContext.createBufferSource();
+navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+  .then((stream) => {
+    const audioContext = new AudioContext();
+    const source = audioContext.createMediaStreamSource(stream);
+    const mixerElement = audioContext.createMediaElementSource(mixer);
+    const destination = audioContext.createMediaStreamDestination();
 
-// Inicijalizacija buffer-a sa odgovarajućim brojem uzoraka
-const buffer = new Float32Array(analyser.frequencyBinCount);
+    // Connect mixer element and input stream to the destination
+    mixerElement.connect(destination);
+    source.connect(destination);
 
-// Funkcija za slanje audio podataka
-function sendAudioData() {
-    analyser.getFloatFrequencyData(buffer);
+    const mediaRecorder = new MediaRecorder(destination.stream);
 
-    // Zamenjujemo -Infinity vrednosti sa 0
-    for (let i = 0; i < buffer.length; i++) {
-        if (buffer[i] === -Infinity) {
-            buffer[i] = 0;  // Ili neka druga vrednost koja ima smisla
-        }
-    }
+    mediaRecorder.addEventListener("dataavailable", (event) => {
+      const audioChunk = event.data;
+      const fileReader = new FileReader();
 
-    // Konvertuj Float32Array u ArrayBuffer
-    const arrayBuffer = buffer.buffer;
-    socket.emit('audio', arrayBuffer);  // Šalješ podatke serveru
-}
+      fileReader.readAsDataURL(audioChunk);
+      fileReader.onloadend = () => {
+        const base64String = fileReader.result;
+        socket.emit("audioStream", base64String); // Šalje zvuk preko websocket-a
+      };
+    });
 
-// Automatsko strimovanje kada stranica bude učitana
-window.onload = () => {
-    sendAudioData();  // Početak slanja audio podataka odmah
-    };
+    mixerButton.addEventListener('click', () => {
+      if (mediaRecorder.state === 'inactive') {
+        mediaRecorder.start(1000); // Snima i šalje podatke svakih 1 sekundu
+      }
+    });
 
-// Kada server pošalje audio podatke
-socket.on('audio', (audioData) => {
-    console.log('Received audio data from server:', audioData);  // Loguješ podatke koji dolaze sa servera
+    socket.on('audioStream', (audioData) => {
+      const audio = new Audio(audioData);
+      if (!audio || document.hidden) {
+        return;
+      }
+      audio.play();
+    });
+  })
+  .catch((error) => {
+    console.error('Greška pri pristupu mikseru ili audio ulazu:', error);
+  });
 
-    // Kreiraš audio buffer
-    const audioBuffer = audioContext.createBuffer(1, audioData.length, audioContext.sampleRate);
-    audioBuffer.getChannelData(0).set(audioData);
-
-    // Povezuješ audio buffer sa izlazom
-    bufferSource.buffer = audioBuffer;
-    bufferSource.connect(audioContext.destination);
-    bufferSource.start();
-});
-
-// Dugme za Play
-document.getElementById('Muzika').addEventListener('click', () => {
-    console.log('Play button clicked!');
-    sendAudioData();  // Pokreće slanje audio podataka samo za tog korisnika
-   });
