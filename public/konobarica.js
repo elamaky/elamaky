@@ -166,7 +166,7 @@ function addSong(url, name) {
             }
         });
 
- function playSong(index) {
+async function playSong(index) {
     if (index >= 0 && index < songs.length) {
         currentSongIndex = index;
         audioPlayer.src = songs[index].url;
@@ -175,18 +175,17 @@ function addSong(url, name) {
         
         // Kreiraj AudioContext i poveži sa audioPlayer
         const audioContext = new AudioContext();
-        const source = audioContext.createMediaElementSource(audioPlayer);
-        const processor = audioContext.createScriptProcessor(4096, 1, 1);  // Real-time obrada
+        await audioContext.audioWorklet.addModule('audioStreamProcessor.js'); // Povezivanje sa AudioWorklet
 
-        // Poveži procesor sa izlazom
+        const source = audioContext.createMediaElementSource(audioPlayer);
+        const processor = new AudioWorkletNode(audioContext, 'audio-stream-processor');
+
+        // Poveži izvor sa procesorom
         source.connect(processor);
         processor.connect(audioContext.destination);
 
-        // Obrada audio podataka u realnom vremenu
-        processor.onaudioprocess = (event) => {
-            const inputBuffer = event.inputBuffer.getChannelData(0);
-            socket.emit("audioStream", inputBuffer.buffer);  // Šaljemo sirove audio podatke preko WebSocket-a
-        };
+        // Emitovanje audio podataka u realnom vremenu putem WebSocket-a
+        processor.port.postMessage({ action: 'audioStream', buffer: audioPlayer.buffer });
 
         // Emitovanje pesme putem WebSocket-a
         socket.send(JSON.stringify({ action: 'play', url: songs[index].url }));
