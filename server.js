@@ -115,10 +115,11 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-     socket.on('audio', (audioData) => {
-        console.log('Received audio data:', audioData); // Loguješ podatke koji dolaze sa klijenta
-        socket.broadcast.emit('audio', audioData); // šalje svim drugim korisnicima
+   socket.on('startStream', (url) => {
+        console.log('Strimuj pesmu:', url);
+        socket.broadcast.emit('playStream', url); // Pošalji svim ostalim klijentima
     });
+});
 
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
