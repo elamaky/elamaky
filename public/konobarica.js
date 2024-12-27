@@ -242,27 +242,48 @@ function updateSongsOrder() {
 }
 
 audioPlayer.addEventListener('play', () => {
-    const currentSong = songs[currentSongIndex];
+    console.log('Pesma se pušta.');
+    const currentSong = songs[currentSongIndex]; 
+
     if (currentSong) {
+        console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url);
         fetch(currentSong.url)
-            .then(response => response.arrayBuffer())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Greška pri fetch-u pesme: ' + response.statusText);
+                }
+                return response.arrayBuffer();
+            })
             .then(buffer => {
+                console.log('Buffer pre slanja:', buffer);
                 if (buffer && buffer.byteLength > 0) {
-                    socket.emit('stream', { buffer: buffer, name: currentSong.name });
+                    socket.emit('stream', { 
+                        buffer: buffer,  // Šaljemo ArrayBuffer
+                        name: currentSong.name 
+                    });
                 } else {
-                    console.error('Buffer je prazan!');
+                    console.error('Buffer je prazan! Proveri URL ili fajl.');
                 }
             })
             .catch(err => console.error('Greška pri čitanju audio fajla:', err));
+    } else {
+        console.error('Nema trenutne pesme!');
     }
 });
 socket.on('stream', (data) => {
+    console.log('Primljen stream od servera:', data.name);
+
     if (data.buffer && data.buffer.byteLength > 0) {
+        console.log('Primljen buffer za pesmu:', data.name);
+
+        // Kreiraj Blob iz ArrayBuffer-a
         const audio = new Audio();
         const blob = new Blob([data.buffer], { type: 'audio/mpeg' });
-        audio.src = URL.createObjectURL(blob);
+        audio.src = URL.createObjectURL(blob);  // Kreiraj URL za Blob
         audio.play();
+
+        console.log('Pesma se reprodukuje:', data.name);
     } else {
-        console.error('Prazan buffer!');
+        console.error('Primljen buffer je prazan ili nevalidan:', data.name);
     }
 });
