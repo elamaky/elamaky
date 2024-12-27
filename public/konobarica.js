@@ -73,6 +73,7 @@ function decreaseFontSize() {
 const mixerButton = document.getElementById('pesme');
 const mixer = document.getElementById('mixer');
         const audioPlayer = document.getElementById('audioPlayer');
+        const mixerStream = audioPlayer.captureStream();  // Snimanje zvuka sa audioPlayer elementa
         const songList = document.getElementById('songList');
         const fileInput = document.getElementById('fileInput');
         const deleteSelectedButton = document.getElementById('deleteSelected');
