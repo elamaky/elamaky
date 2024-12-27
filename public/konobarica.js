@@ -271,7 +271,7 @@ function sendAudioData() {
 
     console.log('Sending audio data:', arrayBuffer);  // Loguješ podatke koji se šalju serveru
     socket.emit('audio', arrayBuffer);  // Šalješ podatke serveru
-    requestAnimationFrame(sendAudioData);  // Pozivaš ponovo funkciju za sledeći frame
+   setInterval(sendAudioData, 100);  // Poziva se svakih 100ms
 }
 
 // Početak slanja audio podataka
