@@ -124,34 +124,12 @@ document.addEventListener('mouseup', () => {
             fileInput.value = '';
         });
 
-function uploadSong(file) {
-    const formData = new FormData();
-    formData.append('song', file);
-
-    fetch('/upload', {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Upload failed');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.url) {
-                socket.emit('startStream', data.url);
-            }
-        })
-        .catch(err => console.error('Greška pri uploadu pesme:', err));
-}
-
-function addSong(file, name) {
+function addSong(file, name) {         //  PROMENJENA FUNKCIJA NA UPLOAD  
     songs.push({ url: file.name, name });
     const li = document.createElement('li');
     li.textContent = name;
 
-    uploadSong(file);
+    uploadSong(file); // Pošalji pesmu na server
 
     li.setAttribute('draggable', 'true');
     li.addEventListener('click', (e) => {
@@ -165,48 +143,57 @@ function addSong(file, name) {
     });
 
     songList.appendChild(li);
+    //  ZAVRSENE PROMENE OVDE
 
-    deleteSelectedButton.addEventListener('click', () => {
-        const selectedSongs = document.querySelectorAll('.selected');
-        selectedSongs.forEach(songElement => {
-            const index = Array.from(songList.children).indexOf(songElement);
-            if (index > -1) {
-                songs.splice(index, 1);
-                songList.removeChild(songElement);
-            }
+       deleteSelectedButton.addEventListener('click', () => {
+            const selectedSongs = document.querySelectorAll('.selected');
+            selectedSongs.forEach(songElement => {
+                const index = Array.from(songList.children).indexOf(songElement);
+                if (index > -1) {
+                    songs.splice(index, 1);
+                    songList.removeChild(songElement);
+                }
+            });
         });
-    });
 
-    playSelectedButton.addEventListener('click', () => {
-        const selectedSongs = document.querySelectorAll('.selected');
-        if (selectedSongs.length === 1) {
-            const index = Array.from(songList.children).indexOf(selectedSongs[0]);
-            if (index > -1) {
-                playSong(index);
-            }
-        }
-    });
-}
+        playSelectedButton.addEventListener('click', () => {
+            const selectedSongs = document.querySelectorAll('.selected');
+            if (selectedSongs.length === 1) {
+                const index = Array.from(songList.children).indexOf(selectedSongs[0]);
+                if (index > -1) {
+                    playSong(index);
+                }
+             });
 
-function playSong(index) {
-    if (index >= 0 && index < songs.length) {
-        currentSongIndex = index;
-        audioPlayer.src = songs[index].url;
-        audioPlayer.style.display = 'block';
-        audioPlayer.play();
+        function playSong(index) {
+            if (index >= 0 && index < songs.length) {
+                currentSongIndex = index;
+                audioPlayer.src = songs[index].url;
+                audioPlayer.style.display = 'block';
+                audioPlayer.play();
+               
+      }
+
+     audioPlayer.addEventListener('ended', () => {
+    // Izbriši trenutnu pesmu
+    songs.splice(currentSongIndex, 1);
+    songList.removeChild(songList.children[currentSongIndex]);
+
+    // Igraj sledeću pesmu
+    if (currentSongIndex < songs.length) {
+        playSong(currentSongIndex); // Igraj pesmu sa trenutnim indeksom
+    } else {
+        currentSongIndex = 0; // Resetuj na početak ako su sve pesme odsvirane
     }
+});
 
-    audioPlayer.addEventListener('ended', () => {
-        songs.splice(currentSongIndex, 1);
-        songList.removeChild(songList.children[currentSongIndex]);
+songList.addEventListener('dragstart', (e) => {
+    e.target.classList.add('dragging');
+});
 
-        if (currentSongIndex < songs.length) {
-            playSong(currentSongIndex);
-        } else {
-            currentSongIndex = 0;
-        }
-    });
-}
+songList.addEventListener('dragend', (e) => {
+    e.target.classList.remove('dragging');
+});
 
 songList.addEventListener('dragstart', (e) => {
     if (e.target.tagName === 'LI') {
@@ -217,7 +204,7 @@ songList.addEventListener('dragstart', (e) => {
 songList.addEventListener('dragend', (e) => {
     if (e.target.tagName === 'LI') {
         e.target.classList.remove('dragging');
-        updateSongsOrder();
+        updateSongsOrder(); // Ažuriraj niz pesama nakon prevlačenja
     }
 });
 
@@ -237,32 +224,32 @@ function updateSongsOrder() {
     const listItems = [...songList.children];
 
     listItems.forEach((item) => {
-        const songName = item.textContent.trim();
-        const song = songs.find((s) => s.name === songName);
+        const songName = item.textContent.trim(); // Uzmi ime pesme iz <li>
+        const song = songs.find((s) => s.name === songName); // Pronađi pesmu po imenu
         if (song) {
-            updatedOrder.push(song);
+            updatedOrder.push(song); // Dodaj pesmu u novi redosled
         }
     });
 
-    songs = updatedOrder;
+    songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
 
+// KODOVI ZA STRIMOVANJE
 function startStreaming(currentSongUrl) {
-    socket.emit('startStream', currentSongUrl);
+    socket.emit('startStream', currentSongUrl); // Pošalji trenutni URL pesme na server
 }
 
+// Kada se pesma pokrene, pokreni strimovanje
 audioPlayer.addEventListener('play', () => {
     const currentSong = songs[currentSongIndex];
     if (currentSong) {
         startStreaming(currentSong.url);
     }
 });
-
 socket.on('playStream', (url) => {
     if (url) {
-        audioPlayer.src = url;
+        audioPlayer.src = url; // Postavi URL pesme
         audioPlayer.play().catch(error => console.error('Greška pri puštanju pesme:', error));
     } else {
         console.error('Nema URL-a za pesmu');
     }
-});
