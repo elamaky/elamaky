@@ -82,9 +82,23 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 
 // Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value; // Dodeli izabranu boju
-    updateInputStyle(); // Ažuriraj stil za input (poruke)
-    updateguestList(); // Ažuriraj boju nika u guest listi
+    const currentColor = this.value; // Dodeli izabranu boju
+
+    // Pošaljite boju serveru
+    socket.emit('setColor', currentColor);
+});
+
+// Kada server šalje novu boju za korisnika
+socket.on('updateColor', function(nickname, color) {
+    const guestElement = guestsData[nickname];
+    if (guestElement) {
+        guestElement.style.color = color;  // Ažuriraj boju nika
+    }
+});
+
+// Kada korisnik postavi boju
+socket.on('setColor', function(color) {
+    colorPrefs[socket.id] = color;  // Spremi boju za korisnika na serveru
 });
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
