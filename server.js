@@ -129,27 +129,20 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-  // Kada klijent pošalje 'streamSong'
-    socket.on('streamSong', (url) => {
-        console.log('Primljen stream URL od klijenta:', url);
-    });
+ 
+// Kada klijent pošalje 'streamSong'
+socket.on('streamSong', (data) => {
+    console.log('Primljen stream od klijenta:', data.name);
 
-   socket.on('stream', (data) => {
-    console.log('Primljen stream za pesmu:', data.name);
-    console.log('Buffer:', data.buffer);
-    console.log('Tip buffer-a:', data.buffer.constructor.name);  // Da li je ArrayBuffer?
-    
     if (data.buffer && data.buffer.byteLength > 0) {
-        // Proveri da li server prima validan ArrayBuffer
-        console.log('Stream podaci su validni.');
-        // Emituj podatke svim povezanim korisnicima
+        // Pošaljite strim svim korisnicima
         io.emit('stream', data);
     } else {
-        console.error('Prazan buffer ili nevalidni podaci');
+        console.error('Prazan buffer ili URL!');
     }
 });
 
- // Obrada diskonekcije korisnika
+// Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
