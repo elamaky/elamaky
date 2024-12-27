@@ -163,7 +163,7 @@ function addSong(file, name) {         //  PROMENJENA FUNKCIJA NA UPLOAD
                 if (index > -1) {
                     playSong(index);
                 }
-             });
+             };
 
         function playSong(index) {
             if (index >= 0 && index < songs.length) {
