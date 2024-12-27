@@ -124,26 +124,45 @@ document.addEventListener('mouseup', () => {
             fileInput.value = '';
         });
 
-        function addSong(url, name) {
-            songs.push({ url, name });
-            const li = document.createElement('li');
-            li.textContent = name;
-            li.setAttribute('draggable', 'true');
+function uploadSong(file) {             //  DODATAK ZA STRIM
+    const formData = new FormData();
+    formData.append('song', file);
 
-              li.addEventListener('click', (e) => {
-                if (e.ctrlKey || e.metaKey) {
-                    li.classList.toggle('selected');
-                } else {
-                    const selectedSongs = document.querySelectorAll('.selected');
-                    selectedSongs.forEach(song => song.classList.remove('selected'));
-                    li.classList.add('selected');
-                }
-            });
-
-            songList.appendChild(li); // Dodajemo pesmu u listu
+    fetch('/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.url) {
+            socket.emit('startStream', data.url); // Pošalji serveru URL nove pesme
         }
+    })
+    .catch(err => console.error('Greška pri uploadu pesme:', err));
+}       //  ZAVRSEN DODATAK ZA STRIM
 
-        deleteSelectedButton.addEventListener('click', () => {
+function addSong(file, name) {         //  PROMENJENA FUNKCIJA NA UPLOAD  
+    songs.push({ url: file.name, name });
+    const li = document.createElement('li');
+    li.textContent = name;
+
+    uploadSong(file); // Pošalji pesmu na server
+
+    li.setAttribute('draggable', 'true');
+    li.addEventListener('click', (e) => {
+        if (e.ctrlKey || e.metaKey) {
+            li.classList.toggle('selected');
+        } else {
+            const selectedSongs = document.querySelectorAll('.selected');
+            selectedSongs.forEach(song => song.classList.remove('selected'));
+            li.classList.add('selected');
+        }
+    });
+
+    songList.appendChild(li);
+}    //  ZAVRSENE PROMENE OVDE
+
+       deleteSelectedButton.addEventListener('click', () => {
             const selectedSongs = document.querySelectorAll('.selected');
             selectedSongs.forEach(songElement => {
                 const index = Array.from(songList.children).indexOf(songElement);
