@@ -129,9 +129,28 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-   socket.on('startStream', (url) => {
-        console.log('Strimuj pesmu:', url);
-        socket.broadcast.emit('playStream', url); // Pošalji svim ostalim klijentima
+  // Kada klijent pošalje 'streamSong'
+    socket.on('streamSong', (url) => {
+        console.log('Primljen stream URL od klijenta:', url);
+    });
+
+    // Kada klijent pošalje 'stream' sa audio podacima
+    socket.on('stream', (data) => {
+        console.log(`Primljen stream za pesmu: ${data.name}`);
+        
+        if (data.buffer && data.buffer.byteLength > 0) {
+            console.log('Stream podaci za pesmu su validni.');
+            
+            // Emituj 'stream' svim povezanim klijentima
+            socket.broadcast.emit('stream', {
+                buffer: data.buffer,
+                name: data.name
+            });
+
+            console.log(`Strimujem pesmu svim klijentima: ${data.name}`);
+        } else {
+            console.error('Prazan ili nevalidan buffer za pesmu:', data.name);
+        }
     });
 
  // Obrada diskonekcije korisnika
