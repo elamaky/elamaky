@@ -164,7 +164,7 @@ function addSong(file, name) {         //  PROMENJENA FUNKCIJA NA UPLOAD
     });
 
     songList.appendChild(li);
-}    //  ZAVRSENE PROMENE OVDE
+    //  ZAVRSENE PROMENE OVDE
 
        deleteSelectedButton.addEventListener('click', () => {
             const selectedSongs = document.querySelectorAll('.selected');
