@@ -177,27 +177,8 @@ async function playSong(index) {
         } catch (error) {
             console.error('Greška prilikom pokretanja audia:', error);
         }
-
-        // Kreiraj AudioContext i poveži sa audioPlayer
-        const audioContext = new AudioContext();
-        await audioContext.audioWorklet.addModule('audioStreamProcessor.js'); // Povezivanje sa AudioWorklet
-
-        const source = audioContext.createMediaElementSource(audioPlayer);
-        const processor = new AudioWorkletNode(audioContext, 'audio-stream-processor');
-
-        // Poveži izvor sa procesorom
-        source.connect(processor);
-        processor.connect(audioContext.destination);
-
-        // Emitovanje audio podataka u realnom vremenu putem WebSocket-a
-        processor.port.onmessage = (event) => {
-            const audioData = event.data;
-            socket.emit("audioStream", audioData); // Šaljemo sirove audio podatke preko WebSocket-a
-        };
-
-        // Emitovanje pesme putem WebSocket-a
-        socket.send(JSON.stringify({ action: 'play', url: songs[index].url }));
     }
+}
 
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
@@ -207,19 +188,10 @@ socket.onmessage = (event) => {
         audio.play().catch((error) => {
             console.error('Greška prilikom reprodukcije pesme:', error);
         });
-    } else if (data.action === 'audioStream') {
-        // Prijem audio podataka i reprodukcija
-        const audioContext = new AudioContext();
-        audioContext.decodeAudioData(data.audioBuffer, (buffer) => {
-            const source = audioContext.createBufferSource();
-            source.buffer = buffer;
-            source.connect(audioContext.destination);
-            source.start();
-        }, (error) => {
-            console.error('Greška pri dekodiranju audio podataka:', error);
-        });
     }
 };
+
+
 
 audioPlayer.addEventListener('ended', () => {
     // Izbriši trenutnu pesmu
