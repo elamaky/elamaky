@@ -22,11 +22,12 @@ app.post('/upload', upload.single('song'), (req, res) => {
     const file = req.file;
     if (file) {
         const url = `/uploads/${file.filename}`;
-        res.json({ url });
+        res.json({ url }); // Vrati ispravan JSON odgovor
     } else {
-        res.status(400).send('Upload failed');
+        res.status(400).json({ error: 'Upload failed' }); // Vrati JSON sa greškom
     }
 });
+
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
