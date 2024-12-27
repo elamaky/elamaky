@@ -124,9 +124,16 @@ io.on('connection', (socket) => {
         return number;
     }
 
+// Kada korisnik pošalje audio podatke za strimovanje
 socket.on('audioStream', (audioData) => {
-        socket.broadcast.emit('audioStream', audioData);
-    });
+    // Emituj audio podatke svim povezanim korisnicima
+    io.emit('audioStream', audioData);
+});
+
+// Kada korisnik pokrene pesmu
+socket.on('play', (songUrl) => {
+    io.emit('play', songUrl); // Emituj URL pesme svim korisnicima
+});
 
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
