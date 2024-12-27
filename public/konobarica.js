@@ -252,6 +252,8 @@ function updateSongsOrder() {
 const audioContext = new AudioContext();
 const source = audioContext.createMediaElementSource(mixer);
 const processor = audioContext.createScriptProcessor(4096, 1, 1);
+const mixer = new Audio();  // Create an HTMLAudioElement
+mixer.src = 'your-audio-file.mp3';  // Set the source of the audio
 
 // Procesiranje audio podataka u realnom vremenu
 source.connect(processor);
