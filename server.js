@@ -58,9 +58,7 @@ io.on('connection', (socket) => {
     const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
     guests[socket.id] = nickname; // Dodajemo korisnika u guest list
     socket.emit('setNickname', nickname);
-     let messageText = msgData.text;
-    messageText = messageText.replace(/#n/g, nickname); // Zamenjujemo #n sa nadimkom
-
+    
   // Emitovanje događaja da bi ostali korisnici videli novog gosta
     socket.broadcast.emit('newGuest', nickname);
     io.emit('updateGuestList', Object.values(guests));
@@ -77,6 +75,8 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
+     let messageText = msgData.text;
+    messageText = messageText.replace(/#n/g, nickname); // Zamenjujemo #n sa nadimkom
 // Obrada slanja chat poruka
 socket.on('chatMessage', (msgData) => {
     const time = new Date().toLocaleTimeString();
