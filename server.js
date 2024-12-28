@@ -121,14 +121,18 @@ io.on('connection', (socket) => {
         return number;
     }
  socket.on('stream', (data) => {
-        console.log('Primljen stream od korisnika:', socket.id, 'Naziv pesme:', data.name);
-        // Emituj stream svim korisnicima osim onog koji je poslao
-        for (let guestId in guests) {
-            if (guestId !== socket.id) {
-                io.to(guestId).emit('stream', data);
-            }
+        console.log('Primljen stream od klijenta:', data);
+
+        // Provera da li imamo buffer i da li nije prazan
+        if (data.buffer && data.buffer.byteLength > 0) {
+            console.log('Primljen buffer sa dužinom:', data.buffer.byteLength);
+            // Ovdje možeš da procesuiraš buffer, npr. da ga emituješ drugim korisnicima
+            io.emit('stream', data);  // Emituj stream svim povezanim korisnicima
+        } else {
+            console.error('Prazan ili nevalidan buffer');
         }
     });
+});
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
