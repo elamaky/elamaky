@@ -78,8 +78,11 @@ io.on('connection', (socket) => {
 // Obrada slanja chat poruka
 socket.on('chatMessage', (msgData) => {
     const time = new Date().toLocaleTimeString();
-     const messageToSend = {
-        text: messageText, messageText = messageText.replace('#n', guests[socket.id]);
+    let messageText = msgData.text;
+    messageText = messageText.replace('#n', guests[socket.id]);
+    // Kreiramo objekat sa svim podacima
+    const messageToSend = {
+        text: messageText, // Zamenjeni tekst
         bold: msgData.bold,
         italic: msgData.italic,
         color: msgData.color,
@@ -89,8 +92,10 @@ socket.on('chatMessage', (msgData) => {
         time: time,
     };
 
-    io.emit('chatMessage', messageToSend); // Emitujemo poruku sa zamenjenim nadimkom
+    // Emitujemo poruku sa svim podacima, samo jednom
+    io.emit('chatMessage', messageToSend);
 });
+
 
 
   // Obrada za čišćenje chata
