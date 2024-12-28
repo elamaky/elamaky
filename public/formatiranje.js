@@ -27,26 +27,11 @@ document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPicker').click();
 });
 
-// Kada korisnik izabere boju:
-document.getElementById('colorPicker').addEventListener('input', function(e) {
-  var color = e.target.value;
-  // Promeni boju nickname-a u guest list-i
-  var selectedNickname = document.querySelector('.selected'); // Pronađi selektovanog gosta
-  if (selectedNickname) {
-    selectedNickname.style.color = color;
-  }
+// Kada korisnik izabere boju iz palete
+document.getElementById('colorPicker').addEventListener('input', function() {
+    currentColor = this.value;
+    updateInputStyle();
 });
-
-// Dodavanje klase "selected" na nickname kada korisnik klikne na njega
-document.querySelectorAll('.guest').forEach(function(guest) {
-  guest.addEventListener('click', function() {
-    document.querySelectorAll('.guest').forEach(function(guest) {
-      guest.classList.remove('selected'); // Ukloni prethodnu selekciju
-    });
-    guest.classList.add('selected'); // Dodaj novu selekciju
-  });
-});
-
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
