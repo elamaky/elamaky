@@ -13,12 +13,7 @@ require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
-const io = require('socket.io')(server, {
-    cors: {
-        origin: "*", 
-        methods: ["GET", "POST"]
-    }
-});
+const io = socketIo(server);
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
@@ -50,6 +45,7 @@ const assignedNumbers = new Set(); // Set za generisane brojeve
 // Dodavanje socket događaja iz banmodula
 setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
 privateModule(io, guests);
+let isAudioStreaming = false;
 
 // Socket.io događaji
 io.on('connection', (socket) => {
@@ -97,6 +93,12 @@ io.on('connection', (socket) => {
         io.emit('chat-cleared');
     });
 
+    socket.on('setColor', (color) => {
+  if (guests[socket.id]) {
+    guests[socket.id].color = color; // Ažuriraj boju za korisnika
+    io.emit('updateGuestList', guests); // Pošalji ažuriranu listu gostiju svima
+  }
+});
 // Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
         const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
@@ -120,20 +122,22 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
- socket.on('stream', (data) => {
-        console.log('Primljen stream od klijenta:', data);
 
-        // Provera da li imamo buffer i da li nije prazan
-        if (data.buffer && data.buffer.byteLength > 0) {
-            console.log('Primljen buffer sa dužinom:', data.buffer.byteLength);
-            // Ovdje možeš da procesuiraš buffer, npr. da ga emituješ drugim korisnicima
-            io.emit('stream', data);  // Emituj stream svim povezanim korisnicima
-        } else {
-            console.error('Prazan ili nevalidan buffer');
-        }
-    });
+   socket.on('startStream', (data) => {
+    if (data && data.buffer) {
+        console.log('Primljeni buffer:', data.buffer);
+
+        // Emituj buffer svim povezanim klijentima
+        socket.broadcast.emit('stream', { 
+            buffer: data.buffer, 
+            name: data.name 
+        });
+    } else {
+        console.error('Prazan ili nevalidan buffer!');
+    }
 });
-// Obrada diskonekcije korisnika
+
+ // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
