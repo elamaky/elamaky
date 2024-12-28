@@ -138,8 +138,6 @@ io.on('connection', (socket) => {
             }
         }
     });
-});
-
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
