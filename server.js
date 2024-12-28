@@ -13,12 +13,7 @@ require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
-const io = require('socket.io')(server, {
-    cors: {
-        origin: "*", 
-        methods: ["GET", "POST"]
-    }
-});
+const io = socketIo(server);
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
@@ -29,6 +24,7 @@ app.use(express.json());
 app.use(express.static(__dirname + '/public'));
 app.use('/guests', uuidRouter); // Dodavanje ruta u aplikaciju
 app.set('trust proxy', true);
+app.use(cors());
 
 // Rute za registraciju i prijavu
 app.post('/register', (req, res) => register(req, res, io));
@@ -58,7 +54,7 @@ io.on('connection', (socket) => {
     const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
     guests[socket.id] = nickname; // Dodajemo korisnika u guest list
     socket.emit('setNickname', nickname);
-    
+
   // Emitovanje događaja da bi ostali korisnici videli novog gosta
     socket.broadcast.emit('newGuest', nickname);
     io.emit('updateGuestList', Object.values(guests));
@@ -72,34 +68,43 @@ io.on('connection', (socket) => {
             guests[socket.id] = username;
             console.log(`${username} se prijavio kao gost.`);
         }
+
+        if (guests[socket.id] === 'Radio Galaksija') {
+        const radioGalaksija = guests[socket.id];  // Spremi "Radio Galaksija"
+        delete guests[socket.id];  // Ukloni ga iz trenutne pozicije
+        const updatedGuests = { 
+            [socket.id]: radioGalaksija,  // Dodaj ga na vrh liste
+            ...guests 
+        };
+        guests = updatedGuests;  // Ažuriraj guest listu
+    }
+        
         io.emit('updateGuestList', Object.values(guests));
     });
 
-    // Obrada slanja chat poruka
-socket.on('chatMessage', (msgData) => {
-    const time = new Date().toLocaleTimeString();
-    // Kreiramo objekat sa svim podacima
-    const messageToSend = {
-        text: messageText, // Zamenjeni tekst
-        bold: msgData.bold,
-        italic: msgData.italic,
-        color: msgData.color,
-        underline: msgData.underline,
-        overline: msgData.overline,
-        nickname: guests[socket.id], // Nadimak trenutnog korisnika
-        time: time,
-    };
-     // Emitujemo poruku sa svim podacima, samo jednom
-    io.emit('chatMessage', messageToSend);
-});
+ // Obrada slanja chat poruka
+    socket.on('chatMessage', (msgData) => {
+        const time = new Date().toLocaleTimeString();
+        const messageToSend = {
+            text: msgData.text,
+            bold: msgData.bold,
+            italic: msgData.italic,
+            color: msgData.color,
+             underline: msgData.underline,
+            overline: msgData.overline,
+            nickname: guests[socket.id],
+            time: time,
+        };
+        io.emit('chatMessage', messageToSend);
+    });
 
-// Obrada za čišćenje chata
+  // Obrada za čišćenje chata
     socket.on('clear-chat', () => {
         console.log('Chat cleared');
         io.emit('chat-cleared');
     });
 
-// Mogućnost banovanja korisnika prema nickname-u
+  // Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
         const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
 
@@ -113,7 +118,7 @@ socket.on('chatMessage', (msgData) => {
         }
     });
 
-   // Funkcija za generisanje jedinstvenog broja
+    // Funkcija za generisanje jedinstvenog broja
     function generateUniqueNumber() {
         let number;
         do {
@@ -122,26 +127,15 @@ socket.on('chatMessage', (msgData) => {
         assignedNumbers.add(number);
         return number;
     }
- socket.on('stream', (data) => {
-        console.log('Primljen stream od klijenta:', data);
+});
 
-        // Provera da li imamo buffer i da li nije prazan
-        if (data.buffer && data.buffer.byteLength > 0) {
-            console.log('Primljen buffer sa dužinom:', data.buffer.byteLength);
-            // Ovdje možeš da procesuiraš buffer, npr. da ga emituješ drugim korisnicima
-            io.emit('stream', data);  // Emituj stream svim povezanim korisnicima
-        } else {
-            console.error('Prazan ili nevalidan buffer');
-        }
-    });
-
-// Obrada diskonekcije korisnika
+ // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
         io.emit('updateGuestList', Object.values(guests));
     });
-     });
+
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
