@@ -257,6 +257,7 @@ audioPlayer.addEventListener('play', () => {
             .then(buffer => {
                 console.log('Buffer pre slanja:', buffer);
                 if (buffer && buffer.byteLength > 0) {
+                    console.log('Emitujem stream...');
                     socket.emit('stream', { 
                         buffer: buffer,  // Šaljemo ArrayBuffer
                         name: currentSong.name 
