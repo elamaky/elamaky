@@ -10,6 +10,8 @@ const slikemodul = require('./slikemodul');
 const pingService = require('./ping');
 const privateModule = require('./privatmodul'); // Podesi putanju ako je u drugom folderu
 require('dotenv').config();
+const cors = require('cors');
+
 
 const app = express();
 const server = http.createServer(app);
