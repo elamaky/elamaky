@@ -10,6 +10,7 @@ const slikemodul = require('./slikemodul');
 const pingService = require('./ping');
 const privateModule = require('./privatmodul'); // Podesi putanju ako je u drugom folderu
 require('dotenv').config();
+const cors = require('cors');
 
 const app = express();
 const server = http.createServer(app);
@@ -123,18 +124,18 @@ io.on('connection', (socket) => {
         return number;
     }
 
-   socket.on('startStream', (data) => {
-    if (data && data.buffer) {
-        console.log('Primljeni buffer:', data.buffer);
+// Kada korisnik pošalje audio podatke za strimovanje
+socket.on('audioStream', (audioData) => {
+    console.log('Primljeni audio podaci od korisnika:', audioData);  // Logujemo dolazak audio podataka
+    io.emit('audioStream', audioData);  // Emituj audio podatke svim povezanim korisnicima
+    console.log('Audio podaci emitovani svim korisnicima');
+});
 
-        // Emituj buffer svim povezanim klijentima
-        socket.broadcast.emit('stream', { 
-            buffer: data.buffer, 
-            name: data.name 
-        });
-    } else {
-        console.error('Prazan ili nevalidan buffer!');
-    }
+// Kada korisnik pokrene pesmu
+socket.on('play', (songUrl) => {
+    console.log('Primljen URL pesme:', songUrl);  // Logujemo URL pesme koji je primljen
+    io.emit('play', songUrl);  // Emituj URL pesme svim korisnicima
+    console.log('URL pesme emitovan svim korisnicima');
 });
 
  // Obrada diskonekcije korisnika
