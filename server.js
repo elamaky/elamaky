@@ -87,8 +87,6 @@ socket.on('chatMessage', (msgData) => {
         underline: msgData.underline,
         overline: msgData.overline,
         nickname: guests[socket.id], // Nadimak trenutnog korisnika
-         let messageText = msgData.text;
-        messageText = messageText.replace(/#n/g, nickname); // Zamenjujemo #n sa nadimkom
         time: time,
     };
      // Emitujemo poruku sa svim podacima, samo jednom
