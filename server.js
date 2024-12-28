@@ -79,7 +79,9 @@ io.on('connection', (socket) => {
 socket.on('chatMessage', (msgData) => {
     const time = new Date().toLocaleTimeString();
     let messageText = msgData.text;
-    messageText = messageText.replace('#n', guests[socket.id]);
+   for (let guestId in guests) {
+        messageText = messageText.replace('#n', guests[guestId]);
+    }
     // Kreiramo objekat sa svim podacima
     const messageToSend = {
         text: messageText, // Zamenjeni tekst
@@ -96,9 +98,7 @@ socket.on('chatMessage', (msgData) => {
     io.emit('chatMessage', messageToSend);
 });
 
-
-
-  // Obrada za čišćenje chata
+// Obrada za čišćenje chata
     socket.on('clear-chat', () => {
         console.log('Chat cleared');
         io.emit('chat-cleared');
