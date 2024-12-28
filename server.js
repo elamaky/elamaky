@@ -113,38 +113,36 @@ socket.on('userLoggedIn', (username) => {
         io.emit('chat-cleared');
     });
 
-  // Mogućnost banovanja korisnika prema nickname-u
-    socket.on('banUser', (nicknameToBan) => {
-        const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
+// Mogućnost banovanja korisnika prema nickname-u
+socket.on('banUser', (nicknameToBan) => {
+    const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
 
-        if (socketIdToBan) {
-            io.to(socketIdToBan).emit('banned');
-            io.sockets.sockets[socketIdToBan].disconnect();
-            console.log(`Korisnik ${nicknameToBan} (ID: ${socketIdToBan}) je banovan.`);
-        } else {
-            console.log(`Korisnik ${nicknameToBan} nije pronađen.`);
-            socket.emit('userNotFound', nicknameToBan);
-        }
-    });
-
-    // Funkcija za generisanje jedinstvenog broja
-    function generateUniqueNumber() {
-        let number;
-        do {
-            number = Math.floor(Math.random() * 8889) + 1111; // Brojevi između 1111 i 9999
-        } while (assignedNumbers.has(number));
-        assignedNumbers.add(number);
-        return number;
+    if (socketIdToBan) {
+        io.to(socketIdToBan).emit('banned');
+        io.sockets.connected[socketIdToBan].disconnect();  // Ispravljeno na connected
+        console.log(`Korisnik ${nicknameToBan} (ID: ${socketIdToBan}) je banovan.`);
+    } else {
+        console.log(`Korisnik ${nicknameToBan} nije pronađen.`);
+        socket.emit('userNotFound', nicknameToBan);
     }
 });
 
- // Obrada diskonekcije korisnika
-    socket.on('disconnect', () => {
-        console.log(`${guests[socket.id]} se odjavio.`);
-        delete guests[socket.id];
-        io.emit('updateGuestList', Object.values(guests));
-    
-  });
+// Funkcija za generisanje jedinstvenog broja
+function generateUniqueNumber() {
+    let number;
+    do {
+        number = Math.floor(Math.random() * 8889) + 1111; // Brojevi između 1111 i 9999
+    } while (assignedNumbers.has(number)); // Ovdje čekaš dok broj ne bude slobodan
+    assignedNumbers.add(number);
+    return number;
+}
+
+// Obrada diskonekcije korisnika
+socket.on('disconnect', () => {
+    console.log(`${guests[socket.id]} se odjavio.`);
+    delete guests[socket.id];
+    io.emit('updateGuestList', Object.values(guests));
+});
 
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
