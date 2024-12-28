@@ -130,16 +130,17 @@ io.on('connection', (socket) => {
         return number;
     }
  
-socket.on('stream', (data) => {
-    if (data && data.buffer) {
-        console.log('Primljen stream sa klijenta:', data.name);
-        socket.broadcast.emit('stream', data); // Emituj svim povezanim korisnicima
-    } else {
-        console.error('Prazan buffer ili URL!');
-    }
-});
+// Emitovanje streama svim korisnicima (osim onog koji šalje)
+    socket.on('stream', (data) => {
+        console.log('Primljen stream od korisnika:', socket.id, 'Naziv pesme:', data.name);
 
-
+        // Emituj stream svim korisnicima osim onog koji je poslao
+        for (let guestId in guests) {
+            if (guestId !== socket.id) {
+                io.to(guestId).emit('stream', data);
+            }
+        }
+    });
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
