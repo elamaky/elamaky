@@ -74,11 +74,10 @@ io.on('connection', (socket) => {
         }
         io.emit('updateGuestList', Object.values(guests));
     });
-
+ messageText = messageText.replace(/#n/g, nickname);
 // Obrada slanja chat poruka
 socket.on('chatMessage', (msgData) => {
     const time = new Date().toLocaleTimeString();
-   const messageText = msgData.text.replace(/#n/g, guests[socket.id]); 
     // Kreiramo objekat sa svim podacima
     const messageToSend = {
         text: messageText, // Zamenjeni tekst
