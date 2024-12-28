@@ -136,7 +136,7 @@ io.on('connection', (socket) => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
         io.emit('updateGuestList', Object.values(guests));
-    });
+    
   });
 
 // Pokretanje servera na definisanom portu
