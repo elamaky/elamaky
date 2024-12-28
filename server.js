@@ -62,27 +62,34 @@ io.on('connection', (socket) => {
     io.emit('updateGuestList', Object.values(guests));
 
     // Obrada prijave korisnika
-    socket.on('userLoggedIn', (username) => {
-        if (authorizedUsers.has(username)) {
-            guests[socket.id] = username;
-            console.log(`${username} je autentifikovan kao admin.`);
-        } else {
-            guests[socket.id] = username;
-            console.log(`${username} se prijavio kao gost.`);
-        }
+socket.on('userLoggedIn', (username) => {
+    if (authorizedUsers.has(username)) {
+        guests[socket.id] = username;
+        console.log(`${username} je autentifikovan kao admin.`);
+    } else {
+        guests[socket.id] = username;
+        console.log(`${username} se prijavio kao gost.`);
+    }
 
-        if (guests[socket.id] === 'Radio Galaksija') {
+    // Provera da li je korisnik Radio Galaksija
+    if (guests[socket.id] === 'Radio Galaksija') {
         const radioGalaksija = guests[socket.id];  // Spremi "Radio Galaksija"
         delete guests[socket.id];  // Ukloni ga iz trenutne pozicije
+
+        // Dodaj Radio Galaksija na vrh liste
         const updatedGuests = { 
             [socket.id]: radioGalaksija,  // Dodaj ga na vrh liste
             ...guests 
         };
-        guests = updatedGuests;  // Ažuriraj guest listu
+
+        // Ažuriraj guest listu
+        guests = updatedGuests;  // Menjaj guest listu, jer je guests sada promenljiv
     }
-        
-        io.emit('updateGuestList', Object.values(guests));
-    });
+
+    // Emitovanje ažurirane liste gostiju
+    io.emit('updateGuestList', Object.values(guests));
+});
+
 
  // Obrada slanja chat poruka
     socket.on('chatMessage', (msgData) => {
