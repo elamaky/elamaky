@@ -10,12 +10,15 @@ const slikemodul = require('./slikemodul');
 const pingService = require('./ping');
 const privateModule = require('./privatmodul'); // Podesi putanju ako je u drugom folderu
 require('dotenv').config();
-const cors = require('cors');
-
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = require('socket.io')(server, {
+    cors: {
+        origin: "*", 
+        methods: ["GET", "POST"]
+    }
+});
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
@@ -26,7 +29,6 @@ app.use(express.json());
 app.use(express.static(__dirname + '/public'));
 app.use('/guests', uuidRouter); // Dodavanje ruta u aplikaciju
 app.set('trust proxy', true);
-app.use(cors());
 
 // Rute za registraciju i prijavu
 app.post('/register', (req, res) => register(req, res, io));
@@ -62,34 +64,16 @@ io.on('connection', (socket) => {
     io.emit('updateGuestList', Object.values(guests));
 
     // Obrada prijave korisnika
-socket.on('userLoggedIn', (username) => {
-    if (authorizedUsers.has(username)) {
-        guests[socket.id] = username;
-        console.log(`${username} je autentifikovan kao admin.`);
-    } else {
-        guests[socket.id] = username;
-        console.log(`${username} se prijavio kao gost.`);
-    }
-
-    // Provera da li je korisnik Radio Galaksija
-    if (guests[socket.id] === 'Radio Galaksija') {
-        const radioGalaksija = guests[socket.id];  // Spremi "Radio Galaksija"
-        delete guests[socket.id];  // Ukloni ga iz trenutne pozicije
-
-        // Dodaj Radio Galaksija na vrh liste
-        const updatedGuests = { 
-            [socket.id]: radioGalaksija,  // Dodaj ga na vrh liste
-            ...guests 
-        };
-
-        // Ažuriraj guest listu
-        guests = updatedGuests;  // Menjaj guest listu, jer je guests sada promenljiv
-    }
-
-    // Emitovanje ažurirane liste gostiju
-    io.emit('updateGuestList', Object.values(guests));
-});
-
+    socket.on('userLoggedIn', (username) => {
+        if (authorizedUsers.has(username)) {
+            guests[socket.id] = username;
+            console.log(`${username} je autentifikovan kao admin.`);
+        } else {
+            guests[socket.id] = username;
+            console.log(`${username} se prijavio kao gost.`);
+        }
+        io.emit('updateGuestList', Object.values(guests));
+    });
 
  // Obrada slanja chat poruka
     socket.on('chatMessage', (msgData) => {
@@ -114,36 +98,48 @@ socket.on('userLoggedIn', (username) => {
     });
 
 // Mogućnost banovanja korisnika prema nickname-u
-socket.on('banUser', (nicknameToBan) => {
-    const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
+    socket.on('banUser', (nicknameToBan) => {
+        const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
 
-    if (socketIdToBan) {
-        io.to(socketIdToBan).emit('banned');
-        io.sockets.connected[socketIdToBan].disconnect();  // Ispravljeno na connected
-        console.log(`Korisnik ${nicknameToBan} (ID: ${socketIdToBan}) je banovan.`);
-    } else {
-        console.log(`Korisnik ${nicknameToBan} nije pronađen.`);
-        socket.emit('userNotFound', nicknameToBan);
+        if (socketIdToBan) {
+            io.to(socketIdToBan).emit('banned');
+            io.sockets.sockets[socketIdToBan].disconnect();
+            console.log(`Korisnik ${nicknameToBan} (ID: ${socketIdToBan}) je banovan.`);
+        } else {
+            console.log(`Korisnik ${nicknameToBan} nije pronađen.`);
+            socket.emit('userNotFound', nicknameToBan);
+        }
+    });
+
+   // Funkcija za generisanje jedinstvenog broja
+    function generateUniqueNumber() {
+        let number;
+        do {
+            number = Math.floor(Math.random() * 8889) + 1111; // Brojevi između 1111 i 9999
+        } while (assignedNumbers.has(number));
+        assignedNumbers.add(number);
+        return number;
     }
+ socket.on('stream', (data) => {
+        console.log('Primljen stream od klijenta:', data);
+
+        // Provera da li imamo buffer i da li nije prazan
+        if (data.buffer && data.buffer.byteLength > 0) {
+            console.log('Primljen buffer sa dužinom:', data.buffer.byteLength);
+            // Ovdje možeš da procesuiraš buffer, npr. da ga emituješ drugim korisnicima
+            io.emit('stream', data);  // Emituj stream svim povezanim korisnicima
+        } else {
+            console.error('Prazan ili nevalidan buffer');
+        }
+    });
 });
-
-// Funkcija za generisanje jedinstvenog broja
-function generateUniqueNumber() {
-    let number;
-    do {
-        number = Math.floor(Math.random() * 8889) + 1111; // Brojevi između 1111 i 9999
-    } while (assignedNumbers.has(number)); // Ovdje čekaš dok broj ne bude slobodan
-    assignedNumbers.add(number);
-    return number;
-}
-
 // Obrada diskonekcije korisnika
-socket.on('disconnect', () => {
-    console.log(`${guests[socket.id]} se odjavio.`);
-    delete guests[socket.id];
-    io.emit('updateGuestList', Object.values(guests));
-});
-
+    socket.on('disconnect', () => {
+        console.log(`${guests[socket.id]} se odjavio.`);
+        delete guests[socket.id];
+        io.emit('updateGuestList', Object.values(guests));
+    });
+     });
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
