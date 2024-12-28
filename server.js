@@ -129,11 +129,8 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
- 
-// Emitovanje streama svim korisnicima (osim onog koji šalje)
-    socket.on('stream', (data) => {
+ socket.on('stream', (data) => {
         console.log('Primljen stream od korisnika:', socket.id, 'Naziv pesme:', data.name);
-
         // Emituj stream svim korisnicima osim onog koji je poslao
         for (let guestId in guests) {
             if (guestId !== socket.id) {
@@ -141,6 +138,8 @@ io.on('connection', (socket) => {
             }
         }
     });
+});
+
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
