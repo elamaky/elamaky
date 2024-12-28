@@ -78,15 +78,8 @@ io.on('connection', (socket) => {
 // Obrada slanja chat poruka
 socket.on('chatMessage', (msgData) => {
     const time = new Date().toLocaleTimeString();
-
-    // Zamenjujemo #n sa odgovarajućim nadimkom iz liste gostiju
-    let messageText = msgData.text;
-    guests.forEach(guest => {
-        messageText = messageText.replace('#n', guest); // Zamenjujemo #n sa svakim gostom
-    });
-
-    const messageToSend = {
-        text: messageText,
+     const messageToSend = {
+        text: messageText, messageText = messageText.replace('#n', guests[socket.id]);
         bold: msgData.bold,
         italic: msgData.italic,
         color: msgData.color,
