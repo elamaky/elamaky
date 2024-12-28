@@ -78,7 +78,8 @@ io.on('connection', (socket) => {
 // Obrada slanja chat poruka
 socket.on('chatMessage', (msgData) => {
     const time = new Date().toLocaleTimeString();
-    messageText = messageText.replace(/#n/g, guests[socket.id]);
+   let messageText = msgData.text;
+    messageText = messageText.replace(/#n/g, nickname[socket.id]);
     // Kreiramo objekat sa svim podacima
     const messageToSend = {
         text: messageText, // Zamenjeni tekst
