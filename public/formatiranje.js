@@ -27,11 +27,11 @@ document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPicker').click();
 });
 
-// Kada korisnik izabere boju iz palete
-document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
+document.getElementById('colorPicker').addEventListener('input', function(e) {
+  var color = e.target.value;
+  document.getElementById('nickname').style.color = color;
 });
+
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
