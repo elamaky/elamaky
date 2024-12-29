@@ -124,11 +124,10 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-     // Listen for audio data from client and broadcast to all users
-    socket.on('audioData', (data) => {
-        io.emit('audioStream', data); // Send audio data to all clients
+   socket.on('audioData', (data) => {
+        console.log('Primljeni audio podaci:', data);
+        socket.broadcast.emit('audioStream', data);
     });
-
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
