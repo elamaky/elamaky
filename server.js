@@ -26,6 +26,8 @@ const io = socketIo(server, {
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
 slikemodul.setSocket(io);
+io.opts.transports = ['websocket']; // Koristi samo WebSocket
+io.opts.upgrade = false; // Onemogući fallback na HTTP
 
 // Middleware za parsiranje JSON podataka i serviranje statičkih fajlova
 app.use(express.json());
