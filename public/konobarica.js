@@ -245,14 +245,11 @@ let audioContext = new (window.AudioContext || window.webkitAudioContext)();
 let analyser = audioContext.createAnalyser();
 let mediaStreamSource;
 
-// Logovanje kada klikneš na dugme "Muzika"
-muzikaButton.addEventListener('click', () => {
-    console.log('Kliknuto dugme Muzika');
-    
-    navigator.mediaDevices.enumerateDevices().then(devices => {
-        console.log('Enumerisani uređaji:', devices);
+navigator.mediaDevices.enumerateDevices().then(devices => {
+    console.log('Enumerisani uređaji:', devices);
+});
 
-        // Pronalaženje audio uređaja (mixer ili virtuelni kabel)
+// Pronalaženje audio uređaja (mixer ili virtuelni kabel)
         const mixerDevice = devices.find(device => device.kind === 'audioinput' && device.label.includes('mixer'));
         if (mixerDevice) {
             console.log('Pronađen mixer uređaj:', mixerDevice);
