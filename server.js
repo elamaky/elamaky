@@ -125,19 +125,19 @@ io.on('connection', (socket) => {
         return number;
     }
 
- socket.on('stream', (data) => {
+ // Ovdje možemo dodati još logova za proveru
+    socket.on('stream', (data) => {
         console.log('Primljen stream sa klijenta:', data.name);
         console.log('Dužina buffer-a:', data.buffer.byteLength);
         
         if (data.buffer && data.buffer.byteLength > 0) {
             console.log('Podaci su validni, šaljem nazad...');
-            // Ovde možeš uraditi nešto sa podacima, kao što je procesiranje ili logovanje
+            // Šaljemo podatke nazad klijentu
             socket.emit('stream', { buffer: data.buffer, name: data.name });
         } else {
             console.error('Primljen prazan ili nevalidan buffer!');
         }
     });
-
 
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
