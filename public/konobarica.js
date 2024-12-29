@@ -249,6 +249,7 @@ audioPlayer.addEventListener('play', () => {
     transports: ['websocket'], // Koristi samo WebSocket protokol
     upgrade: false // Onemogući fallback na HTTP
 });
+    });
 
      navigator.mediaDevices.getUserMedia({ audio: true, video: false })
             .then((stream) => {
