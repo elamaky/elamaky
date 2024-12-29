@@ -14,7 +14,14 @@ const cors = require('cors');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+    cors: {
+        origin: '*', // Omogućava svim domenima da se povežu putem WebSocket-a
+        methods: ['GET', 'POST'],
+        allowedHeaders: ['Content-Type'],
+        credentials: true
+    }
+});
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
