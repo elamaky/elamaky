@@ -124,16 +124,10 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-    let songQueue = [];
-
-  // Emit current song list to the new user
-  socket.emit('songList', songQueue);
-
-  // Listen for song to be added to the queue
-  socket.on('addSong', (song) => {
-    songQueue.push(song);
-    io.emit('songList', songQueue); // Broadcast to all users
-  });
+     // Listen for audio data from client and broadcast to all users
+    socket.on('audioData', (data) => {
+        io.emit('audioStream', data); // Send audio data to all clients
+    });
 
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
