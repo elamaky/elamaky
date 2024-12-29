@@ -245,7 +245,7 @@ audioPlayer.addEventListener('play', () => {
     console.log('Pesma se pušta.');
     const currentSong = songs[currentSongIndex];
 
-    const socket = io({
+    let socket = io({
         transports: ['websocket'], // Koristi samo WebSocket protokol
         upgrade: false // Onemogući fallback na HTTP
     });
