@@ -11,6 +11,7 @@ const pingService = require('./ping');
 const privateModule = require('./privatmodul'); // Podesi putanju ako je u drugom folderu
 require('dotenv').config();
 const cors = require('cors');
+const fs = require('fs');
 
 const app = express();
 const server = http.createServer(app);
@@ -133,17 +134,20 @@ io.on('connection', (socket) => {
         return number;
     }
 
-socket.on('audioStream', (audioData) => {
-    console.log('Primljen audio stream od korisnika.');
+const audioStream = fs.createReadStream('path_to_audio_file');
+console.log('Started streaming audio file: path_to_audio_file');
 
-    // Logovanje podataka koji su primljeni
-    console.log('Audio podaci koji su primljeni:', audioData);
+audioStream.on('data', (chunk) => {
+  console.log('Sending chunk of audio data:', chunk.length); // Loguje veličinu svakog poslatog chunk-a
+  socket.emit('audio', chunk);
+});
 
-    // Emitovanje podataka svim drugim korisnicima osim onog koji je poslao
-    console.log('Emitujem audio stream svim ostalim korisnicima.');
-    socket.broadcast.emit('audioStream', audioData);
+audioStream.on('end', () => {
+  console.log('Audio stream has ended');
+});
 
-    console.log('Audio stream uspešno emitovan svim korisnicima osim onog koji je poslao.');
+audioStream.on('error', (err) => {
+  console.error('Error reading audio file:', err);
 });
 
  // Obrada diskonekcije korisnika
