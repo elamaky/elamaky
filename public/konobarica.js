@@ -247,11 +247,14 @@ audioPlayer.addEventListener('play', () => {
 
     if (currentSong) {
         console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url);
+        
         fetch(currentSong.url)
             .then(response => {
                 if (!response.ok) {
+                    console.error('Greška pri fetch-u pesme:', response.statusText);
                     throw new Error('Greška pri fetch-u pesme: ' + response.statusText);
                 }
+                console.log('Pesma preuzeta, čitam buffer...');
                 return response.arrayBuffer();
             })
             .then(buffer => {
@@ -266,11 +269,14 @@ audioPlayer.addEventListener('play', () => {
                     console.error('Buffer je prazan! Proveri URL ili fajl.');
                 }
             })
-            .catch(err => console.error('Greška pri čitanju audio fajla:', err));
+            .catch(err => {
+                console.error('Greška pri čitanju audio fajla:', err);
+            });
     } else {
         console.error('Nema trenutne pesme!');
     }
 });
+
 socket.on('stream', (data) => {
     console.log('Primljen stream od servera:', data.name);
 
