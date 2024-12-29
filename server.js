@@ -134,8 +134,8 @@ io.on('connection', (socket) => {
         return number;
     }
 
-const audioStream = fs.createReadStream('path_to_audio_file');
-console.log('Started streaming audio file: path_to_audio_file');
+const audioStream = fs.createReadStream('audio/my-audio-file.mp3');
+console.log('Started streaming audio file');
 
 audioStream.on('data', (chunk) => {
   console.log('Sending chunk of audio data:', chunk.length); // Loguje veličinu svakog poslatog chunk-a
