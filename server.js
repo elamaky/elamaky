@@ -101,12 +101,6 @@ io.on('connection', (socket) => {
         io.emit('chat-cleared');
     });
 
-    socket.on('setColor', (color) => {
-  if (guests[socket.id]) {
-    guests[socket.id].color = color; // Ažuriraj boju za korisnika
-    io.emit('updateGuestList', guests); // Pošalji ažuriranu listu gostiju svima
-  }
-});
 // Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
         const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
@@ -130,6 +124,7 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
+    let songQueue = [];
 
   // Emit current song list to the new user
   socket.emit('songList', songQueue);
