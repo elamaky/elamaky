@@ -243,31 +243,49 @@ function updateSongsOrder() {
 
 audioPlayer.addEventListener('play', () => {
     console.log('Pesma se pušta.');
+
     const currentSong = songs[currentSongIndex];
+    console.log('Trenutna pesma:', currentSong);
 
     socket.io.opts.transports = ['websocket']; // Koristi samo WebSocket protokol
     socket.io.opts.upgrade = false; // Onemogući fallback na HTTP
+    console.log('Podešavanja za WebSocket transport su postavljena.');
 
     // Strimovanje zvuka direktno iz audioPlayer
     const stream = audioPlayer.captureStream();
+    console.log('Stream audio player-a je započet.');
 
     const mediaRecorder = new MediaRecorder(stream);
+    console.log('MediaRecorder je inicijalizovan.');
 
     mediaRecorder.ondataavailable = (event) => {
+        console.log('Dostupni podaci za strimovanje: ', event.data);
+        
         const audioBlob = event.data;
         const fileReader = new FileReader();
-        
+        console.log('Početak čitanja audio podataka kao base64 string.');
+
         fileReader.readAsDataURL(audioBlob);
         
         fileReader.onloadend = () => {
             const base64String = fileReader.result;
+            console.log('Base64 string uspešno generisan:', base64String);
             console.log('Šaljem audio stream serveru...');
             socket.emit("audioStream", base64String);
         };
+
+        fileReader.onerror = (err) => {
+            console.error('Greška prilikom čitanja audio podataka:', err);
+        };
+    };
+
+    mediaRecorder.onerror = (err) => {
+        console.error('Greška u MediaRecorder-u:', err);
     };
 
     // Start snimanja i strimovanja
     mediaRecorder.start();
+    console.log('MediaRecorder je započeo snimanje.');
 });
 
 // Prijem audio stream-a od servera
@@ -276,7 +294,18 @@ socket.on('audioStream', (audioData) => {
 
     // Priprema audio podataka za reprodukciju
     const newData = audioData.replace('data:audio/wav;', 'data:audio/ogg;');
+    console.log('Pripremam audio podatke za reprodukciju:', newData);
+
     const audio = new Audio(newData);
+    console.log('Reprodukujemo audio stream.');
 
     audio.play();
+
+    audio.onplay = () => {
+        console.log('Audio uspešno pušten.');
+    };
+
+    audio.onerror = (err) => {
+        console.error('Greška prilikom puštanja audio stream-a:', err);
+    };
 });
