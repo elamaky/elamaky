@@ -245,49 +245,55 @@ audioPlayer.addEventListener('play', () => {
     console.log('Pesma se pušta.');
     const currentSong = songs[currentSongIndex]; 
 
-    if (currentSong) {
-        console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url);
-
-        fetch(currentSong.url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Greška pri fetch-u pesme: ' + response.statusText);
-                }
-                return response.arrayBuffer();
-            })
-            .then(buffer => {
-                console.log('Buffer pre slanja:', buffer);
-                if (buffer && buffer.byteLength > 0) {
-                    console.log('Emitujem stream...');
-                    // Šaljemo buffer pesme serveru
-                    socket.emit('stream', { 
-                        buffer: buffer, 
-                        name: currentSong.name 
-                    });
-                } else {
-                    console.error('Buffer je prazan! Proveri URL ili fajl.');
-                }
-            })
-            .catch(err => console.error('Greška pri čitanju audio fajla:', err));
-    } else {
-        console.error('Nema trenutne pesme!');
-    }
+    let socket = io("http://localhost:3000", {
+    transports: ['websocket'],
+    upgrade: false
 });
 
-socket.on('stream', (data) => {
-    console.log('Primljen stream od servera:', data.name);
+socket.on('connect', () => {
+  navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+    .then((stream) => {
+        var madiaRecorder = new MediaRecorder(stream);
+        var audioChunks = [];
 
-    if (data.buffer && data.buffer.byteLength > 0) {
-        console.log('Primljen buffer za pesmu:', data.name);
+        madiaRecorder.addEventListener("dataavailable", function (event) {
+            audioChunks.push(event.data);
+        });
 
-        // Kreiraj Blob iz ArrayBuffer-a
-        const audio = new Audio();
-        const blob = new Blob([data.buffer], { type: 'audio/mpeg' });
-        audio.src = URL.createObjectURL(blob);  // Kreiraj URL za Blob
-        audio.play();
+        madiaRecorder.addEventListener("stop", function () {
+            var audioBlob = new Blob(audioChunks);
+            audioChunks = [];
+            var fileReader = new FileReader();
+            fileReader.readAsDataURL(audioBlob);
+            fileReader.onloadend = function () {
+                var base64String = fileReader.result;
+                socket.emit("audioStream", base64String);
+            };
 
-        console.log('Pesma se reprodukuje:', data.name);
-    } else {
-        console.error('Primljen buffer je prazan ili nevalidan:', data.name);
+            madiaRecorder.start();
+            setTimeout(function () {
+                madiaRecorder.stop();
+            }, 1000);
+        });
+
+        madiaRecorder.start();
+        setTimeout(function () {
+            madiaRecorder.stop();
+        }, 1000);
+    })
+    .catch((error) => {
+        console.error('Error capturing audio.', error);
+    });
+});
+
+socket.on('audioStream', (audioData) => {
+    var newData = audioData.split(";");
+    newData[0] = "data:audio/ogg;";
+    newData = newData[0] + newData[1];
+
+    var audio = new Audio(newData);
+    if (!audio || document.hidden) {
+        return;
     }
+    audio.play();
 });
