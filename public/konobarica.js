@@ -241,47 +241,61 @@ function updateSongsOrder() {
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
 
-const startStreamButton = document.getElementById('startStream');
-       let audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        let analyser = audioContext.createAnalyser();
-        let mediaStreamSource;
+let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+let analyser = audioContext.createAnalyser();
+let mediaStreamSource;
 
-        // Start the stream from the mixer (virtual audio device)
-        startStreamButton.addEventListener('click', () => {
-            navigator.mediaDevices.enumerateDevices().then(devices => {
-                // Find the audio input device (your mixer or virtual cable)
-                const mixerDevice = devices.find(device => device.kind === 'audioinput' && device.label.includes('mixer'));
-                if (mixerDevice) {
-                    navigator.mediaDevices.getUserMedia({ audio: { deviceId: mixerDevice.deviceId } })
-                        .then((stream) => {
-                            mediaStreamSource = audioContext.createMediaStreamSource(stream);
-                            mediaStreamSource.connect(analyser);
-                            analyser.connect(audioContext.destination);
-                            
-                            // Send audio data to the server
-                            function sendAudioData() {
-                                let buffer = new Float32Array(analyser.frequencyBinCount);
-                                analyser.getFloatFrequencyData(buffer);
-                                socket.emit('audioData', buffer);
-                                requestAnimationFrame(sendAudioData);
-                            }
-                            sendAudioData();
-                        })
-                        .catch(err => console.error("Error accessing mixer: ", err));
-                } else {
-                    console.error("Mixer device not found.");
-                }
-            });
-        });
-
-        // Receive and play audio stream
-        socket.on('audioStream', (data) => {
-            let buffer = new Float32Array(data);
-            let audioBuffer = audioContext.createBuffer(1, buffer.length, audioContext.sampleRate);
-            audioBuffer.getChannelData(0).set(buffer);
-            let source = audioContext.createBufferSource();
-            source.buffer = audioBuffer;
-            source.connect(audioContext.destination);
-            source.start();
-        });
+// Logovanje kada klikneš na dugme "Muzika"
+muzikaButton.addEventListener('click', () => {
+    console.log('Kliknuto dugme Muzika');
     
+    navigator.mediaDevices.enumerateDevices().then(devices => {
+        console.log('Enumerisani uređaji:', devices);
+
+        // Pronalaženje audio uređaja (mixer ili virtuelni kabel)
+        const mixerDevice = devices.find(device => device.kind === 'audioinput' && device.label.includes('mixer'));
+        if (mixerDevice) {
+            console.log('Pronađen mixer uređaj:', mixerDevice);
+            
+            navigator.mediaDevices.getUserMedia({ audio: { deviceId: mixerDevice.deviceId } })
+                .then((stream) => {
+                    console.log('Uspješan pristup uređaju, stream počinje...');
+                    mediaStreamSource = audioContext.createMediaStreamSource(stream);
+                    mediaStreamSource.connect(analyser);
+                    analyser.connect(audioContext.destination);
+                    
+                    // Slanje audio podataka serveru
+                    function sendAudioData() {
+                        let buffer = new Float32Array(analyser.frequencyBinCount);
+                        analyser.getFloatFrequencyData(buffer);
+                        console.log('Slanje audio podataka:', buffer);
+                        socket.emit('audioData', buffer);
+                        requestAnimationFrame(sendAudioData);
+                    }
+                    sendAudioData();
+                })
+                .catch(err => {
+                    console.error("Greška pri pristupu mixeru:", err);
+                });
+        } else {
+            console.error("Mixer uređaj nije pronađen.");
+        }
+    }).catch(err => {
+        console.error("Greška pri enumeraciji uređaja:", err);
+    });
+});
+
+// Prijem audio stream-a i puštanje
+socket.on('audioStream', (data) => {
+    console.log('Prijem audio stream-a:', data);
+
+    let buffer = new Float32Array(data);
+    let audioBuffer = audioContext.createBuffer(1, buffer.length, audioContext.sampleRate);
+    audioBuffer.getChannelData(0).set(buffer);
+    let source = audioContext.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(audioContext.destination);
+    source.start();
+
+    console.log('Audio stream pušten.');
+});
