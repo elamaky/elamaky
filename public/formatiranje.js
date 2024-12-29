@@ -109,11 +109,11 @@ function updateInputStyle() {
 }
 
 // Kada korisnik pritisne Enter
-let nickname;
 document.getElementById('chatInput').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
         let message = this.value;
+        newGuest.textContent = nickname;
         socket.emit('chatMessage', {
             text: message,
             bold: isBold,
