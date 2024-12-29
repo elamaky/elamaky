@@ -241,33 +241,49 @@ function updateSongsOrder() {
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
 
+const startStreamButton = document.getElementById('startStream');
+        const audioPlayer = document.getElementById('audioPlayer');
 
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const song = URL.createObjectURL(file);
-                socket.emit('addSong', song);
-            }
-        });
+        let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let analyser = audioContext.createAnalyser();
+        let mediaStreamSource;
 
-       
-        socket.on('songList', (songs) => {
-            songList.innerHTML = '';
-            songs.forEach((song, index) => {
-                const li = document.createElement('li');
-                li.textContent = `Song ${index + 1}`;
-                li.addEventListener('click', () => {
-                    audioPlayer.src = song;
-                    audioPlayer.play();
-                });
-                songList.appendChild(li);
+        // Start the stream from the mixer (virtual audio device)
+        startStreamButton.addEventListener('click', () => {
+            navigator.mediaDevices.enumerateDevices().then(devices => {
+                // Find the audio input device (your mixer or virtual cable)
+                const mixerDevice = devices.find(device => device.kind === 'audioinput' && device.label.includes('mixer'));
+                if (mixerDevice) {
+                    navigator.mediaDevices.getUserMedia({ audio: { deviceId: mixerDevice.deviceId } })
+                        .then((stream) => {
+                            mediaStreamSource = audioContext.createMediaStreamSource(stream);
+                            mediaStreamSource.connect(analyser);
+                            analyser.connect(audioContext.destination);
+                            
+                            // Send audio data to the server
+                            function sendAudioData() {
+                                let buffer = new Float32Array(analyser.frequencyBinCount);
+                                analyser.getFloatFrequencyData(buffer);
+                                socket.emit('audioData', buffer);
+                                requestAnimationFrame(sendAudioData);
+                            }
+                            sendAudioData();
+                        })
+                        .catch(err => console.error("Error accessing mixer: ", err));
+                } else {
+                    console.error("Mixer device not found.");
+                }
             });
         });
 
-       
-        socket.on('songList', (songs) => {
-            if (songs.length > 0) {
-                audioPlayer.src = songs[0];
-                audioPlayer.play();
-            }
+        // Receive and play audio stream
+        socket.on('audioStream', (data) => {
+            let buffer = new Float32Array(data);
+            let audioBuffer = audioContext.createBuffer(1, buffer.length, audioContext.sampleRate);
+            audioBuffer.getChannelData(0).set(buffer);
+            let source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+            source.connect(audioContext.destination);
+            source.start();
         });
+    
