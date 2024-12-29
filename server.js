@@ -131,17 +131,8 @@ io.on('connection', (socket) => {
         return number;
     }
 
- socket.on('stream', (data) => {
-        console.log('Primljen stream sa klijenta:', data.name);
-        console.log('Dužina buffer-a:', data.buffer.byteLength);
-
-        if (data.buffer && data.buffer.byteLength > 0) {
-            console.log('Podaci su validni, šaljem nazad...');
-            // Šaljemo nazad klijentima
-            socket.emit('stream', { buffer: data.buffer, name: data.name });
-        } else {
-            console.error('Primljen prazan ili nevalidan buffer!');
-        }
+socket.on('audioStream', (audioData) => {
+        socket.broadcast.emit('audioStream', audioData);
     });
 
  // Obrada diskonekcije korisnika
