@@ -113,13 +113,12 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
     if (event.key === 'Enter') {
         event.preventDefault();
         let message = this.value;
-        let newGuest = textContent = nickname;
         socket.emit('chatMessage', {
             text: message,
             bold: isBold,
             italic: isItalic,
             color: currentColor,
-            nickname: nickname // Pošalji ime gosta
+            
         });
         this.value = ''; // Isprazni polje za unos
     }
