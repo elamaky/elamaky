@@ -241,21 +241,33 @@ function updateSongsOrder() {
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
 
-function handleAudioStream(stream) {
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  const source = audioContext.createMediaStreamSource(stream);
-  source.connect(audioContext.destination);
-  console.log('Audio stream connected to AudioContext');
-}
 
-socket.on('audio-stream', (audioData) => {
-  console.log('Received audio data');
-  
-  const audioBlob = new Blob([audioData], { type: 'audio/wav' });
-  const audioUrl = URL.createObjectURL(audioBlob);
-  console.log('Created audio URL:', audioUrl);
-  
-  const audioElement = new Audio(audioUrl);
-  audioElement.play();
-  console.log('Audio playback started');
-});
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const song = URL.createObjectURL(file);
+                socket.emit('addSong', song);
+            }
+        });
+
+       
+        socket.on('songList', (songs) => {
+            songList.innerHTML = '';
+            songs.forEach((song, index) => {
+                const li = document.createElement('li');
+                li.textContent = `Song ${index + 1}`;
+                li.addEventListener('click', () => {
+                    audioPlayer.src = song;
+                    audioPlayer.play();
+                });
+                songList.appendChild(li);
+            });
+        });
+
+       
+        socket.on('songList', (songs) => {
+            if (songs.length > 0) {
+                audioPlayer.src = songs[0];
+                audioPlayer.play();
+            }
+        });
