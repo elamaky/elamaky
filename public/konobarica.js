@@ -242,9 +242,7 @@ function updateSongsOrder() {
 }
 
 const startStreamButton = document.getElementById('startStream');
-        const audioPlayer = document.getElementById('audioPlayer');
-
-        let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+       let audioContext = new (window.AudioContext || window.webkitAudioContext)();
         let analyser = audioContext.createAnalyser();
         let mediaStreamSource;
 
