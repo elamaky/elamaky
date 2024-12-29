@@ -245,13 +245,12 @@ audioPlayer.addEventListener('play', () => {
     console.log('Pesma se pušta.');
     const currentSong = songs[currentSongIndex]; 
 
-    // Inicijalizacija Socket.IO konekcije
-    let socket = io("http://localhost:3000", {
-        transports: ['websocket'],
-        upgrade: false
-    });
+  let socket = io({
+    transports: ['websocket'], // Koristi samo WebSocket protokol
+    upgrade: false // Onemogući fallback na HTTP
+});
 
-    socket.on('connect', () => {
+      socket.on('connect', () => {
         console.log('Povezan na server preko socket.io');
 
         navigator.mediaDevices.getUserMedia({ audio: true, video: false })
