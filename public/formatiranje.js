@@ -109,6 +109,7 @@ function updateInputStyle() {
 }
 
 // Kada korisnik pritisne Enter
+let nickname;
 document.getElementById('chatInput').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
