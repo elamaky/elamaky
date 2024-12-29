@@ -245,12 +245,10 @@ audioPlayer.addEventListener('play', () => {
     console.log('Pesma se pušta.');
     const currentSong = songs[currentSongIndex];
 
-    let socket = io({
-        transports: ['websocket'], // Koristi samo WebSocket protokol
-        upgrade: false // Onemogući fallback na HTTP
-    });
+   socket.io.opts.transports = ['websocket']; // Koristi samo WebSocket protokol
+socket.io.opts.upgrade = false; // Onemogući fallback na HTTP
 
-    navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+  navigator.mediaDevices.getUserMedia({ audio: true, video: false })
         .then((stream) => {
             const mediaRecorder = new MediaRecorder(stream);
             let audioChunks = [];
