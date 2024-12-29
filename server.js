@@ -25,6 +25,7 @@ app.use(express.json());
 app.use(express.static(__dirname + '/public'));
 app.use('/guests', uuidRouter); // Dodavanje ruta u aplikaciju
 app.set('trust proxy', true);
+app.use(cors());
 
 // Rute za registraciju i prijavu
 app.post('/register', (req, res) => register(req, res, io));
