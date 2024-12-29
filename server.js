@@ -125,19 +125,19 @@ io.on('connection', (socket) => {
         return number;
     }
 
-// Kada korisnik pošalje audio podatke za strimovanje
-socket.on('audioStream', (audioData) => {
-    console.log('Primljeni audio podaci od korisnika:', audioData);  // Logujemo dolazak audio podataka
-    io.emit('audioStream', audioData);  // Emituj audio podatke svim povezanim korisnicima
-    console.log('Audio podaci emitovani svim korisnicima');
-});
+ socket.on('stream', (data) => {
+        console.log('Primljen stream sa klijenta:', data.name);
+        console.log('Dužina buffer-a:', data.buffer.byteLength);
+        
+        if (data.buffer && data.buffer.byteLength > 0) {
+            console.log('Podaci su validni, šaljem nazad...');
+            // Ovde možeš uraditi nešto sa podacima, kao što je procesiranje ili logovanje
+            socket.emit('stream', { buffer: data.buffer, name: data.name });
+        } else {
+            console.error('Primljen prazan ili nevalidan buffer!');
+        }
+    });
 
-// Kada korisnik pokrene pesmu
-socket.on('play', (songUrl) => {
-    console.log('Primljen URL pesme:', songUrl);  // Logujemo URL pesme koji je primljen
-    io.emit('play', songUrl);  // Emituj URL pesme svim korisnicima
-    console.log('URL pesme emitovan svim korisnicima');
-});
 
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
