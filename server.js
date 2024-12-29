@@ -132,8 +132,17 @@ io.on('connection', (socket) => {
     }
 
 socket.on('audioStream', (audioData) => {
-        socket.broadcast.emit('audioStream', audioData);
-    });
+    console.log('Primljen audio stream od korisnika.');
+
+    // Logovanje podataka koji su primljeni
+    console.log('Audio podaci koji su primljeni:', audioData);
+
+    // Emitovanje podataka svim drugim korisnicima osim onog koji je poslao
+    console.log('Emitujem audio stream svim ostalim korisnicima.');
+    socket.broadcast.emit('audioStream', audioData);
+
+    console.log('Audio stream uspešno emitovan svim korisnicima osim onog koji je poslao.');
+});
 
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
