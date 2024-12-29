@@ -11,7 +11,6 @@ const pingService = require('./ping');
 const privateModule = require('./privatmodul'); // Podesi putanju ako je u drugom folderu
 require('dotenv').config();
 const cors = require('cors');
-const fs = require('fs');
 
 const app = express();
 const server = http.createServer(app);
@@ -27,8 +26,6 @@ const io = socketIo(server, {
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
 slikemodul.setSocket(io);
-io.opts.transports = ['websocket']; // Koristi samo WebSocket
-io.opts.upgrade = false; // Onemogući fallback na HTTP
 
 // Middleware za parsiranje JSON podataka i serviranje statičkih fajlova
 app.use(express.json());
@@ -134,21 +131,14 @@ io.on('connection', (socket) => {
         return number;
     }
 
-const audioStream = fs.createReadStream('audio/my-audio-file.mp3');
-console.log('Started streaming audio file');
+  // Emit current song list to the new user
+  socket.emit('songList', songQueue);
 
-audioStream.on('data', (chunk) => {
-  console.log('Sending chunk of audio data:', chunk.length); // Loguje veličinu svakog poslatog chunk-a
-  socket.emit('audio', chunk);
-});
-
-audioStream.on('end', () => {
-  console.log('Audio stream has ended');
-});
-
-audioStream.on('error', (err) => {
-  console.error('Error reading audio file:', err);
-});
+  // Listen for song to be added to the queue
+  socket.on('addSong', (song) => {
+    songQueue.push(song);
+    io.emit('songList', songQueue); // Broadcast to all users
+  });
 
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
