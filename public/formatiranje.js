@@ -112,20 +112,7 @@ function updateInputStyle() {
 document.getElementById('chatInput').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
-        let message = this.value;
-        socket.emit('chatMessage', {
-            text: message,
-            bold: isBold,
-            italic: isItalic,
-            color: currentColor,
-            
-        });
-        this.value = ''; // Isprazni polje za unos
-    }
-});
-
-
-// Kada server pošalje poruku
+       // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
     let messageArea = document.getElementById('messageArea');
     let newMessage = document.createElement('div');
