@@ -250,10 +250,7 @@ audioPlayer.addEventListener('play', () => {
     upgrade: false // Onemogući fallback na HTTP
 });
 
-      socket.on('connect', () => {
-        console.log('Povezan na server preko socket.io');
-
-        navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+     navigator.mediaDevices.getUserMedia({ audio: true, video: false })
             .then((stream) => {
                 const mediaRecorder = new MediaRecorder(stream);
                 let audioChunks = [];
