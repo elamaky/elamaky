@@ -286,18 +286,16 @@ if (songs.length > 0) {
 
 
 
-  // Funkcija za pokretanje pesme na osnovu indeksa
-    function playSong(index) {
-        if (index >= 0 && index < songs.length) {
-            currentSongIndex = index;
-            console.log('Puštam pesmu sa indeksom:', index, 'Ime:', songs[index].name); // Log za validan indeks
-            audioPlayer.src = songs[index].url; // Postavljamo URL pesme
-            audioPlayer.play(); // Pokrećemo reprodukciju pesme
-        } else {
-            console.error('Indeks pesme nije validan:', index); // Log za nevalidan indeks
-        }
-    
-});
+ function playSong(index) {
+    if (index >= 0 && index < songs.length) {
+        currentSongIndex = index;
+        console.log('Puštam pesmu sa indeksom:', index, 'Ime:', songs[index].name); // Log za validan indeks
+        audioPlayer.src = songs[index].url; // Postavljamo URL pesme
+        audioPlayer.play(); // Pokrećemo reprodukciju pesme
+    } else {
+        console.error('Indeks pesme nije validan:', index); // Log za nevalidan indeks
+    }
+}
 
 // Kada klijent primi stream sa servera
 socket.on('stream', (data) => {
