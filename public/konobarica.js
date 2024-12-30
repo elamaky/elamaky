@@ -243,38 +243,29 @@ function updateSongsOrder() {
 
 // KODOVI ZA STRIMOVANJE 
 audioPlayer.addEventListener('play', () => {
-    console.log('Pesma se pušta.'); // Log za puštanje pesme
-    const currentSong = songs[currentSongIndex]; // Podesi trenutno igranu pesmu
+    console.log('Pesma se pušta.');
+    const currentSong = songs[currentSongIndex];
 
     if (currentSong) {
-        console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url); // Log za trenutnu pesmu
-        console.log('Fetch URL:', currentSong.url);
+        console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url);
+
         fetch(currentSong.url)
             .then((response) => {
-                console.log('Response:', response);
                 if (!response.ok) {
                     throw new Error('Greška pri fetch-u pesme: ' + response.statusText);
                 }
                 return response.arrayBuffer();
             })
-     .then((buffer) => {
-    console.log('Tip buffer-a:', buffer.constructor.name);  // Dodaj ovu liniju
-    console.log('Buffer pre slanja:', buffer);
-    if (buffer && buffer.byteLength > 0) {
-        socket.emit('stream', { 
-            buffer: buffer,  // Šaljemo ArrayBuffer direktno
-            name: currentSong.name 
-        });
-    
-     } else {
-                    console.error('Buffer je prazan! Proveri URL ili fajl.');
-                }
+            .then((buffer) => {
+                const uint8Array = new Uint8Array(buffer); // Konvertuj ArrayBuffer u Uint8Array
+                socket.emit('stream', { buffer: uint8Array, name: currentSong.name });
             })
             .catch((err) => console.error('Greška pri čitanju audio fajla:', err));
     } else {
-        console.error('Nije pronađena trenutna pesma!'); // Log za slučaj kada pesma ne postoji
+        console.error('Nije pronađena trenutna pesma!');
     }
 });
+
 
 // Početno pokretanje pesme čim korisnik uđe na stranicu
 if (songs.length > 0) {
@@ -283,8 +274,6 @@ if (songs.length > 0) {
 } else {
     console.warn('Lista pesama je prazna!'); // Log za prazan niz pesama
 }
-
-
 
  function playSong(index) {
     if (index >= 0 && index < songs.length) {
@@ -301,24 +290,16 @@ if (songs.length > 0) {
 socket.on('stream', (data) => {
     console.log('Prikačen strim sa servera:', data.name);
 
-    // Kreiraj AudioContext za dekodiranje i reprodukciju audio podataka
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const arrayBuffer = new Uint8Array(data.buffer).buffer; // Konvertuj nazad u ArrayBuffer
 
-    if (data.buffer && data.buffer.byteLength > 0) {
-        console.log('Dekodiram audio podatke za pesmu:', data.name);
-
-        audioContext.decodeAudioData(data.buffer, (decodedData) => {
-            console.log('Audio podaci dekodirani uspešno za pesmu:', data.name);
-
-            const source = audioContext.createBufferSource();
-            source.buffer = decodedData; // Postavi dekodirane podatke
-            source.connect(audioContext.destination); // Poveži na zvučnike
-            source.start(); // Pokreni reprodukciju
-            console.log('Pesma se reprodukuje:', data.name);
-        }, (error) => {
-            console.error('Greška pri dekodiranju audio podataka za pesmu:', data.name, error);
-        });
-    } else {
-        console.error('Primljen buffer je prazan ili nevalidan za pesmu:', data.name);
-    }
+    audioContext.decodeAudioData(arrayBuffer, (decodedData) => {
+        const source = audioContext.createBufferSource();
+        source.buffer = decodedData;
+        source.connect(audioContext.destination);
+        source.start();
+        console.log('Pesma se reprodukuje:', data.name);
+    }, (error) => {
+        console.error('Greška pri dekodiranju audio podataka za pesmu:', data.name, error);
+    });
 });
