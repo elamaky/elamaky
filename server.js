@@ -7,28 +7,32 @@ const { setupSocketEvents } = require('./banmodul'); // Uvoz funkcije iz banmodu
 const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const konobaricaModul = require('./konobaricamodul'); // Uvoz konobaricamodul.js
 const slikemodul = require('./slikemodul');
-const router = require('./memorymodul'); // Uvoz ruta iz memorymodul.js
 const pingService = require('./ping');
 const privateModule = require('./privatmodul'); // Podesi putanju ako je u drugom folderu
 require('dotenv').config();
+const cors = require('cors');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
-let isAudioStreaming = false;
+const io = socketIo(server, {
+    cors: {
+        origin: '*', // Omogućava svim domenima da se povežu putem WebSocket-a
+        methods: ['GET', 'POST'],
+        allowedHeaders: ['Content-Type'],
+        credentials: true
+    }
+});
 
 connectDB(); // Povezivanje na bazu podataka
 konobaricaModul(io);
 slikemodul.setSocket(io);
-
 
 // Middleware za parsiranje JSON podataka i serviranje statičkih fajlova
 app.use(express.json());
 app.use(express.static(__dirname + '/public'));
 app.use('/guests', uuidRouter); // Dodavanje ruta u aplikaciju
 app.set('trust proxy', true);
-app.use('/api', router); // Mount ruta na /api
-
+app.use(cors());
 
 // Rute za registraciju i prijavu
 app.post('/register', (req, res) => register(req, res, io));
@@ -57,9 +61,9 @@ io.on('connection', (socket) => {
     const uniqueNumber = generateUniqueNumber();
     const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
     guests[socket.id] = nickname; // Dodajemo korisnika u guest list
-    console.log(`${nickname} se povezao.`);
+    socket.emit('setNickname', nickname);
 
-    // Emitovanje događaja da bi ostali korisnici videli novog gosta
+  // Emitovanje događaja da bi ostali korisnici videli novog gosta
     socket.broadcast.emit('newGuest', nickname);
     io.emit('updateGuestList', Object.values(guests));
 
@@ -75,7 +79,7 @@ io.on('connection', (socket) => {
         io.emit('updateGuestList', Object.values(guests));
     });
 
-    // Obrada slanja chat poruka
+ // Obrada slanja chat poruka
     socket.on('chatMessage', (msgData) => {
         const time = new Date().toLocaleTimeString();
         const messageToSend = {
@@ -91,20 +95,13 @@ io.on('connection', (socket) => {
         io.emit('chatMessage', messageToSend);
     });
 
-    // Obrada za čišćenje chata
+  // Obrada za čišćenje chata
     socket.on('clear-chat', () => {
         console.log('Chat cleared');
         io.emit('chat-cleared');
     });
 
- // Obrada diskonekcije korisnika
-    socket.on('disconnect', () => {
-        console.log(`${guests[socket.id]} se odjavio.`);
-        delete guests[socket.id];
-        io.emit('updateGuestList', Object.values(guests));
-    });
-
-    // Mogućnost banovanja korisnika prema nickname-u
+// Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
         const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
 
@@ -118,7 +115,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Funkcija za generisanje jedinstvenog broja
+   // Funkcija za generisanje jedinstvenog broja
     function generateUniqueNumber() {
         let number;
         do {
@@ -127,8 +124,20 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-});
+  socket.on('streamSong', (songUrl) => {
+    console.log('Pesma primljena i spremna za emitovanje: ' + songUrl);
 
+    // Emitovanje pesme samo kad je korisnik pokrene
+    socket.broadcast.emit('streamSong', songUrl);
+    console.log('Pesma emitovana svim povezanim korisnicima: ' + songUrl);
+});
+ // Obrada diskonekcije korisnika
+    socket.on('disconnect', () => {
+        console.log(`${guests[socket.id]} se odjavio.`);
+        delete guests[socket.id];
+        io.emit('updateGuestList', Object.values(guests));
+    });
+     });
 // Pokretanje servera na definisanom portu
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
