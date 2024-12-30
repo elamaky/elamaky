@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radio Galaksija</title>
+     <link rel="icon" type="image/x-icon" href="/favicon.ico">
    <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="styles.css"> <!-- Povezivanje CSS datoteke -->
     <link rel="stylesheet" href="dj.css"> <!-- Povezivanje dj.css sa index.html -->
-    <script>
+    
+ <script>
         window.socket = io(); // Inicializacija socket-a
     </script>
      
@@ -31,6 +33,11 @@
 </div>
 
 <div id="chatContainer">
+    
+<div id="guestList">
+</div>
+
+    
     <div id="toolbar">
         
         <button id="openModal" class="toolbarBtn">D</button>
@@ -44,18 +51,18 @@
         <span class="close">&times;</span>
         
         <!-- Dugmici unutar modala -->
+         <button class="toolbarBtn" id="muzika">Muzika</button>
         <button class="toolbarBtn" id="boldBtn">Bold</button>
         <button class="toolbarBtn" id="italicBtn">Italic</button>
         <!-- Dugme za boju koje sadrži paletu boja -->
         <button class="toolbarBtn" id="colorBtn">Color</button>
-        <!-- Color picker sa širim spektrom boja i kockicama -->
         <input type="color" id="colorPicker" style="display: none;">
         
         <!-- Dodaj druge dugmice po potrebi -->
        <button class="toolbarBtn" id="plusBtn" onclick="increaseFontSize()">+</button>
 <button class="toolbarBtn" id="minusBtn" onclick="decreaseFontSize()">-</button>
-<button class="toolbarBtn" id="linijadoleBtn">DOLE</button>
-<button class="toolbarBtn" id="linijagoreBtn">GORE</button>
+<button class="toolbarBtn" id="linijadoleBtn">Temelj</button>
+<button class="toolbarBtn" id="linijagoreBtn">Krov</button>
 
 
 </div>
@@ -74,9 +81,12 @@
             <button id="addImage"> slika</button>
             <button id="banned">A</button>
              <button id="memorija">memorija</button>
-            <button id="pesme"> Mixer </button>
-            
-             </div>
+            <button id="addVideo"> video </button>
+            <button id="enableCamera"> kamera </button>
+            <button id="pesme">Mixer</button>
+
+
+    </div>
     </div>
 </div>
 
@@ -93,14 +103,22 @@
         <textarea id="chatInput" rows="1" placeholder="Ispeci Pa Reci...Godjaja Lafi.....               ❤️"></textarea>
     </div>
 
+     <div id="mixer">
+        <audio id="audioPlayer" controls style="position: absolute; top: 0px; left: 0;"></audio>
+        <h2 class="title" style="position: absolute; top: 60px; left: 0;">By *__X__*</h2>
+        <input type="file" id="fileInput" multiple style="position: absolute; top: 90px; left: 0; right: 0; margin-bottom: 10px;">
 
-    <div id="guestList">
-</div>
- </div>
-  
+        <ul id="songList"></ul>
+        
+        <div id="mixer-buttons">
+            <button id="playSelected">Play</button>
+            <button id="deleteSelected">Obriši</button>
+            
+             </div>
+    </div>
 
 
- <script src="konobarica.js"></script>
+   <script src="konobarica.js"></script>
 <script src="formatiranje.js"></script> 
  <script src="regist.js"></script>
 <script src="smile.js"></script> 
@@ -118,5 +136,5 @@
      width="300" height="139" 
      style="position: fixed; top: 0; right: 0; z-index: 9999; pointer-events: none;">
 
- </body>
+     </body>
 </html>
