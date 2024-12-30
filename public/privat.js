@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Forma poruke za privatni chat
             chatInput.value = `---->>> ${selectedGuest.textContent} : `;
             console.log("Privatni chat sa: ", selectedGuest.textContent);
-        }
+        
     });
   
     // Kada korisnik pritisne Enter
