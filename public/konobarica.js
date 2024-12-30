@@ -245,50 +245,36 @@ let audioContext = new (window.AudioContext || window.webkitAudioContext)();
 let analyser = audioContext.createAnalyser();
 let mediaStreamSource;
 
+// Enumeracija uređaja
 navigator.mediaDevices.enumerateDevices().then(devices => {
     console.log('Enumerisani uređaji:', devices);
-});
 
-// Pronalaženje audio uređaja (mixer ili virtuelni kabel)
-        const mixerDevice = devices.find(device => device.kind === 'audioinput' && device.label.includes('mixer'));
-        if (mixerDevice) {
-            console.log('Pronađen mixer uređaj:', mixerDevice);
-            
-            navigator.mediaDevices.getUserMedia({ audio: { deviceId: mixerDevice.deviceId } })
-                .then((stream) => {
-                    console.log('Uspješan pristup uređaju, stream počinje...');
-                    mediaStreamSource = audioContext.createMediaStreamSource(stream);
-                    mediaStreamSource.connect(analyser);
-                    analyser.connect(audioContext.destination);
-                    
-                    // Slanje audio podataka serveru
-// Slanje audio podataka serveru
-function sendAudioData() {
-    let buffer = new Float32Array(analyser.frequencyBinCount);
-    analyser.getFloatFrequencyData(buffer);
-    console.log('Slanje audio podataka:', buffer);
-    socket.emit('audioData', buffer);
-    requestAnimationFrame(sendAudioData);
-}
+    // Pronalaženje audio uređaja (mixer ili virtuelni kabel)
+    const mixerDevice = devices.find(device => device.kind === 'audioinput' && device.label.includes('mixer'));
+    if (mixerDevice) {
+        console.log('Pronađen mixer uređaj:', mixerDevice);
 
-sendAudioData(); // pozivanje funkcije za slanje audio podataka
+        navigator.mediaDevices.getUserMedia({ audio: { deviceId: mixerDevice.deviceId } })
+            .then((stream) => {
+                console.log('Uspješan pristup uređaju, stream počinje...');
+                mediaStreamSource = audioContext.createMediaStreamSource(stream);
+                mediaStreamSource.connect(analyser);
+                analyser.connect(audioContext.destination);
 
-// Ostatak koda u vezi sa pristupom uređajima, obradom grešaka i enumeacijom uređaja
-// Pristup audio uređajima
-navigator.mediaDevices.enumerateDevices().then(devices => {
-    let mixer = devices.find(device => device.kind === 'audioinput' && device.label.includes('mixer'));
+                // Slanje audio podataka serveru
+                function sendAudioData() {
+                    let buffer = new Float32Array(analyser.frequencyBinCount);
+                    analyser.getFloatFrequencyData(buffer);
+                    console.log('Slanje audio podataka:', buffer);
+                    socket.emit('audioData', buffer);
+                    requestAnimationFrame(sendAudioData);
+                }
 
-    if (mixer) {
-        // Slanje audio podataka serveru
-        function sendAudioData() {
-            let buffer = new Float32Array(analyser.frequencyBinCount);
-            analyser.getFloatFrequencyData(buffer);
-            console.log('Slanje audio podataka:', buffer);
-            socket.emit('audioData', buffer);
-            requestAnimationFrame(sendAudioData);
-        }
-
-        sendAudioData(); // Pozivanje funkcije za slanje audio podataka
+                sendAudioData(); // Pozivanje funkcije za slanje audio podataka
+            })
+            .catch(err => {
+                console.error("Greška pri pristupu mixeru:", err);
+            });
     } else {
         console.error("Mixer uređaj nije pronađen.");
     }
