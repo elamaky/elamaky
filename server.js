@@ -130,11 +130,12 @@ socket.on('streamSong', (songUrl) => {
     // Ne emitujte odmah, to će se desiti kasnije kada DJ odluči da emituje
 });
 
-// Kada DJ odluči da emituje pesmu
-socket.on('playSong', (songUrl) => {
-    socket.broadcast.emit('streamSong', songUrl);
-    console.log('Pesma emitovana svim povezanim korisnicima: ' + songUrl);
+// Kada DJ obavesti server da pesma zaista svira
+socket.on('songPlaying', (songUrl) => {
+    console.log('Pesma se trenutno pušta: ' + songUrl);
+    socket.broadcast.emit('streamSong', songUrl); // Emituje pesmu svim korisnicima
 });
+
  // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
