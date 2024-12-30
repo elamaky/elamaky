@@ -124,10 +124,14 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-  socket.on('streamSong', (songUrl) => {
+  // Kada se pesma doda u mixer
+socket.on('streamSong', (songUrl) => {
     console.log('Pesma primljena i spremna za emitovanje: ' + songUrl);
+    // Ne emitujte odmah, to će se desiti kasnije kada DJ odluči da emituje
+});
 
-    // Emitovanje pesme samo kad je korisnik pokrene
+// Kada DJ odluči da emituje pesmu
+socket.on('playSong', (songUrl) => {
     socket.broadcast.emit('streamSong', songUrl);
     console.log('Pesma emitovana svim povezanim korisnicima: ' + songUrl);
 });
