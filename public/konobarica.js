@@ -241,58 +241,45 @@ function updateSongsOrder() {
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
 
-let audioContext = new (window.AudioContext || window.webkitAudioContext)();
-let analyser = audioContext.createAnalyser();
-let mediaStreamSource;
+ const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const analyser = audioContext.createAnalyser();
+        let mediaStreamSource;
 
-// Enumeracija uređaja
-navigator.mediaDevices.enumerateDevices().then(devices => {
-    console.log('Enumerisani uređaji:', devices);
+        // Ako je uređaj za snimanje prisutan, započni streamovanje
+        navigator.mediaDevices.enumerateDevices().then(devices => {
+            const mixerDevice = devices.find(device => device.kind === 'audioinput' && device.label.includes('mixer'));
+            if (mixerDevice) {
+                navigator.mediaDevices.getUserMedia({ audio: { deviceId: mixerDevice.deviceId } })
+                    .then(stream => {
+                        mediaStreamSource = audioContext.createMediaStreamSource(stream);
+                        mediaStreamSource.connect(analyser);
+                        analyser.connect(audioContext.destination);
 
-    // Pronalaženje audio uređaja (mixer ili virtuelni kabel)
-    const mixerDevice = devices.find(device => device.kind === 'audioinput' && device.label.includes('mixer'));
-    if (mixerDevice) {
-        console.log('Pronađen mixer uređaj:', mixerDevice);
+                        // Slanje audio podataka serveru
+                        function sendAudioData() {
+                            const buffer = new Float32Array(analyser.frequencyBinCount);
+                            analyser.getFloatFrequencyData(buffer);
+                            socket.emit('audioData', buffer); // Slanje podataka serveru
+                            requestAnimationFrame(sendAudioData);
+                        }
+                        sendAudioData(); // Pokretanje slanja podataka
+                    })
+                    .catch(err => {
+                        console.error("Greška pri pristupu mikrofona:", err);
+                    });
+            }
+        });
 
-        navigator.mediaDevices.getUserMedia({ audio: { deviceId: mixerDevice.deviceId } })
-            .then((stream) => {
-                console.log('Uspješan pristup uređaju, stream počinje...');
-                mediaStreamSource = audioContext.createMediaStreamSource(stream);
-                mediaStreamSource.connect(analyser);
-                analyser.connect(audioContext.destination);
+        // Prijem audio stream-a od servera
+        socket.on('audioStream', (data) => {
+            console.log('Prijem audio stream-a:', data);
 
-                // Slanje audio podataka serveru
-                function sendAudioData() {
-                    let buffer = new Float32Array(analyser.frequencyBinCount);
-                    analyser.getFloatFrequencyData(buffer);
-                    console.log('Slanje audio podataka:', buffer);
-                    socket.emit('audioData', buffer);
-                    requestAnimationFrame(sendAudioData);
-                }
+            let buffer = new Float32Array(data);
+            let audioBuffer = audioContext.createBuffer(1, buffer.length, audioContext.sampleRate);
+            audioBuffer.getChannelData(0).set(buffer);
+            let source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+            source.connect(audioContext.destination);
+            source.start();
 
-                sendAudioData(); // Pozivanje funkcije za slanje audio podataka
-            })
-            .catch(err => {
-                console.error("Greška pri pristupu mixeru:", err);
-            });
-    } else {
-        console.error("Mixer uređaj nije pronađen.");
-    }
-}).catch(err => {
-    console.error("Greška pri enumeraciji uređaja:", err);
-});
-
-// Prijem audio stream-a i puštanje
-socket.on('audioStream', (data) => {
-    console.log('Prijem audio stream-a:', data);
-
-    let buffer = new Float32Array(data);
-    let audioBuffer = audioContext.createBuffer(1, buffer.length, audioContext.sampleRate);
-    audioBuffer.getChannelData(0).set(buffer);
-    let source = audioContext.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(audioContext.destination);
-    source.start();
-
-    console.log('Audio stream pušten.');
-});
+            console.log('Audio stream pušten.');
