@@ -274,11 +274,21 @@ function sendAudioData() {
 sendAudioData(); // pozivanje funkcije za slanje audio podataka
 
 // Ostatak koda u vezi sa pristupom uređajima, obradom grešaka i enumeacijom uređaja
+// Pristup audio uređajima
 navigator.mediaDevices.enumerateDevices().then(devices => {
     let mixer = devices.find(device => device.kind === 'audioinput' && device.label.includes('mixer'));
 
     if (mixer) {
-        // Usmerite dalje kod za pristupanje mixer uređaju
+        // Slanje audio podataka serveru
+        function sendAudioData() {
+            let buffer = new Float32Array(analyser.frequencyBinCount);
+            analyser.getFloatFrequencyData(buffer);
+            console.log('Slanje audio podataka:', buffer);
+            socket.emit('audioData', buffer);
+            requestAnimationFrame(sendAudioData);
+        }
+
+        sendAudioData(); // Pozivanje funkcije za slanje audio podataka
     } else {
         console.error("Mixer uređaj nije pronađen.");
     }
