@@ -124,19 +124,15 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-  // Kada se pesma doda u mixer
-socket.on('streamSong', (songUrl) => {
-    console.log('Pesma primljena i spremna za emitovanje: ' + songUrl);
-    // Ne emitujte odmah, to će se desiti kasnije kada DJ odluči da emituje
+ socket.on('stream', (data) => {
+    console.log('Primljen stream za pesmu:', data.name);
+    socket.broadcast.emit('stream', {
+        buffer: data.buffer,
+        name: data.name,
+    });
 });
 
-// Kada DJ obavesti server da pesma zaista svira
-socket.on('songPlaying', (songUrl) => {
-    console.log('Pesma se trenutno pušta: ' + songUrl);
-    socket.broadcast.emit('streamSong', songUrl); // Emituje pesmu svim korisnicima
-});
-
- // Obrada diskonekcije korisnika
+// Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
