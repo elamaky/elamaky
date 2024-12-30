@@ -262,24 +262,25 @@ navigator.mediaDevices.enumerateDevices().then(devices => {
                     analyser.connect(audioContext.destination);
                     
                     // Slanje audio podataka serveru
-                    function sendAudioData() {
-                        let buffer = new Float32Array(analyser.frequencyBinCount);
-                        analyser.getFloatFrequencyData(buffer);
-                        console.log('Slanje audio podataka:', buffer);
-                        socket.emit('audioData', buffer);
-                        requestAnimationFrame(sendAudioData);
-                    }
-                    sendAudioData();
-                })
-                .catch(err => {
-                    console.error("Greška pri pristupu mixeru:", err);
-                });
-        } else {
-            console.error("Mixer uređaj nije pronađen.");
-        }
-    }).catch(err => {
-        console.error("Greška pri enumeraciji uređaja:", err);
-    });
+function sendAudioData() {
+    let buffer = new Float32Array(analyser.frequencyBinCount);
+    analyser.getFloatFrequencyData(buffer);
+    console.log('Slanje audio podataka:', buffer);
+    socket.emit('audioData', buffer);
+    requestAnimationFrame(sendAudioData);
+}
+
+sendAudioData();
+})
+.catch(err => {
+    console.error("Greška pri pristupu mixeru:", err);
+});
+} else {
+    console.error("Mixer uređaj nije pronađen.");
+}
+}).catch(err => {
+    console.error("Greška pri enumeraciji uređaja:", err);
+});
 });
 
 // Prijem audio stream-a i puštanje
