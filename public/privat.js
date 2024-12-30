@@ -99,6 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 chatInput.value = ''; // Resetuje unos samo za obične poruke
             }
-        }
+        
     });
 });
