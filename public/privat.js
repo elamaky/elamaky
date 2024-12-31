@@ -29,9 +29,8 @@ document.getElementById('privateMessage').addEventListener('click', () => {
     document.querySelectorAll('.guest').forEach(guest => {
         guest.style.pointerEvents = 'none'; // Onemogućavamo selekciju gostiju
     });
-}
 
-    console.log(statusText);
+console.log(statusText);
     alert(statusText);
 });
 
