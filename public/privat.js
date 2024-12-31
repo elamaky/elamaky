@@ -83,20 +83,22 @@ document.addEventListener('DOMContentLoaded', () => {
     overline: isOverline
 });
 
-          // Forma ostaje netaknuta za privatni chat
-            chatInput.value = `---->>> ${recipient} : `;
-        } else {
-            // Emisija obične poruke
-            socket.emit('chatMessage', {
-                text: message,
-                bold: isBold,
-                italic: isItalic,
-                color: currentColor,
-                underline: isUnderline,
-                overline: isOverline
-            });
+               
+               // Forma ostaje netaknuta za privatni chat
+                chatInput.value = `---->>> ${recipient} : `;
+            } else {
+                // Emisija obične poruke
+                socket.emit('chatMessage', {
+                    text: message,
+                    bold: isBold,
+                    italic: isItalic,
+                    color: currentColor,
+                    underline: isUnderline,
+                    overline: isOverline
+                });
 
-            chatInput.value = ''; // Resetuje unos samo za obične poruke
-        }
-    }
-});       
+                chatInput.value = ''; // Resetuje unos samo za obične poruke
+            }
+        
+    });
+});
