@@ -19,12 +19,13 @@ document.getElementById('privateMessage').addEventListener('click', () => {
     });
 
     // Uklanjanje trake sa selektovanog gosta (ako postoji)
-    if (selectedGuest) {
+    if (selectedGuest !== null) {
         selectedGuest.querySelector('.guest-track')?.style.display = 'none'; // Uklanja traku sa selektovanog gosta
         selectedGuest = null; // Resetuje selektovanog gosta
     }
 }
 });
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const guestList = document.getElementById('guestList');
