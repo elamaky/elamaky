@@ -1,36 +1,30 @@
 let isPrivateChatEnabled = false; // Status privatnog chata
 let selectedGuest = null; // Selekcija gosta
 
-// Inicijalno onemogućiti selekciju gostiju
-document.querySelectorAll('.guest').forEach(guest => {
-    guest.style.pointerEvents = 'none'; // Onemogućavamo selekciju gostiju na početku
-});
-
 // Event listener za dugme "Privatna poruka"
 document.getElementById('privateMessage').addEventListener('click', () => {
     isPrivateChatEnabled = !isPrivateChatEnabled;
     const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
 
-    if (isPrivateChatEnabled) {
-        document.querySelectorAll('.guest').forEach(guest => {
-            guest.style.pointerEvents = 'auto'; // Omogućavamo selekciju gostiju
-        });
-    } else {
-        document.querySelectorAll('.guest').forEach(guest => {
-            guest.style.pointerEvents = 'none'; // Onemogućavamo selekciju gostiju
-        });
+   if (isPrivateChatEnabled) {
+    // Logika za omogućavanje selekcije kada je privatni chat uključen
+    document.querySelectorAll('.guest').forEach(guest => {
+        guest.style.pointerEvents = 'auto'; // Omogućavamo selekciju gostiju
+    });
+} else {
+    // Logika za onemogućavanje selekcije kada je privatni chat isključen
+    document.querySelectorAll('.guest').forEach(guest => {
+        guest.style.pointerEvents = 'none'; // Onemogućavamo selekciju gostiju
+        guest.querySelector('.guest-track')?.style.display = 'none'; // Sakrivanje trake sa gosta
+    });
 
-        // Ukloni selekciju sa trenutnog gosta
-        if (selectedGuest) {
-            selectedGuest.style.backgroundColor = ''; // Uklanja traku selekcije
-            selectedGuest = null; // Resetuje selektovanog gosta
-        }
+    // Uklanjanje trake sa selektovanog gosta (ako postoji)
+    if (selectedGuest) {
+        selectedGuest.querySelector('.guest-track')?.style.display = 'none'; // Uklanja traku sa selektovanog gosta
+        selectedGuest = null; // Resetuje selektovanog gosta
     }
-
-    console.log(statusText);
-    alert(statusText);
+}
 });
-
 
 document.addEventListener('DOMContentLoaded', () => {
     const guestList = document.getElementById('guestList');
