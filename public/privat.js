@@ -19,6 +19,21 @@ document.getElementById('privateMessage').addEventListener('click', () => {
     const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
     alert(statusText);
 });
+ if (isPrivateChatEnabled) {
+    // Logika za omogućavanje selekcije kada je privatni chat uključen
+    document.querySelectorAll('.guest').forEach(guest => {
+        guest.style.pointerEvents = 'auto'; // Omogućavamo selekciju gostiju
+    });
+} else {
+    // Logika za onemogućavanje selekcije kada je privatni chat isključen
+    document.querySelectorAll('.guest').forEach(guest => {
+        guest.style.pointerEvents = 'none'; // Onemogućavamo selekciju gostiju
+    });
+}
+
+    console.log(statusText);
+    alert(statusText);
+});
 
 document.addEventListener('DOMContentLoaded', () => {
     const guestList = document.getElementById('guestList');
