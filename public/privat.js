@@ -1,6 +1,11 @@
 let isPrivateChatEnabled = false; // Status privatnog chata
 let selectedGuest = null; // Selekcija gosta
 
+// Inicijalno onemogućiti selekciju gostiju
+document.querySelectorAll('.guest').forEach(guest => {
+    guest.style.pointerEvents = 'none'; // Onemogućavamo selekciju gostiju na početku
+});
+
 // Event listener za dugme "Privatna poruka"
 document.getElementById('privateMessage').addEventListener('click', () => {
     isPrivateChatEnabled = !isPrivateChatEnabled;
