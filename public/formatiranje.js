@@ -26,19 +26,22 @@ document.getElementById('colorBtn').addEventListener('click', function () {
     document.getElementById('colorPicker').click();
 });
 
-// Kada korisnik izabere boju iz palete
+// Kada korisnik izabere boju iz colorPicker-a
 document.getElementById('colorPicker').addEventListener('input', function () {
-    currentColor = this.value;
-    updateInputStyle();
+    currentColor = this.value; // Postavi izabranu boju
+    updateInputStyle(); // Već menja stil za poruke
 
-    // Logika za promenu boje selektovanog gosta
     if (selectedGuest) {
-        selectedGuest.style.backgroundColor = currentColor; // Postavlja novu boju za selektovanog gosta
-        console.log(`Boja gosta "${selectedGuest.textContent}" promenjena u: ${currentColor}`);
-    } else {
-        console.log("Nijedan gost nije selektovan.");
-    }
-});
+        const guestId = `guest-${selectedGuest.textContent}`; // ID gosta baziran na njegovom imenu
+        if (guestsData[guestId]) {
+            // Ažuriraj boju gosta u guestsData
+            guestsData[guestId].color = currentColor;
+
+            // Pronađi element gosta i promeni mu boju u listi
+            const guestElement = document.querySelector(`#guestList .guest:nth-child(${Object.keys(guestsData).indexOf(guestId)+1})`)
+  
+            guestElement.style.color = currentColor;
+
 
 
 // Funkcija za UNDERLINE formatiranje
