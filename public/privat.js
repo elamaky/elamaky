@@ -1,5 +1,5 @@
 let isPrivateChatEnabled = false; // Status privatnog chata
-let selectedGuest = null; // Selekcija gosta
+let selectedGuests = []; // Lista selektovanih gostiju
 
 // Funkcija za ažuriranje stanja gostiju
 function updateGuestSelection() {
@@ -13,11 +13,13 @@ function updateGuestSelection() {
 document.getElementById('privateMessage').addEventListener('click', () => {
     isPrivateChatEnabled = !isPrivateChatEnabled; // Prebacujemo status privatnog chata
 
+    // Kada omogućavamo privatni chat, resetujemo sve selekcije i omogućavamo selekciju svih gostiju
     if (isPrivateChatEnabled) {
-        // Ako privatni chat uključujemo, omogućavamo selekciju
+        selectedGuests = []; // Resetujemo listu izabranih gostiju
         updateGuestSelection();
     } else {
-        selectedGuest = null; // Resetujemo selektovanog gosta kad isključimo privatni chat
+        // Kad isključimo privatni chat, resetujemo selekciju
+        selectedGuests = [];
         updateGuestSelection();
     }
 
@@ -29,14 +31,20 @@ document.getElementById('privateMessage').addEventListener('click', () => {
 document.querySelectorAll('.guest').forEach(guest => {
     guest.addEventListener('click', () => {
         if (isPrivateChatEnabled) {
-            selectedGuest = guest; // Postavljamo selektovanog gosta
-            guest.style.backgroundColor = 'lightblue'; // Primer promene stila odabranog gosta
-            // Ovde možeš dodati logiku za slanje privatne poruke izabranom gostu
-            alert(`Izabrali ste gosta: ${guest.textContent}`);
+            // Dodajemo ili uklanjamo gosta iz liste selektovanih gostiju
+            if (selectedGuests.includes(guest)) {
+                selectedGuests = selectedGuests.filter(g => g !== guest); // Uklanjamo gosta
+                guest.style.backgroundColor = ''; // Resetujemo stil
+            } else {
+                selectedGuests.push(guest); // Dodajemo gosta u listu
+                guest.style.backgroundColor = 'lightblue'; // Mijenjamo stil izabranog gosta
+            }
         }
     });
 });
 
+// Prvo pozivanje funkcije za inicijalno podešavanje
+updateGuestSelection();
 document.addEventListener('DOMContentLoaded', () => {
     const guestList = document.getElementById('guestList');
     const chatInput = document.getElementById('chatInput');
