@@ -110,23 +110,14 @@ function addGuestStyles(guestElement, guestId) {
     colorPickerButton.classList.add('colorPicker');
     colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja
 
-    // Kada korisnik menja boju, samo njegov color picker menja boju
+    // Onemogući interakciju sa color pickerima drugih gostiju
     colorPickerButton.addEventListener('input', function() {
         guestElement.style.color = this.value; // Promeni boju teksta
         guestsData[guestId].color = this.value; // Ažuriraj boju u objektu
     });
 
-    // Onemogući sve ostale color pickere osim ovog
-    const allColorPickers = document.querySelectorAll('.colorPicker');
-    allColorPickers.forEach(picker => {
-        if (picker !== colorPickerButton) {
-            picker.disabled = true; // Onemogući sve ostale
-        }
-    });
-
     guestElement.appendChild(colorPickerButton);
 }
-
 
 // Kada nov gost dođe
 socket.on('newGuest', function(nickname) {
