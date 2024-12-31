@@ -48,12 +48,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 selectedGuest.style.backgroundColor = ''; // Resetuje prethodnog gosta
             }
 
-           if (isPrivateChatEnabled) {
-    selectedGuest = event.target; // Postavlja novog gosta
-    selectedGuest.style.backgroundColor = 'rgba(255, 255, 0, 0.3)'; // Providna žuta traka
-    chatInput.value = `---->>> ${selectedGuest.textContent} : `;
-    console.log("Privatni chat sa: ", selectedGuest.textContent);
-}
+            selectedGuest = event.target; // Postavlja novog gosta
+            selectedGuest.style.backgroundColor = 'rgba(255, 255, 0, 0.3)'; // Providna žuta traka
+            chatInput.value = `---->>> ${selectedGuest.textContent} : `;
+            console.log("Privatni chat sa: ", selectedGuest.textContent);
+        }
+    });
+});
+
 
   // Kada korisnik pritisne Enter
     chatInput.addEventListener('keydown', (event) => {
