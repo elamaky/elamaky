@@ -1,13 +1,20 @@
 let isPrivateChatEnabled = false; // Status privatnog chata
 let selectedGuest = null; // Selekcija gosta
 
-// Inicijalizacija stanja pri učitavanju stranice
-document.addEventListener('DOMContentLoaded', () => {
-    // Postavljanje inicijalnog stanja za goste
-    document.querySelectorAll('.guest').forEach(guest => {
-        guest.style.pointerEvents = 'none'; // Onemogućeno klikanje na goste
-        guest.style.backgroundColor = ''; // Resetovanje stilova
+// Funkcija za ažuriranje stanja gostiju
+function updateGuestState() {
+    const guests = document.querySelectorAll('.guest');
+    guests.forEach(guest => {
+        guest.style.pointerEvents = isPrivateChatEnabled ? 'auto' : 'none'; // Omogućiti/Onemogućiti selekciju
+        if (!isPrivateChatEnabled) {
+            guest.style.backgroundColor = ''; // Reset stilova kada je chat isključen
+        }
     });
+}
+
+// Inicijalizacija pri učitavanju stranice
+document.addEventListener('DOMContentLoaded', () => {
+    updateGuestState(); // Ažuriraj stanje gostiju na početku
 
     const guestList = document.getElementById('guestList');
     const chatInput = document.getElementById('chatInput');
@@ -40,12 +47,7 @@ document.getElementById('privateMessage').addEventListener('click', () => {
     isPrivateChatEnabled = !isPrivateChatEnabled; // Preklopni status
     const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
 
-    document.querySelectorAll('.guest').forEach(guest => {
-        guest.style.pointerEvents = isPrivateChatEnabled ? 'auto' : 'none'; // Omogućiti/Onemogućiti klikanje
-        if (!isPrivateChatEnabled) {
-            guest.style.backgroundColor = ''; // Reset stilova kada je chat isključen
-        }
-    });
+    updateGuestState(); // Dinamično ažuriraj sve goste
 
     if (!isPrivateChatEnabled) {
         selectedGuest = null; // Resetovati selektovanog gosta
@@ -56,7 +58,15 @@ document.getElementById('privateMessage').addEventListener('click', () => {
     alert(statusText);
 });
 
+// Event za dinamičko dodavanje novih gostiju
+const observer = new MutationObserver(() => {
+    updateGuestState(); // Ažuriraj stanje kada se novi gosti dodaju
+});
 
+const guestList = document.getElementById('guestList');
+if (guestList) {
+    observer.observe(guestList, { childList: true }); // Posmatraj promene u listi gostiju
+}
 
 // Kada korisnik pritisne Enter
     chatInput.addEventListener('keydown', (event) => {
