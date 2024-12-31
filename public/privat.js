@@ -1,4 +1,3 @@
-
 let isPrivateChatEnabled = false; // Status privatnog chata
 let selectedGuest = null; // Selekcija gosta
 
@@ -10,7 +9,7 @@ document.getElementById('privateMessage').addEventListener('click', () => {
     if (isPrivateChatEnabled) {
         // Omogućavanje selekcije kada je privatni chat uključen
         document.querySelectorAll('.guest').forEach(guest => {
-            guest.style.pointerEvents = 'auto'; // Omogućavamo selekciju gostiju
+           guest.style.pointerEvents = ''; // Ponovo omogućavamo selektovanje gostiju
         });
     } else {
         // Onemogućavanje selekcije kada je privatni chat isključen
