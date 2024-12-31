@@ -1,5 +1,4 @@
-
-let isPrivateChatEnabled = false; // Status privatnog chata
+let isPrivateChatEnabled = true; // Status privatnog chata
 let selectedGuest = null; // Selekcija gosta
 
 // Event listener za dugme "Privatna poruka"
