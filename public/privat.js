@@ -1,34 +1,29 @@
 let isPrivateChatEnabled = false; // Status privatnog chata
 let selectedGuest = null; // Selekcija gosta
 
-// Event listener za dugme "Privatna poruka"
+// Event listener za dugme "Privatna poruka" (uključivanje i isključivanje privatnog chata)
 document.getElementById('privateMessage').addEventListener('click', () => {
-    isPrivateChatEnabled = !isPrivateChatEnabled;
-    const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
-
     if (isPrivateChatEnabled) {
-        // Omogućavanje selekcije kada je privatni chat uključen
+        // Ako je privatni chat već uključen, isključujemo ga
+        isPrivateChatEnabled = false;
+        selectedGuest = null; // Resetujemo selektovanog gosta
         document.querySelectorAll('.guest').forEach(guest => {
-           guest.style.pointerEvents = ''; // Ponovo omogućavamo selektovanje gostiju
+            guest.style.backgroundColor = ''; // Resetujemo stil gostiju
+            guest.style.pointerEvents = ''; // Ponovo omogućavamo selektovanje gostiju
         });
     } else {
-        // Onemogućavanje selekcije kada je privatni chat isključen
-        document.querySelectorAll('.guest').forEach(guest => {
-            guest.style.pointerEvents = 'none'; // Onemogućavamo selekciju gostiju
-        });
+        // Ako privatni chat nije uključen, uključujemo ga
+        isPrivateChatEnabled = true;
     }
 
-    console.log(statusText);
+    const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
     alert(statusText);
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Postavi isPrivateChatEnabled na false pri učitavanju stranice
-    isPrivateChatEnabled = false;
-
     const guestList = document.getElementById('guestList');
     const chatInput = document.getElementById('chatInput');
-
+   
     // Onemogućavanje selekcije gostiju pri učitavanju stranice
     document.querySelectorAll('.guest').forEach(guest => {
         guest.style.pointerEvents = 'none'; // Onemogućava interakciju sa gostima
