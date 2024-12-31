@@ -1,4 +1,3 @@
-
 let isPrivateChatEnabled = false; // Status privatnog chata
 let selectedGuest = null; // Selekcija gosta
 
@@ -7,17 +6,17 @@ document.getElementById('privateMessage').addEventListener('click', () => {
     isPrivateChatEnabled = !isPrivateChatEnabled;
     const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
 
-   if (isPrivateChatEnabled) {
-    // Logika za omogućavanje selekcije kada je privatni chat uključen
-    document.querySelectorAll('.guest').forEach(guest => {
-        guest.style.pointerEvents = 'auto'; // Omogućavamo selekciju gostiju
-    });
-} else {
-    // Logika za onemogućavanje selekcije kada je privatni chat isključen
-    document.querySelectorAll('.guest').forEach(guest => {
-        guest.style.pointerEvents = 'none'; // Onemogućavamo selekciju gostiju
-    });
-}
+    if (isPrivateChatEnabled) {
+        // Logika za omogućavanje selekcije kada je privatni chat uključen
+        document.querySelectorAll('.guest').forEach(guest => {
+            guest.style.pointerEvents = 'auto'; // Omogućavamo selekciju gostiju
+        });
+    } else {
+        // Logika za onemogućavanje selekcije kada je privatni chat isključen
+        document.querySelectorAll('.guest').forEach(guest => {
+            guest.style.pointerEvents = 'none'; // Onemogućavamo selekciju gostiju
+        });
+    }
 
     console.log(statusText);
     alert(statusText);
@@ -27,9 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
     isPrivateChatEnabled = false; // Osigurava da je privatni chat isključen pri učitavanju stranice
     const guestList = document.getElementById('guestList');
     const chatInput = document.getElementById('chatInput');
-
-   });
-
 
     guestList.addEventListener('click', (event) => {
         if (event.target.classList.contains('guest')) {
@@ -63,9 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
-  
-    // Kada korisnik pritisne Enter
+// Kada korisnik pritisne Enter
     chatInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
