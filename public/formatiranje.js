@@ -3,6 +3,7 @@ let isItalic = false;
 let currentColor = '#FFFFFF';
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
+let selectedGuest = null; // Ako nije već definisano
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
@@ -22,15 +23,24 @@ document.getElementById('italicBtn').addEventListener('click', function() {
 });
 
 // Funkcija za biranje boje
-document.getElementById('colorBtn').addEventListener('click', function() {
+document.getElementById('colorBtn').addEventListener('click', function () {
     document.getElementById('colorPicker').click();
 });
 
 // Kada korisnik izabere boju iz palete
-document.getElementById('colorPicker').addEventListener('input', function() {
+document.getElementById('colorPicker').addEventListener('input', function () {
     currentColor = this.value;
     updateInputStyle();
+
+    // Logika za promenu boje selektovanog gosta
+    if (selectedGuest) {
+        selectedGuest.style.backgroundColor = currentColor; // Postavlja novu boju za selektovanog gosta
+        console.log(`Boja gosta "${selectedGuest.textContent}" promenjena u: ${currentColor}`);
+    } else {
+        console.log("Nijedan gost nije selektovan.");
+    }
 });
+
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
