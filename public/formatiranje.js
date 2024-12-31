@@ -3,7 +3,6 @@ let isItalic = false;
 let currentColor = '#FFFFFF';
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
-let selectedGuest = null; // Ako nije već definisano
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
