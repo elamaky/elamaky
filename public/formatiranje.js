@@ -26,7 +26,6 @@ document.getElementById('colorBtn').addEventListener('click', function () {
     document.getElementById('colorPicker').click();
 });
 
-// Kada korisnik izabere boju iz colorPicker-a
 document.getElementById('colorPicker').addEventListener('input', function () {
     currentColor = this.value; // Postavi izabranu boju
     updateInputStyle(); // Već menja stil za poruke
@@ -38,11 +37,16 @@ document.getElementById('colorPicker').addEventListener('input', function () {
             guestsData[guestId].color = currentColor;
 
             // Pronađi element gosta i promeni mu boju u listi
-            const guestElement = document.querySelector(`#guestList .guest:nth-child(${Object.keys(guestsData).indexOf(guestId)+1})`)
-  
-            guestElement.style.color = currentColor;
+            const guestElement = document.querySelector(`#guestList .guest:nth-child(${Object.keys(guestsData).indexOf(guestId) + 1})`);
 
+            if (guestElement) {
+                // Promeni boju teksta gosta
+                guestElement.style.color = currentColor;
 
+            }
+        }
+    }
+});
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
