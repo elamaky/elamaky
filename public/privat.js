@@ -11,71 +11,51 @@ function updateGuestSelection() {
 
 // Event listener za dugme "Privatna poruka" (uključivanje i isključivanje privatnog chata)
 document.getElementById('privateMessage').addEventListener('click', () => {
-    isPrivateChatEnabled = !isPrivateChatEnabled; // Prebacujemo status privatnog chata
+    isPrivateChatEnabled = !isPrivateChatEnabled;
+    const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
 
-    // Kada omogućavamo privatni chat, resetujemo sve selekcije i omogućavamo selekciju svih gostiju
-    if (isPrivateChatEnabled) {
-        selectedGuests = []; // Resetujemo listu izabranih gostiju
-        updateGuestSelection();
-    } else {
-        // Kad isključimo privatni chat, resetujemo selekciju
-        selectedGuests = [];
-        updateGuestSelection();
+    // Ažuriranje stanja pointerEvents za sve goste
+    document.querySelectorAll('.guest').forEach(guest => {
+        guest.style.pointerEvents = isPrivateChatEnabled ? 'auto' : 'none'; // Omogućava ili onemogućava selekciju
+    });
+
+    // Ukloni selekciju sa trenutnog gosta kada je privatni chat isključen
+    if (!isPrivateChatEnabled && selectedGuest) {
+        selectedGuest.style.backgroundColor = ''; // Uklanja traku selekcije
+        selectedGuest = null; // Resetuje selektovanog gosta
     }
 
-    const statusText = isPrivateChatEnabled ? 'Privatni chat je uključen' : 'Privatni chat je isključen';
+    console.log(statusText);
     alert(statusText);
 });
 
-// Event listener za goste (da se selektuje gost za privatni chat)
-document.querySelectorAll('.guest').forEach(guest => {
-    guest.addEventListener('click', () => {
-        if (isPrivateChatEnabled) {
-            // Dodajemo ili uklanjamo gosta iz liste selektovanih gostiju
-            if (selectedGuests.includes(guest)) {
-                selectedGuests = selectedGuests.filter(g => g !== guest); // Uklanjamo gosta
-                guest.style.backgroundColor = ''; // Resetujemo stil
-            } else {
-                selectedGuests.push(guest); // Dodajemo gosta u listu
-                guest.style.backgroundColor = 'lightblue'; // Mijenjamo stil izabranog gosta
-            }
-        }
-    });
-});
-
-// Prvo pozivanje funkcije za inicijalno podešavanje
-updateGuestSelection();
-document.addEventListener('DOMContentLoaded', () => {
-    const guestList = document.getElementById('guestList');
-    const chatInput = document.getElementById('chatInput');
-
-    guestList.addEventListener('click', (event) => {
-        if (event.target.classList.contains('guest')) {
-            // Ako je privatni chat isključen, onemogućiti selektovanje gostiju
-            if (!isPrivateChatEnabled) {
-                return;
-            }
-
-            // Ako je isti gost kliknut, poništava selekciju (isključuje privatni chat)
-            if (selectedGuest === event.target) {
-                selectedGuest.style.backgroundColor = ''; // Uklanja traku selekcije
-                selectedGuest = null; // Resetuje selektovanog gosta
-                chatInput.value = ''; // Resetuje unos
-                return;
+guestList.addEventListener('click', (event) => {
+    if (event.target.classList.contains('guest')) {
+        // Ukloni ili dodaj traku selekcije samo ako je trenutni gost kliknut
+        if (selectedGuest === event.target) {
+            selectedGuest.style.backgroundColor = ''; // Uklanja traku selekcije
+            selectedGuest = null; // Resetuje selektovanog gosta
+        } else {
+            // Resetovanje prethodnog gosta
+            if (selectedGuest) {
+                selectedGuest.style.backgroundColor = ''; // Uklanja traku selekcije sa prethodnog gosta
             }
 
             // Postavljanje novog selektovanog gosta
-            if (selectedGuest) {
-                selectedGuest.style.backgroundColor = ''; // Resetuje prethodnog gosta
-            }
-
             selectedGuest = event.target; // Postavlja novog gosta
             selectedGuest.style.backgroundColor = 'rgba(255, 255, 0, 0.3)'; // Providna žuta traka
-            chatInput.value = `---->>> ${selectedGuest.textContent} : `; // Forma poruke za privatni chat
+            // Ova linija je uklonjena jer ne želimo da automatski uključujemo privatni chat
+            // isPrivateChatEnabled = true; 
+            // Forma poruke za privatni chat
+            if (isPrivateChatEnabled) {
+                chatInput.value = `---->>> ${selectedGuest.textContent} : `;
+                console.log("Privatni chat sa: ", selectedGuest.textContent);
+            }
         }
-    });
+    }
+});
 
-    // Kada korisnik pritisne Enter
+  // Kada korisnik pritisne Enter
     chatInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
