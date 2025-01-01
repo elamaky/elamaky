@@ -1,3 +1,4 @@
+
 let isPrivateChatEnabled = false; // Status privatnog chata
 let selectedGuest = null; // Selekcija gosta
 
@@ -6,12 +7,17 @@ document.getElementById('privateMessage').addEventListener('click', () => {
     isPrivateChatEnabled = !isPrivateChatEnabled;
     const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
 
-    if (!isPrivateChatEnabled) {
-        selectedGuest = null; // Resetujemo selektovanog gosta
-        document.querySelectorAll('.guest').forEach(guest => {
-            guest.style.backgroundColor = ''; // Resetujemo stil gostiju
-        });
-    }
+   if (isPrivateChatEnabled) {
+    // Logika za omogućavanje selekcije kada je privatni chat uključen
+    document.querySelectorAll('.guest').forEach(guest => {
+        guest.style.pointerEvents = 'auto'; // Omogućavamo selekciju gostiju
+    });
+} else {
+    // Logika za onemogućavanje selekcije kada je privatni chat isključen
+    document.querySelectorAll('.guest').forEach(guest => {
+        guest.style.pointerEvents = 'none'; // Onemogućavamo selekciju gostiju
+    });
+}
 
     console.log(statusText);
     alert(statusText);
@@ -30,6 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 isPrivateChatEnabled = false; // Isključuje privatni chat
                 chatInput.value = ''; // Resetuje unos
                 console.log("Privatni chat isključen.");
+
+                // Dodatak: automatski ukloni stil za selektovanog gosta
+                event.target.style.backgroundColor = ''; // Uklanja traku selekcije sa trenutnog gosta
+
                 return;
             }
 
@@ -47,8 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Privatni chat sa: ", selectedGuest.textContent);
         }
     });
+});
 
-    // Kada korisnik pritisne Enter
+ // Kada korisnik pritisne Enter
     chatInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
@@ -59,20 +70,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 const recipient = selectedGuest.textContent;
                 const time = new Date().toLocaleTimeString();
 
-                socket.emit('private_message', {
-                    to: recipient,
-                    message,
-                     bold: isBold,
-                    italic: isItalic,
-                    color: currentColor,
-                    underline: isUnderline,
-                    overline: isOverline
-                    time
-                });
+               socket.emit('private_message', {
+    to: recipient,
+    message,
+    time,
+    bold: isBold,
+    italic: isItalic,
+    color: currentColor,
+    underline: isUnderline,
+    overline: isOverline
+});
 
-                console.log(`Privatna poruka poslata ${recipient}:`, message);
-
-                // Forma ostaje netaknuta za privatni chat
+               
+               // Forma ostaje netaknuta za privatni chat
                 chatInput.value = `---->>> ${recipient} : `;
             } else {
                 // Emisija obične poruke
