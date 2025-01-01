@@ -4,6 +4,8 @@ module.exports = function (io, guests) {
         socket.on('private_message', ({ to, message, time, bold, italic, color, underline, overline }) => {
             // Pronalazi socket.id primaoca na osnovu imena
             const recipientSocketId = Object.keys(guests).find(id => guests[id] === to);
+            globalPrivateChatEnabled = enabled;
+            io.emit('private_chat_status', globalPrivateChatEnabled);
 
             if (recipientSocketId) {
                 // Slanje privatne poruke primaocu
