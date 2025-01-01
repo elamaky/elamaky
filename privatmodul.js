@@ -1,17 +1,6 @@
 module.exports = function (io, guests) {
-    let isPrivateChatEnabled = false; // Globalni status privatnog chata
-
     // Privatna poruka
     io.on('connection', (socket) => {
-        // Slanje trenutnog statusa privatnog chata novom korisniku
-        socket.emit('privateChatStatus', isPrivateChatEnabled);
-
-        // Rukovanje događajem za promenu statusa privatnog chata
-        socket.on('togglePrivateChat', (status) => {
-            isPrivateChatEnabled = status;
-            io.emit('privateChatStatus', isPrivateChatEnabled); // Emitovanje događaja svim korisnicima
-        });
-
         socket.on('private_message', ({ to, message, time, bold, italic, color, underline, overline }) => {
             // Pronalazi socket.id primaoca na osnovu imena
             const recipientSocketId = Object.keys(guests).find(id => guests[id] === to);
