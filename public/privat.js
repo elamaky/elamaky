@@ -10,12 +10,12 @@ document.getElementById('privateMessage').addEventListener('click', () => {
    if (isPrivateChatEnabled) {
     // Logika za omogućavanje selekcije kada je privatni chat uključen
     document.querySelectorAll('.guest').forEach(guest => {
-        guest.style.pointerEvents = 'auto'; // Omogućavamo selekciju gostiju
+        guest.style.pointerEvents = ''; // Omogućavamo selekciju gostiju
     });
 } else {
     // Logika za onemogućavanje selekcije kada je privatni chat isključen
     document.querySelectorAll('.guest').forEach(guest => {
-        guest.style.pointerEvents = 'none'; // Onemogućavamo selekciju gostiju
+        guest.style.pointerEvents = ''; // Onemogućavamo selekciju gostiju
     });
 }
 
