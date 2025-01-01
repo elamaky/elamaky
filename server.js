@@ -53,7 +53,7 @@ const assignedNumbers = new Set(); // Set za generisane brojeve
 
 // Dodavanje socket događaja iz banmodula
 setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
-privateModule(io, guests);
+privatmodul(io, guests);
 
 // Socket.io događaji
 io.on('connection', (socket) => {
