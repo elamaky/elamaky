@@ -1,37 +1,27 @@
-module.exports = function (io, guests) {
-    // Privatna poruka
-    io.on('connection', (socket) => {
-        socket.on('private_message', ({ to, message, time, bold, italic, color, underline, overline }) => {
-            // Pronalazi socket.id primaoca na osnovu imena
-            const recipientSocketId = Object.keys(guests).find(id => guests[id] === to);
-            globalPrivateChatEnabled = enabled;
-            io.emit('private_chat_status', globalPrivateChatEnabled);
+let isPrivateChatEnabled = false;
 
-            if (recipientSocketId) {
-                // Slanje privatne poruke primaocu
-                io.to(recipientSocketId).emit('private_message', {
-                    from: guests[socket.id],  // Pošiljalac
-                    message,
-                    time,
-                    bold,
-                    italic,
-                    color,
-                    underline,
-                    overline
-                });
+io.on('connection', (socket) => {
+    // Kada admin uključi/isključi privatni chat
+    socket.on('toggle_private_chat', (status) => {
+        isPrivateChatEnabled = status;
 
-                // Slanje privatne poruke pošiljaocu (opciono)
-                socket.emit('private_message', {
-                    from: guests[socket.id],  // Pošiljalac (u odgovoru)
-                    message,
-                    time,
-                    bold,
-                    italic,
-                    color,
-                    underline,
-                    overline
-                });
-            }
-        });
+        // Emituj status svim klijentima
+        io.emit('private_chat_status', isPrivateChatEnabled);
     });
-};
+
+    // Obrada privatnih poruka
+    socket.on('private_message', ({ to, message }) => {
+        const recipientSocket = findSocketByUsername(to); // Funkcija za pronalaženje korisnika po imenu
+        if (recipientSocket && isPrivateChatEnabled) {
+            recipientSocket.emit('private_message', {
+                from: socket.username,
+                message
+            });
+        }
+    });
+
+    // Obrada običnih poruka
+    socket.on('chatMessage', (data) => {
+        io.emit('chatMessage', data);
+    });
+});
