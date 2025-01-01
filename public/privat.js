@@ -5,6 +5,8 @@ let selectedGuest = null; // Selekcija gosta
 document.getElementById('privateMessage').addEventListener('click', () => {
     isPrivateChatEnabled = !isPrivateChatEnabled;
     const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
+     socket.emit('toggle_private_chat', { enabled: isPrivateChatEnabled });
+
 
    if (isPrivateChatEnabled) {
     // Logika za omogućavanje selekcije kada je privatni chat uključen
