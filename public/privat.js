@@ -38,10 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Privatni chat sa: ", selectedGuest.textContent);
         }
     });
-});
 
-
-    // Kada korisnik pritisne Enter
+// Kada korisnik pritisne Enter
     chatInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
