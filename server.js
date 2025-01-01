@@ -8,7 +8,7 @@ const uuidRouter = require('./uuidmodul'); // Putanja do modula
 const konobaricaModul = require('./konobaricamodul'); // Uvoz konobaricamodul.js
 const slikemodul = require('./slikemodul');
 const pingService = require('./ping');
-const privateModule = require('./privatmodul'); // Podesi putanju ako je u drugom folderu
+const privatmodul = require('./privatmodul'); // Podesi putanju ako je u drugom folderu
 require('dotenv').config();
 const cors = require('cors');
 
