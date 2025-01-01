@@ -1,17 +1,24 @@
+let isPrivateChatEnabled = false; // Status privatnog chata
+let selectedGuest = null; // Selekcija gosta
 
 let isPrivateChatEnabled = false; // Status privatnog chata
 let selectedGuest = null; // Selekcija gosta
 
-// Event listener za dugme "Privatna poruka"
+// Event listener za dugme "Privatna poruka" (uključivanje i isključivanje privatnog chata)
 document.getElementById('privateMessage').addEventListener('click', () => {
-    isPrivateChatEnabled = !isPrivateChatEnabled;
-    const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
+    if (isPrivateChatEnabled) {
+        // Ako je privatni chat već uključen, isključujemo ga
+        isPrivateChatEnabled = false;
+        selectedGuest = null; // Resetujemo selektovanog gosta
+        document.querySelectorAll('.guest').forEach(guest => {
+            guest.style.backgroundColor = ''; // Resetujemo stil gostiju
+            guest.style.pointerEvents = ''; // Ponovo omogućavamo selektovanje gostiju
+        });
 
-   if (isPrivateChatEnabled) {
-    // Logika za omogućavanje selekcije kada je privatni chat uključen
-    document.querySelectorAll('.guest').forEach(guest => {
-        guest.style.pointerEvents = ''; // Omogućavamo selekciju gostiju
-    });
+ const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
+    alert(statusText);
+});
+
 } else {
     // Logika za onemogućavanje selekcije kada je privatni chat isključen
     document.querySelectorAll('.guest').forEach(guest => {
