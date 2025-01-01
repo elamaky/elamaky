@@ -1,11 +1,10 @@
 let isPrivateChatEnabled = false; // Status privatnog chata
 let selectedGuest = null; // Selekcija gosta
 
-// Menjanje statusa privatnog chata
-    document.getElementById('privateMessage').addEventListener('click', () => {
-      socket.emit('togglePrivateChat');
-    });
-
+// Event listener za dugme "Privatna poruka"
+document.getElementById('privateMessage').addEventListener('click', () => {
+    isPrivateChatEnabled = !isPrivateChatEnabled;
+    const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
 // Ažuriranje statusa privatnog chata
     socket.on('privateChatStatus', (status) => {
       isPrivateChatEnabled = status;
