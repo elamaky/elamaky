@@ -1,14 +1,14 @@
-let isPrivateChatEnabled = false; // Status privatnog chata
+let isPrivateChatEnabled = false; // Status privatnog chata (kontroliše ga admin)
 let selectedGuest = null; // Selekcija gosta
 
 // Admin uključuje/isključuje privatni chat
 document.getElementById('privateMessage').addEventListener('click', () => {
     isPrivateChatEnabled = !isPrivateChatEnabled;
 
-    // Emituj status svim korisnicima
+    // Obaveštavanje servera da je privatni chat uključen/isključen
     socket.emit('toggle_private_chat', isPrivateChatEnabled);
 
-    const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
+    const statusText = isPrivateChatEnabled ? `Privatni chat je uključen za sve` : `Privatni chat je isključen`;
     alert(statusText);
 });
 
@@ -16,17 +16,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const guestList = document.getElementById('guestList');
     const chatInput = document.getElementById('chatInput');
 
-    // Prijem statusa privatnog čata od servera
+    // Kada server pošalje status privatnog chata svim klijentima
     socket.on('private_chat_status', (status) => {
         isPrivateChatEnabled = status;
-        const statusText = isPrivateChatEnabled ? "Privatni chat je uključen" : "Privatni chat je isključen";
+
+        const statusText = isPrivateChatEnabled ? "Privatni chat je sada aktivan" : "Privatni chat je deaktiviran";
         alert(statusText);
+
+        // Resetovanje selekcije kada se privatni chat isključi
+        if (!isPrivateChatEnabled && selectedGuest) {
+            selectedGuest.style.backgroundColor = ''; // Ukloni selekciju
+            selectedGuest = null;
+        }
     });
 
-    // Klik na gosta
+    // Klik na gosta (selektovanje za privatni chat)
     guestList.addEventListener('click', (event) => {
         if (!isPrivateChatEnabled || !event.target.classList.contains('guest')) {
-            return;
+            return; // Ako privatni chat nije aktivan, selekcija nije moguća
         }
 
         if (selectedGuest === event.target) {
@@ -44,41 +51,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Kada korisnik pritisne Enter
+    // Kada korisnik pritisne Enter (slanje poruke)
     chatInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
-            let message = chatInput.value;
+            const message = chatInput.value;
 
             if (isPrivateChatEnabled && selectedGuest) {
-                const recipient = selectedGuest.textContent;
-                const time = new Date().toLocaleTimeString();
-
                 socket.emit('private_message', {
-                    to: recipient,
-                    message,
-                    time,
-                    bold: isBold,
-                    italic: isItalic,
-                    color: currentColor,
-                    underline: isUnderline,
-                    overline: isOverline
+                    to: selectedGuest.textContent,
+                    message
                 });
-
-                chatInput.value = `---->>> ${recipient} : `; // Ostavi formu
+                chatInput.value = `---->>> ${selectedGuest.textContent} : `; // Ostavi formu
             } else {
-                socket.emit('chatMessage', {
-                    text: message,
-                    bold: isBold,
-                    italic: isItalic,
-                    color: currentColor,
-                    underline: isUnderline,
-                    overline: isOverline
-                });
-
+                socket.emit('chatMessage', { text: message });
                 chatInput.value = ''; // Resetuj unos
             }
         }
     });
 });
-
