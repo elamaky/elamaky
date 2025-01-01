@@ -9,7 +9,7 @@ document.getElementById('privateMessage').addEventListener('click', () => {
         selectedGuest = null; // Resetujemo selektovanog gosta
         document.querySelectorAll('.guest').forEach(guest => {
             guest.style.backgroundColor = ''; // Resetujemo stil gostiju
-            guest.style.pointerEvents = 'auto'; // Ponovo omogućavamo selektovanje gostiju
+            guest.style.pointerEvents = 'false'; // Ponovo omogućavamo selektovanje gostiju
         });
     } else {
         // Ako privatni chat nije uključen, uključujemo ga
