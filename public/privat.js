@@ -1,9 +1,6 @@
 let isPrivateChatEnabled = false; // Status privatnog chata
 let selectedGuest = null; // Selekcija gosta
 
-let isPrivateChatEnabled = false; // Status privatnog chata
-let selectedGuest = null; // Selekcija gosta
-
 // Event listener za dugme "Privatna poruka" (uključivanje i isključivanje privatnog chata)
 document.getElementById('privateMessage').addEventListener('click', () => {
     if (isPrivateChatEnabled) {
