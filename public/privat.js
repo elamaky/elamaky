@@ -33,12 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-        
-           // Forma poruke za privatni chat
+            // Forma poruke za privatni chat
             chatInput.value = `---->>> ${selectedGuest.textContent} : `;
             console.log("Privatni chat sa: ", selectedGuest.textContent);
         }
     });
+});
+
 
     // Kada korisnik pritisne Enter
     chatInput.addEventListener('keydown', (event) => {
