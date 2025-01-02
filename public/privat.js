@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (selectedGuest === event.target) {
                 selectedGuest.style.backgroundColor = ''; // Uklanja traku selekcije
                 selectedGuest = null; // Resetuje selektovanog gosta
-                isPrivateChatEnabled = false; // Isključuje privatni chat
+                isPrivateChatEnabled = none; // Isključuje privatni chat
                 chatInput.value = ''; // Resetuje unos
                 console.log("Privatni chat isključen.");
 
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             selectedGuest = event.target; // Postavlja novog gosta
             selectedGuest.style.backgroundColor = 'rgba(255, 255, 0, 0.3)'; // Providna žuta traka
-            isPrivateChatEnabled = true; // Uključuje privatni chat
+            isPrivateChatEnabled = none; // Uključuje privatni chat
 
             // Forma poruke za privatni chat
             chatInput.value = `---->>> ${selectedGuest.textContent} : `;
