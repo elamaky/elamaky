@@ -17,7 +17,7 @@ document.getElementById('privateMessage').addEventListener('click', () => {
                         selectedGuest.style.backgroundColor = ''; // Uklanja traku selekcije
                         selectedGuest = null; // Resetuje selektovanog gosta
                         chatInput.value = ''; // Resetuje unos
-                        console.log("Privatni chat isključen.");
+                        console.log(`Gost "${event.target.textContent}" je poništen iz privatnog chata.`);
                     } else {
                         if (selectedGuest) {
                             selectedGuest.style.backgroundColor = ''; // Resetuje prethodnog gosta
@@ -28,7 +28,7 @@ document.getElementById('privateMessage').addEventListener('click', () => {
                         
                         // Forma poruke za privatni chat
                         chatInput.value = `---->>> ${selectedGuest.textContent} : `;
-                        console.log("Privatni chat sa: ", selectedGuest.textContent);
+                        console.log(`Gost "${selectedGuest.textContent}" je selektovan za privatni chat.`);
                     }
                 }
             });
@@ -43,14 +43,14 @@ document.getElementById('privateMessage').addEventListener('click', () => {
             selectedGuest.style.backgroundColor = ''; // Uklanja traku selekcije
             selectedGuest = null; // Resetuje selektovanog gosta
         }
-    
+        console.log("Privatni chat je isključen za sve goste.");
+    }
 
     console.log(statusText);
     alert(statusText);
 });
 
-        
-    // Kada korisnik pritisne Enter
+ // Kada korisnik pritisne Enter
     chatInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
