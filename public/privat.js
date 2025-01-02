@@ -49,6 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('privateMessage').addEventListener('click', () => {
         isPrivateChatEnabled = !isPrivateChatEnabled;
 
+        // Obavesti sve povezane korisnike da je privatni chat aktiviran
+        socket.emit('private_chat_toggle', { enabled: isPrivateChatEnabled });
+
         // Kada je privatni chat uključen, dozvola svim gostima da pišu
         if (isPrivateChatEnabled) {
             enableGuestSelection();
@@ -62,6 +65,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         alert(isPrivateChatEnabled ? "Privatni chat je uključen" : "Privatni chat je isključen");
+    });
+
+    // Prijem obaveštenja o stanju privatnog chata
+    socket.on('private_chat_toggle', (data) => {
+        isPrivateChatEnabled = data.enabled;
+        if (isPrivateChatEnabled) {
+            enableGuestSelection();
+        } else {
+            disableGuestSelection();
+            if (selectedGuest) {
+                selectedGuest.style.backgroundColor = '';
+                selectedGuest = null;
+            }
+        }
     });
 
    // Kada korisnik pritisne Enter
