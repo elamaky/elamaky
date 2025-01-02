@@ -1,4 +1,4 @@
-let isPrivateChatEnabled = false; // privatni chat je inicijalno isključen
+let isPrivateChatEnabled = false; // Privatni chat je inicijalno isključen
 let selectedGuest = null;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Dugme za aktiviranje privatnog chata
     document.getElementById('privateMessage').addEventListener('click', () => {
         isPrivateChatEnabled = !isPrivateChatEnabled;
-        const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
 
+        // Kada je privatni chat uključen, dozvola svim gostima da pišu
         if (isPrivateChatEnabled) {
             enableGuestSelection();
         } else {
@@ -61,11 +61,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        alert(statusText);
+        alert(isPrivateChatEnabled ? "Privatni chat je uključen" : "Privatni chat je isključen");
     });
-});
 
- // Kada korisnik pritisne Enter
+   // Kada korisnik pritisne Enter
     chatInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
