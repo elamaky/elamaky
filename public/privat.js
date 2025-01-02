@@ -75,31 +75,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 const recipient = selectedGuest.textContent;
                 const time = new Date().toLocaleTimeString();
 
-               socket.emit('private_message', {
-    to: recipient,
-    message,
-    time,
-    bold: isBold,
-    italic: isItalic,
-    color: currentColor,
-    underline: isUnderline,
-    overline: isOverline
-});
+                socket.emit('private_message', {
+                    to: recipient,
+                    message,
+                    time,
+                    bold: isBold,
+                    italic: isItalic,
+                    color: currentColor,
+                    underline: isUnderline,
+                    overline: isOverline
+                });
 
-          // Forma ostaje netaknuta za privatni chat
-            chatInput.value = `---->>> ${recipient} : `;
-        } else {
-            // Emisija obične poruke
-            socket.emit('chatMessage', {
-                text: message,
-                bold: isBold,
-                italic: isItalic,
-                color: currentColor,
-                underline: isUnderline,
-                overline: isOverline
-            });
+                // Forma ostaje netaknuta za privatni chat
+                chatInput.value = `---->>> ${recipient} : `;
+            } else {
+                // Emisija obične poruke
+                socket.emit('chatMessage', {
+                    text: message,
+                    bold: isBold,
+                    italic: isItalic,
+                    color: currentColor,
+                    underline: isUnderline,
+                    overline: isOverline
+                });
 
-            chatInput.value = ''; // Resetuje unos samo za obične poruke
+                chatInput.value = ''; // Resetuje unos samo za obične poruke
+            }
         }
-    }
-});       
+    });
+});
