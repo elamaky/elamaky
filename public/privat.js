@@ -7,12 +7,12 @@ document.getElementById('privateMessage').addEventListener('click', () => {
     const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
 
     if (isPrivateChatEnabled) {
-        // Omogućavamo selekciju gostiju samo kad je privatni chat uključen
+        // Omogućavamo selekciju gostiju kada je privatni chat uključen
         document.querySelectorAll('.guest').forEach(guest => {
             guest.style.pointerEvents = 'auto'; // Omogućavamo selekciju gostiju
         });
     } else {
-        // Onemogućavamo selekciju gostiju kad je privatni chat isključen
+        // Onemogućavamo selekciju gostiju kada je privatni chat isključen
         document.querySelectorAll('.guest').forEach(guest => {
             guest.style.pointerEvents = 'none'; // Onemogućavamo selekciju gostiju
         });
@@ -27,8 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chatInput');
 
     guestList.addEventListener('click', (event) => {
+        // Ako je privatni chat isključen, sprečava selekciju gostiju
         if (!isPrivateChatEnabled) {
-            // Ako je privatni chat isključen, blokiraj selekciju gostiju
             return;
         }
 
