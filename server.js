@@ -11,9 +11,7 @@ const pingService = require('./ping');
 const privatmodul = require('./privatmodul'); // Podesi putanju ako je u drugom folderu
 require('dotenv').config();
 const cors = require('cors');
-const audioElement = new Audio();
-const audioSourceNode = audioContext.createMediaElementSource(audioElement);
-const gainNode = audioContext.createGain();
+
 
 
 const app = express();
@@ -46,10 +44,6 @@ app.post('/login', (req, res) => login(req, res, io));
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
-
-audioSourceNode.connect(gainNode);
-gainNode.connect(audioContext.destination);
-
 // Lista autorizovanih i banovanih korisnika
 const authorizedUsers = new Set(['Radio Galaksija', 'ZI ZU', '__X__']);
 const bannedUsers = new Set();
