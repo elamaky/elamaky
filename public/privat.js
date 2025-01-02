@@ -2,26 +2,31 @@
 let isPrivateChatEnabled = false; // Status privatnog chata
 let selectedGuest = null; // Selekcija gosta
 
-// Event listener za dugme "Privatna poruka"
 document.getElementById('privateMessage').addEventListener('click', () => {
     isPrivateChatEnabled = !isPrivateChatEnabled;
     const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
 
-   if (isPrivateChatEnabled) {
-    // Logika za omogućavanje selekcije kada je privatni chat uključen
-    document.querySelectorAll('.guest').forEach(guest => {
-        guest.style.pointerEvents = 'auto'; // Omogućavamo selekciju gostiju
-    });
-} else {
-    // Logika za onemogućavanje selekcije kada je privatni chat isključen
-    document.querySelectorAll('.guest').forEach(guest => {
-        guest.style.pointerEvents = 'none'; // Onemogućavamo selekciju gostiju
-    });
-}
+    // Emituj status privatnog chata ka serveru
+    socket.emit('toggle_private_chat', isPrivateChatEnabled);
 
     console.log(statusText);
     alert(statusText);
 });
+
+socket.on('update_private_chat_status', (status) => {
+    isPrivateChatEnabled = status;
+    const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
+
+    // Ažuriraj mogućnost interakcije gostiju
+    document.querySelectorAll('.guest').forEach(guest => {
+        guest.style.pointerEvents = isPrivateChatEnabled ? 'auto' : 'none';
+    });
+
+    console.log(statusText);
+    alert(statusText);
+});
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const guestList = document.getElementById('guestList');
