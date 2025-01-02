@@ -43,7 +43,7 @@ document.getElementById('privateMessage').addEventListener('click', () => {
             selectedGuest.style.backgroundColor = ''; // Uklanja traku selekcije
             selectedGuest = null; // Resetuje selektovanog gosta
         }
-    }
+    
 
     console.log(statusText);
     alert(statusText);
