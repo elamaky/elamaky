@@ -26,19 +26,26 @@ document.addEventListener('DOMContentLoaded', () => {
             selectedGuest.style.backgroundColor = 'rgba(255, 255, 0, 0.3)'; // Providna žuta traka
             privateChatRequest = true; // Uključuje zahtev za privatni chat
 
-            // Prikazivanje opcije za prihvatanje ili odbijanje privatnog chata
+            // Slanje zahteva gostu
             const username = event.target.textContent;
-            const confirmation = confirm(`${username} je pozvan na privatni chat. Da li želiš da prihvatiš?`);
+            socket.emit('private_chat_request', { from: 'You', to: username });
 
-            if (confirmation) {
-                chatInput.value = `---->>> ${username} : `;
-                console.log("Privatni chat sa: ", username);
-            } else {
-                selectedGuest.style.backgroundColor = ''; // Uklanja selekciju ako je odbijen privatni chat
-                selectedGuest = null; // Resetuje selektovanog gosta
-                privateChatRequest = false; // Odbija privatni chat
-                console.log("Privatni chat odbijen.");
-            }
+            console.log(`Poslat zahtev za privatni chat gostu: ${username}`);
+        }
+    });
+
+    // Osluškivanje odgovora od gosta (da li prihvata ili odbija privatni chat)
+    socket.on('private_chat_response', (response) => {
+        const { from, accepted } = response;
+
+        if (accepted) {
+            chatInput.value = `---->>> ${from} : `;
+            console.log(`Privatni chat sa: ${from}`);
+        } else {
+            selectedGuest.style.backgroundColor = ''; // Uklanja selekciju ako je odbijen privatni chat
+            selectedGuest = null; // Resetuje selektovanog gosta
+            privateChatRequest = false; // Odbija privatni chat
+            console.log(`${from} je odbio privatni chat.`);
         }
     });
 
@@ -80,4 +87,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
 
