@@ -52,6 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Kada je privatni chat uključen, dozvola svim gostima da pišu
         if (isPrivateChatEnabled) {
             enableGuestSelection();
+
+            // Emituj svim povezanim klijentima da je privatni chat aktiviran
+            socket.emit('private_chat_enabled', { status: true });
         } else {
             disableGuestSelection();
             // Ukloni selekciju sa trenutnog gosta
@@ -110,4 +113,12 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         disableGuestSelection();
     }
+
+    // Kada server emitira da je privatni chat uključen, omogući selekciju svima
+    socket.on('private_chat_enabled', (data) => {
+        if (data.status) {
+            isPrivateChatEnabled = true;
+            enableGuestSelection();
+        }
+    });
 });
