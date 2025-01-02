@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const guestList = document.getElementById('guestList');
     const chatInput = document.getElementById('chatInput');
 
-    // Onemogućavanje selekte predmeta
+    // Omogućavanje selekte predmeta
     const enableGuestSelection = () => {
         document.querySelectorAll('.guest').forEach(guest => {
             guest.style.pointerEvents = 'auto'; // Omogućava selekciju
@@ -20,12 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     guestList.addEventListener('click', (event) => {
         if (event.target.classList.contains('guest')) {
-            // Ako privatni chat nije uključen, ne dozvoliti selekciju
-            if (!isPrivateChatEnabled) {
-                alert("Morate aktivirati privatni chat da biste selektovali gosta.");
-                return;
-            }
-
             // Ako je isti gost kliknut, samo poništi selekciju
             if (selectedGuest === event.target) {
                 selectedGuest.style.backgroundColor = ''; // Uklanja traku selekcije
@@ -63,8 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 selectedGuest = null; // Resetuje selektovanog gosta
             }
         }
-
-        alert(isPrivateChatEnabled ? "Privatni chat je uključen" : "Privatni chat je isključen");
     });
 
    // Kada korisnik pritisne Enter
@@ -107,13 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Kada se stranica učita, proveri status privatnog chata i omogući selekciju
-    if (isPrivateChatEnabled) {
-        enableGuestSelection();
-    } else {
-        disableGuestSelection();
-    }
-
     // Kada server emitira da je privatni chat uključen, omogući selekciju svima
     socket.on('private_chat_enabled', (data) => {
         if (data.status) {
@@ -121,4 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
             enableGuestSelection();
         }
     });
+
+    // Kada se stranica učita, onemogući selekciju dok se ne aktivira privatni chat
+    disableGuestSelection();
 });
