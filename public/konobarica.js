@@ -249,9 +249,6 @@ function updateSongsOrder() {
 
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
-const audioContext = new AudioContext();
-console.log("AudioContext created:", audioContext);
-
 const audioElement = new Audio();
 console.log("AudioElement created:", audioElement);
 
