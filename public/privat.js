@@ -12,12 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    const disableGuestSelection = () => {
-        document.querySelectorAll('.guest').forEach(guest => {
-            guest.style.pointerEvents = 'none'; // Onemogućava selekciju
-        });
-    };
-
     guestList.addEventListener('click', (event) => {
         if (event.target.classList.contains('guest')) {
             // Ako je isti gost kliknut, samo poništi selekciju
@@ -43,20 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('privateMessage').addEventListener('click', () => {
         isPrivateChatEnabled = !isPrivateChatEnabled;
 
-        // Kada je privatni chat uključen, dozvola svim gostima da pišu
-        if (isPrivateChatEnabled) {
-            enableGuestSelection();
-
-            // Emituj svim povezanim klijentima da je privatni chat aktiviran
-            socket.emit('private_chat_enabled', { status: true });
-        } else {
-            disableGuestSelection();
-            // Ukloni selekciju sa trenutnog gosta
-            if (selectedGuest) {
-                selectedGuest.style.backgroundColor = ''; // Uklanja traku selekcije
-                selectedGuest = null; // Resetuje selektovanog gosta
-            }
-        }
+        // Emituj svim povezanim klijentima da je privatni chat aktiviran
+        socket.emit('private_chat_enabled', { status: isPrivateChatEnabled });
     });
 
    // Kada korisnik pritisne Enter
@@ -99,14 +81,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Kada server emitira da je privatni chat uključen, omogući selekciju svima
+    // Kada server emitira da je privatni chat uključen, postavi status
     socket.on('private_chat_enabled', (data) => {
-        if (data.status) {
-            isPrivateChatEnabled = true;
-            enableGuestSelection();
-        }
+        isPrivateChatEnabled = data.status;
     });
 
-    // Kada se stranica učita, onemogući selekciju dok se ne aktivira privatni chat
-    disableGuestSelection();
+    // Omogući selekciju odmah po učitavanju stranice
+    enableGuestSelection();
 });
