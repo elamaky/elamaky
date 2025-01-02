@@ -1,6 +1,3 @@
-// Kada se povežemo sa serverom, emitujemo događaj za novog gosta
-socket.emit('new_guest');
-
 // Slušamo za poruke od servera, u ovom slučaju pozdravnu poruku od Konobarice
 socket.on('message', (data) => {
     const messageArea = document.getElementById('messageArea');
