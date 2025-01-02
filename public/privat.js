@@ -45,46 +45,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 return;
             }
+            // Ako nije isti gost kliknut, selektuje ga
+            selectedGuest = event.target;
+            selectedGuest.style.backgroundColor = '#f0f0f0'; // Dodaje traku selekcije
+        }
+    });
 
-          // Kada korisnik pritisne Enter
+    // Premesti keydown listener izvan click eventa
     chatInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
             let message = chatInput.value;
-
             if (isPrivateChatEnabled && selectedGuest) {
                 // Emisija privatne poruke
                 const recipient = selectedGuest.textContent;
                 const time = new Date().toLocaleTimeString();
 
-               socket.emit('private_message', {
-    to: recipient,
-    message,
-    time,
-    bold: isBold,
-    italic: isItalic,
-    color: currentColor,
-    underline: isUnderline,
-    overline: isOverline
+                socket.emit('private_message', {
+                    to: recipient,
+                    message,
+                    time,
+                    bold: isBold,
+                    italic: isItalic,
+                    color: currentColor,
+                    underline: isUnderline,
+                    overline: isOverline
+                });
+
+                // Forma ostaje netaknuta za privatni chat
+                chatInput.value = `---->>> ${recipient} : `;
+            } else {
+                // Emisija obične poruke
+                socket.emit('chatMessage', {
+                    text: message,
+                    bold: isBold,
+                    italic: isItalic,
+                    color: currentColor,
+                    underline: isUnderline,
+                    overline: isOverline
+                });
+
+                chatInput.value = ''; // Resetuje unos samo za obične poruke
+            }
+        }
+    });
 });
 
-          // Forma ostaje netaknuta za privatni chat
-            chatInput.value = `---->>> ${recipient} : `;
-        } else {
-            // Emisija obične poruke
-            socket.emit('chatMessage', {
-                text: message,
-                bold: isBold,
-                italic: isItalic,
-                color: currentColor,
-                underline: isUnderline,
-                overline: isOverline
-            });
-
-            chatInput.value = ''; // Resetuje unos samo za obične poruke
-        }
-    }
-});       
 
 
 
