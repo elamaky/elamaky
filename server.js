@@ -100,8 +100,7 @@ socket.on('chatMessage', (msgData) => {
         overline: msgData.overline,
         nickname: guests[socket.id],
         time: time,
-    });
-});
+    }
 io.emit('chatMessage', messageToSend);
 });
 
