@@ -32,9 +32,8 @@ socket.on('private_chat_status', (status) => {
 document.addEventListener('DOMContentLoaded', () => {
     const guestList = document.getElementById('guestList');
     const chatInput = document.getElementById('chatInput');
-    socket.emit('get_private_chat_status');
-
-    guestList.addEventListener('click', (event) => {
+    
+     guestList.addEventListener('click', (event) => {
         if (isPrivateChatEnabled && event.target.classList.contains('guest')) {
             if (selectedGuest === event.target) {
                 selectedGuest.style.backgroundColor = ''; // Uklanja traku selekcije
