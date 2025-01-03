@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
             chatInput.value = `---->>> ${selectedGuest.textContent} : `;
             console.log("Privatni chat sa: ", selectedGuest.textContent);
         }
-    });
+    }
 });
 
 
