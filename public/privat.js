@@ -22,8 +22,9 @@ document.getElementById('privateMessage').addEventListener('click', () => {
 
 // Prilagodba selekcije gostiju kada server šalje status privatnog chata
 socket.on('private_chat_status', (status) => {
+    isPrivateChatEnabled = status; // Ažuriraj status privatnog chata
     document.querySelectorAll('.guest').forEach(guest => {
-        guest.style.pointerEvents = status ? 'auto' : 'none';
+        guest.style.pointerEvents = status ? 'auto' : 'none'; // Omogući ili onemogući selekciju
     });
 });
 
