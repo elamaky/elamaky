@@ -240,66 +240,9 @@ function updateSongsOrder() {
 
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
-
-// KODOVI ZA STRIMOVANJE 
-audioPlayer.addEventListener('play', () => {
-    console.log('Pesma se pušta.');
-    const currentSong = songs[currentSongIndex];
-
-    if (currentSong) {
-        console.log('Trenutna pesma:', currentSong.name, 'URL:', currentSong.url);
-
-        fetch(currentSong.url)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Greška pri fetch-u pesme: ' + response.statusText);
-                }
-                return response.arrayBuffer();
-            })
-            .then((buffer) => {
-                const uint8Array = new Uint8Array(buffer); // Konvertuj ArrayBuffer u Uint8Array
-                socket.emit('stream', { buffer: uint8Array, name: currentSong.name });
-            })
-            .catch((err) => console.error('Greška pri čitanju audio fajla:', err));
-    } else {
-        console.error('Nije pronađena trenutna pesma!');
-    }
-});
-
-
-// Početno pokretanje pesme čim korisnik uđe na stranicu
-if (songs.length > 0) {
-    console.log('Automatsko puštanje prve pesme:', songs[0].name); // Log za automatsko puštanje
-    playSong(0); // Automatski pustimo prvu pesmu
-} else {
-    console.warn('Lista pesama je prazna!'); // Log za prazan niz pesama
-}
-
- function playSong(index) {
-    if (index >= 0 && index < songs.length) {
-        currentSongIndex = index;
-        console.log('Puštam pesmu sa indeksom:', index, 'Ime:', songs[index].name); // Log za validan indeks
-        audioPlayer.src = songs[index].url; // Postavljamo URL pesme
-        audioPlayer.play(); // Pokrećemo reprodukciju pesme
-    } else {
-        console.error('Indeks pesme nije validan:', index); // Log za nevalidan indeks
-    }
-}
-
-// Kada klijent primi stream sa servera
-socket.on('stream', (data) => {
-    console.log('Prikačen strim sa servera:', data.name);
-
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const arrayBuffer = new Uint8Array(data.buffer).buffer; // Konvertuj nazad u ArrayBuffer
-
-    audioContext.decodeAudioData(arrayBuffer, (decodedData) => {
-        const source = audioContext.createBufferSource();
-        source.buffer = decodedData;
-        source.connect(audioContext.destination);
-        source.start();
-        console.log('Pesma se reprodukuje:', data.name);
-    }, (error) => {
-        console.error('Greška pri dekodiranju audio podataka za pesmu:', data.name, error);
+// Listen for the playSong event from the server
+    socket.on('playSong', (url) => {
+        const audioPlayer = document.getElementById('audioPlayer');
+        audioPlayer.src = url;
+        audioPlayer.play();
     });
-});
