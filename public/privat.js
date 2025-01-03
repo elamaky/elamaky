@@ -16,19 +16,18 @@ document.getElementById('privateMessage').addEventListener('click', () => {
         console.log(`Selekcija gosta ${guest.textContent} ${isPrivateChatEnabled ? 'dozvoljena' : 'onemogućena'}`);
     });
 
-   // Slušaj kada server pošalje događaj za resetovanje
-socket.on('reset_private_chat', () => {
-    // Resetuj traku selekcije i chat input
+    if (!isPrivateChatEnabled) {
+    // Ako se isključi privatni chat, ukloni selektovanog gosta i traku
     if (selectedGuest) {
-        selectedGuest.style.backgroundColor = ''; // Uklanja traku selekcije
-        selectedGuest = null; // Resetuje selektovanog gosta
+        selectedGuest.style.backgroundColor = ''; // Resetuj boju pozadine
+        selectedGuest = null; // Resetuj selektovanog gosta
     }
 
-    // Resetuj chat input
-    chatInput.value = ''; // Očisti chat input
-});
+    // Resetuj unos u chat inputu
+    chatInput.value = '';
+}
 
-console.log(statusText);
+ console.log(statusText);
     alert(statusText);
 });
 
