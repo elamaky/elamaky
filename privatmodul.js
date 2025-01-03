@@ -25,6 +25,11 @@ io.on('connection', (socket) => {
             io.emit('private_chat_status', isPrivateChatEnabled);
             console.log('Emitovanje statusa privatnog chata svim korisnicima:', isPrivateChatEnabled ? 'Uključen' : 'Isključen');
         });
+    socket.on('private_chat_reset', () => {
+    // Emituj događaj svim klijentima da resetuju privatni chat
+    io.emit('reset_private_chat');
+});
+
 
         // Privatna poruka
         socket.on('private_message', ({ to, message, time, bold, italic, color, underline, overline }) => {
@@ -64,7 +69,3 @@ io.on('connection', (socket) => {
         });
     });
 };
-socket.on('private_chat_reset', () => {
-    // Emituj događaj svim klijentima da resetuju privatni chat
-    io.emit('reset_private_chat');
-});
