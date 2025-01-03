@@ -89,7 +89,8 @@ socket.on('chatMessage', (msgData) => {
     io.sockets.emit('chatMessage', {
         text: messageText.replace(/#n/g, (match) => {
             return guests[socket.id]; // Zamenjujemo #n sa imenom korisnika koji šalje poruku
-          bold: msgData.bold,
+        }),
+        bold: msgData.bold,
         italic: msgData.italic,
         color: msgData.color,
         underline: msgData.underline,
@@ -97,7 +98,6 @@ socket.on('chatMessage', (msgData) => {
         nickname: guests[socket.id],
         time: time,
     });
-});
 io.emit('chatMessage', messageToSend);
 });
 
