@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chatInput');
 
     guestList.addEventListener('click', (event) => {
-        if (event.target.classList.contains('guest')) {
+        if (isPrivateChatEnabled && event.target.classList.contains('guest')) {
             if (selectedGuest === event.target) {
                 selectedGuest.style.backgroundColor = ''; // Uklanja traku selekcije
                 selectedGuest = null; // Resetuje selektovanog gosta
