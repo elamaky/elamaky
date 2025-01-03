@@ -32,8 +32,20 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
-});
 
+    // Ako je gost selektovan, promeni boju nika
+    if (selectedGuest) {
+        const guestId = `guest-${selectedGuest.textContent}`;
+
+        // Ažuriraj boju u guestsData
+        guestsData[guestId].color = currentColor;
+
+        // Ažuriraj boju na nik-u u guestList
+        selectedGuest.style.color = currentColor;
+
+        console.log(`${selectedGuest.textContent} je promenio boju na ${currentColor}`);
+    }
+});
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
