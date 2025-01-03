@@ -5,6 +5,14 @@ module.exports = function (io, guests) {
             // Pronalazi socket.id primaoca na osnovu imena
             const recipientSocketId = Object.keys(guests).find(id => guests[id] === to);
 
+              // Kada korisnik uključi ili isključi privatni chat
+        socket.on('toggle_private_chat', (isPrivateChatEnabled) => {
+            console.log('Privatni chat:', isPrivateChatEnabled ? 'Uključen' : 'Isključen');
+            
+            // Emituj svim povezanim korisnicima, uključujući i trenutnog korisnika
+            io.emit('private_chat_status', isPrivateChatEnabled);
+        });
+
             if (recipientSocketId) {
                 // Slanje privatne poruke primaocu
                 io.to(recipientSocketId).emit('private_message', {
