@@ -91,7 +91,7 @@ io.on('connection', (socket) => {
              underline: msgData.underline,
             overline: msgData.overline,
             nickname: guests[socket.id],
-             messageText = messageText.replace(/#n/g, nickname);
+             messageText = messageText.replace(/#n/g, nickname),
             time: time,
         };
         io.emit('chatMessage', messageToSend);
