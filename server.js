@@ -125,13 +125,10 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
- socket.on('stream', (data) => {
-    console.log('Primljen stream za pesmu:', data.name);
-    socket.broadcast.emit('stream', {
-        buffer: data.buffer,
-        name: data.name,
+  socket.on('streamSong', (url) => {
+        // Broadcast the song URL to all connected clients
+        io.emit('playSong', url);
     });
-});
 
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
