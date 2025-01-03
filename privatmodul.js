@@ -1,11 +1,8 @@
 module.exports = function (io, guests) {
     // Privatna poruka
- let isPrivateChatEnabled = false; // Privatni chat je inicijalno isključen
-
-io.on('connection', (socket) => {
-    socket.emit('private_chat_status', isPrivateChatEnabled); // Šaljemo trenutni status privatnog chata klijentima
-
-   });
+ io.on('connection', (socket) => {
+        // Kreiraj varijablu za status privatnog chata
+        let isPrivateChatEnabled = false; // Na početku privatni chat je isključen
 
         // Kada korisnik uključi ili isključi privatni chat
         socket.on('toggle_private_chat', (status) => {
