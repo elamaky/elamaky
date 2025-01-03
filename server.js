@@ -91,11 +91,11 @@ io.on('connection', (socket) => {
              underline: msgData.underline,
             overline: msgData.overline,
             nickname: guests[socket.id],
-             messageText = messageText.replace(/#n/g, nickname),
-            time: time,
+             time: time,
         };
         io.emit('chatMessage', messageToSend);
     });
+     messageText = messageText.replace(/#n/g, nickname);
 
   // Obrada za čišćenje chata
     socket.on('clear-chat', () => {
