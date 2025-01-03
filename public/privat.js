@@ -112,7 +112,7 @@ chatInput.addEventListener('keydown', (event) => {
             }
         }
     });
-});
+
 socket.on('sync_guest_selection', (data) => {
     if (data.guestId) {
         const guest = document.getElementById(data.guestId);
