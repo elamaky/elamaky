@@ -5,21 +5,25 @@ let selectedGuest = null; // Selekcija gosta
 document.getElementById('privateMessage').addEventListener('click', () => {
     isPrivateChatEnabled = !isPrivateChatEnabled;
     const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
+    
+    // Emitovanje događaja za server
     socket.emit('toggle_private_chat', isPrivateChatEnabled);
 
+    // Omogućavanje ili onemogućavanje selekcije gostiju
     document.querySelectorAll('.guest').forEach(guest => {
-        guest.style.pointerEvents = isPrivateChatEnabled ? 'auto' : 'none'; // Omogućava ili onemogućava selekciju
+        guest.style.pointerEvents = isPrivateChatEnabled ? 'auto' : 'none';
     });
 
     console.log(statusText);
     alert(statusText);
 });
 
+// Prilagodba selekcije gostiju kada server šalje status privatnog chata
 socket.on('private_chat_status', (isPrivateChatEnabled) => {
-    // Prilagodi selektovanje gostiju prema statusu privatnog chata
     document.querySelectorAll('.guest').forEach(guest => {
         guest.style.pointerEvents = isPrivateChatEnabled ? 'auto' : 'none';
     });
+});
 
 document.addEventListener('DOMContentLoaded', () => {
     const guestList = document.getElementById('guestList');
