@@ -108,3 +108,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// Sinhronizacija selekcije gosta
+socket.on('sync_guest_selection', (data) => {
+    if (data.guestId) {
+        const guest = document.getElementById(data.guestId);
+        if (guest) {
+            if (selectedGuest) {
+                selectedGuest.style.backgroundColor = ''; // Ukloni stil sa prethodnog gosta
+            }
+            selectedGuest = guest;
+            selectedGuest.style.backgroundColor = 'lightblue'; // Postavi stil za selektovanog gosta
+        }
+    } else {
+        if (selectedGuest) {
+            selectedGuest.style.backgroundColor = ''; // Resetuj selektovanog gosta
+            selectedGuest = null;
+        }
+    }
+});
+
+// Sinhronizacija chat unosa
+socket.on('sync_chat_input', (data) => {
+    chatInput.value = data.value;
+});
