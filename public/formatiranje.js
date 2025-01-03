@@ -23,16 +23,13 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Funkcija za biranje boje
-document.getElementById('colorBtn').addEventListener('click', function() {
-    document.getElementById('colorPicker').click();
+document.getElementById('colorPicker').addEventListener('input', function(event) {
+    let selectedColor = event.target.value;
+    let guestId = // dobavi ID gosta kojem se dodeljuje boja (može biti selektovan ili dinamički).
+    let guest = document.querySelector(`[data-id='${guestId}'] .colorDisplay`);
+    guest.style.backgroundColor = selectedColor;
 });
 
-// Kada korisnik izabere boju iz palete
-document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
-});
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
