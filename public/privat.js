@@ -20,12 +20,11 @@ document.getElementById('privateMessage').addEventListener('click', () => {
     // Ako se isključi privatni chat, ukloni selektovanog gosta i traku
     if (selectedGuest) {
         selectedGuest.style.backgroundColor = ''; // Resetuj boju pozadine
-         selectedGuest = null; // Resetuj selektovanog gosta
+        selectedGuest = null; // Resetuj selektovanog gosta
     }
 
     // Resetuj unos u chat inputu
     chatInput.value = '';
-         socket.emit('update_chat_input', { value: '' }); // Emituj reset unosa
 }
 
  console.log(statusText);
@@ -45,15 +44,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const guestList = document.getElementById('guestList');
     const chatInput = document.getElementById('chatInput');
     
-     guestList.addEventListener('click', (event) => {
+    guestList.addEventListener('click', (event) => {
         if (isPrivateChatEnabled && event.target.classList.contains('guest')) {
             if (selectedGuest === event.target) {
                 selectedGuest.style.backgroundColor = ''; // Uklanja traku selekcije
-                 socket.emit('update_guest_selection', { guestId: null }); // Emituj reset selekcije
                 selectedGuest = null; // Resetuje selektovanog gosta
                 chatInput.value = ''; // Resetuje unos
-                 socket.emit('update_chat_input', { value: '' }); // Emituj reset unosa
-                console.log("Privatni chat isključen.");
+                
+                // Emitovanje uklanjanja selekcije na server
+                socket.emit('update_guest_selection', { guestId: null });
                 return;
             }
 
@@ -64,13 +63,19 @@ document.addEventListener('DOMContentLoaded', () => {
             selectedGuest = event.target;
             selectedGuest.style.backgroundColor = 'lightblue'; // Obeleži novog gosta
             chatInput.value = `---->>> ${selectedGuest.textContent} : `;
-            console.log("Privatni chat sa:", selectedGuest.textContent);
-            socket.emit('update_guest_selection', { guestId: selectedGuest.id }); // Emituj selekciju gosta
-    socket.emit('update_chat_input', { value: chatInput.value }); // Emituj novi unos
+
+            // Emitovanje nove selekcije gosta na server
+            socket.emit('update_guest_selection', { guestId: selectedGuest.id });
         }
     });
 
-    chatInput.addEventListener('keydown', (event) => {
+    chatInput.addEventListener('input', () => {
+        // Emitovanje promene u chat input polju na server
+        socket.emit('update_chat_input', { value: chatInput.value });
+    });
+});
+
+chatInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
             let message = chatInput.value;
@@ -108,27 +113,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
-// Sinhronizacija selekcije gosta
 socket.on('sync_guest_selection', (data) => {
     if (data.guestId) {
         const guest = document.getElementById(data.guestId);
         if (guest) {
-            if (selectedGuest) {
-                selectedGuest.style.backgroundColor = ''; // Ukloni stil sa prethodnog gosta
-            }
+            if (selectedGuest) selectedGuest.style.backgroundColor = ''; // Ukloni selekciju sa starog gosta
             selectedGuest = guest;
-            selectedGuest.style.backgroundColor = 'lightblue'; // Postavi stil za selektovanog gosta
+            selectedGuest.style.backgroundColor = 'lightblue'; // Obeleži novog gosta
         }
     } else {
-        if (selectedGuest) {
-            selectedGuest.style.backgroundColor = ''; // Resetuj selektovanog gosta
-            selectedGuest = null;
-        }
+        if (selectedGuest) selectedGuest.style.backgroundColor = ''; // Ukloni selekciju
+        selectedGuest = null;
     }
 });
 
-// Sinhronizacija chat unosa
 socket.on('sync_chat_input', (data) => {
-    chatInput.value = data.value;
+    chatInput.value = data.value; // Sinhronizuj unos u chat input polju
 });
+
