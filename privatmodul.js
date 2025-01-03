@@ -11,7 +11,7 @@ module.exports = function (io, guests) {
     // Privatna poruka
     socket.on('private_message', ({ to, message, time, bold, italic, color, underline, overline }) => {
         // Proveri da li je privatni chat uključen pre slanja poruke
-        const isPrivateChatEnabled = /* Ovde proveri stanje privatnog chata */;
+        const isPrivateChatEnabled;
         
         if (!isPrivateChatEnabled) {
             return console.log('Privatni chat nije uključen');
