@@ -1,12 +1,12 @@
+// Ovaj deo ostaje isti
 let isPrivateChatEnabled = false; // Status privatnog chata
 let selectedGuest = null; // Selekcija gosta
 
-// Event listener za dugme "Privatna poruka"
 document.getElementById('privateMessage').addEventListener('click', () => {
     isPrivateChatEnabled = !isPrivateChatEnabled;
     const statusText = isPrivateChatEnabled ? `Privatni chat je uključen` : `Privatni chat je isključen`;
-    
-   // Emitovanje događaja za server
+
+    // Emitovanje događaja za server
     socket.emit('toggle_private_chat', isPrivateChatEnabled);
     console.log('Emitovanje događaja na server sa statusom privatnog chata:', isPrivateChatEnabled);
 
@@ -22,11 +22,8 @@ document.getElementById('privateMessage').addEventListener('click', () => {
 
 // Prilagodba selekcije gostiju kada server šalje status privatnog chata
 socket.on('private_chat_status', (status) => {
-    isPrivateChatEnabled = status; // Ažuriraj status privatnog chata
-
-    // Omogućavanje ili onemogućavanje selekcije gostiju
     document.querySelectorAll('.guest').forEach(guest => {
-        guest.style.pointerEvents = isPrivateChatEnabled ? 'auto' : 'none';
+        guest.style.pointerEvents = status ? 'auto' : 'none';
     });
 });
 
