@@ -24,6 +24,14 @@
     cursor: pointer;
 }
 
+#guestList .colorDisplay {       /* COLORPICKER IZ INDEXA */
+   width: 20px;
+   height: 20px;
+   display: inline-block;
+   border-radius: 50%;
+}
+
+
 /* Stil za poruke konobarice */
 .konobarica {
     color: #ff6347; /* Boja za Konobaricu */
