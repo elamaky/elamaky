@@ -1,4 +1,5 @@
-module.exports = function (io, guests) {
+module.exports = function (io, guests, socket) {  // Dodaj "socket" kao parametar
+
     // Kreiraj varijablu za status privatnog chata
     let isPrivateChatEnabled = false; // Na početku privatni chat je isključen
 
@@ -49,3 +50,4 @@ module.exports = function (io, guests) {
         }
     });
 };
+
