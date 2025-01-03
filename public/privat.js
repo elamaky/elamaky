@@ -20,11 +20,12 @@ document.getElementById('privateMessage').addEventListener('click', () => {
     // Ako se isključi privatni chat, ukloni selektovanog gosta i traku
     if (selectedGuest) {
         selectedGuest.style.backgroundColor = ''; // Resetuj boju pozadine
-        selectedGuest = null; // Resetuj selektovanog gosta
+         selectedGuest = null; // Resetuj selektovanog gosta
     }
 
     // Resetuj unos u chat inputu
     chatInput.value = '';
+         socket.emit('update_chat_input', { value: '' }); // Emituj reset unosa
 }
 
  console.log(statusText);
@@ -48,8 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isPrivateChatEnabled && event.target.classList.contains('guest')) {
             if (selectedGuest === event.target) {
                 selectedGuest.style.backgroundColor = ''; // Uklanja traku selekcije
+                 socket.emit('update_guest_selection', { guestId: null }); // Emituj reset selekcije
                 selectedGuest = null; // Resetuje selektovanog gosta
                 chatInput.value = ''; // Resetuje unos
+                 socket.emit('update_chat_input', { value: '' }); // Emituj reset unosa
                 console.log("Privatni chat isključen.");
                 return;
             }
@@ -62,6 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
             selectedGuest.style.backgroundColor = 'lightblue'; // Obeleži novog gosta
             chatInput.value = `---->>> ${selectedGuest.textContent} : `;
             console.log("Privatni chat sa:", selectedGuest.textContent);
+            socket.emit('update_guest_selection', { guestId: selectedGuest.id }); // Emituj selekciju gosta
+    socket.emit('update_chat_input', { value: chatInput.value }); // Emituj novi unos
         }
     });
 
