@@ -8,7 +8,7 @@ function selectUser(username, color) {
     // Obeleži izabrani korisnik u listi gostiju
     document.querySelectorAll('#guestList li').forEach(li => li.style.backgroundColor = '');
     const userElement = Array.from(document.querySelectorAll('#guestList li')).find(li => li.textContent === username);
-    
+
     if (userElement) {
         userElement.style.backgroundColor = 'rgba(0, 0, 255, 0.1)'; // Obeleži odabranog korisnika
     }
@@ -52,9 +52,18 @@ document.getElementById('chatInput').addEventListener('keydown', (event) => {
             // Emituj javnu poruku
             socket.emit('public_message', { message, time });
 
-          // Prijem privatnih poruka
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = `${message} --->>> ${time}`;
+            document.getElementById('messageArea').appendChild(messageDiv);
+        }
+
+        document.getElementById('chatInput').value = '';
+    }
+});
+
+// Prijem privatnih poruka
 socket.on('private_message', ({ from, message, time }) => {
     const messageDiv = document.createElement('div');
-    messageDiv.textContentchatInput.value = `---->>> ${selectedGuest.textContent} : `; // Forma poruke za privatni chat
+    messageDiv.textContent = `---->>> ${from} : ${message} --->>> ${time}`; // Forma poruke za privatni chat
     document.getElementById('messageArea').appendChild(messageDiv);
 });
