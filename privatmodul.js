@@ -64,3 +64,7 @@ io.on('connection', (socket) => {
         });
     });
 };
+socket.on('private_chat_reset', () => {
+    // Emituj događaj svim klijentima da resetuju privatni chat
+    io.emit('reset_private_chat');
+});
