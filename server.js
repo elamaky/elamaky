@@ -123,15 +123,6 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-  socket.on('streamSong', (url) => {
-        // Broadcast the song URL to all connected clients
-        io.emit('playSong', url);
-    });
-     socket.on("setColor", ({ guestId, color }) => {
-        guests[guestId] = color;
-        io.emit("updateGuestList", guests); // Emituj listu gostiju
-    });
-
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
