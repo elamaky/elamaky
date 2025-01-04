@@ -30,6 +30,7 @@ socket.on('newGuest', function(nickname) {
     const newGuest = document.createElement('div');
     newGuest.classList.add('guest');
     newGuest.textContent = nickname;
+    const nickname =  newGuest.textContent;
 
     // Dodaj novog gosta u guestsData ako ne postoji
     if (!guestsData[guestId]) {
@@ -70,6 +71,7 @@ socket.on('updateGuestList', function(users) {
             newGuest.className = 'guest';
             newGuest.textContent = nickname;
             newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
+            const nickname =  newGuest.textContent;
             
                       guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
             addGuestStyles(newGuest, guestId); // Dodaj stilove
@@ -124,7 +126,6 @@ function updateInputStyle() {
 }
 
 // Kada korisnik pritisne Enter
-const nickname;
 document.getElementById('chatInput').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
@@ -139,7 +140,6 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
         this.value = ''; // Isprazni polje za unos
     }
 });
-
 
 // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
