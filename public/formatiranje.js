@@ -19,20 +19,9 @@ function addGuestStyles(guestElement, guestId) {
         guestElement.style.color = this.value;
         guestsData[guestId].color = this.value; // Ažuriraj boju u objektu
     });
-
+colorPickerButton.setAttribute('data-guest-id', guestId);
     guestElement.appendChild(colorPickerButton);
 }
-const colorPickers = document.querySelectorAll('.color-picker');
-
-// Onda dodajte ovu funkcionalnost
-colorPickers.forEach(picker => {
-    picker.addEventListener('input', function() {
-        // Ova linija menja samo boju pozadinskog diva koji sadrži ovaj color picker
-        picker.closest('.guest').style.backgroundColor = picker.value;
-    });
-});
-
-
 // Kada nov gost dođe
 socket.on('newGuest', function(nickname) {
     const guestId = `guest-${nickname}`;
