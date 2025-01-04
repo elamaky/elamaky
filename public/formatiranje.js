@@ -32,16 +32,6 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     updateInputStyle();
 });
 
-  const colorPicker = document.getElementById('colorPicker');
-        const colorDisplay = document.getElementById('colorDisplay');
-
-        // Kada korisnik izabere boju, ažuriraj prikaz
-        colorPicker.addEventListener('input', function() {
-            const selectedColor = colorPicker.value;
-            colorDisplay.textContent = selectedColor;
-            colorDisplay.style.color = selectedColor;
-        });
-
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
@@ -53,7 +43,6 @@ document.getElementById('linijagoreBtn').addEventListener('click', function() {
     isOverline = !isOverline;
     updateInputStyle();
 });
-
 
 // Primena stilova na polju za unos
 function updateInputStyle() {
