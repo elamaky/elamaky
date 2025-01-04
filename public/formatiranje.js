@@ -8,38 +8,24 @@ let isOverline = false;   // Dodano za overline
 const guestsData = {};
 const colorPrefs = {};
 
-// Funkcija za dodavanje stilova gostima
-function addGuestStyles(guestElement, guestId) {
-    const colorPickerButton = document.createElement('input');
-    colorPickerButton.type = 'color';
-    colorPickerButton.classList.add('colorPicker');
-    colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF';
-
-    // Onemogući interakciju sa svim pickerima
-    const allPickers = document.querySelectorAll('.colorPicker');
-    allPickers.forEach(picker => picker.disabled = true);  // Onemogući sve pickere
-
-    // Omogući samo trenutni picker
-    colorPickerButton.disabled = false;
-
-    colorPickerButton.addEventListener('input', function () {
+document.getElementById('colorPicker').addEventListener('input', function() {
+    const guestElement = document.querySelector(`.guest[data-guest-id="${myGuestId}"]`);
+    if (guestElement) {
         guestElement.style.color = this.value;
-        guestsData[guestId].color = this.value;
-    });
+        guestsData[myGuestId] = this.value; // Spremi tvoju boju
+    }
+});
 
-    guestElement.appendChild(colorPickerButton);
-
-    // Omogućiti interakciju sa svojim pickerom kada se fokusira na odgovarajući gost element
-    guestElement.addEventListener('mouseenter', function() {
-        // Onemogući sve druge pickere
-        const allPickers = document.querySelectorAll('.colorPicker');
-        allPickers.forEach(picker => picker.disabled = true);
-        // Omogući samo svoj picker
-        colorPickerButton.disabled = false;
-    });
-}
-
-
+// Event delegation za klik na goste, omogućava tvoj picker samo za tvoj ID
+document.querySelector('.guestList').addEventListener('click', function(event) {
+    const guestElement = event.target;
+    if (guestElement.classList.contains('guest') && guestElement.getAttribute('data-guest-id') === myGuestId.toString()) {
+        // Omogućava tvoj picker samo za tvoj ID
+        document.getElementById('colorPicker').disabled = false;
+    } else {
+        document.getElementById('colorPicker').disabled = true;
+    }
+});
 // Kada nov gost dođe
 socket.on('newGuest', function(nickname) {
     const guestId = `guest-${nickname}`;
