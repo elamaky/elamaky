@@ -30,8 +30,7 @@ socket.on('newGuest', function(nickname) {
     const newGuest = document.createElement('div');
     newGuest.classList.add('guest');
     newGuest.textContent = nickname;
-    const nickname =  newGuest.textContent;
-
+    
     // Dodaj novog gosta u guestsData ako ne postoji
     if (!guestsData[guestId]) {
         guestsData[guestId] = { nickname, color: '#FFFFFF' }; // Ako ne postoji, dodajemo ga sa podrazumevanom bojom
@@ -71,9 +70,8 @@ socket.on('updateGuestList', function(users) {
             newGuest.className = 'guest';
             newGuest.textContent = nickname;
             newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
-            const nickname =  newGuest.textContent;
             
-                      guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
+             guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
             addGuestStyles(newGuest, guestId); // Dodaj stilove
             guestList.appendChild(newGuest); // Dodaj novog gosta u listu
         }
