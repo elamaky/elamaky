@@ -1,7 +1,6 @@
 const socket = io();
 const guestsData = {};
 
-
 // Kada korisnik pritisne Enter
 document.getElementById('chatInput').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
@@ -17,7 +16,6 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
         this.value = ''; // Isprazni polje za unos
     }
 });
-
 
 // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
@@ -90,3 +88,19 @@ socket.on('updateGuestList', function(users) {
             }
         }
     });
+
+    // Dodaj nove goste koji nisu u trenutnoj listi
+    users.forEach(nickname => {
+        const guestId = `guest-${nickname}`;
+        
+        // Ako gost već postoji, preskoči ga
+        if (!guestsData[guestId]) {
+            guestsData[guestId] = { nickname, color: '#FFFFFF' }; // Dodajemo gosta sa podrazumevanom bojom
+
+            const newGuest = document.createElement('div');
+            newGuest.classList.add('guest');
+            newGuest.textContent = nickname;
+             guestList.appendChild(newGuest); // Dodaj novog gosta u listu
+        }
+    });
+});
