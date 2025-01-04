@@ -15,16 +15,21 @@ function addGuestStyles(guestElement, guestId) {
     colorPickerButton.classList.add('colorPicker');
     colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF';
 
-    // Kreiraj događaj za izbor boje
-    colorPickerButton.addEventListener('input', function () {
-        if (document.activeElement === this) { // Ograniči interakciju samo na aktivni picker
-            guestElement.style.color = this.value;
-            guestsData[guestId].color = this.value;
-        }
+    // Dodaj event listener za otključavanje samo svog color pickera
+    guestElement.addEventListener('mouseenter', function () {
+        const allPickers = document.querySelectorAll('.colorPicker');
+        allPickers.forEach(picker => picker.style.pointerEvents = 'none'); // Onemogući sve pickere
+        colorPickerButton.style.pointerEvents = 'auto'; // Omogući samo trenutni picker
+    });
+
+   colorPickerButton.addEventListener('input', function () {
+        guestElement.style.color = this.value;
+        guestsData[guestId].color = this.value;
     });
 
     guestElement.appendChild(colorPickerButton);
 }
+
 
 
 // Kada nov gost dođe
