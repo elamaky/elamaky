@@ -15,23 +15,17 @@ function addGuestStyles(guestElement, guestId) {
     colorPickerButton.classList.add('colorPicker');
     colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF';
 
+    // Kreiraj događaj za izbor boje
     colorPickerButton.addEventListener('input', function () {
-        guestElement.style.color = this.value;
-        guestsData[guestId].color = this.value;
-    });
-
-    colorPickerButton.addEventListener('focus', function () {
-        document.querySelectorAll('.colorPicker').forEach(picker => {
-            if (picker !== this) picker.disabled = true;
-        });
-    });
-
-    colorPickerButton.addEventListener('blur', function () {
-        document.querySelectorAll('.colorPicker').forEach(picker => picker.disabled = false);
+        if (document.activeElement === this) { // Ograniči interakciju samo na aktivni picker
+            guestElement.style.color = this.value;
+            guestsData[guestId].color = this.value;
+        }
     });
 
     guestElement.appendChild(colorPickerButton);
 }
+
 
 // Kada nov gost dođe
 socket.on('newGuest', function(nickname) {
