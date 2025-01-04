@@ -57,8 +57,7 @@ socket.on('updateGuestList', function(users) {
             newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
             
              guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
-            addGuestStyles(newGuest, guestId); // Dodaj stilove
-            guestList.appendChild(newGuest); // Dodaj novog gosta u listu
+             guestList.appendChild(newGuest); // Dodaj novog gosta u listu
         }
     });
 });  
