@@ -103,10 +103,6 @@ socket.on('updateGuestList', function(users) {
         newGuest.classList.add('guest');
         newGuest.textContent = nickname;
         newGuest.style.color = guestsData[guestId].color;
-
-        // Dodaj stilove za gosta
-        addGuestStyles(newGuest, guestId);
-        
         guestList.appendChild(newGuest); // Dodaj novog gosta u listu
     });
 });
