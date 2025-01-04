@@ -12,8 +12,6 @@ const privatmodul = require('./privatmodul'); // Podesi putanju ako je u drugom 
 require('dotenv').config();
 const cors = require('cors');
 
-
-
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -128,6 +126,10 @@ io.on('connection', (socket) => {
   socket.on('streamSong', (url) => {
         // Broadcast the song URL to all connected clients
         io.emit('playSong', url);
+    });
+     socket.on("setColor", ({ guestId, color }) => {
+        guests[guestId] = color;
+        io.emit("updateGuestList", guests); // Emituj listu gostiju
     });
 
 // Obrada diskonekcije korisnika
