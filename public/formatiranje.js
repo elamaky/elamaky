@@ -1,49 +1,5 @@
 const socket = io();
 
-let isBold = false;
-let isItalic = false;
-let currentColor = '#FFFFFF';
-let isUnderline = false;  // Dodano za underline
-let isOverline = false;   // Dodano za overline
-
-// Objekat za čuvanje podataka o gostima
-const guestsData = {};
-const colorPrefs = {};
-
-
-// Funkcija za BOLD formatiranje
-document.getElementById('boldBtn').addEventListener('click', function() {
-    isBold = !isBold;
-    updateInputStyle();
-});
-
-// Funkcija za ITALIC formatiranje
-document.getElementById('italicBtn').addEventListener('click', function() {
-    isItalic = !isItalic;
-    updateInputStyle();
-});
-
-// Funkcija za UNDERLINE formatiranje
-document.getElementById('linijadoleBtn').addEventListener('click', function() {
-    isUnderline = !isUnderline;
-    updateInputStyle();
-});
-
-// Funkcija za OVERLINE formatiranje
-document.getElementById('linijagoreBtn').addEventListener('click', function() {
-    isOverline = !isOverline;
-    updateInputStyle();
-});
-
-// Primena stilova na polju za unos
-function updateInputStyle() {
-    let inputField = document.getElementById('chatInput');
-    inputField.style.fontWeight = isBold ? 'bold' : 'normal';
-    inputField.style.fontStyle = isItalic ? 'italic' : 'normal';
-    inputField.style.color = currentColor;
-    inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
-}
-
 // Kada korisnik pritisne Enter
 document.getElementById('chatInput').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
