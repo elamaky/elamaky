@@ -133,7 +133,7 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
             bold: isBold,
             italic: isItalic,
             color: currentColor,
-            nickname: nickname // Pošalji ime gosta
+            nickname: guests[socket.id],
         });
         this.value = ''; // Isprazni polje za unos
     }
