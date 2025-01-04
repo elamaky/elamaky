@@ -23,42 +23,6 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Funkcija za biranje boje
-document.getElementById('colorBtn').addEventListener('click', function() {
-    document.getElementById('colorPicker').click();
-});
-
-// Kada korisnik izabere boju iz palete
-document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
-
-   document.getElementById('addGuestBtn').addEventListener('click', function() {
-            addGuest();
-        });
-
-        function addGuest() {
-            var guestList = document.getElementById('guestList');
-            var guestCount = guestList.children.length + 1;
-
-            // Create a new guest element
-            var guest = document.createElement('div');
-            guest.className = 'guest';
-            guest.innerHTML = `Guest ${guestCount} <button class="colorBtn">Choose Color</button>`;
-            guestList.appendChild(guest);
-          var colorBtn = guest.querySelector('.colorBtn');
-            colorBtn.addEventListener('click', function() {
-                // Store the guest element that triggered the color picker
-                var currentGuest = this.parentElement;
-                document.getElementById('colorPicker').addEventListener('input', function() {
-                    var currentColor = this.value;
-                    updateGuestColor(currentGuest, currentColor);
-                }, { once: true });  // Ensure the event listener is only triggered once
-            });
-        }
-    function updateGuestColor(guest, color) {
-            guest.style.backgroundColor = color;
-        }
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
@@ -70,7 +34,6 @@ document.getElementById('linijagoreBtn').addEventListener('click', function() {
     isOverline = !isOverline;
     updateInputStyle();
 });
-
 
 // Primena stilova na polju za unos
 function updateInputStyle() {
@@ -130,23 +93,6 @@ socket.on('private_message', function(data) {
     messageArea.prepend(newMessage);
     messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
-
-
-
-// Funkcija za dodavanje stilova gostima
-function addGuestStyles(guestElement, guestId) {
-    const colorPickerButton = document.createElement('input');
-    colorPickerButton.type = 'color';
-    colorPickerButton.classList.add('colorPicker');
-    colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja
-
-    colorPickerButton.addEventListener('input', function() {
-        guestElement.style.color = this.value;
-        guestsData[guestId].color = this.value; // Ažuriraj boju u objektu
-    });
-
-    guestElement.appendChild(colorPickerButton);
-}
 
 // Kada nov gost dođe
 socket.on('newGuest', function(nickname) {
