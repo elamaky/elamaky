@@ -8,6 +8,7 @@
    <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="styles.css"> <!-- Povezivanje CSS datoteke -->
     <link rel="stylesheet" href="dj.css"> <!-- Povezivanje dj.css sa index.html -->
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/nano.min.css">
     
 </head>
 <body>
@@ -32,10 +33,8 @@
     
 <div id="guestList">
   </div>
-     <button id="addGuestBtn">Add Guest</button>
-
-    
-    <div id="toolbar">
+     
+     <div id="toolbar">
         
         <button id="openModal" class="toolbarBtn">D</button>
         <button class="toolbarBtn" id="smilesBtn">😊</button>
@@ -53,7 +52,8 @@
         <button class="toolbarBtn" id="italicBtn">Italic</button>
         <!-- Dugme za boju koje sadrži paletu boja -->
         <button class="toolbarBtn" id="colorBtn">Color</button>
-        <input type="color" id="colorPicker" style="display: none;">
+        <div id="color-picker" style="display: none;"></div>
+       
         
         <!-- Dodaj druge dugmice po potrebi -->
        <button class="toolbarBtn" id="plusBtn" onclick="increaseFontSize()">+</button>
@@ -124,6 +124,8 @@
  <script src="uuid.js"></script>
  <script src="poruke.js"></script>
     <script src="privat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr"></script>
+    <script src="boje.js"></script>
     
  <iframe src="https://zeno.fm/player/radio-galaksija?autoplay=true&muted=true" 
         width="300" height="139" frameborder="5" scrolling="no"
