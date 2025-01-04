@@ -33,20 +33,32 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
 
-    // Ako je gost selektovan, promeni boju nika
-    if (selectedGuest) {
-        const guestId = `guest-${selectedGuest.textContent}`;
+   document.getElementById('addGuestBtn').addEventListener('click', function() {
+            addGuest();
+        });
 
-        // Ažuriraj boju u guestsData
-        guestsData[guestId].color = currentColor;
+        function addGuest() {
+            var guestList = document.getElementById('guestList');
+            var guestCount = guestList.children.length + 1;
 
-        // Ažuriraj boju na nik-u u guestList
-        selectedGuest.style.color = currentColor;
-
-        console.log(`${selectedGuest.textContent} je promenio boju na ${currentColor}`);
-    }
-});
-
+            // Create a new guest element
+            var guest = document.createElement('div');
+            guest.className = 'guest';
+            guest.innerHTML = `Guest ${guestCount} <button class="colorBtn">Choose Color</button>`;
+            guestList.appendChild(guest);
+          var colorBtn = guest.querySelector('.colorBtn');
+            colorBtn.addEventListener('click', function() {
+                // Store the guest element that triggered the color picker
+                var currentGuest = this.parentElement;
+                document.getElementById('colorPicker').addEventListener('input', function() {
+                    var currentColor = this.value;
+                    updateGuestColor(currentGuest, currentColor);
+                }, { once: true });  // Ensure the event listener is only triggered once
+            });
+        }
+    function updateGuestColor(guest, color) {
+            guest.style.backgroundColor = color;
+        }
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
