@@ -28,7 +28,17 @@ function addGuestStyles(guestElement, guestId) {
     });
 
     guestElement.appendChild(colorPickerButton);
+
+    // Omogućiti interakciju sa svojim pickerom kada se fokusira na odgovarajući gost element
+    guestElement.addEventListener('mouseenter', function() {
+        // Onemogući sve druge pickere
+        const allPickers = document.querySelectorAll('.colorPicker');
+        allPickers.forEach(picker => picker.disabled = true);
+        // Omogući samo svoj picker
+        colorPickerButton.disabled = false;
+    });
 }
+
 
 // Kada nov gost dođe
 socket.on('newGuest', function(nickname) {
