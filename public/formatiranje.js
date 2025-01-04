@@ -86,25 +86,6 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     updateInputStyle();
 });
 
-document.getElementById('colorPicker').addEventListener('input', function() {
-    const guestElement = document.querySelector(`.guest[data-guest-id="${myGuestId}"]`);
-    if (guestElement) {
-        guestElement.style.color = this.value;
-        guestsData[myGuestId] = this.value; // Spremi tvoju boju
-    }
-});
-
-// Event delegation za klik na goste, omogućava tvoj picker samo za tvoj ID
-document.querySelector('.guestList').addEventListener('click', function(event) {
-    const guestElement = event.target;
-    if (guestElement.classList.contains('guest') && guestElement.getAttribute('data-guest-id') === myGuestId.toString()) {
-        // Omogućava tvoj picker samo za tvoj ID
-        document.getElementById('colorPicker').disabled = false;
-    } else {
-        document.getElementById('colorPicker').disabled = true;
-    }
-});
-
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
@@ -116,7 +97,6 @@ document.getElementById('linijagoreBtn').addEventListener('click', function() {
     isOverline = !isOverline;
     updateInputStyle();
 });
-
 
 // Primena stilova na polju za unos
 function updateInputStyle() {
