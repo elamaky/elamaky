@@ -13,15 +13,26 @@ function addGuestStyles(guestElement, guestId) {
     const colorPickerButton = document.createElement('input');
     colorPickerButton.type = 'color';
     colorPickerButton.classList.add('colorPicker');
-    colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja
+    colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF';
 
-    colorPickerButton.addEventListener('input', function() {
+    colorPickerButton.addEventListener('input', function () {
         guestElement.style.color = this.value;
-        guestsData[guestId].color = this.value; // Ažuriraj boju u objektu
+        guestsData[guestId].color = this.value;
     });
-colorPickerButton.setAttribute('data-guest-id', guestId);
+
+    colorPickerButton.addEventListener('focus', function () {
+        document.querySelectorAll('.colorPicker').forEach(picker => {
+            if (picker !== this) picker.disabled = true;
+        });
+    });
+
+    colorPickerButton.addEventListener('blur', function () {
+        document.querySelectorAll('.colorPicker').forEach(picker => picker.disabled = false);
+    });
+
     guestElement.appendChild(colorPickerButton);
 }
+
 // Kada nov gost dođe
 socket.on('newGuest', function(nickname) {
     const guestId = `guest-${nickname}`;
