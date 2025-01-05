@@ -172,7 +172,6 @@ users.forEach(nickname => {
             colorPicker.addEventListener('input', function updateColor() {
                 if (currentGuestId === guestId) {
                     updateGuestColor(guestId, this.value);
-                      socket.emit('colorChange', { guestId: guestId, color: this.value });
                 }
             });
             colorPicker.click();
@@ -180,10 +179,3 @@ users.forEach(nickname => {
     }
 });
     });
-// Slušaj za promene boje od servera
-socket.on('colorChange', (data) => {
-    // Ažuriraj boju za odgovarajućeg gosta
-    if (data.guestId === guestId) {
-        updateGuestColor(data.guestId, data.color);
-    }
-});
