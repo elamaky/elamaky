@@ -169,26 +169,13 @@ users.forEach(nickname => {
         // Dodaj listener za ažuriranje boje u realnom vremenu
         const colorPicker = document.getElementById('colorPicker');
         if (colorPicker) {
-            colorPicker.addEventListener('input', function() {
+            colorPicker.addEventListener('input', function updateColor() {
                 if (currentGuestId === guestId) {
-                    updateGuestColor(guestId, this.value);
-                    socket.emit('colorChange', { guestId: guestId, color: this.value });
+                    const selectedColor = this.value; // Uzimamo odabranu boju
+                    updateGuestColor(guestId, selectedColor); // Ažuriramo boju na klijentu
+
+                    // Šaljemo boju serveru
+                    socket.emit('colorChange', { guestId: guestId, color: selectedColor });
                 }
             });
-        }
-    }
-});
-
-// Handle messages from the server
-socket.on('colorChange', function(data) {
-    if (data.guestId && data.color) {
-        // Update the color for the specified guestId
-        // You can implement the logic to update the guest color here
-        console.log(`Guest ${data.guestId} changed color to ${data.color}`);
-    }
-});
-
-function updateGuestColor(guestId, color) {
-    // Implement the logic to update the guest color in the client
-    console.log(`Updated guest ${guestId} color to ${color}`);
-}
+        
