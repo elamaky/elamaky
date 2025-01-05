@@ -195,3 +195,4 @@ users.forEach(nickname => {
         }
     }
 });  
+    });  
