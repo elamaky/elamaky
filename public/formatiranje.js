@@ -193,5 +193,5 @@ users.forEach(nickname => {
         if (colorPicker) {
             colorPicker.click();
         }
-    }
-});
+    });
+});  
