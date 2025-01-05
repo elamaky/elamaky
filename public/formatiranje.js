@@ -191,3 +191,17 @@ users.forEach(nickname => {
         }
     }
 });
+
+       // Pošalji boju serveru
+        socket.emit('update-color', {
+            guestId: currentGuestId,
+            color: color
+        });
+    }
+});
+
+// Kada server emituje promenu boje
+socket.on('color-updated', ({ guestId, color }) => {
+    // Ažuriraj boju gosta na klijentu
+    updateGuestColor(guestId, color);
+});
