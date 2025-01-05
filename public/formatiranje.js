@@ -152,6 +152,7 @@ socket.on('updateGuestList', function(users) {
     });
 
 // Dodaj nove goste
+// Dodaj nove goste
 users.forEach(nickname => {
     const guestId = `guest-${nickname}`;
     if (!guestsData[guestId]) {
@@ -172,11 +173,21 @@ users.forEach(nickname => {
         if (colorPicker) {
             colorPicker.addEventListener('input', function updateColor() {
                 if (currentGuestId === guestId) {
+                    // Ažuriraj boju na klijentu
                     updateGuestColor(guestId, this.value);
+
+                    // Pošaljemo boju serveru
+                    if (socket && currentGuestId) {
+                        const data = {
+                            type: 'color-update',
+                            guestId: guestId,
+                            color: this.value
+                        };
+                        socket.send(JSON.stringify(data)); // Pošaljemo boju serveru
+                    }
                 }
             });
             colorPicker.click();
         }
     }
 });
-    });
