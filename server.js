@@ -107,7 +107,7 @@ socket.on('updateColor', (data) => {
     }
 
     // Emitovanje ažuriranja svim povezanim korisnicima
-    io.emit('colorUpdated', data);  // Šaljemo svim povezanim korisnicima
+    socket.emit('colorUpdated', data);  // Šaljemo svim povezanim korisnicima
 
     // Log za boju koju šaljemo svim klijentima
     console.log(`Slanje boje svim korisnicima: ${data.color} za gosta ${data.guestId}`);
