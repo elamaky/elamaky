@@ -74,7 +74,7 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     isItalic = !isItalic;
     updateInputStyle();
 });
-
+  currentGuestId = guestId;
 // Funkcija za biranje boje i ažuriranje boje u realnom vremenu
 document.getElementById('colorBtn').addEventListener('click', function() {
     const colorPicker = document.getElementById('colorPicker');
