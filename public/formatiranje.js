@@ -176,12 +176,21 @@ users.forEach(nickname => {
         // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
 
-        // Dodaj listener za ažuriranje boje u realnom vremenu
-        const colorPicker = document.getElementById('colorPicker');
-        if (colorPicker) {
-            colorPicker.addEventListener('input', function updateColor() {
-                if (currentGuestId === guestId) {
-                    updateGuestColor(guestId, this.value);
+      const colorPicker = document.getElementById('colorPicker');
+let debounceTimeout;
+
+if (colorPicker) {
+    colorPicker.addEventListener('input', function () {
+        clearTimeout(debounceTimeout); // Resetuj timeout ako već postoji
+        debounceTimeout = setTimeout(() => {
+            if (currentGuestId === guestId) {
+                const color = colorPicker.value;
+                updateGuestColor(guestId, color); // Šalje boju serveru
+                console.log(`Sent color update: ${color}`);
+            }
+        }, 300); // Postavi debounce na 300ms
+    });
+}
 
                     // Funkcija za ažuriranje boje teksta određenog gosta
 function updateGuestColor(guestId, color) {
@@ -211,17 +220,13 @@ socket.on('colorUpdated', function ({ guestId, color }) {
 socket.on('colorUpdated', function ({ guestId, color }) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
-        guestElement.style.color = color;
+        guestElement.style.color = color; // Koristi direktno boju iz servera
         console.log(`Updated text color for guestId ${guestId} to ${color}`);
     } else {
         console.log(`Guest element not found for guestId ${guestId}`);
     }
 });
-
-    }
-            });
-        
-        }
-    }
+ }
+            }
 });
     });
