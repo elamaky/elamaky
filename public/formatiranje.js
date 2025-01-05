@@ -29,25 +29,22 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 
 // Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
+    const selectedColor = this.value;
+    if (currentGuestId !== null) {
+        updateGuestColor(currentGuestId, selectedColor);
+        currentGuestId = null; // Reset the current guest ID nakon primene boje
+    }
+    updateInputStyle(); // Ako je ovo namerno ostavljeno, poziv funkcije može ostati ovde
 });
-// Function to update the text color of a specific guest
+
+// Funkcija za ažuriranje boje teksta određenog gosta
 function updateGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
         guestElement.style.color = color;
-        guestsData[guestId].color = color;
+        guestsData[guestId].color = color; // Osigurajte da guestsData i currentGuestId postoje
     }
 }
-// When the user selects a color from the palette
-document.getElementById('colorPicker').addEventListener('input', function() {
-    const selectedColor = this.value;
-    if (currentGuestId !== null) {
-        updateGuestColor(currentGuestId, selectedColor);
-        currentGuestId = null; // Reset the current guest ID after applying the color
-    }
-});
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
@@ -177,8 +174,8 @@ socket.on('updateGuestList', function(users) {
         }
     });
 
-    // Dodaj nove goste
-   users.forEach(nickname => {
+   // Dodaj nove goste
+users.forEach(nickname => {
     const guestId = `guest-${nickname}`;
     if (!guestsData[guestId]) {
         const newGuest = document.createElement('div');
@@ -187,11 +184,14 @@ socket.on('updateGuestList', function(users) {
         newGuest.textContent = nickname;
         newGuest.style.color = '#FFFFFF'; // Default color if not set
 
-        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add color
+        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
         guestList.appendChild(newGuest); // Add new guest to the list
 
         // Automatically trigger the color picker for the new guest
         currentGuestId = guestId;
-        document.getElementById('colorPicker').click();
+        const colorPicker = document.getElementById('colorPicker');
+        if (colorPicker) {
+            colorPicker.click();
+        }
     }
 });
