@@ -117,31 +117,35 @@ socket.on('newGuest', function(nickname) {
     if (!guestsData[guestId]) {
         guestsData[guestId] = { nickname, color: '#FFFFFF' }; // Ako ne postoji, dodajemo ga sa podrazumevanom bojom
     }
+
     newGuest.style.color = guestsData[guestId].color;
     addGuestStyles(newGuest, guestId);
     guestList.appendChild(newGuest); // Dodaj novog gosta u listu
-    
-    // Emituj novu listu gostiju samo jednom
+
+    // Emituj ažuriranu listu
     socket.emit('updateGuestList', Object.keys(guestsData).map(id => guestsData[id].nickname));
 });
 
-// Ažuriranje liste gostiju bez resetovanja stilova
+// Ažuriranje liste gostiju
 socket.on('updateGuestList', function(users) {
     const guestList = document.getElementById('guestList');
-    const currentGuests = Array.from(guestList.children).map(guest => guest.textContent);
+    guestList.innerHTML = ''; // Očisti staru listu
 
-    // Ukloni goste koji više nisu u listi
-    currentGuests.forEach(nickname => {
-        if (!users.includes(nickname)) {
-            delete guestsData[`guest-${nickname}`]; // Ukloni iz objekta
+    users.forEach(nickname => {
+        const guestId = `guest-${nickname}`;
+        const guestElement = document.createElement('div');
+        guestElement.classList.add('guest');
+        guestElement.textContent = nickname;
 
-            // Ukloni iz DOM-a
-            const guestElement = Array.from(guestList.children).find(guest => guest.textContent === nickname);
-            if (guestElement) {
-                guestList.removeChild(guestElement);
-            }
+        // Ako gost već postoji, ažuriraj boje i stilove
+        if (guestsData[guestId]) {
+            guestElement.style.color = guestsData[guestId].color;
         }
+
+        guestList.appendChild(guestElement); // Dodaj gosta u listu
     });
+});
+
 
     // Dodaj nove goste
     users.forEach(nickname => {
@@ -155,6 +159,7 @@ socket.on('updateGuestList', function(users) {
 
             guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
             guestList.appendChild(newGuest); // Add new guest to the list
+            socket.emit('updateGuestList', Object.keys(guestsData).map(id => guestsData[id].nickname));
 
             // Postavi trenutnog gosta za bojenje
             currentGuestId = guestId;
