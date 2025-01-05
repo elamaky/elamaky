@@ -166,16 +166,18 @@ users.forEach(nickname => {
         // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
 
-        // Dodaj listener za ažuriranje boje u realnom vremenu
-        const colorPicker = document.getElementById('colorPicker');
-        if (colorPicker) {
-            colorPicker.addEventListener('input', function updateColor() {
-                if (currentGuestId === guestId) {
-                    const selectedColor = this.value; // Uzimamo odabranu boju
-                    updateGuestColor(guestId, selectedColor); // Ažuriramo boju na klijentu
+       // Dodaj listener za ažuriranje boje u realnom vremenu
+const colorPicker = document.getElementById('colorPicker');
+if (colorPicker) {
+    colorPicker.addEventListener('input', function updateColor() {
+        if (currentGuestId === guestId) {
+            const selectedColor = this.value; // Uzimamo odabranu boju
+            updateGuestColor(guestId, selectedColor); // Ažuriramo boju na klijentu
 
-                    // Šaljemo boju serveru
-                    socket.emit('colorChange', { guestId: guestId, color: selectedColor });
-                }
-            });
+            // Šaljemo boju serveru
+            socket.emit('colorChange', { guestId: guestId, color: selectedColor });
+        }
+    });
+}
+
         
