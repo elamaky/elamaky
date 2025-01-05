@@ -172,6 +172,7 @@ users.forEach(nickname => {
             colorPicker.addEventListener('input', function updateColor() {
                 if (currentGuestId === guestId) {
                     updateGuestColor(guestId, this.value);
+                      socket.emit('colorChange', { guestId: guestId, color: this.value });
                 }
             });
             colorPicker.click();
