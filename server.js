@@ -102,11 +102,8 @@ io.on('connection', (socket) => {
   // Obrada događaja "updateColor" od klijenta
     socket.on('updateColor', (data) => {
         console.log("Primljen zahtev za ažuriranje boje:", data);
-
-        // Emituj svim povezanim korisnicima (uključujući pošiljaoca)
-        io.emit('colorUpdated', data);
+     io.emit('colorUpdated', data);
     });
-});
 // Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
         const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
