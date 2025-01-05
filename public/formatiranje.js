@@ -197,3 +197,12 @@ users.forEach(nickname => {
     }
 });
     });
+function updateGuestColor(guestId, color) {
+    socket.emit('updateColor', { guestId, color });
+}
+socket.on('colorUpdated', function ({ guestId, color }) {
+    if (currentGuestId === guestId) {
+        document.body.style.backgroundColor = color;
+    }
+});
+
