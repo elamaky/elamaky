@@ -74,15 +74,23 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Funkcija za biranje boje
+// Function to update the style of each guest
+function updateGuestColors(color) {
+    const guests = document.querySelectorAll('#guestList .guest');
+    guests.forEach(guest => {
+        guest.style.backgroundColor = color;
+    });
+}
+
+// Event listener for the color button
 document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPicker').click();
 });
 
-// Kada korisnik izabere boju iz palete
+// When the user selects a color from the palette
 document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
+    const selectedColor = this.value;
+    updateGuestColors(selectedColor);
 });
 
 // Funkcija za UNDERLINE formatiranje
