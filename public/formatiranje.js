@@ -159,20 +159,39 @@ users.forEach(nickname => {
         guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
         guestList.appendChild(newGuest); // Add new guest to the list
 
-        // Postavi trenutnog gosta za bojenje
-        currentGuestId = guestId;
+      // Postavi trenutnog gosta za bojenje
+currentGuestId = guestId;
+console.log("Trenutni gost postavljen:", currentGuestId);
 
-        // Dodaj listener za ažuriranje boje u realnom vremenu
-        const colorPicker = document.getElementById('colorPicker');
-        if (colorPicker) {
-            colorPicker.addEventListener('input', function updateColor() {
-                if (currentGuestId === guestId) {
-                    updateGuestColor(guestId, this.value);
-                   }
-            });
-            colorPicker.click();
-             socket.emit('updateColor', { guestId, color: this.value });
+// Dodaj listener za ažuriranje boje u realnom vremenu
+const colorPicker = document.getElementById('colorPicker');
+if (colorPicker) {
+    console.log("Color picker pronađen:", colorPicker);
+
+    colorPicker.addEventListener('input', function updateColor() {
+        console.log("Promena boje detektovana. Nova vrednost:", this.value);
+
+        if (currentGuestId === guestId) {
+            console.log("Gost ID odgovara. Ažuriranje boje...");
+            updateGuestColor(guestId, this.value);
+        } else {
+            console.log("Gost ID ne odgovara. Boja neće biti ažurirana.");
         }
-    }
-});
     });
+
+    colorPicker.click();
+    console.log("Color picker kliknut. Trenutna vrednost:", colorPicker.value);
+
+    // Emituj događaj serveru
+    socket.emit('updateColor', { guestId, color: colorPicker.value });
+    console.log("Podaci poslati serveru:", { guestId, color: colorPicker.value });
+}
+
+// Osluškuj promene boje od servera
+socket.on('colorUpdated', function (data) {
+    console.log("Boja ažurirana od strane servera:", data);
+
+    // Ažuriraj boju gosta na osnovu podataka od servera
+    updateGuestColor(data.guestId, data.color);
+});
+
