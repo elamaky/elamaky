@@ -59,6 +59,7 @@ socket.on('updateGuestList', function(users) {
                       guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
             addGuestStyles(newGuest, guestId); // Dodaj stilove
             guestList.appendChild(newGuest); // Dodaj novog gosta u listu
+             currentGuestId = guestId;
         }
     });
 });  
@@ -74,7 +75,7 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     isItalic = !isItalic;
     updateInputStyle();
 });
-  currentGuestId = guestId;
+  
 // Funkcija za biranje boje i ažuriranje boje u realnom vremenu
 document.getElementById('colorBtn').addEventListener('click', function() {
     const colorPicker = document.getElementById('colorPicker');
