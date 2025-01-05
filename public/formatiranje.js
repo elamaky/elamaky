@@ -47,36 +47,23 @@ socket.on('updateGuestList', function(users) {
         }
     });
 
- // Dodaj nove goste
-    users.forEach(nickname => {
-        const guestId = `guest-${nickname}`;
-        if (!guestsData[guestId]) {
-            const newGuest = document.createElement('div');
-            newGuest.className = 'guest';
-            newGuest.textContent = nickname;
-            newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
-            
-                      guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
-            addGuestStyles(newGuest, guestId); // Dodaj stilove
-            guestList.appendChild(newGuest); // Dodaj novog gosta u listu
-             currentGuestId = guestId;
-        }
-    });
-});  
+// Dodaj nove goste
+users.forEach(nickname => {
+    const guestId = `guest-${nickname}`;
+    if (!guestsData[guestId]) {
+        const newGuest = document.createElement('div');
+        newGuest.className = 'guest';
+        newGuest.id = guestId; // Set the id for each guest
+        newGuest.textContent = nickname;
+        newGuest.style.color = '#FFFFFF'; // Default color if not set
 
-// Funkcija za BOLD formatiranje
-document.getElementById('boldBtn').addEventListener('click', function() {
-    isBold = !isBold;
-    updateInputStyle();
-});
+        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
+        guestList.appendChild(newGuest); // Add new guest to the list
 
-// Funkcija za ITALIC formatiranje
-document.getElementById('italicBtn').addEventListener('click', function() {
-    isItalic = !isItalic;
-    updateInputStyle();
-});
-  
-// Funkcija za biranje boje i ažuriranje boje u realnom vremenu
+        // Postavi trenutnog gosta za bojenje
+        currentGuestId = guestId;
+
+      // Funkcija za biranje boje i ažuriranje boje u realnom vremenu
 document.getElementById('colorBtn').addEventListener('click', function() {
     const colorPicker = document.getElementById('colorPicker');
     if (colorPicker) {
@@ -84,18 +71,12 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 
         colorPicker.addEventListener('input', function updateColor() {
             if (currentGuestId === guestId) {
+                 currentColor = this.value;
+                updateInputStyle();
                 updateGuestColor(guestId, this.value);
             }
         });
-    }
-});
-// Kada korisnik izabere boju iz palete
-document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
-});
-
-// Funkcija za ažuriranje boje teksta određenog gosta
+  // Funkcija za ažuriranje boje teksta određenog gosta
 function updateGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
@@ -115,7 +96,18 @@ socket.on('colorUpdated', function ({ guestId, color }) {
         console.log(`Guest element not found for guestId ${guestId}`);
     }
 });
+         // Funkcija za BOLD formatiranje
+document.getElementById('boldBtn').addEventListener('click', function() {
+    isBold = !isBold;
+    updateInputStyle();
+});
 
+// Funkcija za ITALIC formatiranje
+document.getElementById('italicBtn').addEventListener('click', function() {
+    isItalic = !isItalic;
+    updateInputStyle();
+});
+     
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
