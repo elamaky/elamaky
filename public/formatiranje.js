@@ -169,16 +169,17 @@ socket.on('updateGuestList', function(users) {
         // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
 
-        // Dodaj listener za ažuriranje boje u realnom vremenu
-        const colorPicker = document.getElementById('colorPicker');
-        if (colorPicker) {
-            colorPicker.addEventListener('input', function updateColor() {
-                if (currentGuestId === guestId) {
-                    updateGuestColor(guestId, this.value);
-                }
-            });
-            colorPicker.click();
+      // Postavi trenutnog gosta za bojenje
+currentGuestId = guestId;
+
+// Dodaj listener za ažuriranje boje u realnom vremenu
+const colorPicker = document.getElementById('colorPicker');
+if (colorPicker) {
+    colorPicker.addEventListener('input', function updateColor() {
+        if (currentGuestId === guestId) {
+            updateGuestColor(guestId, this.value);
         }
-    
-});
     });
+    colorPicker.click();
+}
+
