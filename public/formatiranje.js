@@ -32,15 +32,26 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
 });
-
 // Funkcija za ažuriranje boje teksta određenog gosta
 function updateGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
         guestElement.style.color = color;
         guestsData[guestId].color = color;
+
+        // Slanje boje serveru
+        console.log("Slanje nove boje serveru:", { guestId, color });
+        socket.emit('updateColor', { guestId, color: color });
     }
 }
+
+// Osluškuj boju koju server pošalje
+socket.on('colorUpdated', function (data) {
+    console.log("Primljena nova boja od servera:", data);
+    // Ažuriraj boju gosta na osnovu podataka od servera
+    updateGuestColor(data.guestId, data.color);
+});
+
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
@@ -123,6 +134,15 @@ socket.on('newGuest', function(nickname) {
     if (!guestsData[guestId]) {
         guestsData[guestId] = { nickname, color: '#FFFFFF' }; // Ako ne postoji, dodajemo ga sa podrazumevanom bojom
     }
+
+    newGuest.style.color = guestsData[guestId].color;
+    
+    // Dodaj stilove za gosta
+    addGuestStyles(newGuest, guestId);
+    
+    guestList.appendChild(newGuest); // Dodaj novog gosta u listu
+});
+
 // Ažuriranje liste gostiju bez resetovanja stilova
 socket.on('updateGuestList', function(users) {
     const guestList = document.getElementById('guestList');
@@ -163,20 +183,10 @@ users.forEach(nickname => {
             colorPicker.addEventListener('input', function updateColor() {
                 if (currentGuestId === guestId) {
                     updateGuestColor(guestId, this.value);
-
-                    console.log("Slanje nove boje serveru:", { guestId, color: this.value });
-                    // Pošalji novu boju serveru
-                    socket.emit('updateColor', { guestId, color: this.value });
                 }
             });
             colorPicker.click();
         }
     }
 });
-
-// Osluškuj boju koju server pošalje
-socket.on('colorUpdated', function (data) {
-    console.log("Primljena nova boja od servera:", data);
-    // Ažuriraj boju gosta na osnovu podataka od servera
-    updateGuestColor(data.guestId, data.color);
-});
+    });
