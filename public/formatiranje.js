@@ -32,26 +32,15 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
 });
+
 // Funkcija za ažuriranje boje teksta određenog gosta
 function updateGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
         guestElement.style.color = color;
         guestsData[guestId].color = color;
-
-        // Slanje boje serveru
-        console.log("Slanje nove boje serveru:", { guestId, color });
-        socket.emit('updateColor', { guestId, color: color });
     }
 }
-
-// Osluškuj boju koju server pošalje
-socket.on('colorUpdated', function (data) {
-    console.log("Primljena nova boja od servera:", data);
-    // Ažuriraj boju gosta na osnovu podataka od servera
-    updateGuestColor(data.guestId, data.color);
-});
-
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
