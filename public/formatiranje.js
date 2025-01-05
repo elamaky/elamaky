@@ -150,8 +150,7 @@ socket.on('updateGuestList', function(users) {
             });
 
           const guestId = `guest-${nickname}`;
-const guestList = document.getElementById('guestList');
-const currentGuests = Array.from(guestList.children).map(guest => guest.textContent);
+    const currentGuests = Array.from(guestList.children).map(guest => guest.textContent);
 currentGuests.forEach(nickname => {
     if (!users.includes(nickname)) {
         delete guestsData[`guest-${nickname}`];
