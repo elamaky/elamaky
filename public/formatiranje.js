@@ -179,6 +179,3 @@ socket.on('updateGuestList', function(users) {
             });
             colorPicker.click();
         }
-    
-});
-    });
