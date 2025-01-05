@@ -201,3 +201,4 @@ socket.on('color-updated', ({ guestId, color }) => {
     // Ažuriraj boju gosta na klijentu
     updateGuestColor(guestId, color);
 });
+});
