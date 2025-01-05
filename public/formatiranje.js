@@ -3,7 +3,6 @@ let isItalic = false;
 let currentColor = '#FFFFFF';
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
-let currentGuestId = null;
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
@@ -32,7 +31,6 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
 });
-
 // Funkcija za ažuriranje boje teksta određenog gosta
 function updateGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
@@ -41,6 +39,7 @@ function updateGuestColor(guestId, color) {
         guestsData[guestId].color = color;
     }
 }
+
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
@@ -52,6 +51,7 @@ document.getElementById('linijagoreBtn').addEventListener('click', function() {
     isOverline = !isOverline;
     updateInputStyle();
 });
+
 
 // Primena stilova na polju za unos
 function updateInputStyle() {
@@ -77,6 +77,7 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
         this.value = ''; // Isprazni polje za unos
     }
 });
+
 
 // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
@@ -110,6 +111,23 @@ socket.on('private_message', function(data) {
     messageArea.prepend(newMessage);
     messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
+
+
+
+// Funkcija za dodavanje stilova gostima
+function addGuestStyles(guestElement, guestId) {
+    const colorPickerButton = document.createElement('input');
+    colorPickerButton.type = 'color';
+    colorPickerButton.classList.add('colorPicker');
+    colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF'; // Podrazumevana boja
+
+    colorPickerButton.addEventListener('input', function() {
+        guestElement.style.color = this.value;
+        guestsData[guestId].color = this.value; // Ažuriraj boju u objektu
+    });
+
+    guestElement.appendChild(colorPickerButton);
+}
 
 // Kada nov gost dođe
 socket.on('newGuest', function(nickname) {
@@ -150,7 +168,7 @@ socket.on('updateGuestList', function(users) {
         }
     });
 
-// Dodaj nove goste
+   // Dodaj nove goste
 users.forEach(nickname => {
     const guestId = `guest-${nickname}`;
     if (!guestsData[guestId]) {
