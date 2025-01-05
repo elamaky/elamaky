@@ -32,6 +32,13 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
 });
+// Ažuriranje boje gosta prilikom izbora iz palete
+document.getElementById('colorPicker').addEventListener('input', function() {
+    const selectedColor = this.value;
+    if (currentGuestId !== null) {
+        updateGuestColor(currentGuestId, selectedColor);
+    }
+});
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
