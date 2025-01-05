@@ -168,3 +168,4 @@ users.forEach(nickname => {
 
        }
 });
+    });
