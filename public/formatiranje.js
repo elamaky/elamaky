@@ -193,15 +193,13 @@ if (colorPicker) {
 }
 
                     // Funkcija za ažuriranje boje teksta određenog gosta
+// Funkcija za ažuriranje boje teksta određenog gosta
 function updateGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
         guestElement.style.color = color;
         guestsData[guestId].color = color;
-
     }
-}
-function updateGuestColor(guestId, color) {
     socket.emit('updateColor', { guestId, color });
 }
 socket.on('colorUpdated', function ({ guestId, color }) {
@@ -223,7 +221,3 @@ socket.on('colorUpdated', function ({ guestId, color }) {
         console.log(`Guest element not found for guestId ${guestId}`);
     }
 });
- }
-            }
-});
-    });
