@@ -29,20 +29,17 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 // Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
+const selectedColor = this.value;
+    guestList.style.color = selectedColor;
     updateInputStyle();
-});
-// Function to update the style of each guest
-function updateGuestColors(color) {
-    const guests = document.querySelectorAll('#guestList .guest');
-    guests.forEach(guest => {
-        guest.style.backgroundColor = color;
-    });
+// Function to update the text color of a specific guest
+function updateGuestColor(guestId, color) {
+    const guestElement = document.getElementById(guestId);
+    if (guestElement) {
+        guestElement.style.color = color;
+        guestsData[guestId].color = color;
+    }
 }
-// When the user selects a color from the palette
-document.getElementById('colorPicker').addEventListener('input', function() {
-    const selectedColor = this.value;
-    updateGuestColors(selectedColor);
-});
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
