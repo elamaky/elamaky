@@ -201,8 +201,11 @@ function updateGuestColor(guestId, color) {
     socket.emit('updateColor', { guestId, color });
 }
 socket.on('colorUpdated', function ({ guestId, color }) {
-    if (currentGuestId === guestId) {
-        document.body.style.backgroundColor = color;
+    const guestElement = document.getElementById(guestId);
+    if (guestElement) {
+        guestElement.style.color = color;
+        console.log(`Updated text color for guestId ${guestId} to ${color}`);
+    } else {
+        console.log(`Guest element not found for guestId ${guestId}`);
     }
 });
-
