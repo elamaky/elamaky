@@ -117,13 +117,10 @@ socket.on('newGuest', function(nickname) {
     if (!guestsData[guestId]) {
         guestsData[guestId] = { nickname, color: '#FFFFFF' }; // Ako ne postoji, dodajemo ga sa podrazumevanom bojom
     }
-
-    newGuest.style.color = guestsData[guestId].color;
-    
-    // Dodaj stilove za gosta
-    addGuestStyles(newGuest, guestId);
-    
+ newGuest.style.color = guestsData[guestId].color;
+ addGuestStyles(newGuest, guestId);
     guestList.appendChild(newGuest); // Dodaj novog gosta u listu
+      socket.emit('updateGuestList', Object.keys(guestsData).map(id => guestsData[id].nickname));
 });
 
 // Ažuriranje liste gostiju bez resetovanja stilova
@@ -140,6 +137,7 @@ socket.on('updateGuestList', function(users) {
             const guestElement = Array.from(guestList.children).find(guest => guest.textContent === nickname);
             if (guestElement) {
                 guestList.removeChild(guestElement);
+                 socket.emit('updateGuestList', Object.keys(guestsData).map(id => guestsData[id].nickname));
             }
         }
     });
@@ -156,6 +154,7 @@ users.forEach(nickname => {
 
         guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
         guestList.appendChild(newGuest); // Add new guest to the list
+         socket.emit('updateGuestList', Object.keys(guestsData).map(id => guestsData[id].nickname));
 
         // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
