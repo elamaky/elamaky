@@ -54,13 +54,15 @@ function updateGuestColor(guestId, color) {
         }
     }
 }
-// Kada server pošalje ažuriranje boje
 socket.on('colorUpdated', (data) => {
+    console.log('Primljena boja:', data.color);
     const guestElement = document.getElementById(data.guestId);
     if (guestElement) {
-        guestElement.style.color = data.color;  // Ažuriranje boje
+        guestElement.style.color = data.color;
+         console.log(`Boja gosta ${data.guestId} promenjena u ${data.color}`);
     }
 });
+
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
