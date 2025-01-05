@@ -180,3 +180,10 @@ users.forEach(nickname => {
     }
 });
     });
+// Slušaj za promene boje od servera
+socket.on('colorChange', (data) => {
+    // Ažuriraj boju za odgovarajućeg gosta
+    if (data.guestId === guestId) {
+        updateGuestColor(data.guestId, data.color);
+    }
+});
