@@ -190,4 +190,4 @@ users.forEach(nickname => {
             // Implement the logic to update the guest color in the client
             console.log(`Updated guest ${guestId} color to ${color}`);
         }
-});
+}
