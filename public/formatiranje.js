@@ -152,7 +152,6 @@ socket.on('updateGuestList', function(users) {
     });
 
 // Dodaj nove goste
-// Dodaj nove goste
 users.forEach(nickname => {
     const guestId = `guest-${nickname}`;
     if (!guestsData[guestId]) {
@@ -204,4 +203,5 @@ users.forEach(nickname => {
 socket.on('color-updated', ({ guestId, color }) => {
     // Ažuriraj boju gosta na klijentu
     updateGuestColor(guestId, color);
+});
 });
