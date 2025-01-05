@@ -165,11 +165,7 @@ socket.on('updateGuestList', function(users) {
         }
     });
 });  
-
-        // Postavi trenutnog gosta za bojenje
-        currentGuestId = guestId;
-
-      // Postavi trenutnog gosta za bojenje
+// Postavi trenutnog gosta za bojenje
 currentGuestId = guestId;
 
 // Dodaj listener za ažuriranje boje u realnom vremenu
