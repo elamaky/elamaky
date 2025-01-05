@@ -99,11 +99,12 @@ io.on('connection', (socket) => {
         console.log('Chat cleared');
         io.emit('chat-cleared');
     });
- // Handle color change events from clients
+// Kada se promeni boja
     socket.on('colorChange', (data) => {
-        // Broadcast the color change to all connected clients
-        io.emit('colorChange', data);
+        // Emituj promenjenu boju svim povezanim klijentima
+        io.emit('colorChange', data);  // Ovo šalje podatke svim klijentima
     });
+});
 // Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
         const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
