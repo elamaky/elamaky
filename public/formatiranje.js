@@ -33,14 +33,6 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     updateInputStyle();
 });
 
-// Ažuriranje boje gosta prilikom izbora iz palete
-document.getElementById('colorPicker').addEventListener('input', function() {
-    const selectedColor = this.value;
-    if (currentGuestId !== null) {
-        updateGuestColor(currentGuestId, selectedColor);
-    }
-});
-
 // Funkcija za ažuriranje boje teksta određenog gosta
 function updateGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
