@@ -192,6 +192,6 @@ function addGuestStyles(guestElement, guestId) {
     colorPickerButton.addEventListener('input', function() {
         guestElement.style.color = this.value;
         guestsData[guestId].color = this.value; // Ažuriraj boju u objektu
-    });
+    }
  guestElement.appendChild(colorPickerButton);
 }
