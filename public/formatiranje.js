@@ -125,10 +125,6 @@ socket.on('newGuest', function(nickname) {
     }
 
     newGuest.style.color = guestsData[guestId].color;
-    
-    // Dodaj stilove za gosta
-    addGuestStyles(newGuest, guestId);
-    
     guestList.appendChild(newGuest); // Dodaj novog gosta u listu
 });
 
@@ -172,11 +168,10 @@ users.forEach(nickname => {
             colorPicker.addEventListener('input', function updateColor() {
                 if (currentGuestId === guestId) {
                     updateGuestColor(guestId, this.value);
-                    socket.emit('updateColor', { guestId, color: this.value });
-
-                }
+                   }
             });
             colorPicker.click();
+             socket.emit('updateColor', { guestId, color: this.value });
         }
     }
 });
