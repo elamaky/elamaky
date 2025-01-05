@@ -28,10 +28,11 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 
 // Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-const selectedColor = this.value;
+    const selectedColor = this.value;
     guestList.style.color = selectedColor;
     updateInputStyle();
+});
+
 // Function to update the text color of a specific guest
 function updateGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
