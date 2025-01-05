@@ -99,11 +99,7 @@ io.on('connection', (socket) => {
         console.log('Chat cleared');
         io.emit('chat-cleared');
     });
-  // Obrada događaja "updateColor" od klijenta
-    socket.on('updateColor', (data) => {
-        console.log("Primljen zahtev za ažuriranje boje:", data);
-     io.emit('colorUpdated', data);
-    });
+ 
 // Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
         const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
