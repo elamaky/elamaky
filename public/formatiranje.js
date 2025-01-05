@@ -25,14 +25,6 @@ document.getElementById('italicBtn').addEventListener('click', function() {
 document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPicker').click();
 });
-// Funkcija za ažuriranje boje teksta određenog gosta
-function updateGuestColor(guestId, color) {
-    const guestElement = document.getElementById(guestId);
-    if (guestElement) {
-        guestElement.style.color = color;
-        guestsData[guestId].color = color;
-    }
-}
 
 // Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
@@ -190,13 +182,16 @@ users.forEach(nickname => {
             colorPicker.addEventListener('input', function updateColor() {
                 if (currentGuestId === guestId) {
                     updateGuestColor(guestId, this.value);
-                }
-            });
-            colorPicker.click();
-        }
+
+                    // Funkcija za ažuriranje boje teksta određenog gosta
+function updateGuestColor(guestId, color) {
+    const guestElement = document.getElementById(guestId);
+    if (guestElement) {
+        guestElement.style.color = color;
+        guestsData[guestId].color = color;
+
     }
-});
-    });
+}
 function updateGuestColor(guestId, color) {
     socket.emit('updateColor', { guestId, color });
 }
@@ -209,3 +204,24 @@ socket.on('colorUpdated', function ({ guestId, color }) {
         console.log(`Guest element not found for guestId ${guestId}`);
     }
 });
+
+                    function updateGuestColor(guestId, color) {
+    socket.emit('updateColor', { guestId, color });
+}
+socket.on('colorUpdated', function ({ guestId, color }) {
+    const guestElement = document.getElementById(guestId);
+    if (guestElement) {
+        guestElement.style.color = color;
+        console.log(`Updated text color for guestId ${guestId} to ${color}`);
+    } else {
+        console.log(`Guest element not found for guestId ${guestId}`);
+    }
+});
+
+    }
+            });
+        
+        }
+    }
+});
+    });
