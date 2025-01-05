@@ -167,37 +167,30 @@ users.forEach(nickname => {
         // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
 
-      // Dodaj listener za ažuriranje boje u realnom vremenu
-const colorPicker = document.getElementById('colorPicker');
-if (colorPicker) {
-    colorPicker.addEventListener('input', function updateColor() {
-        if (currentGuestId === guestId) {
-            // Ažuriraj boju na klijentu
-            updateGuestColor(currentGuestId, this.value);
-
-            // Pošaljemo boju serveru
-            if (socket && currentGuestId) {
-                const data = {
-                    type: 'color-update',
-                    guestId: currentGuestId,
-                    color: this.value
-                };
-                socket.send(JSON.stringify(data));
-            }
+        // Dodaj listener za ažuriranje boje u realnom vremenu
+        const colorPicker = document.getElementById('colorPicker');
+        if (colorPicker) {
+            colorPicker.addEventListener('input', function updateColor() {
+                if (currentGuestId === guestId) {
+                    updateGuestColor(guestId, this.value);
+                    socket.emit('colorChange', { guestId: guestId, color: this.value });
+                }
+            });
+            colorPicker.click();
         }
-    });
-}
-
-// Pošalji boju serveru
-if (socket && currentGuestId) {
-    socket.emit('update-color', {
-        guestId: currentGuestId,
-        color: color
-    });
-}
-
-// Kada server emituje promenu boje
-socket.on('color-updated', ({ guestId, color }) => {
-    // Ažuriraj boju gosta na klijentu
-    updateGuestColor(guestId, color);
+    }
 });
+    });
+
+ socket.on('colorChange', function(data) {
+            if (data.guestId && data.color) {
+                // Update the color for the specified guestId
+                // You can implement the logic to update the guest color here
+                console.log(`Guest ${data.guestId} changed color to ${data.color}`);
+            }
+        });
+
+        function updateGuestColor(guestId, color) {
+            // Implement the logic to update the guest color in the client
+            console.log(`Updated guest ${guestId} color to ${color}`);
+        }
