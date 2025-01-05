@@ -205,6 +205,6 @@ socket.on('updateGuestList', function(users) {
 
                                 // Ažuriraj boju gosta na osnovu podataka od servera
                                 updateGuestColor(data.guestId, data.color);
-                            });
-                             });
+                            }
+                             }
 });
