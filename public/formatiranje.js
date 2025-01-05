@@ -178,6 +178,3 @@ if (colorPicker) {
             socket.emit('colorChange', { guestId: guestId, color: selectedColor });
         }
     });
-}
-
-        
