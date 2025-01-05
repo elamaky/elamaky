@@ -32,6 +32,7 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
 });
+
 // Funkcija za ažuriranje boje teksta određenog gosta
 function updateGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
@@ -51,7 +52,6 @@ document.getElementById('linijagoreBtn').addEventListener('click', function() {
     isOverline = !isOverline;
     updateInputStyle();
 });
-
 
 // Primena stilova na polju za unos
 function updateInputStyle() {
@@ -77,7 +77,6 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
         this.value = ''; // Isprazni polje za unos
     }
 });
-
 
 // Kada server pošalje poruku
 socket.on('chatMessage', function(data) {
@@ -173,7 +172,6 @@ users.forEach(nickname => {
             colorPicker.addEventListener('input', function updateColor() {
                 if (currentGuestId === guestId) {
                     updateGuestColor(guestId, this.value);
-                    socket.emit('colorChange', { guestId: guestId, color: this.value });
                 }
             });
             colorPicker.click();
@@ -181,16 +179,3 @@ users.forEach(nickname => {
     }
 });
     });
-
- socket.on('colorChange', function(data) {
-            if (data.guestId && data.color) {
-                // Update the color for the specified guestId
-                // You can implement the logic to update the guest color here
-                console.log(`Guest ${data.guestId} changed color to ${data.color}`);
-            }
-        });
-
-        function updateGuestColor(guestId, color) {
-            // Implement the logic to update the guest color in the client
-            console.log(`Updated guest ${guestId} color to ${color}`);
-        }
