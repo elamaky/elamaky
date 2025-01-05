@@ -7,7 +7,7 @@ let isOverline = false;   // Dodano za overline
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
 const colorPrefs = {};
-
+let currentGuestId = null;
 
 // Funkcija za BOLD formatiranje
 document.getElementById('boldBtn').addEventListener('click', function() {
@@ -21,15 +21,44 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Funkcija za biranje boje
+// Funkcija za biranje boje i ažuriranje boje u realnom vremenu
 document.getElementById('colorBtn').addEventListener('click', function() {
-    document.getElementById('colorPicker').click();
-});
+    const colorPicker = document.getElementById('colorPicker');
+    if (colorPicker) {
+        colorPicker.click();
 
+        colorPicker.addEventListener('input', function updateColor() {
+            if (currentGuestId === guestId) {
+                updateGuestColor(guestId, this.value);
+            }
+        });
+    }
+});
 // Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
+});
+
+// Funkcija za ažuriranje boje teksta određenog gosta
+function updateGuestColor(guestId, color) {
+    const guestElement = document.getElementById(guestId);
+    if (guestElement) {
+        guestElement.style.color = color;
+        guestsData[guestId].color = color;
+        socket.emit('updateColor', { guestId, color });
+    }
+}
+// Slušanje događaja 'colorUpdated' sa servera
+socket.on('colorUpdated', function ({ guestId, color }) {
+    const guestElement = document.getElementById(guestId);
+    if (guestElement) {
+        guestElement.style.color = color; // Ažurira boju teksta sa bojem sa servera
+        guestsData[guestId].color = color;
+        console.log(`Updated text color for guestId ${guestId} to ${color}`);
+    } else {
+        console.log(`Guest element not found for guestId ${guestId}`);
+    }
 });
 
 // Funkcija za UNDERLINE formatiranje
@@ -172,52 +201,3 @@ users.forEach(nickname => {
 
         guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
         guestList.appendChild(newGuest); // Add new guest to the list
-
-        // Postavi trenutnog gosta za bojenje
-        currentGuestId = guestId;
-
-      const colorPicker = document.getElementById('colorPicker');
-let debounceTimeout;
-
-if (colorPicker) {
-    colorPicker.addEventListener('input', function () {
-        clearTimeout(debounceTimeout); // Resetuj timeout ako već postoji
-        debounceTimeout = setTimeout(() => {
-            if (currentGuestId === guestId) {
-                const color = colorPicker.value;
-                updateGuestColor(guestId, color); // Šalje boju serveru
-                console.log(`Sent color update: ${color}`);
-            }
-        }, 300); // Postavi debounce na 300ms
-    });
-}
-
-                    // Funkcija za ažuriranje boje teksta određenog gosta
-// Funkcija za ažuriranje boje teksta određenog gosta
-function updateGuestColor(guestId, color) {
-    const guestElement = document.getElementById(guestId);
-    if (guestElement) {
-        guestElement.style.color = color;
-        guestsData[guestId].color = color;
-    }
-    socket.emit('updateColor', { guestId, color });
-}
-socket.on('colorUpdated', function ({ guestId, color }) {
-    const guestElement = document.getElementById(guestId);
-    if (guestElement) {
-        guestElement.style.color = color;
-        console.log(`Updated text color for guestId ${guestId} to ${color}`);
-    } else {
-        console.log(`Guest element not found for guestId ${guestId}`);
-    }
-     socket.emit('updateColor', { guestId, color });
-});
-socket.on('colorUpdated', function ({ guestId, color }) {
-    const guestElement = document.getElementById(guestId);
-    if (guestElement) {
-        guestElement.style.color = color; // Koristi direktno boju iz servera
-        console.log(`Updated text color for guestId ${guestId} to ${color}`);
-    } else {
-        console.log(`Guest element not found for guestId ${guestId}`);
-    }
-});
