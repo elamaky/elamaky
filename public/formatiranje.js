@@ -176,7 +176,7 @@ users.forEach(nickname => {
         // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
 
-  const colorPicker = document.getElementById('colorPicker');
+      const colorPicker = document.getElementById('colorPicker');
 let debounceTimeout;
 
 if (colorPicker) {
@@ -185,20 +185,45 @@ if (colorPicker) {
         debounceTimeout = setTimeout(() => {
             if (currentGuestId === guestId) {
                 const color = colorPicker.value;
-                socket.emit('updateColor', { guestId, color }); // Šalje boju serveru
+                updateGuestColor(guestId, color); // Šalje boju serveru
                 console.log(`Sent color update: ${color}`);
             }
         }, 300); // Postavi debounce na 300ms
     });
-
-    socket.on('colorUpdated', function ({ guestId, color }) {
-        const guestElement = document.getElementById(guestId);
-        if (guestElement) {
-            guestElement.style.color = color; // Ažuriraj boju teksta
-            guestsData[guestId].color = color; // Ažuriraj lokalne podatke
-            console.log(`Updated text color for guestId ${guestId} to ${color}`);
-        } else {
-            console.log(`Guest element not found for guestId ${guestId}`);
-        }
-    });
 }
+
+                    // Funkcija za ažuriranje boje teksta određenog gosta
+function updateGuestColor(guestId, color) {
+    const guestElement = document.getElementById(guestId);
+    if (guestElement) {
+        guestElement.style.color = color;
+        guestsData[guestId].color = color;
+
+    }
+}
+function updateGuestColor(guestId, color) {
+    socket.emit('updateColor', { guestId, color });
+}
+socket.on('colorUpdated', function ({ guestId, color }) {
+    const guestElement = document.getElementById(guestId);
+    if (guestElement) {
+        guestElement.style.color = color;
+        console.log(`Updated text color for guestId ${guestId} to ${color}`);
+    } else {
+        console.log(`Guest element not found for guestId ${guestId}`);
+    }
+     socket.emit('updateColor', { guestId, color });
+});
+socket.on('colorUpdated', function ({ guestId, color }) {
+    const guestElement = document.getElementById(guestId);
+    if (guestElement) {
+        guestElement.style.color = color; // Koristi direktno boju iz servera
+        console.log(`Updated text color for guestId ${guestId} to ${color}`);
+    } else {
+        console.log(`Guest element not found for guestId ${guestId}`);
+    }
+});
+ }
+            }
+});
+    });
