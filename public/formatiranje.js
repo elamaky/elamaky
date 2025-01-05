@@ -29,12 +29,16 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 
 // Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
+    currentColor = this.value;
+    updateInputStyle();
+});
+
+// Ažuriranje boje gosta prilikom izbora iz palete
+document.getElementById('colorPicker').addEventListener('input', function() {
     const selectedColor = this.value;
     if (currentGuestId !== null) {
         updateGuestColor(currentGuestId, selectedColor);
-        currentGuestId = null; // Reset the current guest ID nakon primene boje
     }
-    updateInputStyle(); // Ako je ovo namerno ostavljeno, poziv funkcije može ostati ovde
 });
 
 // Funkcija za ažuriranje boje teksta određenog gosta
@@ -42,7 +46,7 @@ function updateGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
         guestElement.style.color = color;
-        guestsData[guestId].color = color; // Osigurajte da guestsData i currentGuestId postoje
+        guestsData[guestId].color = color;
     }
 }
 
