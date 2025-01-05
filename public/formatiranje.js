@@ -4,13 +4,15 @@ let currentColor = '#FFFFFF';
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
 
+
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
 const colorPrefs = {};
+let guestId;
 
 // Kada nov gost dođe
 socket.on('newGuest', function(nickname) {
-    const guestId = `guest-${nickname}`;
+    guestId = `guest-${nickname}`;
     const guestList = document.getElementById('guestList');
     const newGuest = document.createElement('div');
     newGuest.classList.add('guest');
@@ -180,8 +182,6 @@ socket.on('private_message', function(data) {
     messageArea.scrollTop = 0; // Automatsko skrolovanje
 });
 
-
-
 // Funkcija za dodavanje stilova gostima
 function addGuestStyles(guestElement, guestId) {
     const colorPickerButton = document.createElement('input');
@@ -193,6 +193,5 @@ function addGuestStyles(guestElement, guestId) {
         guestElement.style.color = this.value;
         guestsData[guestId].color = this.value; // Ažuriraj boju u objektu
     });
-
-    guestElement.appendChild(colorPickerButton);
+ guestElement.appendChild(colorPickerButton);
 }
