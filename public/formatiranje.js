@@ -168,40 +168,36 @@ users.forEach(nickname => {
         currentGuestId = guestId;
 
         // Dodaj listener za ažuriranje boje u realnom vremenu
-        const colorPicker = document.getElementById('colorPicker');
-        if (colorPicker) {
-            colorPicker.addEventListener('input', function updateColor() {
-                if (currentGuestId === guestId) {
-                    // Ažuriraj boju na klijentu
-                    updateGuestColor(guestId, this.value);
+     // Dodaj listener za ažuriranje boje u realnom vremenu
+const colorPicker = document.getElementById('colorPicker');
+if (colorPicker) {
+    colorPicker.addEventListener('input', function updateColor() {
+        if (currentGuestId === guestId) {
+            // Ažuriraj boju na klijentu
+            updateGuestColor(guestId, this.value);
 
-                    // Pošaljemo boju serveru
-                    if (socket && currentGuestId) {
-                        const data = {
-                            type: 'color-update',
-                            guestId: guestId,
-                            color: this.value
-                        };
-                        socket.send(JSON.stringify(data)); // Pošaljemo boju serveru
-                    }
-                }
-            });
-            colorPicker.click();
+            // Pošaljemo boju serveru
+            if (socket && currentGuestId) {
+                const data = {
+                    type: 'color-update',
+                    guestId: guestId,
+                    color: this.value
+                };
+                socket.send(JSON.stringify(data));
+            }
         }
-    }
-});
+    });
+    colorPicker.click();
+}
 
-       // Pošalji boju serveru
-        socket.emit('update-color', {
-            guestId: currentGuestId,
-            color: color
-        });
-    }
+// Pošalji boju serveru
+socket.emit('update-color', {
+    guestId: currentGuestId,
+    color: color
 });
 
 // Kada server emituje promenu boje
 socket.on('color-updated', ({ guestId, color }) => {
     // Ažuriraj boju gosta na klijentu
     updateGuestColor(guestId, color);
-});
 });
