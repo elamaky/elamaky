@@ -104,7 +104,6 @@ io.on('connection', (socket) => {
         // Emituj promenjenu boju svim povezanim klijentima
         io.emit('colorChange', data);  // Ovo šalje podatke svim klijentima
     });
-});
 // Mogućnost banovanja korisnika prema nickname-u
     socket.on('banUser', (nicknameToBan) => {
         const socketIdToBan = Object.keys(guests).find(key => guests[key] === nicknameToBan);
