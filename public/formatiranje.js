@@ -3,6 +3,7 @@ let isItalic = false;
 let currentColor = '#FFFFFF';
 let isUnderline = false;  // Dodano za underline
 let isOverline = false;   // Dodano za overline
+let currentGuestId = null;
 
 // Objekat za čuvanje podataka o gostima
 const guestsData = {};
@@ -28,11 +29,9 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 
 // Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
-    const selectedColor = this.value;
-    guestList.style.color = selectedColor;
+    currentColor = this.value;
     updateInputStyle();
 });
-
 // Function to update the text color of a specific guest
 function updateGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
@@ -41,6 +40,14 @@ function updateGuestColor(guestId, color) {
         guestsData[guestId].color = color;
     }
 }
+// When the user selects a color from the palette
+document.getElementById('colorPicker').addEventListener('input', function() {
+    const selectedColor = this.value;
+    if (currentGuestId !== null) {
+        updateGuestColor(currentGuestId, selectedColor);
+        currentGuestId = null; // Reset the current guest ID after applying the color
+    }
+});
 
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
@@ -171,17 +178,22 @@ socket.on('updateGuestList', function(users) {
     });
 
     // Dodaj nove goste
-    users.forEach(nickname => {
-        const guestId = `guest-${nickname}`;
-        if (!guestsData[guestId]) {
-            const newGuest = document.createElement('div');
-            newGuest.className = 'guest';
-            newGuest.textContent = nickname;
-            newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
-            
-                      guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
-            addGuestStyles(newGuest, guestId); // Dodaj stilove
-            guestList.appendChild(newGuest); // Dodaj novog gosta u listu
-        }
-    });
-});  
+    // Add new guests
+const users = ['Guest1', 'Guest2', 'Guest3']; // Example guest nicknames
+users.forEach(nickname => {
+    const guestId = `guest-${nickname}`;
+    if (!guestsData[guestId]) {
+        const newGuest = document.createElement('div');
+        newGuest.className = 'guest';
+        newGuest.id = guestId; // Set the id for each guest
+        newGuest.textContent = nickname;
+        newGuest.style.color = '#FFFFFF'; // Default color if not set
+
+        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add color
+        guestList.appendChild(newGuest); // Add new guest to the list
+
+        // Automatically trigger the color picker for the new guest
+        currentGuestId = guestId;
+        document.getElementById('colorPicker').click();
+    }
+});
