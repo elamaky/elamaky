@@ -161,38 +161,39 @@ socket.on('updateGuestList', function(users) {
         }
     });
 
-  // Dodaj nove goste
+// Dodaj nove goste
 users.forEach(nickname => {
     const guestId = `guest-${nickname}`;
     if (!guestsData[guestId]) {
         const newGuest = document.createElement('div');
         newGuest.className = 'guest';
-        newGuest.id = guestId; // Set the id for each guest
+        newGuest.id = guestId; // Postavi ID za svakog gosta
         newGuest.textContent = nickname;
-        newGuest.style.color = '#FFFFFF'; // Default color if not set
+        newGuest.style.color = '#FFFFFF'; // Podrazumevana boja
 
-        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
-        guestList.appendChild(newGuest); // Add new guest to the list
+        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodaj podatke o gostu
+        guestList.appendChild(newGuest); // Dodaj novog gosta u listu
 
         // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
 
-       // Dodaj listener za ažuriranje boje u realnom vremenu
-const colorPicker = document.getElementById('colorPicker');
-if (colorPicker) {
-    colorPicker.addEventListener('input', function updateColor() {
-        if (currentGuestId === guestId) {
-            const newColor = this.value;
-            updateGuestColor(guestId, newColor);
+        // Dodaj listener za ažuriranje boje u realnom vremenu
+        const colorPicker = document.getElementById('colorPicker');
+        if (colorPicker) {
+            colorPicker.addEventListener('input', function updateColor() {
+                if (currentGuestId === guestId) {
+                    const newColor = this.value;
+                    updateGuestColor(guestId, newColor);
 
-            // Emituj događaj serveru
-            socket.emit('updateColor', { guestId, color: newColor });
+                    // Emituj događaj serveru
+                    socket.emit('updateColor', { guestId, color: newColor });
+                }
+            });
         }
-    });
-}
-}
+    }
 });
-  
+
+// Pretpostavljamo da je `socket` već inicijalizovan
 socket.on('updateColor', (data) => {
     updateGuestColor(data.guestId, data.color);
 });
@@ -201,6 +202,7 @@ function updateGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
         guestElement.style.color = color;
-        guestsData[guestId].color = color; // Ažuriramo lokalne podatke
+        guestsData[guestId].color = color; // Ažuriraj lokalne podatke
     }
 }
+
