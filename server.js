@@ -128,7 +128,7 @@ io.on('connection', (socket) => {
 
         console.log('Broadcasting color update...');
         socket.broadcast.emit('updateGuestColor', { guestId, newColor });
-         socket.emit('syncGuests', guestsData);
+         socket.emit('syncGuests',  guestId, newColor,updateGuestColor);
      });
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
