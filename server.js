@@ -127,7 +127,7 @@ io.on('connection', (socket) => {
         console.log(`Primljena promena boje za ${guestId}: ${newColor}`);
 
         // Emituje svim ostalim klijentima osim pošiljaocu
-        io.emit('updateGuestColor', { guestId, newColor });
+        socket.emit('updateGuestColor', { guestId, newColor });
     });
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
