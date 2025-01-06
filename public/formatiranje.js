@@ -168,12 +168,12 @@ function setGuestColor(guestId, color) {
 }
 
 function updateGuestColor(guestId, newColor) {
-    setGuestColor(guestId, newColor);
-    socket.emit('updateGuestColor', { guestId, newColor }); // Emituje sa "newColor"
+    setGuestColor(guestId, color);
+    socket.emit('updateGuestColor', { guestId, color }); // Emituje sa "newColor"
 }
 
 // Osluškuje promenu boje sa servera
-socket.on('updateGuestColor', ({ guestId, newColor }) => { // Usaglašeno sa "newColor"
-    console.log('Color update broadcasted:', guestId, newColor);
-    setGuestColor(guestId, newColor);
+socket.on('updateGuestColor', ({ guestId, color }) => { // Usaglašeno sa "newColor"
+    console.log('Color update broadcasted:', guestId, color);
+    setGuestColor(guestId, color);
 });
