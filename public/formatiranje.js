@@ -159,7 +159,7 @@ socket.on('updateGuestList', function(users) {
                 colorPicker.addEventListener('input', function updateColor() {
                     if (currentGuestId === guestId) {
                         const newColor = this.value;
-                        updateGuestColor(guestId, Color);
+                        updateGuestColor(guestId, color);
                       socket.emit('updateColor', { guestId, color: newColor });
             console.log('Emitting color update:', { guestId, color: newColor });
                     }
