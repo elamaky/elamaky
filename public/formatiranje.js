@@ -121,7 +121,6 @@ socket.on('updateGuestList', function(users) {
         }
     });
 
-// Prati dodavanje novih gostiju
 function addNewGuests(users) {
     users.forEach(nickname => {
         const guestId = `guest-${nickname}`;
@@ -140,9 +139,7 @@ function addNewGuests(users) {
         }
     });
 }
-
-// Funkcija za inicijalizaciju palete boja za svakog gosta
-function initializeColorPicker(guestId) {
+    function initializeColorPicker(guestId) {
     const colorPicker = document.getElementById('colorPicker');
     const applyColorBtn = document.getElementById('applyColorBtn');
     const guestElement = document.getElementById(guestId); // Uzimanje odgovarajućeg gosta
@@ -170,24 +167,18 @@ function initializeColorPicker(guestId) {
         updateGuestColor(guestId, currentColor); // Ažuriraj boju na serveru
     });
 }
-
-// Funkcija za postavljanje boje gosta
-function setGuestColor(guestId, color) {
+    function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
         guestElement.style.color = color; // Postavi boju teksta
         guestsData[guestId].color = color; // Ažuriraj podatke o boji gosta
     }
 }
-
-// Funkcija za ažuriranje boje gosta i emitovanje na server
-function updateGuestColor(guestId, newColor) {
+    function updateGuestColor(guestId, newColor) {
     setGuestColor(guestId, newColor);
     socket.emit('updateGuestColor', { guestId, newColor }); // Emitovanje promene boje na server
 }
-
-// Osluškuje promenu boje sa servera
-socket.on('updateGuestColor', ({ guestId, newColor }) => {
+   socket.on('updateGuestColor', ({ guestId, newColor }) => {
     console.log('Color update broadcasted:', guestId, newColor);
     setGuestColor(guestId, newColor); // Ažuriraj boju na svim klijentima
-});
+}); 
