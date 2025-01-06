@@ -131,7 +131,7 @@ io.on('connection', (socket) => {
         console.log('Color update received:', guestId, updatedColor);
 
         // Emituj ažuriranje boje svim povezanim klijentima
-        socket.broadcast.emit('updateColor', { guestId, updatedColor });
+        io.emit('updateColor', { guestId, updatedColor });
         console.log('Broadcasting color update to all clients:', { guestId, updatedColor });
     });
 // Obrada diskonekcije korisnika
