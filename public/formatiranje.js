@@ -151,6 +151,7 @@ users.forEach(nickname => {
               }
             });
     }
+        }
 });
     });
 
