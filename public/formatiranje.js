@@ -25,7 +25,7 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
-});
+}
 
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
@@ -175,4 +175,4 @@ socket.on('updateGuestList', function(users) {
         socket.on('updateGuestColor', ({ guestId, newColor }) => {
             console.log('Color update broadcasted:', guestId, newColor);
             setGuestColor(guestId, newColor);
-        });
+        }
