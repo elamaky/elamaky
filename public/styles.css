@@ -61,6 +61,25 @@ body {
     background-color: #666;
 }
 
+  #colorPickerContainer {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid black;
+            padding: 10px;
+            z-index: 10;
+        }
+
+        #colorPickerContainer input[type="color"] {
+            width: 100%;
+        }
+
+        #colorPickerContainer button {
+            margin-top: 5px;
+            width: 100%;
+            padding: 5px;
+        }
+
 #messageArea {
     position: absolute;
     top: 95px;
