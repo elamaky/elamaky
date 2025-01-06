@@ -49,13 +49,10 @@
         <button class="toolbarBtn" id="italicBtn">Italic</button>
         <!-- Dugme za boju koje sadrži paletu boja -->
         <button class="toolbarBtn" id="colorBtn">Color</button>
-        <input type="color" id="colorPicker" style="display: none;">
-        <div id="modalpotvrde">
-        <p>Sigurni???</p>
-        <button id="confirmColor">DA</button>
-        <button id="cancelColor">NE</button>
-    </div>
-</div>
+        <div id="colorPickerContainer">
+                <input type="color" id="colorPicker">
+                <button id="applyColorBtn">OK</button>
+            </div>
     
         <!-- Dodaj druge dugmice po potrebi -->
        <button class="toolbarBtn" id="plusBtn" onclick="increaseFontSize()">+</button>
