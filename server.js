@@ -123,10 +123,10 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-     socket.on('updateColor', ({ guestId, color }) => {
+     socket.on('updateColor', ({ guestId, newColor }) => {
         console.log(`Received color update from guestId ${guestId}: ${color}`);
         // Emituje ažuriranu boju svim klijentima
-        io.emit('colorUpdated', { guestId, color });
+        io.emit('colorUpdated', { guestId, newColor });
         console.log(`Broadcasted color update for guestId ${guestId}`);
     });
 // Obrada diskonekcije korisnika
