@@ -21,26 +21,6 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Funkcija za biranje boje
-document.getElementById('colorBtn').addEventListener('click', function() {
-    document.getElementById('colorPicker').click();
-});
-
-// Kada korisnik izabere boju iz palete
-document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
-});
-
-// Funkcija za ažuriranje boje teksta određenog gosta
-function updateGuestColor(guestId, color) {
-    const guestElement = document.getElementById(guestId);
-    if (guestElement) {
-        guestElement.style.color = color;
-        guestsData[guestId].color = color;
-    }
-}
-
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
@@ -171,23 +151,27 @@ socket.on('updateGuestList', function(users) {
         }
     });
 
-  // Dodaj nove goste
+// Funkcija za biranje boje
+document.getElementById('colorBtn').addEventListener('click', function() {
+    document.getElementById('colorPicker').click();
+});
+
 users.forEach(nickname => {
     const guestId = `guest-${nickname}`;
     if (!guestsData[guestId]) {
         const newGuest = document.createElement('div');
         newGuest.className = 'guest';
-        newGuest.id = guestId; // Set the id for each guest
+        newGuest.id = guestId;
         newGuest.textContent = nickname;
         newGuest.style.color = '#FFFFFF'; // Default color if not set
 
-        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
-        guestList.appendChild(newGuest); // Add new guest to the list
+        guestsData[guestId] = { nickname, color: newGuest.style.color };
+        guestList.appendChild(newGuest);
 
         // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
 
-        // Dodaj listener za ažuriranje boje u realnom vremenu
+        // Kada korisnik izabere boju iz palete
         const colorPicker = document.getElementById('colorPicker');
         if (colorPicker) {
             colorPicker.addEventListener('input', function updateColor() {
@@ -195,8 +179,15 @@ users.forEach(nickname => {
                     updateGuestColor(guestId, this.value);
                 }
             });
-            colorPicker.click();
         }
     }
 });
-    });
+
+// Funkcija za ažuriranje boje teksta određenog gosta
+function updateGuestColor(guestId, color) {
+    const guestElement = document.getElementById(guestId);
+    if (guestElement) {
+        guestElement.style.color = color;
+        guestsData[guestId].color = color;
+    }
+}
