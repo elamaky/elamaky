@@ -172,3 +172,8 @@ socket.on('updateGuestColor', ({ guestId, newColor }) => {
     console.log('Color update broadcasted:', guestId, newColor);
     setGuestColor(guestId, newColor);
 });
+socket.on('syncGuests', (data) => {
+    Object.entries(data).forEach(([guestId, { color }]) => {
+        setGuestColor(guestId, color);
+    });
+});
