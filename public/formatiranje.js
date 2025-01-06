@@ -158,9 +158,9 @@ socket.on('updateGuestList', function(users) {
                 colorPicker.addEventListener('input', function updateColor() {
                     if (currentGuestId === guestId) {
                         const newColor = this.value;
-                        updateGuestColor(guestId, newColor);
-                        socket.emit('updateColor', { guestId, color: newColor });
-                       console.log('Emitting color update:', { guestId, color: newColor });
+                        updateGuestColor(guestId, Color);
+                      socket.emit('updateColor', { guestId, color: this.value });
+                      console.log('Emitting color update:', { guestId, color: this.value });
 
                     }
                 });
@@ -178,6 +178,8 @@ function updateGuestColor(guestId, color) {
     if (guestElement) {
         guestElement.style.color = color;
         guestsData[guestId].color = color;
-         socket.emit('updateColor', { guestId, color: newColor });
+        socket.emit('updateColor', { guestId, color: this.value });
+                      console.log('Emitting color update:', { guestId, color: this.value });
+
     }
 }
