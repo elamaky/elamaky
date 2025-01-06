@@ -123,15 +123,14 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-// Osluskivanje događaja od klijenta
+// Osluškuje događaj od klijenta
 socket.on('updateGuestColor', ({ guestId, newColor }) => {
     console.log('Color update received:', guestId, newColor);
-    
+
     // Emituj promenu boje svim povezanim klijentima
     io.emit('updateGuestColor', { guestId, updatedGuestColor: newColor });
     console.log('emit color update to all clients:', guestId, newColor);
 });
-
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
