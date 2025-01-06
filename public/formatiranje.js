@@ -139,7 +139,7 @@ function addNewGuests(users) {
         }
     });
 }
-    function initializeColorPicker(guestId) {
+  function initializeColorPicker(guestId) {
     const colorPicker = document.getElementById('colorPicker');
     const applyColorBtn = document.getElementById('applyColorBtn');
     const guestElement = document.getElementById(guestId); // Uzimanje odgovarajućeg gosta
@@ -167,7 +167,7 @@ function addNewGuests(users) {
         updateGuestColor(guestId, currentColor); // Ažuriraj boju na serveru
     });
 }
-    function setGuestColor(guestId, color) {
+function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
         guestElement.style.color = color; // Postavi boju teksta
@@ -178,7 +178,13 @@ function addNewGuests(users) {
     setGuestColor(guestId, newColor);
     socket.emit('updateGuestColor', { guestId, newColor }); // Emitovanje promene boje na server
 }
-   socket.on('updateGuestColor', ({ guestId, newColor }) => {
+    socket.on('updateGuestColor', ({ guestId, newColor }) => {
     console.log('Color update broadcasted:', guestId, newColor);
     setGuestColor(guestId, newColor); // Ažuriraj boju na svim klijentima
-}); 
+});
+    console.log('Adding new guest:', nickname);
+console.log('Initializing color picker for:', guestId);
+console.log('Color update:', currentColor);
+console.log('Guest element:', guestElement);
+console.log('Guests data:', guestsData);
+console.log('Updating guest color on server:', guestId, newColor);
