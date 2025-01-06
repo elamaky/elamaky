@@ -21,6 +21,16 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
+// Funkcija za biranje boje
+document.getElementById('colorBtn').addEventListener('click', function() {
+    document.getElementById('colorPicker').click();
+});
+
+// Kada korisnik izabere boju iz palete
+document.getElementById('colorPicker').addEventListener('input', function() {
+    currentColor = this.value;
+    updateInputStyle();
+});
 // Funkcija za UNDERLINE formatiranje
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
@@ -151,43 +161,50 @@ socket.on('updateGuestList', function(users) {
         }
     });
 
-// Funkcija za biranje boje
-document.getElementById('colorBtn').addEventListener('click', function () {
-    document.getElementById('colorPicker').click();
-});
-
+  // Dodaj nove goste
 users.forEach(nickname => {
     const guestId = `guest-${nickname}`;
     if (!guestsData[guestId]) {
         const newGuest = document.createElement('div');
         newGuest.className = 'guest';
-        newGuest.id = guestId;
+        newGuest.id = guestId; // Set the id for each guest
         newGuest.textContent = nickname;
         newGuest.style.color = '#FFFFFF'; // Default color if not set
 
-        guestsData[guestId] = { nickname, color: newGuest.style.color };
-        guestList.appendChild(newGuest);
+        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
+        guestList.appendChild(newGuest); // Add new guest to the list
 
         // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
 
-        // Dodaj listener za ažuriranje boje u realnom vremenu
-        const colorPicker = document.getElementById('colorPicker');
-        if (colorPicker) {
-            colorPicker.addEventListener('input', function () {
-                if (currentGuestId === guestId) {
-                    updateGuestColor(guestId, this.value);
+       // Dodaj listener za ažuriranje boje u realnom vremenu
+const colorPicker = document.getElementById('colorPicker');
+if (colorPicker) {
+    colorPicker.addEventListener('input', function updateColor() {
+        if (currentGuestId === guestId) {
+            const newColor = this.value;
+            updateGuestColor(guestId, newColor);
+
+            // Emituj događaj serveru
+            socket.emit('updateColor', { guestId, color: newColor });
+        }
+    });
+}
+
                 }
             });
-        }
+          }
     }
 });
+   // Pretpostavljamo da je `socket` već inicijalizovan
+socket.on('updateColor', (data) => {
+    updateGuestColor(data.guestId, data.color);
+});
 
-// Funkcija za ažuriranje boje teksta određenog gosta
 function updateGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
         guestElement.style.color = color;
-        guestsData[guestId].color = color;
+        guestsData[guestId].color = color; // Ažuriramo lokalne podatke
     }
 }
