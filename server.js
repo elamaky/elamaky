@@ -123,13 +123,16 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
- // Kada server primi ažuriranje boje od klijenta
-    socket.on('updateColor', ({ guestId, color }) => {
-        console.log('Color update received:', guestId, color);
+ socket.on('updateColor', ({ guestId, color, newColor }) => {
+        // Ako postoji 'color', koristi ga, inače koristi 'newColor'
+        const updatedColor = color || newColor;
+        
+        // Ispis za debug, da vidiš koja boja se šalje
+        console.log('Color update received:', guestId, updatedColor);
 
         // Emituj ažuriranje boje svim povezanim klijentima
-        socket.broadcast.emit('updateColor', { guestId, color });
-        console.log('Broadcasting color update to all clients:', { guestId, color });
+        socket.broadcast.emit('updateColor', { guestId, updatedColor });
+        console.log('Broadcasting color update to all clients:', { guestId, updatedColor });
     });
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
