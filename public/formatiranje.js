@@ -131,57 +131,37 @@ socket.on('updateGuestList', function(users) {
         }
     });
 
- // Dodaj nove goste
+// Dodaj nove goste
 users.forEach(nickname => {
     const guestId = `guest-${nickname}`;
     if (!guestsData[guestId]) {
         const newGuest = document.createElement('div');
         newGuest.className = 'guest';
-        newGuest.id = guestId; // Set the id for each guest
+        newGuest.id = guestId;
         newGuest.textContent = nickname;
-        newGuest.style.color = '#FFFFFF'; // Default color if not set
-
-        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
-        guestList.appendChild(newGuest); // Add new guest to the list
-
-        // Postavi trenutnog gosta za bojenje
-        currentGuestId = guestId;
-
-        // Dodaj listener za ažuriranje boje u realnom vremenu
+        newGuest.style.color = '#FFFFFF';
+        
+        guestsData[guestId] = { nickname, color: newGuest.style.color };
+        guestList.appendChild(newGuest);
+        
+        // Dodaj listener za boju
         const colorPicker = document.getElementById('colorPicker');
-        if (colorPicker) {
-            colorPicker.addEventListener('input', function updateColor() {
-                if (currentGuestId === guestId) {
-                    updateGuestColor(guestId, this.value);
-                }
-            });
-            
-        }
+        colorPicker.addEventListener('input', function() {
+            if (currentGuestId === guestId) {
+                updateGuestColor(guestId, this.value);
+            }
+        });
     }
 });
-    });
-
-function setGuestColor(guestId, color) {
-    const guestElement = document.getElementById(guestId);
-    if (guestElement) {
-        console.log(`Setting color of ${guestId} to ${color}`);
-        guestElement.style.color = color;
-        guestsData[guestId].color = color;
-    }
-}
 
 function updateGuestColor(guestId, newColor) {
-    console.log(`Emitting color update for ${guestId}: ${newColor}`);
     setGuestColor(guestId, newColor);
     socket.emit('updateGuestColor', { guestId, newColor });
 }
 
-socket.on('updateGuestColor', ({ guestId, newColor }) => {
-    console.log('Color update broadcasted:', guestId, newColor);
-    setGuestColor(guestId, newColor);
-});
+// Sync guests event
 socket.on('syncGuests', (data) => {
     Object.entries(data).forEach(([guestId, { color }]) => {
-        setGuestColor(guestId, newColor,updateGuestColor);
+        setGuestColor(guestId, color);
     });
-    });
+});
