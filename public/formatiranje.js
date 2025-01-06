@@ -160,6 +160,8 @@ socket.on('updateGuestList', function(users) {
                         const newColor = this.value;
                         updateGuestColor(guestId, newColor);
                         socket.emit('updateColor', { guestId, color: newColor });
+                       console.log('Emitting color update:', { guestId, color: newColor });
+
                     }
                 });
             }
@@ -176,5 +178,6 @@ function updateGuestColor(guestId, color) {
     if (guestElement) {
         guestElement.style.color = color;
         guestsData[guestId].color = color;
+         socket.emit('updateColor', { guestId, color: newColor });
     }
 }
