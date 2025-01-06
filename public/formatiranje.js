@@ -160,24 +160,21 @@ users.forEach(nickname => {
     }
 });
     });
-
-function updateGuestColor(guestId, newColor) {
+function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
-        guestElement.style.color = newColor;
-        guestsData[guestId].color = newColor;
-        socket.emit('updateGuestColor', { guestId, newColor });
+        guestElement.style.color = color;
+        guestsData[guestId].color = color;
     }
+}
+
+function updateGuestColor(guestId, newColor) {
+    setGuestColor(guestId, newColor);
+    socket.emit('updateGuestColor', { guestId, newColor });
 }
 
 // Osluškuje promenu boje sa servera
 socket.on('updateGuestColor', ({ guestId, updatedGuestColor }) => {
     console.log('Color update broadcasted:', guestId, updatedGuestColor);
-
-    // Pronađi element sa ID-jem guestId i promeni njegovu boju
-    const guestElement = document.getElementById(guestId);
-    if (guestElement) {
-        guestElement.style.color = updatedGuestColor;  // Ažuriraj boju
-        guestsData[guestId].color = updatedGuestColor; // Ažuriraj podatke o boji
-    }
+    setGuestColor(guestId, updatedGuestColor);
 });
