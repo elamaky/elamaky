@@ -4,31 +4,23 @@ let currentColor = '#FFFFFF';
 let newColor;
 let isUnderline = false;
 let isOverline = false;
-
-// Objekat za čuvanje podataka o gostima
 const guestsData = {};
 const colorPrefs = {};
-
-// Funkcija za BOLD formatiranje
 
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
     updateInputStyle();
 });
 
-// Funkcija za ITALIC formatiranje
-
 document.getElementById('italicBtn').addEventListener('click', function() {
     isItalic = !isItalic;
     updateInputStyle();
 });
 
-// Funkcija za biranje boje
 document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPicker').click();
 });
 
-// Kada korisnik izabere boju iz palete
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
@@ -44,7 +36,6 @@ document.getElementById('linijagoreBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-// Primena stilova na polju za unos
 function updateInputStyle() {
     let inputField = document.getElementById('chatInput');
     inputField.style.fontWeight = isBold ? 'bold' : 'normal';
@@ -53,7 +44,6 @@ function updateInputStyle() {
     inputField.style.textDecoration = (isUnderline ? 'underline ' : '') + (isOverline ? 'overline' : '');
 }
 
-// Kada korisnik pritisne Enter
 document.getElementById('chatInput').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
@@ -65,7 +55,7 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
             color: currentColor,
             underline: isUnderline,
             overline: isOverline,
-            nickname: nickname, // Pošalji ime gosta
+            nickname: nickname, 
         });
         this.value = '';
     }
@@ -159,17 +149,16 @@ socket.on('updateGuestList', function(users) {
                 colorPicker.addEventListener('input', function updateColor() {
                     if (currentGuestId === guestId) {
                         const newColor = this.value;
-                        updateColor(guestId, newColor);
-                      socket.emit('updateColor', { guestId, color: newColor });
-            console.log('Emitting color update:', { guestId, color: newColor });
-                    }
+                        updateGuestColor(guestId, newColor);
+                     
+                      }
                 });
             }
         }
     });
 });
 
-socket.on('updateColor', ({ guestId, newColor }) => {
+socket.on('updateGuestColor', ({ guestId, newColor }) => {
     console.log('Color update received:', guestId, newColor);
     updateGuestColor(guestId, newColor);
 });
