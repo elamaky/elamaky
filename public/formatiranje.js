@@ -152,6 +152,7 @@ users.forEach(nickname => {
             colorPicker.addEventListener('input', function updateColor() {
                 if (currentGuestId === guestId) {
                     updateGuestColor(guestId, this.value);
+                    socket.emit('updateGuestColor', { guestId, newColor });
                 }
             });
             
@@ -162,18 +163,19 @@ users.forEach(nickname => {
 function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
-        guestElement.style.color = color;
-        guestsData[guestId].color = color;
+        guestElement.style.color = newColor;
+        guestsData[guestId].color = newColor;
+        socket.emit('updateGuestColor', { guestId, newColor });
     }
 }
 
 function updateGuestColor(guestId, newColor) {
-    setGuestColor(guestId, color);
-    socket.emit('updateGuestColor', { guestId, color }); // Emituje sa "newColor"
+    setGuestColor(guestId, newColor);
+    socket.emit('updateGuestColor', { guestId, newColor }); // Emituje sa "newColor"
 }
 
 // Osluškuje promenu boje sa servera
-socket.on('updateGuestColor', ({ guestId, color }) => { // Usaglašeno sa "newColor"
-    console.log('Color update broadcasted:', guestId, color);
-    setGuestColor(guestId, color);
+socket.on('updateGuestColor', ({ guestId, newColor }) => { // Usaglašeno sa "newColor"
+    console.log('Color update broadcasted:', guestId, newColor);
+    setGuestColor(guestId, newColor);
 });
