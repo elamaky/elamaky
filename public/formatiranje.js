@@ -2,6 +2,7 @@ let isBold = false;
 let isItalic = false;
 let currentColor = '#FFFFFF';
 let newColor;
+let currentGuestId = null;
 let isUnderline = false;
 let isOverline = false;
 const guestsData = {};
