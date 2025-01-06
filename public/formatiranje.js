@@ -152,7 +152,6 @@ users.forEach(nickname => {
             colorPicker.addEventListener('input', function updateColor() {
                 if (currentGuestId === guestId) {
                     updateGuestColor(guestId, this.value);
-                    socket.emit('updateGuestColor', { guestId, newColor });
                 }
             });
             
@@ -163,9 +162,8 @@ users.forEach(nickname => {
 function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
-        guestElement.style.color = newColor;
-        guestsData[guestId].color = newColor;
-        socket.emit('updateGuestColor', { guestId, newColor });
+        guestElement.style.color = color;
+        guestsData[guestId].color = color;
     }
 }
 
