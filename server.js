@@ -123,16 +123,11 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-socket.on('updateGuestColor', ({ guestId, color }) => {
-    if (color) {
-        console.log('Color update received:', guestId, color);
-        io.emit('updateGuestColor', { guestId, updatedGuestColor: color });
-        console.log('Broadcasting color update to all clients:', { guestId, updatedGuestColor: color });
-    } else {
-        console.log('Invalid color received:', guestId, color);
-    }
+socket.on('updateGuestColor', ({ guestId, newColor }) => {
+    console.log('Color update received:', guestId, newColor);
+    io.emit('updateGuestColor', { guestId, updatedGuestColor: newColor });
+    console.log('Broadcasting color update to all clients:', guestId, newColor);
 });
-
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
