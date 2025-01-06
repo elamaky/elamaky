@@ -98,7 +98,7 @@ function addGuestStyles(guestElement, guestId) {
         guestsData[guestId].color = this.value;
         
     });
-
+colorPickerButton.style.display = 'none';
     guestElement.appendChild(colorPickerButton);
 }
 socket.on('newGuest', function(nickname) {
