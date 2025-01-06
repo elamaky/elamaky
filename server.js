@@ -123,11 +123,11 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-    socket.on('updateGuestColor', ({ guestId, newColor }) => {
-        console.log(`Primljena promena boje za ${guestId}: ${newColor}`);
+    socket.on('updateGuestColor', ({ guestId, color }) => {
+        console.log(`Primljena promena boje za ${guestId}: ${color}`);
 
         // Emituje svim ostalim klijentima osim pošiljaocu
-        socket.broadcast.emit('updateGuestColor', { guestId, newColor });
+        io.emit('updateGuestColor', { guestId, color });
     });
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
