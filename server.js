@@ -123,17 +123,15 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
- socket.on('updateColor', ({ guestId, color, newColor }) => {
-        // Ako postoji 'color', koristi ga, inače koristi 'newColor'
-        const updatedColor = color || newColor;
-        
-        // Ispis za debug, da vidiš koja boja se šalje
-        console.log('Color update received:', guestId, updatedColor);
+socket.on('updateColor', ({ guestId, color, newColor }) => {
+    const updatedColor = color || newColor;
 
-        // Emituj ažuriranje boje svim povezanim klijentima
-        io.emit('updateColor', { guestId, updatedColor });
-        console.log('Broadcasting color update to all clients:', { guestId, updatedColor });
-    });
+    console.log('Color update received:', guestId, updatedColor);
+
+    io.emit('updateColor', { guestId, updatedColor });
+    console.log('Broadcasting color update to all clients:', { guestId, updatedColor });
+});
+
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
