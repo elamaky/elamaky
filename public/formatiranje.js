@@ -73,7 +73,9 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
             bold: isBold,
             italic: isItalic,
             color: currentColor,
-            nickname: nickname // Pošalji ime gosta
+             underline: msgData.underline,
+            overline: msgData.overline,
+            
         });
         this.value = ''; // Isprazni polje za unos
     }
