@@ -148,10 +148,13 @@ users.forEach(nickname => {
         if (colorPicker) {
             colorPicker.addEventListener('input', function updateColor() {
                  updateGuestColor(guestId, this.value);
-              }
+             }
             });
+            
+        }
     }
 });
+    });
 
 function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
