@@ -17,22 +17,6 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-   document.getElementById('colorBtn').addEventListener('click', function() {
-            let colorPickerContainer = document.getElementById('colorPickerContainer');
-            colorPickerContainer.style.display = 'block';
-        });
- document.getElementById('applyColorBtn').addEventListener('click', function() {
-            let colorPicker = document.getElementById('colorPicker');
-            textColor = colorPicker.value;
-            currentTextColor = textColor;
-            updateTextStyle();
-            document.getElementById('colorPickerContainer').style.display = 'none';
-        });
-document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
-});
-
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
     updateInputStyle();
@@ -153,12 +137,34 @@ users.forEach(nickname => {
         // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
 
-        // Dodaj listener za ažuriranje boje u realnom vremenu
-        const colorPicker = document.getElementById('colorPicker');
-        if (colorPicker) {
-            colorPicker.addEventListener('input', function updateColor() {
-                if (currentGuestId === guestId) {
-                    updateGuestColor(guestId, this.value);
+       let currentColor = '#000000'; // Defaultna boja
+
+// Pronađi elemente
+const colorPicker = document.getElementById('colorPicker');
+const applyColorBtn = document.getElementById('applyColorBtn');
+const guestElement = document.getElementById('guestElement'); // Dodaj pravi ID za element gosta
+
+        // Prati promene na paleti boja
+colorPicker.addEventListener('input', function() {
+    currentColor = this.value;
+    updateInputStyle();
+});
+
+// Ažuriraj stil inputa sa novom bojom
+function updateInputStyle() {
+    // Ako želiš da boja bude primenjena u chat inputu ili nekom drugom elementu, ovde dodaj
+    const chatInput = document.getElementById('chatInput'); // Prilagodi ID
+    chatInput.style.backgroundColor = currentColor; // Postavljanje boje pozadine na chat input
+    guestElement.style.color = currentColor; // Postavljanje boje teksta za gosta
+    guestsData[guestId].color = currentColor; // Čuvanje boje u guestsData
+}
+
+// Kada klikneš na "OK" dugme, boja se primenjuje na elemente
+applyColorBtn.addEventListener('click', () => {
+    guestElement.style.color = currentColor; // Primeni boju teksta
+    guestsData[guestId].color = currentColor; // Spremi boju u objekat gosta
+});
+
                 }
             });
             
