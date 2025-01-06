@@ -141,36 +141,32 @@ socket.on('updateGuestList', function(users) {
         }
     });
 
-users.forEach(nickname => {
-    const guestId = `guest-${nickname}`;
-    if (!guestsData[guestId]) {
-        const newGuest = document.createElement('div');
-        newGuest.className = 'guest';
-        newGuest.id = guestId;
-        newGuest.textContent = nickname;
-        newGuest.style.color = '#FFFFFF'; // Default color
+    users.forEach(nickname => {
+        const guestId = `guest-${nickname}`;
+        if (!guestsData[guestId]) {
+            const newGuest = document.createElement('div');
+            newGuest.className = 'guest';
+            newGuest.id = guestId;
+            newGuest.textContent = nickname;
+            newGuest.style.color = '#FFFFFF';
 
-        guestsData[guestId] = { nickname, color: newGuest.style.color };
-        guestList.appendChild(newGuest);
-        currentGuestId = guestId;
+            guestsData[guestId] = { nickname, color: newGuest.style.color };
+            guestList.appendChild(newGuest);
+            currentGuestId = guestId;
 
-        const colorPicker = document.getElementById('colorPicker');
-        if (colorPicker) {
-            let timeout;
-            colorPicker.addEventListener('input', function updateColor() {
-                if (currentGuestId === guestId) {
-                    const color = this.value;
-
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => {
+            const colorPicker = document.getElementById('colorPicker');
+            if (colorPicker) {
+                colorPicker.addEventListener('input', function updateColor() {
+                    if (currentGuestId === guestId) {
+                        const newColor = this.value;
                         updateGuestColor(guestId, color);
-                        socket.emit('updateColor', { guestId, color });
-                        console.log('Emitting color update:', { guestId, color });
-                    }, 300);
-                }
-            });
+                      socket.emit('updateColor', { guestId, color: color });
+            console.log('Emitting color update:', { guestId, color: color });
+                    }
+                });
+            }
         }
-    }
+    });
 });
 
 socket.on('updateColor', ({ guestId, color }) => {
@@ -183,7 +179,8 @@ function updateGuestColor(guestId, color) {
     if (guestElement) {
         guestElement.style.color = color;
         guestsData[guestId].color = color;
-        socket.emit('updateColor', { guestId, color });
-        console.log('Emitting color update:', { guestId, color });
+        socket.emit('updatecolor', { guestId, color });
+                      console.log('Emitting color update:', { guestId, color });
+
     }
 }
