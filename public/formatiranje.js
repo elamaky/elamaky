@@ -148,7 +148,7 @@ users.forEach(nickname => {
         newGuest.className = 'guest';
         newGuest.id = guestId;
         newGuest.textContent = nickname;
-        newGuest.style.color = ''; // Default color
+        newGuest.style.color = '#FFFFFF'; // Default color
 
         guestsData[guestId] = { nickname, color: newGuest.style.color };
         guestList.appendChild(newGuest);
@@ -159,15 +159,14 @@ users.forEach(nickname => {
             let timeout;
             colorPicker.addEventListener('input', function updateColor() {
                 if (currentGuestId === guestId) {
-                    const color = this.value; // Koristi 'color' umesto 'newColor'
+                    const color = this.value;
 
-                    // Debouncing: čekaj 300ms pre nego što emituješ
                     clearTimeout(timeout);
                     timeout = setTimeout(() => {
                         updateGuestColor(guestId, color);
-                        socket.emit('updateColor', { guestId, color }); // Emituj sa 'color'
+                        socket.emit('updateColor', { guestId, color });
                         console.log('Emitting color update:', { guestId, color });
-                    }, 300); // Onda se emitovanje dešava samo jednom na svaka 300ms
+                    }, 300);
                 }
             });
         }
@@ -176,7 +175,7 @@ users.forEach(nickname => {
 
 socket.on('updateColor', ({ guestId, color }) => {
     console.log('Color update received:', guestId, color);
-    updateGuestColor(guestId, color); // Koristi 'color' umesto 'newColor'
+    updateGuestColor(guestId, color);
 });
 
 function updateGuestColor(guestId, color) {
@@ -184,7 +183,7 @@ function updateGuestColor(guestId, color) {
     if (guestElement) {
         guestElement.style.color = color;
         guestsData[guestId].color = color;
-        socket.emit('updateColor', { guestId, color }); // Emituj 'color'
+        socket.emit('updateColor', { guestId, color });
         console.log('Emitting color update:', { guestId, color });
     }
 }
