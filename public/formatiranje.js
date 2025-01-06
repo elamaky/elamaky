@@ -151,9 +151,7 @@ users.forEach(nickname => {
                 updateGuestColor(guestId, this.value);
             }
         });
-    });
-
-function updateGuestColor(guestId, newColor) {
+    function updateGuestColor(guestId, newColor) {
     setGuestColor(guestId, newColor);
     socket.emit('updateGuestColor', { guestId, newColor });
 }
