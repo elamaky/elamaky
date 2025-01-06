@@ -190,13 +190,9 @@ if (colorPicker) {
         }
     });
 }
-
-                }
-            });
-          }
-    }
+}
 });
-   // Pretpostavljamo da je `socket` već inicijalizovan
+  
 socket.on('updateColor', (data) => {
     updateGuestColor(data.guestId, data.color);
 });
