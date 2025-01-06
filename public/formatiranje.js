@@ -134,6 +134,7 @@ socket.on('updateGuestList', function(users) {
 // Dodaj nove goste
 users.forEach(nickname => {
     const guestId = `guest-${nickname}`;
+    
     if (!guestsData[guestId]) {
         const newGuest = document.createElement('div');
         newGuest.className = 'guest';
@@ -141,6 +142,7 @@ users.forEach(nickname => {
         newGuest.textContent = nickname;
         newGuest.style.color = '#FFFFFF';
         
+        // Dodaj podatke o gostu u guestsData
         guestsData[guestId] = { nickname, color: newGuest.style.color };
         guestList.appendChild(newGuest);
         
@@ -151,7 +153,11 @@ users.forEach(nickname => {
                 updateGuestColor(guestId, this.value);
             }
         });
-    function updateGuestColor(guestId, newColor) {
+    }
+});
+
+// Funkcija za ažuriranje boje gosta
+function updateGuestColor(guestId, newColor) {
     setGuestColor(guestId, newColor);
     socket.emit('updateGuestColor', { guestId, newColor });
 }
