@@ -124,22 +124,24 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-   socket.on('updateGuestColor', ({ guestId, newColor }) => {
-        console.log(`Primljena promena boje za ${guestId}: ${newColor}`);
-        
-        // Ažurirajte color u guestsData
-        if (guestsData[guestId]) {
-            guestsData[guestId].color = newColor;
-            console.log(`Nova boja za ${guestId}: ${newColor}`);
-        } else {
-            console.warn(`Nemam podatke za korisnika: ${guestId}`);
-        }
+  socket.on('updateGuestColor', function(data) {
+    const { guestId, newColor } = data; // Razdvajanjem iz ulaznog objekta
 
-        // Emitujemo promenu boje svim klijentima
-        socket.broadcast.emit('updateGuestColor', { guestId, newColor });
-        // Emitujemo celu strukturu gostiju
-        socket.emit('syncGuests', guestsData);
-    });
+    console.log(`Primljena promena boje za ${guestId}: ${newColor}`);
+    
+    // Ažurirajte color u guestsData
+    if (guestsData[guestId]) {
+        guestsData[guestId].color = newColor;
+        console.log(`Nova boja za ${guestId}: ${newColor}`);
+    } else {
+        console.warn(`Nemam podatke za korisnika: ${guestId}`);
+    }
+
+    // Emitujemo promenu boje svim klijentima
+    socket.broadcast.emit('updateGuestColor', { guestId, newColor });
+    
+    // Emitujemo celu strukturu gostiju
+    socket.emit('syncGuests', guestsData);
 });
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
