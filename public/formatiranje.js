@@ -131,7 +131,7 @@ socket.on('updateGuestList', function(users) {
         }
     });
 
-  // Dodaj nove goste
+// Dodaj nove goste
 users.forEach(nickname => {
     const guestId = `guest-${nickname}`;
     if (!guestsData[guestId]) {
@@ -151,9 +151,7 @@ users.forEach(nickname => {
               }
             });
     }
-        }
 });
-    });
 
 function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
