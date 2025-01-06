@@ -124,13 +124,15 @@ io.on('connection', (socket) => {
         return number;
     }
 socket.on('updateGuestColor', ({ guestId, color }) => {
-    console.log('Color update received:', guestId, color);
+    if (color) {
+        console.log('Color update received:', guestId, color);
         io.emit('updateGuestColor', { guestId, updatedGuestColor: color });
         console.log('Broadcasting color update to all clients:', { guestId, updatedGuestColor: color });
     } else {
         console.log('Invalid color received:', guestId, color);
     }
 });
+
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
