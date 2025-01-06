@@ -121,43 +121,42 @@ socket.on('updateGuestList', function(users) {
         }
     });
 
- // Funkcija za dodavanje novih gostiju
+// Prati dodavanje novih gostiju
 function addNewGuests(users) {
     users.forEach(nickname => {
         const guestId = `guest-${nickname}`;
         if (!guestsData[guestId]) {
             const newGuest = document.createElement('div');
             newGuest.className = 'guest';
-            newGuest.id = guestId; // Set the id for each guest
+            newGuest.id = guestId; // Postavljanje ID-a za svakog gosta
             newGuest.textContent = nickname;
-            newGuest.style.color = '#FFFFFF'; // Default color if not set
+            newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
 
-            guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
-            guestList.appendChild(newGuest); // Add new guest to the list
+            guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodaj podatke o gostu
+            guestList.appendChild(newGuest); // Dodaj novog gosta u listu
 
-            // Postavi trenutnog gosta za bojenje
-            let currentGuestId = guestId;
-            initializeColorPicker(currentGuestId); // Pozovi funkciju za inicijalizaciju boje
+            // Inicijalizuj boju za novog gosta
+            initializeColorPicker(guestId); // Pozivanje funkcije za inicijalizaciju
         }
     });
 }
 
-// Funkcija za inicijalizaciju palete boja i dodelu događaja
+// Funkcija za inicijalizaciju palete boja za svakog gosta
 function initializeColorPicker(guestId) {
     const colorPicker = document.getElementById('colorPicker');
     const applyColorBtn = document.getElementById('applyColorBtn');
-    const guestElement = document.getElementById(guestId); // Uzimamo pravi ID za element gosta
+    const guestElement = document.getElementById(guestId); // Uzimanje odgovarajućeg gosta
 
-    let currentColor = '#FFFFFF'; // Default boja
+    let currentColor = '#FFFFFF'; // Podrazumevana boja
 
     // Prati promene na paleti boja
     colorPicker.addEventListener('input', function() {
         currentColor = this.value;
-        updateInputStyle(guestElement, currentColor); // Ažuriraj boju gostu
+        updateInputStyle(guestId, currentColor); // Ažuriraj boju za ovog gosta
     });
 
-    // Ažuriraj stil inputa sa novom bojom
-    function updateInputStyle(guestElement, color) {
+    // Ažuriraj stilove za boje
+    function updateInputStyle(guestId, color) {
         const chatInput = document.getElementById('chatInput'); // Prilagodi ID
         chatInput.style.backgroundColor = color; // Postavljanje boje pozadine na chat input
         guestElement.style.color = color; // Postavljanje boje teksta za gosta
@@ -168,6 +167,7 @@ function initializeColorPicker(guestId) {
     applyColorBtn.addEventListener('click', () => {
         guestElement.style.color = currentColor; // Primeni boju teksta
         guestsData[guestId].color = currentColor; // Spremi boju u objekat gosta
+        updateGuestColor(guestId, currentColor); // Ažuriraj boju na serveru
     });
 }
 
@@ -175,20 +175,19 @@ function initializeColorPicker(guestId) {
 function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
-        guestElement.style.color = color;
-        guestsData[guestId].color = color;
+        guestElement.style.color = color; // Postavi boju teksta
+        guestsData[guestId].color = color; // Ažuriraj podatke o boji gosta
     }
 }
 
 // Funkcija za ažuriranje boje gosta i emitovanje na server
 function updateGuestColor(guestId, newColor) {
     setGuestColor(guestId, newColor);
-    socket.emit('updateGuestColor', { guestId, newColor }); // Emituje sa "newColor"
+    socket.emit('updateGuestColor', { guestId, newColor }); // Emitovanje promene boje na server
 }
 
 // Osluškuje promenu boje sa servera
-socket.on('updateGuestColor', ({ guestId, newColor }) => { // Usaglašeno sa "newColor"
+socket.on('updateGuestColor', ({ guestId, newColor }) => {
     console.log('Color update broadcasted:', guestId, newColor);
-    setGuestColor(guestId, newColor);
+    setGuestColor(guestId, newColor); // Ažuriraj boju na svim klijentima
 });
-
