@@ -2,7 +2,6 @@ let isBold = false;
 let isItalic = false;
 let currentColor = '#FFFFFF';
 let newColor;
-let currentGuestId = null;
 let isUnderline = false;
 let isOverline = false;
 const guestsData = {};
@@ -144,17 +143,12 @@ users.forEach(nickname => {
         guestsData[guestId] = { nickname, color: newGuest.style.color };
         guestList.appendChild(newGuest);
 
-        currentGuestId = guestId;
-
         const colorPicker = document.getElementById('colorPicker');
         if (colorPicker) {
             colorPicker.addEventListener('input', function updateColor() {
-                if (currentGuestId === guestId) {
-                    updateGuestColor(guestId, this.value);
+                 updateGuestColor(guestId, this.value);
               }
             });
-            
-        }
     }
 });
     });
