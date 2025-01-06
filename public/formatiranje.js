@@ -148,7 +148,7 @@ socket.on('updateGuestList', function(users) {
             newGuest.className = 'guest';
             newGuest.id = guestId;
             newGuest.textContent = nickname;
-            newGuest.style.color = '#FFFFFF';
+            newGuest.style.color = '';
 
             guestsData[guestId] = { nickname, color: newGuest.style.color };
             guestList.appendChild(newGuest);
@@ -159,9 +159,9 @@ socket.on('updateGuestList', function(users) {
                 colorPicker.addEventListener('input', function updateColor() {
                     if (currentGuestId === guestId) {
                         const newColor = this.value;
-                        updateGuestColor(guestId, color);
-                      socket.emit('updateColor', { guestId, color: color });
-            console.log('Emitting color update:', { guestId, color: color });
+                        updateGuestColor(guestId, newColor);
+                      socket.emit('updateColor', { guestId, color: newColor });
+            console.log('Emitting color update:', { guestId, color: newColor });
                     }
                 });
             }
@@ -169,18 +169,18 @@ socket.on('updateGuestList', function(users) {
     });
 });
 
-socket.on('updateColor', ({ guestId, color }) => {
-    console.log('Color update received:', guestId, color);
-    updateGuestColor(guestId, color);
+socket.on('updateColor', ({ guestId, newColor }) => {
+    console.log('Color update received:', guestId, newColor);
+    updateGuestColor(guestId, newColor);
 });
 
 function updateGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
-        guestElement.style.color = color;
-        guestsData[guestId].color = color;
-        socket.emit('updatecolor', { guestId, color });
-                      console.log('Emitting color update:', { guestId, color });
+        guestElement.style.color = newColor;
+        guestsData[guestId].color = newColor;
+        socket.emit('updateColor', { guestId, newColor });
+                      console.log('Emitting color update:', { guestId, newColor });
 
     }
 }
