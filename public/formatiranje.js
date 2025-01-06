@@ -17,10 +17,17 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-document.getElementById('colorBtn').addEventListener('click', function() {
-    document.getElementById('colorPicker').click();
-});
-
+   document.getElementById('colorBtn').addEventListener('click', function() {
+            let colorPickerContainer = document.getElementById('colorPickerContainer');
+            colorPickerContainer.style.display = 'block';
+        });
+ document.getElementById('applyColorBtn').addEventListener('click', function() {
+            let colorPicker = document.getElementById('colorPicker');
+            textColor = colorPicker.value;
+            currentTextColor = textColor;
+            updateTextStyle();
+            document.getElementById('colorPickerContainer').style.display = 'none';
+        });
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
