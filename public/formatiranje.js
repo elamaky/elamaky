@@ -176,5 +176,4 @@ users.forEach(nickname => {
         }
     }
 });
-    });
-    });
+  
