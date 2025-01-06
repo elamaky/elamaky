@@ -128,8 +128,9 @@ socket.on('updateGuestColor', ({ guestId, newColor }) => {
     console.log('Color update received:', guestId, newColor);
 
     // Emituj promenu boje svim povezanim klijentima
-    io.emit('updateGuestColor', { guestId, updatedGuestColor: newColor });
-    console.log('emit color update to all clients:', guestId, newColor);
+    const updatedGuestColor = newColor;
+    console.log('Emitting color update to all clients:', guestId, updatedGuestColor);
+    io.emit('updateGuestColor', { guestId, updatedGuestColor });
 });
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
