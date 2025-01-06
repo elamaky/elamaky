@@ -1,6 +1,7 @@
 let isBold = false;
 let isItalic = false;
 let currentColor = '#FFFFFF';
+let newColor;
 let isUnderline = false;
 let isOverline = false;
 
@@ -159,9 +160,8 @@ socket.on('updateGuestList', function(users) {
                     if (currentGuestId === guestId) {
                         const newColor = this.value;
                         updateGuestColor(guestId, Color);
-                      socket.emit('updateColor', { guestId, color: this.value });
-                      console.log('Emitting color update:', { guestId, color: this.value });
-
+                      socket.emit('updateColor', { guestId, color: newColor });
+            console.log('Emitting color update:', { guestId, color: newColor });
                     }
                 });
             }
@@ -169,8 +169,9 @@ socket.on('updateGuestList', function(users) {
     });
 });
 
-socket.on('updateColor', (data) => {
-    updateGuestColor(data.guestId, data.color);
+socket.on('updateColor', ({ guestId, color }) => {
+    console.log('Color update received:', guestId, color);
+    updateGuestColor(guestId, color);
 });
 
 function updateGuestColor(guestId, color) {
@@ -178,8 +179,8 @@ function updateGuestColor(guestId, color) {
     if (guestElement) {
         guestElement.style.color = color;
         guestsData[guestId].color = color;
-        socket.emit('updateColor', { guestId, color: this.value });
-                      console.log('Emitting color update:', { guestId, color: this.value });
+        socket.emit('updateColor', { guestId, color });
+                      console.log('Emitting color update:', { guestId, color });
 
     }
 }
