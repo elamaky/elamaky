@@ -47,6 +47,7 @@ const authorizedUsers = new Set(['Radio Galaksija', 'ZI ZU', '__X__']);
 const bannedUsers = new Set();
 
 // Skladištenje informacija o gostima
+const guestsData = {};
 const guests = {};
 const assignedNumbers = new Set(); // Set za generisane brojeve
 
@@ -123,13 +124,23 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-     socket.on('updateGuestColor', ({ guestId, newColor }) => {
+   socket.on('updateGuestColor', ({ guestId, newColor }) => {
         console.log(`Primljena promena boje za ${guestId}: ${newColor}`);
+        
+        // Ažurirajte color u guestsData
+        if (guestsData[guestId]) {
+            guestsData[guestId].color = newColor;
+            console.log(`Nova boja za ${guestId}: ${newColor}`);
+        } else {
+            console.warn(`Nemam podatke za korisnika: ${guestId}`);
+        }
 
-        console.log('Broadcasting color update...');
+        // Emitujemo promenu boje svim klijentima
         socket.broadcast.emit('updateGuestColor', { guestId, newColor });
-         socket.emit('syncGuests', 'updateGuestColor' ,guestId, newColor);
-     });
+        // Emitujemo celu strukturu gostiju
+        socket.emit('syncGuests', guestsData);
+    });
+});
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
