@@ -161,15 +161,13 @@ users.forEach(nickname => {
 });
     });
 
-
 function updateGuestColor(guestId, newColor) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
         guestElement.style.color = newColor;
         guestsData[guestId].color = newColor;
         socket.emit('updateGuestColor', { guestId, newColor });
-
-         }
+    }
 }
 
 // Osluškuje promenu boje sa servera
