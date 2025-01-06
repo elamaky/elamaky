@@ -61,19 +61,6 @@ body {
     background-color: #666;
 }
 
-#colorPickerContainer {
-    display: flex;
-    align-items: center;
-}
-
-#colorPicker {
-    margin-right: 10px; /* Razmak između palete i dugmeta */
-}
-
-#applyColorBtn {
-    padding: 5px 10px;
-    cursor: pointer;
-}
 #messageArea {
     position: absolute;
     top: 95px;
