@@ -147,14 +147,11 @@ users.forEach(nickname => {
         const colorPicker = document.getElementById('colorPicker');
         if (colorPicker) {
             colorPicker.addEventListener('input', function updateColor() {
-                 updateGuestColor(guestId, this.value);
-             }
+                updateGuestColor(guestId, this.value);
             });
-            
         }
     }
 });
-    });
 
 function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
