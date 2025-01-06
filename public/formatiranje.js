@@ -55,8 +55,7 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
             color: currentColor,
             underline: isUnderline,
             overline: isOverline,
-            nickname: nickname, 
-        });
+      });
         this.value = '';
     }
 });
