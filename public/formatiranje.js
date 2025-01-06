@@ -158,18 +158,20 @@ socket.on('updateGuestList', function(users) {
     });
 });
 
-socket.on('updateGuestColor', ({ guestId, newColor }) => {
-    console.log('Color update received:', guestId, newColor);
-    updateGuestColor(guestId, newColor);
-});
-
 function updateGuestColor(guestId, newColor) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
         guestElement.style.color = newColor;
         guestsData[guestId].color = newColor;
         socket.emit('updateGuestColor', { guestId, newColor });
-                      console.log('Emitting color update:', { guestId, newColor });
 
-    }
+         }
 }
+
+socket.on('updateGuestColor', ({ guestId, updatedGuestColor }) => {
+    console.log('Color update broadcasted:', guestId, updatedGuestColor);
+    const guestElement = document.getElementById(guestId);
+    if (guestElement) {
+        guestElement.style.color = updatedGuestColor;
+    }
+});
