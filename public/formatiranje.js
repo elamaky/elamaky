@@ -151,8 +151,7 @@ users.forEach(nickname => {
                 updateGuestColor(guestId, this.value);
             }
         });
-    }
-});
+    });
 
 function updateGuestColor(guestId, newColor) {
     setGuestColor(guestId, newColor);
