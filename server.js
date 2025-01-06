@@ -132,6 +132,10 @@ socket.on('updateGuestColor', ({ guestId, newColor }) => {
     console.log('Emitting color update to all clients:', guestId, updatedGuestColor);
     io.emit('updateGuestColor', { guestId, updatedGuestColor });
 });
+    socket.on('updateColor', (data) => {
+        const { guestId, color } = data;
+    socket.broadcast.emit('colorUpdated', { guestId, color });
+        });
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
