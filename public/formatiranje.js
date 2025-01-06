@@ -25,7 +25,7 @@ document.getElementById('colorBtn').addEventListener('click', function() {
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
-}
+});
 
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
