@@ -128,7 +128,8 @@ io.on('connection', (socket) => {
 
         console.log('Broadcasting color update...');
         socket.broadcast.emit('updateGuestColor', { guestId, newColor });
-    });
+         socket.emit('syncGuests', guestsData);
+     });
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
