@@ -141,37 +141,42 @@ socket.on('updateGuestList', function(users) {
         }
     });
 
-    users.forEach(nickname => {
-        const guestId = `guest-${nickname}`;
-        if (!guestsData[guestId]) {
-            const newGuest = document.createElement('div');
-            newGuest.className = 'guest';
-            newGuest.id = guestId;
-            newGuest.textContent = nickname;
-            newGuest.style.color = '#FFFFFF';
+ users.forEach(nickname => {
+    const guestId = `guest-${nickname}`;
+    if (!guestsData[guestId]) {
+        const newGuest = document.createElement('div');
+        newGuest.className = 'guest';
+        newGuest.id = guestId;
+        newGuest.textContent = nickname;
+        newGuest.style.color = '#FFFFFF';
 
-            guestsData[guestId] = { nickname, color: newGuest.style.color };
-            guestList.appendChild(newGuest);
-            currentGuestId = guestId;
+        guestsData[guestId] = { nickname, color: newGuest.style.color };
+        guestList.appendChild(newGuest);
+        currentGuestId = guestId;
 
-            const colorPicker = document.getElementById('colorPicker');
-            if (colorPicker) {
-                colorPicker.addEventListener('input', function updateColor() {
-                    if (currentGuestId === guestId) {
-                        const newColor = this.value;
-                        updateGuestColor(guestId, newColor);
-                      socket.emit('updateColor', { guestId, color: newColor });
-            console.log('Emitting color update:', { guestId, color: newColor });
-                    }
-                });
-            }
+        const colorPicker = document.getElementById('colorPicker');
+        if (colorPicker) {
+            let timeout;
+            colorPicker.addEventListener('input', function updateColor() {
+                if (currentGuestId === guestId) {
+                    const color = this.value; // Koristimo 'color' umesto 'newColor'
+
+                    // Debouncing: čeka 300ms pre nego što emituje
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {
+                        updateGuestColor(guestId, color);
+                        socket.emit('updateColor', { guestId, color }); // Emituj sa 'color' umesto 'newColor'
+                        console.log('Emitting color update:', { guestId, color });
+                    }, 300); // Onda se emitovanje dešava samo jednom na svaka 300ms
+                }
+            });
         }
-    });
+    }
 });
 
-socket.on('updateColor', ({ guestId, newColor }) => {
-    console.log('Color update received:', guestId, newColor);
-    updateGuestColor(guestId, newColor);
+socket.on('updateColor', ({ guestId, color }) => {
+    console.log('Color update received:', guestId, color);
+    updateGuestColor(guestId, color); // Koristimo 'color' umesto 'newColor'
 });
 
 function updateGuestColor(guestId, color) {
@@ -179,8 +184,8 @@ function updateGuestColor(guestId, color) {
     if (guestElement) {
         guestElement.style.color = color;
         guestsData[guestId].color = color;
-        socket.emit('updateColor', { guestId, newColor });
-                      console.log('Emitting color update:', { guestId, newColor });
-
+        // Emituj 'color' umesto 'newColor'
+        socket.emit('updateColor', { guestId, color });
+        console.log('Emitting color update:', { guestId, color });
     }
 }
