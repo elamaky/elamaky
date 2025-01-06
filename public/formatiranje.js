@@ -152,7 +152,7 @@ socket.on('updateGuestList', function(users) {
     });
 
 // Funkcija za biranje boje
-document.getElementById('colorBtn').addEventListener('click', function() {
+document.getElementById('colorBtn').addEventListener('click', function () {
     document.getElementById('colorPicker').click();
 });
 
@@ -171,10 +171,10 @@ users.forEach(nickname => {
         // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
 
-        // Kada korisnik izabere boju iz palete
+        // Dodaj listener za ažuriranje boje u realnom vremenu
         const colorPicker = document.getElementById('colorPicker');
         if (colorPicker) {
-            colorPicker.addEventListener('input', function updateColor() {
+            colorPicker.addEventListener('input', function () {
                 if (currentGuestId === guestId) {
                     updateGuestColor(guestId, this.value);
                 }
