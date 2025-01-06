@@ -132,8 +132,7 @@ socket.on('updateGuestList', function(users) {
     });
 
    // Dodaj nove goste
- const users = nickname; 
-        users.forEach(nickname => {
+            users.forEach(nickname => {
             const guestId = `guest-${nickname}`;
             if (!guestsData[guestId]) {
                 const newGuest = document.createElement('div');
