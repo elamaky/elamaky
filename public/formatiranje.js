@@ -93,13 +93,24 @@ function addGuestStyles(guestElement, guestId) {
     colorPickerButton.classList.add('colorPicker');
     colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF';
 
-    colorPickerButton.addEventListener('input', function() {
+    colorPickerButton.addEventListener('input', function () {
         guestElement.style.color = this.value;
         guestsData[guestId].color = this.value;
+        socket.emit('updateColor', { guestId, color: this.value });
     });
 
     guestElement.appendChild(colorPickerButton);
 }
+
+// Osluškivanje promene boje sa servera
+socket.on('colorUpdated', function (data) {
+    const { guestId, color } = data;
+    const guestElement = document.getElementById(`guest-${guestId}`);
+    if (guestElement) {
+        guestElement.style.color = color;
+        guestsData[guestId].color = color;
+    }
+});
 
 socket.on('newGuest', function(nickname) {
     const guestId = `guest-${nickname}`;
