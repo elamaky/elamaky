@@ -156,20 +156,18 @@ if (!guestsData || !guestList) {
                         updateGuestColor(guestId, this.value);
                     }
                 });
-            } else {
-                console.error('Element sa ID-jem "colorPicker" ne postoji.');
-            }
+            } 
         }
     });
+     });
+
 
     // Funkcija za ažuriranje boje gosta
     function updateGuestColor(guestId, newColor) {
         setGuestColor(guestId, newColor);
         if (socket) {
             socket.emit('updateGuestColor', { guestId, newColor });
-        } else {
-            console.error('Socket nije definisan.');
-        }
+        } 
     }
 
     // Sync guests event
@@ -179,7 +177,4 @@ if (!guestsData || !guestList) {
                 setGuestColor(guestId, color);
             });
         });
-    } else {
-        console.error('Socket nije definisan.');
-    }
-}
+    } 
