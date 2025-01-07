@@ -54,3 +54,16 @@ function playStream() {
                 playButton.textContent = 'Start Stream';
             }
         }
+//  ZENO PLAYER NA DUGME  
+document.getElementById('sound').onclick = function() {
+        var iframe = document.getElementById('radioIframe');
+        var src = iframe.src;
+        // Check if the stream is playing
+        if (src.includes('autoplay=true')) {
+            // If playing, pause the stream by reloading without autoplay
+            iframe.src = src.replace('autoplay=true', 'autoplay=false');
+        } else {
+            // If paused, play the stream by reloading with autoplay
+            iframe.src = src.replace('autoplay=false', 'autoplay=true');
+        }
+    };
