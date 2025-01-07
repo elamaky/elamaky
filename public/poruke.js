@@ -55,20 +55,15 @@ function playStream() {
             }
         }
 //  ZENO PLAYER NA DUGME  
-document.getElementById('sound').onclick = function() {
-            var audio = document.getElementById('radioAudio');
-            if (audio.paused) {
-                // Pokreni strim
-                audio.play().then(() => {
-                    // Promeni tekst dugmeta
-                    this.textContent = 'Pause';
-                }).catch(error => {
-                    console.error('Error playing audio:', error);
-                });
+ document.getElementById('sound').onclick = function() {
+            var iframe = document.getElementById('radioIframe');
+            if (iframe.style.display === 'none') {
+                // Prikazi iframe i pokreni strim
+                iframe.style.display = 'block';
+                this.textContent = 'Pause';
             } else {
-                // Pauziraj strim
-                audio.pause();
-                // Promeni tekst dugmeta
+                // Sakrij iframe i pauziraj strim
+                iframe.style.display = 'none';
                 this.textContent = 'Play';
             }
         };
