@@ -55,7 +55,6 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
             color: currentColor,
             underline: isUnderline,
             overline: isOverline,
-            nickname: nickname,
       });
         this.value = '';
     }
@@ -98,78 +97,78 @@ function addGuestStyles(guestElement, guestId) {
         guestsData[guestId].color = this.value;
         
     });
-
+colorPickerButton.style.display = 'none';
     guestElement.appendChild(colorPickerButton);
 }
-socket.on('newGuest', function(nickname) {
+function addNewGuest(nickname) {
     const guestId = `guest-${nickname}`;
     const guestList = document.getElementById('guestList');
-    const newGuest = document.createElement('div');
-    newGuest.classList.add('guest');
-    newGuest.textContent = nickname;
 
     if (!guestsData[guestId]) {
-        guestsData[guestId] = { nickname, color: '#FFFFFF' };
-    }
+        const newGuest = document.createElement('div');
+        newGuest.className = 'guest';
+        newGuest.id = guestId;
+        newGuest.textContent = nickname;
+        newGuest.style.color = guestsData[guestId]?.color || '#FFFFFF'; // Default color
 
-    newGuest.style.color = guestsData[guestId].color;
-    addGuestStyles(newGuest, guestId);
-    guestList.appendChild(newGuest);
+        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Save guest data
+        guestList.appendChild(newGuest);
+
+        // Add color picker listener
+        const colorPicker = document.getElementById('colorPicker');
+        if (colorPicker) {
+            colorPicker.addEventListener('input', function updateColor() {
+                if (guestId === newGuest.id) {
+                    updateGuestColor(guestId, this.value); // Update color
+                }
+            });
+        }
+    }
+}
+
+// Handle new guest
+socket.on('newGuest', function (nickname) {
+    addNewGuest(nickname);
 });
 
-socket.on('updateGuestList', function(users) {
+// Sync guest list
+socket.on('updateGuestList', function (users) {
     const guestList = document.getElementById('guestList');
     const currentGuests = Array.from(guestList.children).map(guest => guest.textContent);
 
-    currentGuests.forEach(nickname => {
+    // Remove guests not in the updated list
+    currentGuests.forEach((nickname) => {
         if (!users.includes(nickname)) {
-            delete guestsData[`guest-${nickname}`];
-            const guestElement = Array.from(guestList.children).find(guest => guest.textContent === nickname);
+            const guestId = `guest-${nickname}`;
+            delete guestsData[guestId];
+            const guestElement = document.getElementById(guestId);
             if (guestElement) {
                 guestList.removeChild(guestElement);
             }
         }
     });
-users.forEach((nickname) => {
-    const guestId = `guest-${nickname}`;
 
-    if (!guestsData[guestId]) {
-        const newGuest = document.createElement('div');
-        newGuest.className = 'guest';
-        newGuest.id = guestId; // Set unique ID for each guest
-        newGuest.textContent = nickname;
-        newGuest.style.color = '#FFFFFF'; // Default color
-
-        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Store guest data
-        guestList.appendChild(newGuest); // Add guest to the list
-
-        // Add a color picker listener for this guest
-        const colorPicker = document.getElementById('colorPicker');
-        if (colorPicker) {
-            colorPicker.addEventListener('input', function updateColor() {
-                updateGuestColor(guestId, this.value); // Directly update color for this guest
-            });
-        }
-    }
+    // Add new guests
+    users.forEach((nickname) => {
+        addNewGuest(nickname);
+    });
 });
 
-// Function to set the color for a specific guest
 function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
         guestElement.style.color = color;
-        guestsData[guestId].color = color; // Update color in guestsData
+        guestsData[guestId].color = color;
     }
 }
 
-// Function to update the guest color and notify the server
 function updateGuestColor(guestId, newColor) {
-    setGuestColor(guestId, newColor); // Update the UI
-    socket.emit('updateGuestColor', { guestId, newColor }); // Notify the server
+    setGuestColor(guestId, newColor);
+    socket.emit('updateGuestColor', { guestId, newColor }); // Emituje sa "newColor"
 }
 
-// Listen for color updates from the server
-socket.on('updateGuestColor', ({ guestId, newColor }) => {
-    console.log('Color update received:', guestId, newColor);
-    setGuestColor(guestId, newColor); // Update the UI
+// Osluškuje promenu boje sa servera
+socket.on('updateGuestColor', ({ guestId, newColor }) => { // Usaglašeno sa "newColor"
+    console.log('Color update broadcasted:', guestId, newColor);
+    setGuestColor(guestId, newColor);
 });
