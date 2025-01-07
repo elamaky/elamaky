@@ -114,7 +114,7 @@ users.forEach(nickname => {
         }
     }
 });
-    });
+
 function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
