@@ -155,7 +155,7 @@ if (!guestsData || !guestList) {
                     if (typeof currentGuestId !== 'undefined' && currentGuestId === guestId) {
                         updateGuestColor(guestId, this.value);
                     }
-                });
+                }
             } 
         }
     });
