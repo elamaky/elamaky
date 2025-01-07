@@ -166,5 +166,5 @@ function updateGuestColor(guestId, newColor) {
 socket.on('syncGuests', (data) => {
     Object.entries(data).forEach(([guestId, { color }]) => {
         setGuestColor(guestId, color);
-    });
-});
+    }
+}
