@@ -214,24 +214,3 @@ h1 {
 #gostimodal .close:hover {
     color: red;
 }
-/* ICECAST SERVER CSS */
- .play-button {
-            width: 25px;
-            height: 25px;
-            background-color: black;
-            border: 2px solid white;
-            clip-path: polygon(30% 20%, 30% 80%, 80% 50%);
-            cursor: pointer;
-            position: relative;
-        }
-
-        .play-button::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            bottom: -2px;
-            left: -2px;
-            right: -2px;
-            border: 2px solid #00ff00;
-            filter: blur(2px);
-        }
