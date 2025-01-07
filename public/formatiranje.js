@@ -86,7 +86,37 @@ socket.on('private_message', function(data) {
     messageArea.prepend(newMessage);
     messageArea.scrollTop = 0;
 });
-  // Dodaj nove goste
+socket.on('newGuest', function(nickname) {
+    const guestId = `guest-${nickname}`;
+    const guestList = document.getElementById('guestList');
+    const newGuest = document.createElement('div');
+    newGuest.classList.add('guest');
+    newGuest.textContent = nickname;
+
+    if (!guestsData[guestId]) {
+        guestsData[guestId] = { nickname, color: '#FFFFFF' };
+    }
+
+    newGuest.style.color = guestsData[guestId].color;
+    addGuestStyles(newGuest, guestId);
+    guestList.appendChild(newGuest);
+});
+
+socket.on('updateGuestList', function(users) {
+    const guestList = document.getElementById('guestList');
+    const currentGuests = Array.from(guestList.children).map(guest => guest.textContent);
+
+    currentGuests.forEach(nickname => {
+        if (!users.includes(nickname)) {
+            delete guestsData[`guest-${nickname}`];
+            const guestElement = Array.from(guestList.children).find(guest => guest.textContent === nickname);
+            if (guestElement) {
+                guestList.removeChild(guestElement);
+            }
+        }
+    });
+
+   // Dodaj nove goste
 users.forEach(nickname => {
     const guestId = `guest-${nickname}`;
     if (!guestsData[guestId]) {
@@ -114,7 +144,6 @@ users.forEach(nickname => {
         }
     }
 });
-
 function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
