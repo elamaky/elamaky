@@ -89,7 +89,6 @@ io.on('connection', (socket) => {
             color: msgData.color,
              underline: msgData.underline,
             overline: msgData.overline,
-            nickname: guests[socket.id],
             time: time,
         };
         io.emit('chatMessage', messageToSend);
