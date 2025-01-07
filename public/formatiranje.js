@@ -130,49 +130,46 @@ socket.on('updateGuestList', function(users) {
             }
         }
     });
+users.forEach((nickname) => {
+    const guestId = `guest-${nickname}`;
 
-if (!guestsData || !guestList) {
-    console.error('guestsData ili guestList nisu definisani.');
-} else {
-    users.forEach((nickname) => {
-        const guestId = `guest-${nickname}`;
+    if (!guestsData[guestId]) {
+        const newGuest = document.createElement('div');
+        newGuest.className = 'guest';
+        newGuest.id = guestId; // Set unique ID for each guest
+        newGuest.textContent = nickname;
+        newGuest.style.color = '#FFFFFF'; // Default color
 
-        if (!guestsData[guestId]) {
-            const newGuest = document.createElement('div');
-            newGuest.className = 'guest';
-            newGuest.id = guestId;
-            newGuest.textContent = nickname;
-            newGuest.style.color = '#FFFFFF';
+        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Store guest data
+        guestList.appendChild(newGuest); // Add guest to the list
 
-            // Dodaj podatke o gostu u guestsData
-            guestsData[guestId] = { nickname, color: newGuest.style.color };
-            guestList.appendChild(newGuest);
-
-            // Dodaj listener za boju
-            const colorPicker = document.getElementById('colorPicker');
-            if (colorPicker) {
-                colorPicker.addEventListener('input', function () {
-                    if (typeof currentGuestId !== 'undefined' && currentGuestId === guestId) {
-                        updateGuestColor(guestId, this.value);
-                    }
-                }
-            } 
-        }
-    });
-     
-// Funkcija za ažuriranje boje gosta
-    function updateGuestColor(guestId, newColor) {
-        setGuestColor(guestId, newColor);
-        if (socket) {
-            socket.emit('updateGuestColor', { guestId, newColor });
-        } 
-    }
-
-    // Sync guests event
-    if (socket) {
-        socket.on('syncGuests', (data) => {
-            Object.entries(data).forEach(([guestId, { color }]) => {
-                setGuestColor(guestId, color);
+        // Add a color picker listener for this guest
+        const colorPicker = document.getElementById('colorPicker');
+        if (colorPicker) {
+            colorPicker.addEventListener('input', function updateColor() {
+                updateGuestColor(guestId, this.value); // Directly update color for this guest
             });
-        });
-    } 
+        }
+    }
+});
+
+// Function to set the color for a specific guest
+function setGuestColor(guestId, color) {
+    const guestElement = document.getElementById(guestId);
+    if (guestElement) {
+        guestElement.style.color = color;
+        guestsData[guestId].color = color; // Update color in guestsData
+    }
+}
+
+// Function to update the guest color and notify the server
+function updateGuestColor(guestId, newColor) {
+    setGuestColor(guestId, newColor); // Update the UI
+    socket.emit('updateGuestColor', { guestId, newColor }); // Notify the server
+}
+
+// Listen for color updates from the server
+socket.on('updateGuestColor', ({ guestId, newColor }) => {
+    console.log('Color update received:', guestId, newColor);
+    setGuestColor(guestId, newColor); // Update the UI
+});
