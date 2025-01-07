@@ -96,7 +96,7 @@ socket.on('newGuest', function(nickname) {
     if (!guestsData[guestId]) {
         guestsData[guestId] = { nickname, color: '#FFFFFF' };
     }
-
+ }
     newGuest.style.color = guestsData[guestId].color;
     addGuestStyles(newGuest, guestId);
     guestList.appendChild(newGuest);
@@ -161,4 +161,4 @@ function updateGuestColor(guestId, newColor) {
 socket.on('updateGuestColor', ({ guestId, newColor }) => { // Usaglašeno sa "newColor"
     console.log('Color update broadcasted:', guestId, newColor);
     setGuestColor(guestId, newColor);
-});
+}
