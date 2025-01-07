@@ -90,6 +90,7 @@ io.on('connection', (socket) => {
              underline: msgData.underline,
             overline: msgData.overline,
             time: time,
+            nickname: nickname,
         };
         io.emit('chatMessage', messageToSend);
     });
@@ -124,23 +125,23 @@ io.on('connection', (socket) => {
         return number;
     }
   socket.on('updateGuestColor', function(data) {
-    const { guestId, newColor } = data; // Razdvajanjem iz ulaznog objekta
+    const { currentGuestId, newColor } = data; // Razdvajanjem iz ulaznog objekta
 
-    console.log(`Primljena promena boje za ${guestId}: ${newColor}`);
+    console.log(`Primljena promena boje za ${currentGuestId}: ${newColor}`);
     
     // Ažurirajte color u guestsData
-    if (guestsData[guestId]) {
-        guestsData[guestId].color = newColor;
-        console.log(`Nova boja za ${guestId}: ${newColor}`);
+    if (guestsData[currentGuestId]) {
+        guestsData[currentGuestId].color = newColor;
+        console.log(`Nova boja za ${currentGuestId}: ${newColor}`);
     } else {
-        console.warn(`Nemam podatke za korisnika: ${guestId}`);
+        console.warn(`Nemam podatke za korisnika: ${currentGuestId}`);
     }
 
     // Emitujemo promenu boje svim klijentima
-    socket.broadcast.emit('updateGuestColor', { guestId, newColor });
+    io.emit('updateGuestColor', { guestId, newColor });
     
     // Emitujemo celu strukturu gostiju
-    socket.emit('syncGuests', guestsData);
+    io.emit('syncGuests', guestsData);
 });
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
