@@ -56,14 +56,19 @@ function playStream() {
         }
 //  ZENO PLAYER NA DUGME  
 document.getElementById('sound').onclick = function() {
-        var iframe = document.getElementById('radioIframe');
-        var src = iframe.src;
-        // Check if the stream is playing
-        if (src.includes('autoplay=true')) {
-            // If playing, pause the stream by reloading without autoplay
-            iframe.src = src.replace('autoplay=true', 'autoplay=false');
-        } else {
-            // If paused, play the stream by reloading with autoplay
-            iframe.src = src.replace('autoplay=false', 'autoplay=true');
-        }
-    };
+            var iframe = document.getElementById('radioIframe');
+            // Kreiraj novi audio element
+            var audio = new Audio(iframe.src + '?autoplay=true&muted=true');
+            
+            if (audio.paused) {
+                // Pokreni strim
+                audio.play();
+                // Promeni tekst dugmeta
+                this.textContent = 'Pause';
+            } else {
+                // Pauziraj strim
+                audio.pause();
+                // Promeni tekst dugmeta
+                this.textContent = 'Play';
+            }
+        };
