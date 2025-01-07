@@ -107,7 +107,7 @@ function addNewGuest(nickname) {
             colorPicker.addEventListener('input', function updateColor() {
                 if (currentGuestId === guestId) {
                     updateGuestColor(guestId, this.value);
-            });    
+           
          }
     }     
         }
