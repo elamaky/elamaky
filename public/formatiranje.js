@@ -159,10 +159,8 @@ if (!guestsData || !guestList) {
             } 
         }
     });
-     });
-
-
-    // Funkcija za ažuriranje boje gosta
+     
+// Funkcija za ažuriranje boje gosta
     function updateGuestColor(guestId, newColor) {
         setGuestColor(guestId, newColor);
         if (socket) {
