@@ -86,22 +86,23 @@ socket.on('private_message', function(data) {
     messageArea.prepend(newMessage);
     messageArea.scrollTop = 0;
 });
-function addNewGuest(nickname) {
+  // Dodaj nove goste
+users.forEach(nickname => {
     const guestId = `guest-${nickname}`;
-    const guestList = document.getElementById('guestList');
-
     if (!guestsData[guestId]) {
         const newGuest = document.createElement('div');
         newGuest.className = 'guest';
-        newGuest.id = guestId;
+        newGuest.id = guestId; // Set the id for each guest
         newGuest.textContent = nickname;
-        newGuest.style.color = guestsData[guestId]?.color || '#FFFFFF'; // Default color
+        newGuest.style.color = '#FFFFFF'; // Default color if not set
 
-        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Save guest data
-        guestList.appendChild(newGuest);
+        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
+        guestList.appendChild(newGuest); // Add new guest to the list
 
+        // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
 
+        // Dodaj listener za ažuriranje boje u realnom vremenu
         const colorPicker = document.getElementById('colorPicker');
         if (colorPicker) {
             colorPicker.addEventListener('input', function updateColor() {
@@ -109,38 +110,11 @@ function addNewGuest(nickname) {
                     updateGuestColor(guestId, this.value);
                 }
             });
+            
         }
     }
-}
-
-// Handle new guest
-socket.on('newGuest', function (nickname) {
-    addNewGuest(nickname);
 });
-
-// Sync guest list
-socket.on('updateGuestList', function (users) {
-    const guestList = document.getElementById('guestList');
-    const currentGuests = Array.from(guestList.children).map(guest => guest.textContent);
-
-    // Remove guests not in the updated list
-    currentGuests.forEach((nickname) => {
-        if (!users.includes(nickname)) {
-            const guestId = `guest-${nickname}`;
-            delete guestsData[guestId];
-            const guestElement = document.getElementById(guestId);
-            if (guestElement) {
-                guestList.removeChild(guestElement);
-            }
-        }
     });
-
-    // Add new guests
-    users.forEach((nickname) => {
-        addNewGuest(nickname);
-    });
-});
-
 function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
