@@ -158,4 +158,4 @@ function updateGuestColor(guestId, newColor) {
 socket.on('updateGuestColor', ({ guestId, newColor }) => { // Usaglašeno sa "newColor"
     console.log('Color update broadcasted:', guestId, newColor);
     setGuestColor(guestId, newColor);
-}
+});
