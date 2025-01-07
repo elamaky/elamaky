@@ -95,11 +95,12 @@ socket.on('newGuest', function(nickname) {
 
     if (!guestsData[guestId]) {
         guestsData[guestId] = { nickname, color: '#FFFFFF' };
-    }
- });
-    newGuest.style.color = guestsData[guestId].color;
+         newGuest.style.color = guestsData[guestId].color;
     addGuestStyles(newGuest, guestId);
     guestList.appendChild(newGuest);
+    }
+ });
+   
 socket.on('updateGuestList', function(users) {
     const guestList = document.getElementById('guestList');
     const currentGuests = Array.from(guestList.children).map(guest => guest.textContent);
