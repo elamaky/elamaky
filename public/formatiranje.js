@@ -99,23 +99,20 @@ function addNewGuest(nickname) {
         guestsData[guestId] = { nickname, color: newGuest.style.color }; // Save guest data
         guestList.appendChild(newGuest);
 
-        const colorPicker = document.getElementById('colorPicker');
+   // Dodajemo event listener za color picker samo jednom
+const colorPicker = document.getElementById('colorPicker');
 colorPicker.addEventListener('input', function () {
-    const selectedGuestId = colorPicker.dataset.selectedGuestId;
+    const selectedGuestId = colorPicker.dataset.selectedGuestId; // Uzima id selektovanog gosta
     if (selectedGuestId) {
-        updateGuestColor(selectedGuestId, this.value);
+        updateGuestColor(selectedGuestId, this.value); // Ažurira boju samo za tog gosta
+// Kada je gost kliknut, povežemo njegov id sa color picker-om
 newGuest.addEventListener('click', function () {
-    const colorPicker = document.getElementById('colorPicker');
-    colorPicker.dataset.selectedGuestId = guestId; // Postavlja guestId kao selektovanog gosta
-    function updateGuestColor(guestId, newColor) {
-    setGuestColor(guestId, newColor);
-    socket.emit('updateGuestColor', { guestId, newColor });
-}
-      });
-              }
+    colorPicker.dataset.selectedGuestId = guestId; // Postavljamo selectedGuestId za color picker
 });
-           }
-}
+    }
+         });
+                });
+                       }
 
 // Handle new guest
 socket.on('newGuest', function (nickname) {
