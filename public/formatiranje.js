@@ -111,7 +111,7 @@ newGuest.addEventListener('click', function () {
 });
     }
          });
-                });
+                }
                        }
 
 // Handle new guest
