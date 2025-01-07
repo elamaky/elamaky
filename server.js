@@ -138,7 +138,7 @@ io.on('connection', (socket) => {
     }
 
     // Emitujemo promenu boje svim klijentima
-    io.emit('updateGuestColor', { guestId, newColor });
+    io.emit('updateGuestColor', { currentGuestId, newColor });
     
     // Emitujemo celu strukturu gostiju
     io.emit('syncGuests', guestsData);
