@@ -160,20 +160,30 @@ users.forEach(nickname => {
 });
     });
 function setGuestColor(guestId, color) {
-    const guestElement = document.getElementById(guestId);
-    if (guestElement) {
-        guestElement.style.color = color;
-        guestsData[guestId].color = color;
+        const guestElement = document.getElementById(guestId);
+        if (guestElement) {
+            guestElement.style.color = color;
+            guestsData[guestId].color = color;
+        }
     }
-}
 
-function updateGuestColor(guestId, newColor) {
-    setGuestColor(guestId, newColor);
-    socket.emit('updateGuestColor', { guestId, newColor }); // Emituje sa "newColor"
-}
+    function updateGuestColor(guestId, newColor) {
+        setGuestColor(guestId, newColor);
+        socket.emit('updateGuestColor', { guestId, newColor });
+    }
 
-// Osluškuje promenu boje sa servera
-socket.on('updateGuestColor', ({ guestId, newColor }) => { // Usaglašeno sa "newColor"
-    console.log('Color update broadcasted:', guestId, newColor);
-    setGuestColor(guestId, newColor);
-});
+    // Osluškivanje promene boje sa servera
+    socket.on('updateGuestColor', ({ guestId, newColor }) => {
+        console.log('Color update broadcasted:', guestId, newColor);
+        setGuestColor(guestId, newColor);
+    });
+
+    // Osluškivanje sinhronizacije gostiju sa servera
+    socket.on('syncGuests', (data) => {
+        Object.keys(data).forEach(guestId => {
+            if (!guestsData[guestId]) {
+                guestsData[guestId] = data[guestId];
+                initializeGuestColor(guestId);
+            }
+        });
+    });
