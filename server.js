@@ -47,7 +47,6 @@ const authorizedUsers = new Set(['Radio Galaksija', 'ZI ZU', '__X__']);
 const bannedUsers = new Set();
 
 // Skladištenje informacija o gostima
-const guestsData = {};
 const guests = {};
 const assignedNumbers = new Set(); // Set za generisane brojeve
 
@@ -124,6 +123,7 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
+    const guestsData = {};
 socket.on('updateGuestColor', function(data) {
     const { guestId, newColor } = data;
 
