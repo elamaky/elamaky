@@ -131,38 +131,36 @@ socket.on('updateGuestList', function(users) {
         }
     });
 
- // Dodaj nove goste
+  // Dodaj nove goste
 users.forEach(nickname => {
     const guestId = `guest-${nickname}`;
-    
     if (!guestsData[guestId]) {
-        // Kreiraj novi element za gosta
         const newGuest = document.createElement('div');
         newGuest.className = 'guest';
-        newGuest.id = guestId; // Postavi id za gosta
+        newGuest.id = guestId; // Set the id for each guest
         newGuest.textContent = nickname;
-        newGuest.style.color = '#FFFFFF'; // Default boja
+        newGuest.style.color = '#FFFFFF'; // Default color if not set
 
-        // Dodaj podatke o gostu
-        guestsData[guestId] = { nickname, color: newGuest.style.color };
-
-        // Dodaj novog gosta u listu
-        guestList.appendChild(newGuest);
+        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
+        guestList.appendChild(newGuest); // Add new guest to the list
 
         // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
 
-        // Dodaj listener za bojenje u realnom vremenu
+        // Dodaj listener za ažuriranje boje u realnom vremenu
         const colorPicker = document.getElementById('colorPicker');
         if (colorPicker) {
-            colorPicker.addEventListener('input', function () {
-                const newColor = this.value;
-                // Emit promene boje sa klijenta
-                socket.emit('colorPickerChange', { guestId: currentGuestId, newColor });
+            colorPicker.addEventListener('input', function updateColor() {
+                if (currentGuestId === guestId) {
+                    updateGuestColor(guestId, this.value);
+                     socket.emit('colorPickerChange', { guestId: currentGuestId, newColor });
+                }
             });
+            
         }
     }
 });
+    });
 
 // Osluškuj promenu boje sa servera
 socket.on('colorPickerChange', ({ guestId, newColor }) => {
