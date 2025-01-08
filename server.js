@@ -136,9 +136,17 @@ socket.on('updateGuestColor', function(data) {
         io.emit('updateGuestColor', { guestId, newColor });
     } else {
         console.warn(`Nemam podatke za korisnika: ${guestId}`);
-        console.log('Stanje guestsData:', guestsData);
+        console.log('Stanje guestsData:', guestsData); // Dodatni log za proveru stanja
     }
 
+    io.emit('syncGuests', guestsData);
+});
+
+// Inicijalizacija podataka o gostima kada se korisnik poveže
+socket.on('userConnected', function(userData) {
+    const { guestId, nickname } = userData;
+    guestsData[guestId] = { nickname: nickname, color: '#ffffff' }; // Inicijalizacija sa default bojom
+    console.log(`Korisnik povezan: ${guestId}, Nickname: ${nickname}`);
     io.emit('syncGuests', guestsData);
 });
 
