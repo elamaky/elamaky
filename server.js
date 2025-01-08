@@ -130,19 +130,16 @@ io.on('connection', (socket) => {
     console.log(`Primljena promena boje za ${currentGuestId}: ${newColor}`);
     
     // Ažurirajte color u guestsData
-    if (guestsData[currentGuestId]) {
-        guestsData[currentGuestId].color = newColor;
-        console.log(`Nova boja za ${currentGuestId}: ${newColor}`);
-    } else {
-        console.warn(`Nemam podatke za korisnika: ${currentGuestId}`);
-    }
+  if (guestsData[currentGuestId]) {
+    guestsData[currentGuestId].color = newColor;
+    console.log(`Nova boja za ${currentGuestId}: ${newColor}`);
+    io.emit('updateGuestColor', { guestId: currentGuestId, newColor }); // Ispravljena struktura
+} else {
+    console.warn(`Nemam podatke za korisnika: ${currentGuestId}`);
+}
 
-    // Emitujemo promenu boje svim klijentima
-    io.emit('updateGuestColor', { currentGuestId, newColor });
-    
-    // Emitujemo celu strukturu gostiju
-    io.emit('syncGuests', guestsData);
-});
+io.emit('syncGuests', guestsData);
+
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
