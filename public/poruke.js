@@ -39,21 +39,6 @@ socket.on('chat-cleared', function() {
     const chatWindow = document.getElementById('messageArea');
     chatWindow.innerHTML = ""; // Briše sve unutar chata
 });
-//ICECAST SERVER
-function playStream() {
-            var audioPlayer = document.getElementById('audioPlayer');
-            var playButton = document.getElementById('playButton');
-            
-            if (audioPlayer.paused) {
-                audioPlayer.style.display = 'block';
-                audioPlayer.play();
-                playButton.textContent = 'Stop Stream';
-            } else {
-                audioPlayer.pause();
-                audioPlayer.style.display = 'none';
-                playButton.textContent = 'Start Stream';
-            }
-        }
 //  ZENO PLAYER NA DUGME  
  document.getElementById('sound').onclick = function() {
             var iframe = document.getElementById('radioIframe');
