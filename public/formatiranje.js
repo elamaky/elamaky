@@ -111,7 +111,7 @@ socket.on('updateGuestList', function(users) {
 });
 
 // Add new guests
-users.forEach(nickname => {
+guests.forEach(nickname => {
     const socketId = nickname; // Koristi socketId kao identifikator
     if (!guestsData[socketId]) {
         const newGuest = document.createElement('div');
