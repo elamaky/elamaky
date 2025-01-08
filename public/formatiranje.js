@@ -113,15 +113,15 @@ socket.on('updateGuestList', function(users) {
     });
 });
 
-// Add new guests
+let guests = []; // Initialize guests as an empty array, or assign it correctly
 guests.forEach(nickname => {
-    const socketId = nickname; // Koristi socketId kao identifikator
+    const socketId = nickname;
     if (!guestsData[socketId]) {
         const newGuest = document.createElement('div');
         newGuest.className = 'guest';
-        newGuest.id = socketId; // Postavljamo socketId kao ID za svakog gosta
-        newGuest.textContent = nickname; // Prikazujemo ime gosta
-        newGuest.style.color = '#FFFFFF'; // Podrazumevana boja
+        newGuest.id = socketId;
+        newGuest.textContent = nickname;
+        newGuest.style.color = '#FFFFFF';
 
         guestsData[socketId] = { nickname, color: newGuest.style.color }; // Dodajemo podatke o gostu
         guestList.appendChild(newGuest); // Dodajemo novog gosta u listu
