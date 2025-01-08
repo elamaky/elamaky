@@ -5,7 +5,6 @@ let newColor;
 let isUnderline = false;
 let isOverline = false;
 const guestsData = {};
-const colorPrefs = {};
 
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
@@ -78,33 +77,20 @@ socket.on('private_message', function(data) {
     messageArea.scrollTop = 0;
 });
 
-function addGuestStyles(guestElement, guestId) {
-    const colorPickerButton = document.createElement('input');
-    colorPickerButton.type = 'color';
-    colorPickerButton.classList.add('colorPicker');
-    colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF';
-
-    colorPickerButton.addEventListener('input', function () {
-        guestElement.style.color = this.value;
-        guestsData[guestId].color = this.value;
-        
-    });
-colorPickerButton.style.display = 'none';
-    guestElement.appendChild(colorPickerButton);
-}
 socket.on('newGuest', function(nickname) {
-    const guestId = `guest-${nickname}`;
+    const socketId = nickname; // Koristi socket.id kao identifikator
     const guestList = document.getElementById('guestList');
     const newGuest = document.createElement('div');
     newGuest.classList.add('guest');
     newGuest.textContent = nickname;
 
-    if (!guestsData[guestId]) {
-        guestsData[guestId] = { nickname, color: '#FFFFFF' };
+    // Ako gost još nije u podacima, dodaj ga
+    if (!guestsData[socketId]) {
+        guestsData[socketId] = { nickname, color: '#FFFFFF' };
     }
 
-    newGuest.style.color = guestsData[guestId].color;
-    addGuestStyles(newGuest, guestId);
+    newGuest.style.color = guestsData[socketId].color;
+    addGuestStyles(newGuest, socketId); // Koristi socketId umesto guestId
     guestList.appendChild(newGuest);
 });
 
@@ -112,35 +98,38 @@ socket.on('updateGuestList', function(users) {
     const guestList = document.getElementById('guestList');
     const currentGuests = Array.from(guestList.children).map(guest => guest.textContent);
 
+    // Uklanjanje gostiju koji nisu više na listi
     currentGuests.forEach(nickname => {
         if (!users.includes(nickname)) {
-            delete guestsData[`guest-${nickname}`];
+            delete guestsData[nickname]; // Koristi nickname kao ključ jer je socketId zapravo nickname u ovom kontekstu
             const guestElement = Array.from(guestList.children).find(guest => guest.textContent === nickname);
             if (guestElement) {
                 guestList.removeChild(guestElement);
             }
         }
     });
+});
 
 // Add new guests
 users.forEach(nickname => {
-    const socketId = `guest-${nickname}`;
+    const socketId = nickname; // Koristi socketId kao identifikator
     if (!guestsData[socketId]) {
         const newGuest = document.createElement('div');
         newGuest.className = 'guest';
-        newGuest.id = socketId;
-        newGuest.textContent = nickname;
-        newGuest.style.color = '#FFFFFF';
+        newGuest.id = socketId; // Postavljamo socketId kao ID za svakog gosta
+        newGuest.textContent = nickname; // Prikazujemo ime gosta
+        newGuest.style.color = '#FFFFFF'; // Podrazumevana boja
 
-        guestsData[socketId] = { nickname, color: newGuest.style.color };
-        guestList.appendChild(newGuest);
+        guestsData[socketId] = { nickname, color: newGuest.style.color }; // Dodajemo podatke o gostu
+        guestList.appendChild(newGuest); // Dodajemo novog gosta u listu
 
-        // Add listener for real-time color update
+        // Dodavanje listenera za ažuriranje boje u realnom vremenu
         const colorPicker = document.getElementById('colorPicker');
         if (colorPicker) {
             colorPicker.addEventListener('input', function updateColor() {
-                if (currentGuestId === socketId) {
-                    updateGuestColor(socketId, this.value);
+                // Proveravamo da li je trenutni korisnik onaj koji menja boju
+                if (newGuest.id === socket.id) {  // Koristi socket.id direktno
+                    updateGuestColor(socket.id, this.value); // Ažuriraj boju na osnovu socket.id
                 }
             });
         }
@@ -174,4 +163,3 @@ socket.on('syncGuests', (data) => {
         }
     });
 });
-
