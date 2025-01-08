@@ -125,7 +125,7 @@ io.on('connection', (socket) => {
         return number;
     }
 socket.on('updateGuestColor', function(data) {
-    const { guestId, newColor } = data; // Razdvajanje iz ulaznog objekta
+    const { guestId, newColor } = data;
 
     console.log(`Primljena promena boje za ${guestId}: ${newColor}`);
 
@@ -133,13 +133,12 @@ socket.on('updateGuestColor', function(data) {
         guestsData[guestId].color = newColor;
         console.log(`Nova boja za ${guestId}: ${newColor}`);
         
-        // Emitujemo promenu boje svim klijentima
         io.emit('updateGuestColor', { guestId, newColor });
     } else {
         console.warn(`Nemam podatke za korisnika: ${guestId}`);
+        console.log('Stanje guestsData:', guestsData);
     }
 
-    // Emitujemo sinhronizaciju cele strukture gostiju
     io.emit('syncGuests', guestsData);
 });
 
