@@ -165,7 +165,7 @@ socket.on('colorPickerChange', ({ guestId, newColor }) => {
 });
 
                 }
-            }
+            });
 });
     });
 function setGuestColor(guestId, color) {
