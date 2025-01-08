@@ -124,21 +124,24 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-  socket.on('updateGuestColor', function(data) {
-    const { currentGuestId, newColor } = data; // Razdvajanjem iz ulaznog objekta
+socket.on('updateGuestColor', function(data) {
+    const { guestId, newColor } = data; // Razdvajanje iz ulaznog objekta
 
-    console.log(`Primljena promena boje za ${currentGuestId}: ${newColor}`);
-    
-    // Ažurirajte color u guestsData
-  if (guestsData[currentGuestId]) {
-    guestsData[currentGuestId].color = newColor;
-    console.log(`Nova boja za ${currentGuestId}: ${newColor}`);
-    io.emit('updateGuestColor', { guestId: currentGuestId, newColor }); // Ispravljena struktura
-} else {
-    console.warn(`Nemam podatke za korisnika: ${currentGuestId}`);
-}
+    console.log(`Primljena promena boje za ${guestId}: ${newColor}`);
 
-io.emit('syncGuests', guestsData);
+    if (guestsData[guestId]) {
+        guestsData[guestId].color = newColor;
+        console.log(`Nova boja za ${guestId}: ${newColor}`);
+        
+        // Emitujemo promenu boje svim klijentima
+        io.emit('updateGuestColor', { guestId, newColor });
+    } else {
+        console.warn(`Nemam podatke za korisnika: ${guestId}`);
+    }
+
+    // Emitujemo sinhronizaciju cele strukture gostiju
+    io.emit('syncGuests', guestsData);
+});
 
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
