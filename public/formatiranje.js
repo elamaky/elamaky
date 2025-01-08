@@ -5,9 +5,6 @@ let newColor;
 let isUnderline = false;
 let isOverline = false;
 const guestsData = {};
-let socketId; // Assign a value to socketId
-
-
 
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
@@ -81,29 +78,28 @@ socket.on('private_message', function(data) {
 });
 
 socket.on('newGuest', function(nickname) {
-    const socketId = nickname; // Koristi socket.id kao identifikator
+    const socketId = `guest-${nickname}`;
     const guestList = document.getElementById('guestList');
     const newGuest = document.createElement('div');
     newGuest.classList.add('guest');
     newGuest.textContent = nickname;
 
-    // Ako gost još nije u podacima, dodaj ga
     if (!guestsData[socketId]) {
-        guestsData[socketId] = { nickname, color: '#FFFFFF' };
+        guestsData[sockettId] = { nickname, color: '#FFFFFF' };
     }
 
     newGuest.style.color = guestsData[socketId].color;
-    addGuestStyles(newGuest, socketId); // Koristi socketId umesto guestId
+    addGuestStyles(newGuest, socketId);
     guestList.appendChild(newGuest);
 });
 
-socket.on('updateGuestList', function(users) {
+socket.on('updateGuestList', function(guests) {
     const guestList = document.getElementById('guestList');
     const currentGuests = Array.from(guestList.children).map(guest => guest.textContent);
 
     // Uklanjanje gostiju koji nisu više na listi
     currentGuests.forEach(nickname => {
-        if (!users.includes(nickname)) {
+        if (!guests.includes(nickname)) {
             delete guestsData[nickname]; // Koristi nickname kao ključ jer je socketId zapravo nickname u ovom kontekstu
             const guestElement = Array.from(guestList.children).find(guest => guest.textContent === nickname);
             if (guestElement) {
@@ -111,8 +107,6 @@ socket.on('updateGuestList', function(users) {
             }
         }
     });
-});
-
 let guests = []; // Initialize guests as an empty array, or assign it correctly
 guests.forEach(nickname => {
     const socketId = nickname;
