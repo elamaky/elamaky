@@ -164,6 +164,9 @@ function setGuestColor(guestId, color) {
     if (guestElement) {
         guestElement.style.color = color;
         guestsData[guestId].color = color;
+        console.log(`Boja za ${guestId} promenjena u ${color}`);
+    } else {
+        console.warn(`Element sa ID-om ${guestId} nije pronađen u DOM-u.`);
     }
 }
 
@@ -172,8 +175,7 @@ function updateGuestColor(guestId, newColor) {
     socket.emit('updateGuestColor', { guestId, newColor }); // Emituje sa "newColor"
 }
 
-// Osluškuje promenu boje sa servera
-socket.on('updateGuestColor', ({ guestId, newColor }) => { // Usaglašeno sa "newColor"
+socket.on('updateGuestColor', ({ guestId, newColor }) => {
     console.log('Color update broadcasted:', guestId, newColor);
     setGuestColor(guestId, newColor);
 });
