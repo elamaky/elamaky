@@ -153,7 +153,7 @@ users.forEach(nickname => {
             colorPicker.addEventListener('input', function updateColor() {
                 if (currentGuestId === guestId) {
                     updateGuestColor(guestId, this.value);
-                     socket.emit('colorPickerChange', { guestId: currentGuestId, newColor });
+                   
                 }
             });
             
@@ -161,12 +161,6 @@ users.forEach(nickname => {
     }
 });
     });
-
-// Osluškuj promenu boje sa servera
-socket.on('colorPickerChange', ({ guestId, newColor }) => {
-    setGuestColor(guestId, newColor);
-});
-
 
 function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
@@ -179,13 +173,8 @@ function setGuestColor(guestId, color) {
 function updateGuestColor(guestId, newColor) {
     setGuestColor(guestId, newColor);
     socket.emit('updateGuestColor', { guestId, newColor }); // Emit sa ispravnim ključevima
+     console.log('Color update broadcasted:', guestId, newColor);
 }
-
-socket.on('updateGuestColor', ({ guestId, newColor }) => {
-    console.log('Color update broadcasted:', guestId, newColor);
-    setGuestColor(guestId, newColor);
-});
-
 socket.on('syncGuests', (data) => {
     Object.keys(data).forEach(guestId => {
         if (!guestsData[guestId]) {
