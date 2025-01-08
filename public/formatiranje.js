@@ -77,6 +77,7 @@ socket.on('private_message', function(data) {
     messageArea.scrollTop = 0;
 });
 
+
 socket.on('newGuest', function(nickname) {
     const socketId = `guest-${nickname}`;
     const guestList = document.getElementById('guestList');
@@ -97,65 +98,63 @@ socket.on('updateGuestList', function(guests) {
     const guestList = document.getElementById('guestList');
     const currentGuests = Array.from(guestList.children).map(guest => guest.textContent);
 
-    // Uklanjanje gostiju koji nisu više na listi
     currentGuests.forEach(nickname => {
         if (!guests.includes(nickname)) {
-            delete guestsData[nickname]; // Koristi nickname kao ključ jer je socketId zapravo nickname u ovom kontekstu
+            delete guestsData[nickname];
             const guestElement = Array.from(guestList.children).find(guest => guest.textContent === nickname);
             if (guestElement) {
                 guestList.removeChild(guestElement);
             }
         }
     });
-guests.forEach(nickname => {
-    const socketId = nickname;
-    if (!guestsData[socketId]) {
-        const newGuest = document.createElement('div');
-        newGuest.className = 'guest';
-        newGuest.id = socketId;
-        newGuest.textContent = nickname;
-        newGuest.style.color = '#FFFFFF';
-
-        guestsData[socketId] = { nickname, color: newGuest.style.color }; // Dodajemo podatke o gostu
-        guestList.appendChild(newGuest); // Dodajemo novog gosta u listu
-
-        // Dodavanje listenera za ažuriranje boje u realnom vremenu
-        const colorPicker = document.getElementById('colorPicker');
-        if (colorPicker) {
-            colorPicker.addEventListener('input', function updateColor() {
-                // Proveravamo da li je trenutni korisnik onaj koji menja boju
-                if (newGuest.id === socket.id) {  // Koristi socket.id direktno
-                    updateGuestColor(socket.id, this.value); // Ažuriraj boju na osnovu socket.id
-                }
-            });
-        }
-    }
-});
-
-document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
-});
-
-function setGuestColor(socketId, color) {
-    const guestElement = document.getElementById(socketId);
-    if (guestElement) {
-        guestElement.style.color = color;
-        guestsData[socketId].color = color;
-    }
-}
-
-function updateGuestColor(socketId, newColor) {
-    setGuestColor(socketId, newColor);
-    socket.emit('updateGuestColor', { socketId, newColor });
-    console.log('Color update broadcasted:', socketId, newColor);
-}
-
-socket.on('syncGuests', (data) => {
-    Object.keys(data).forEach(socketId => {
+    guests.forEach(nickname => {
+        const socketId = `guest-${nickname}`;
         if (!guestsData[socketId]) {
-            guestsData[socketId] = data[socketId];
-            setGuestColor(socketId, data[socketId].color);
+            const newGuest = document.createElement('div');
+            newGuest.className = 'guest';
+            newGuest.id = socketId;
+            newGuest.textContent = nickname;
+            newGuest.style.color = '#FFFFFF';
+
+            guestsData[socketId] = { nickname, color: newGuest.style.color };
+            guestList.appendChild(newGuest);
+
+            const colorPicker = document.getElementById('colorPicker');
+            if (colorPicker) {
+                colorPicker.addEventListener('input', function updateColor() {
+                    if (newGuest.id === socket.id) {
+                        updateGuestColor(socket.id, this.value);
+                    }
+                });
+            }
         }
+    });
+
+    document.getElementById('colorPicker').addEventListener('input', function() {
+        currentColor = this.value;
+        updateInputStyle();
+    });
+
+    function setGuestColor(socketId, color) {
+        const guestElement = document.getElementById(socketId);
+        if (guestElement) {
+            guestElement.style.color = color;
+            guestsData[socketId].color = color;
+        }
+    }
+
+    function updateGuestColor(socketId, newColor) {
+        setGuestColor(socketId, newColor);
+        socket.emit('updateGuestColor', { socketId, newColor });
+        console.log('Color update broadcasted:', socketId, newColor);
+    }
+
+    socket.on('syncGuests', (data) => {
+        Object.keys(data).forEach(socketId => {
+            if (!guestsData[socketId]) {
+                guestsData[socketId] = data[socketId];
+                setGuestColor(socketId, data[socketId].color);
+            }
+        });
     });
 });
