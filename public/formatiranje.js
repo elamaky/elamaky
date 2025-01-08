@@ -6,6 +6,15 @@ let isUnderline = false;
 let isOverline = false;
 const guestsData = {};
 
+document.getElementById('colorBtn').addEventListener('click', function() {
+    document.getElementById('colorPicker').click();
+});
+
+document.getElementById('colorPicker').addEventListener('input', function() {
+    currentColor = this.value;
+    updateInputStyle();
+});
+
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
     updateInputStyle();
@@ -127,18 +136,10 @@ socket.on('updateGuestList', function(guests) {
                 colorPicker.addEventListener('input', function updateColor() {
                     if (newGuest.id === socket.id) {
                         updateGuestColor(socket.id, this.value);
-document.getElementById('colorBtn').addEventListener('click', function() {
-    document.getElementById('colorPicker').click();
-});
 
-document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
-});
-
-                    }
-                });
+}
+                    });
             }
-        }
-    });
-});
+}
+               });
+     });
