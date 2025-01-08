@@ -172,10 +172,17 @@ function setGuestColor(guestId, color) {
 
 function updateGuestColor(guestId, newColor) {
     setGuestColor(guestId, newColor);
-    socket.emit('updateGuestColor', { guestId, newColor }); // Emituje sa "newColor"
+    socket.emit('updateGuestColor', { guestId, newColor });
 }
 
+// Osluškuje promenu boje sa servera
 socket.on('updateGuestColor', ({ guestId, newColor }) => {
     console.log('Color update broadcasted:', guestId, newColor);
     setGuestColor(guestId, newColor);
+});
+
+// Osluškuje sinhronizaciju cele strukture gostiju sa servera
+socket.on('syncGuests', (data) => {
+    Object.assign(guestsData, data); // Ažuriranje postojećeg objekta
+    console.log('Guests data synchronized:', guestsData);
 });
