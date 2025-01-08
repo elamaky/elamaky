@@ -131,8 +131,7 @@ socket.on('updateGuestList', function(users) {
         }
     });
 
-   // Dodaj nove goste
-// Dodaj nove goste
+ // Dodaj nove goste
 users.forEach(nickname => {
     const guestId = `guest-${nickname}`;
     
@@ -162,13 +161,14 @@ users.forEach(nickname => {
                 socket.emit('colorPickerChange', { guestId: currentGuestId, newColor });
             });
         }
-
-        // Osluškuj promenu boje sa servera
-        socket.on('colorPickerChange', ({ guestId, newColor }) => {
-            setGuestColor(guestId, newColor);
-        });
     }
 });
+
+// Osluškuj promenu boje sa servera
+socket.on('colorPickerChange', ({ guestId, newColor }) => {
+    setGuestColor(guestId, newColor);
+});
+
 
 function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
