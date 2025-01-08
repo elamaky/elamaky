@@ -11,7 +11,6 @@ const pingService = require('./ping');
 const privatmodul = require('./privatmodul'); // Podesi putanju ako je u drugom folderu
 require('dotenv').config();
 const cors = require('cors');
-let guests;
 
 const app = express();
 const server = http.createServer(app);
