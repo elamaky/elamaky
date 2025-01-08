@@ -148,16 +148,24 @@ users.forEach(nickname => {
         currentGuestId = guestId;
 
         // Dodaj listener za ažuriranje boje u realnom vremenu
-        const colorPicker = document.getElementById('colorPicker');
-        if (colorPicker) {
-            colorPicker.addEventListener('input', function updateColor() {
-                if (currentGuestId === guestId) {
-                    updateGuestColor(guestId, this.value);
-                }
-            });
-            
-        }
+       // Emit promenu boje iz colorPickera
+const colorPicker = document.getElementById('colorPicker');
+if (colorPicker) {
+    colorPicker.addEventListener('input', function () {
+        const newColor = this.value;
+        socket.emit('colorPickerChange', { guestId: currentGuestId, newColor });
+    });
+}
+
+// Osluškuj promenu boje sa servera
+socket.on('colorPickerChange', ({ guestId, newColor }) => {
+    if (guestId === currentGuestId) {
+        setGuestColor(guestId, newColor);
     }
+});
+
+                }
+            }
 });
     });
 function setGuestColor(guestId, color) {
