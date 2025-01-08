@@ -6,7 +6,7 @@ let isUnderline = false;
 let isOverline = false;
 const guestsData = {};
 let socketId; // Assign a value to socketId
-let guests = socketId;
+
 
 
 document.getElementById('boldBtn').addEventListener('click', function() {
