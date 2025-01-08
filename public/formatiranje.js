@@ -85,7 +85,7 @@ socket.on('newGuest', function(nickname) {
     newGuest.textContent = nickname;
 
     if (!guestsData[socketId]) {
-        guestsData[sockettId] = { nickname, color: '#FFFFFF' };
+        guestsData[socketId] = { nickname, color: '#FFFFFF' };
     }
 
     newGuest.style.color = guestsData[socketId].color;
