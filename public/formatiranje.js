@@ -107,7 +107,6 @@ socket.on('updateGuestList', function(guests) {
             }
         }
     });
-let guests = []; // Initialize guests as an empty array, or assign it correctly
 guests.forEach(nickname => {
     const socketId = nickname;
     if (!guestsData[socketId]) {
