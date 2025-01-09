@@ -1,9 +1,8 @@
 const axios = require('axios');
 
-const publicToken = process.env.PUBLIC_TOKEN; // Koristimo varijablu okruženja za token
-const streamUrl = process.env.STREAM_URL; // Koristimo varijablu okruženja za URL
+const publicToken = process.env.PUBLIC_TOKEN; 
+const streamUrl = process.env.STREAM_URL;
 
-// Funkcija za slanje strimovanih podataka na Caster.fm
 async function streamToCaster() {
   try {
     const response = await axios.post('https://api.caster.fm/stream', JSON.stringify({
@@ -11,7 +10,7 @@ async function streamToCaster() {
       url: streamUrl,
     }), {
       headers: {
-        'Content-Type': 'application/json' // Dodajemo header za JSON
+        'Content-Type': 'application/json'
       }
     });
 
@@ -21,5 +20,4 @@ async function streamToCaster() {
   }
 }
 
-// Izvoz funkcije
 module.exports = streamToCaster;
