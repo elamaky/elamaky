@@ -49,6 +49,8 @@ const bannedUsers = new Set();
 // Skladištenje informacija o gostima
 const guests = {};
 const guestsData = {};
+const color = newColor;
+guestsData[guestId].color = color;
 const assignedNumbers = new Set(); // Set za generisane brojeve
 
 // Dodavanje socket događaja iz banmodula
@@ -64,9 +66,8 @@ io.on('connection', (socket) => {
     socket.emit('setNickname', nickname);
 
   // Emitovanje događaja da bi ostali korisnici videli novog gosta
-    socket.broadcast.emit('newGuest', nickname);
-     socket.emit('currentGuests', guestsData);
-    io.emit('updateGuestList', Object.values(guests));
+    socket.broadcast.emit('newGuest',colors, nickname);
+     io.emit('updateGuestList', Object.values(guests));
     
     // Obrada prijave korisnika
     socket.on('userLoggedIn', (username) => {
