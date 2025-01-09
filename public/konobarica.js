@@ -230,3 +230,7 @@ function updateSongsOrder() {
 
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
+document.getElementById('sound').addEventListener('click', function() {
+    console.log(`[${new Date().toISOString()}] ${username} requested music access`);
+    socket.emit('requestMusicAccess', username);
+});
