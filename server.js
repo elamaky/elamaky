@@ -148,6 +148,12 @@ io.on('connection', (socket) => {
         console.log(`[${new Date().toISOString()}] Streaming song from ${socket.id}:`, url);
         io.emit('playSong', url);
     });
+     socket.on('requestMusicAccess', (username) => {
+        console.log(`[${new Date().toISOString()}] Music access requested by: ${username}`);
+        // Dajemo pristup korisniku da sluša muziku
+        socket.join('music-listeners');
+    });
+});
 
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
