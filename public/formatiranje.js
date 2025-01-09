@@ -173,8 +173,11 @@ function updateGuestColor(guestId, newColor) {
     socket.emit('updateGuestColor', { guestId, newColor }); // Emituje sa "newColor"
 }
 
-// Osluškuje promenu boje sa servera
-socket.on('updateGuestColor', ({ guestId, newColor }) => { // Usaglašeno sa "newColor"
-    console.log('Color update broadcasted:', guestId, newColor);
+socket.on('updateGuestColor', ({ guestId, newColor }) => {
     setGuestColor(guestId, newColor);
+});
+socket.on('currentGuests', (guests) => {
+    guests.forEach(({ guestId, color }) => {
+        setGuestColor(guestId, color);
+    });
 });
