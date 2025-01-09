@@ -52,3 +52,8 @@ socket.on('chat-cleared', function() {
                 this.textContent = 'Play';
             }
         };
+//RADIO CO TEST
+document.getElementById('cotest').addEventListener('click', function() {
+            const frame = document.getElementById('radioFrame');
+            frame.style.display = frame.style.display === 'none' ? 'block' : 'none';
+        });
