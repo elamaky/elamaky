@@ -125,14 +125,7 @@ io.on('connection', (socket) => {
         return number;
     }
 // Osluškuje promenu boje sa klijenta
-// Funkcija za postavljanje boje gosta na serveru
-function setGuestColor(guestId, color) {
-    if (!guestsData[guestId]) {
-        guestsData[guestId] = {};
-    }
-    guestsData[guestId].color = color;
-}
-     socket.on('updateGuestColor', ({ guestId, newColor }) => {
+ socket.on('updateGuestColor', ({ guestId, newColor }) => {
         console.log('Received color update from client:', guestId, newColor);
         
         // Ažuriraj boju gosta na serveru
