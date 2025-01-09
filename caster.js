@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const publicToken = '52fd78a9-8b7e-4b0c-aaf1-ab6502ccd171'; // Tvoj public token
+const publicToken = '9327d0f7-2b66-460c-87cb-82b45055361c'; // Tvoj public token
 const streamUrl = 'https://sapircast.caster.fm'; // Server hostname za strimovanje
 
 // Funkcija za slanje strimovanih podataka na Caster.fm
