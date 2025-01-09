@@ -249,4 +249,3 @@ document.getElementById('ton').addEventListener('click', function() {
     },
     body: JSON.stringify({ url: currentSongUrl }),
   });
-});
