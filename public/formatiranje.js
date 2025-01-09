@@ -152,12 +152,14 @@ if (Array.isArray(users)) {
                 colorPicker.addEventListener('input', function updateColor() {
                     if (currentGuestId === guestId) {
                         updateGuestColor(guestId, this.value);
+                     }
                     }
-                });
-            }
+            });
+            
         }
+    }
+});
     });
-}
 function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
