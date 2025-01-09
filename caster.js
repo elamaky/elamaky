@@ -6,9 +6,13 @@ const streamUrl = 'https://elamaky-1.onrender.com/'; // Tvoja prava URL adresa z
 // Funkcija za slanje strimovanih podataka na Caster.fm
 async function streamToCaster() {
   try {
-    const response = await axios.post('https://api.caster.fm/stream', {
+    const response = await axios.post('https://api.caster.fm/stream', JSON.stringify({
       token: publicToken,
       url: streamUrl,
+    }), {
+      headers: {
+        'Content-Type': 'application/json' // Dodajemo header za JSON
+      }
     });
 
     console.log('Stream successfully sent to Caster.fm', response.data);
@@ -19,3 +23,4 @@ async function streamToCaster() {
 
 // Izvoz funkcije
 module.exports = streamToCaster;
+
