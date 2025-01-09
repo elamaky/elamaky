@@ -1,8 +1,7 @@
-// caster.js
 const axios = require('axios');
 
 const publicToken = '52fd78a9-8b7e-4b0c-aaf1-ab6502ccd171'; // Tvoj public token
-const streamUrl = 'http://your-stream-url.com'; // URL tvoje strimovane muzike ili zvuka
+const streamUrl = 'https://elamaky-1.onrender.com/'; // Tvoja prava URL adresa za strimovanje
 
 // Funkcija za slanje strimovanih podataka na Caster.fm
 async function streamToCaster() {
