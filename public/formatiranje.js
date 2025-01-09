@@ -5,8 +5,7 @@ let newColor;
 let isUnderline = false;
 let isOverline = false;
 const guestsData = {};
-const guestList = document.getElementById('guestList');
-let currentGuestId = null;
+const colorPrefs = {};
 
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
@@ -87,28 +86,67 @@ socket.on('private_message', function(data) {
     messageArea.scrollTop = 0;
 });
 
-// Funkcija za dodavanje gosta u listu
-function addGuestToList(nickname) {
-    const guestId = `guest-${nickname}`;
+function addGuestStyles(guestElement, guestId) {
+    const colorPickerButton = document.createElement('input');
+    colorPickerButton.type = 'color';
+    colorPickerButton.classList.add('colorPicker');
+    colorPickerButton.value = guestsData[guestId]?.color || '#FFFFFF';
 
-    // Proveri da li gost već postoji u `guestsData`
+    colorPickerButton.addEventListener('input', function () {
+        guestElement.style.color = this.value;
+        guestsData[guestId].color = this.value;
+        
+    });
+colorPickerButton.style.display = 'none';
+    guestElement.appendChild(colorPickerButton);
+}
+socket.on('newGuest', function(nickname) {
+    const guestId = `guest-${nickname}`;
+    const guestList = document.getElementById('guestList');
+    const newGuest = document.createElement('div');
+    newGuest.classList.add('guest');
+    newGuest.textContent = nickname;
+
+    if (!guestsData[guestId]) {
+        guestsData[guestId] = { nickname, color: '#FFFFFF' };
+    }
+
+    newGuest.style.color = guestsData[guestId].color;
+    addGuestStyles(newGuest, guestId);
+    guestList.appendChild(newGuest);
+});
+
+socket.on('updateGuestList', function(users) {
+    const guestList = document.getElementById('guestList');
+    const currentGuests = Array.from(guestList.children).map(guest => guest.textContent);
+
+    currentGuests.forEach(nickname => {
+        if (!users.includes(nickname)) {
+            delete guestsData[`guest-${nickname}`];
+            const guestElement = Array.from(guestList.children).find(guest => guest.textContent === nickname);
+            if (guestElement) {
+                guestList.removeChild(guestElement);
+            }
+        }
+    });
+
+   // Dodaj nove goste
+users.forEach(nickname => {
+    const guestId = `guest-${nickname}`;
     if (!guestsData[guestId]) {
         const newGuest = document.createElement('div');
         newGuest.className = 'guest';
-        newGuest.id = guestId; // Setuj ID za gosta
+        newGuest.id = guestId; // Set the id for each guest
         newGuest.textContent = nickname;
-        newGuest.style.color = '#FFFFFF'; // Podrazumevana boja
+        newGuest.style.color = '#FFFFFF'; // Default color if not set
 
-        // Dodaj u lokalni `guestsData`
-        guestsData[guestId] = { nickname, color: newGuest.style.color };
-
-        // Dodaj gosta u DOM
-        guestList.appendChild(newGuest);
+        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
+        guestList.appendChild(newGuest); // Add new guest to the list
 
         // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
 
-        // Dodaj listener za bojenje
+        // Dodaj listener za ažuriranje boje u realnom vremenu
         const colorPicker = document.getElementById('colorPicker');
         if (colorPicker) {
             colorPicker.addEventListener('input', function updateColor() {
@@ -116,48 +154,26 @@ function addGuestToList(nickname) {
                     updateGuestColor(guestId, this.value);
                 }
             });
+            
         }
     }
-}
-
-// Funkcija za uklanjanje gosta iz liste
-function removeGuestFromList(nickname) {
-    const guestId = `guest-${nickname}`;
-    delete guestsData[guestId];
+});
+    });
+function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
-        guestList.removeChild(guestElement);
-    }
-}
-
-// Socket događaji
-socket.on('newGuest', function (nickname) {
-    // Dodavanje novog gosta
-    addGuestToList(nickname);
-});
-
-socket.on('updateGuestList', function (users) {
-    // Sinhronizacija liste gostiju
-    const currentGuests = Array.from(guestList.children).map(guest => guest.textContent);
-
-    // Ukloni goste koji više nisu na serveru
-    currentGuests.forEach(nickname => {
-        if (!users.includes(nickname)) {
-            removeGuestFromList(nickname);
-        }
-    });
-
-    // Dodaj nove goste
-    users.forEach(nickname => addGuestToList(nickname));
-});
-
-// Funkcija za ažuriranje boje gosta
-function updateGuestColor(guestId, color) {
-    if (guestsData[guestId]) {
+        guestElement.style.color = color;
         guestsData[guestId].color = color;
-        const guestElement = document.getElementById(guestId);
-        if (guestElement) {
-            guestElement.style.color = color;
-        }
     }
 }
+
+function updateGuestColor(guestId, newColor) {
+    setGuestColor(guestId, newColor);
+    socket.emit('updateGuestColor', { guestId, newColor }); // Emituje sa "newColor"
+}
+
+// Osluškuje promenu boje sa servera
+socket.on('updateGuestColor', ({ guestId, newColor }) => { // Usaglašeno sa "newColor"
+    console.log('Color update broadcasted:', guestId, newColor);
+    setGuestColor(guestId, newColor);
+});
