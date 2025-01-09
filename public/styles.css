@@ -182,7 +182,12 @@ body {
 }
 
 /* RADIO CO PLAYER */
-        #embedContainer {
+          #embedContainer {
             display: none; /* Početno skriven */
-            margin-top: 20px;
+            position: fixed; /* Pozicionira element u odnosu na prozor */
+            left: 0; /* Od leva */
+            bottom: 0; /* Od dna */
+            width: 100px; /* Širina */
+            height: 100px; /* Visina */
+            background-color: transparent; /* Pozadina */
         }
