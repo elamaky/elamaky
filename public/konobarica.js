@@ -240,3 +240,13 @@ document.getElementById('ton').addEventListener('click', function() {
         audioPlayer.play();
     });
 });
+
+  // Pozivanje API-ja servera da pošalje URL Caster.fm  
+  fetch('/stream-song', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ url: currentSongUrl }),
+  });
+});
