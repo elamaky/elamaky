@@ -230,7 +230,13 @@ function updateSongsOrder() {
 
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
-document.getElementById('ton').addEventListener('click', function() {
-    console.log(`[2025-01-09 10:30:42] Requesting to join music stream`);
+document.getElementById('sound').addEventListener('click', function() {
     socket.emit('startListening');
+
+    // Slušaj strim
+    socket.on('playSong', (url) => {
+        const audioPlayer = document.getElementById('audioPlayer');
+        audioPlayer.src = url;
+        audioPlayer.play();
+    });
 });
