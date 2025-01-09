@@ -157,9 +157,7 @@ if (Array.isArray(users)) {
             }
         }
     });
-}
-
-    
+ });
 function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
