@@ -11,6 +11,7 @@ const pingService = require('./ping');
 const privatmodul = require('./privatmodul'); // Podesi putanju ako je u drugom folderu
 require('dotenv').config();
 const cors = require('cors');
+const streamToCaster = require('./caster'); // Uvoz funkcije iz caster.js
 
 const app = express();
 const server = http.createServer(app);
