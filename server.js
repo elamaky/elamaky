@@ -124,8 +124,7 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-// Osluškuje promenu boje sa klijenta
-   const guestsWithColors = Object.keys(guestsData).map(guestId => ({
+ const guestsWithColors = Object.keys(guestsData).map(guestId => ({
         guestId,
         color: guestsData[guestId]?.color || 'default'  // Ako boja nije definisana, postavite 'default'
     }));
@@ -134,9 +133,6 @@ io.on('connection', (socket) => {
 
     // Osluškivanje promene boje
     socket.on('updateGuestColor', ({ guestId, newColor }) => {
-        guestsData[guestId] = { color: newColor };  // Ažuriraj boju na serveru
-        io.emit('updateGuestColor', { guestId, newColor });  // Emitujte promene svim korisnicima
-    });
         // Ažuriraj boju gosta na serveru
         if (!guestsData[guestId]) {
             guestsData[guestId] = {};
@@ -147,6 +143,7 @@ io.on('connection', (socket) => {
         io.emit('updateGuestColor', { guestId, newColor });
         console.log('Broadcasted color update:', guestId, newColor);
     });
+
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
