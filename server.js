@@ -124,17 +124,27 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-// Osluškuje promenu boje sa klijenta
- socket.on('updateGuestColor', ({ guestId, newColor }) => {
+socket.on('connection', (socket) => {
+    // Pošaljite svim novim korisnicima trenutnu listu gostiju sa bojama
+    const guestsWithColors = Object.keys(guestsData).map(guestId => ({
+        guestId,
+        color: guestsData[guestId].color || 'default'  // ako nema boje, postavite default
+    }));
+
+    // Pošaljite trenutnu listu gostiju sa bojama novom korisniku
+    socket.emit('currentGuests', guestsWithColors);
+
+    // Ostali kod koji se odnosi na emitovanje promene boje...
+    socket.on('updateGuestColor', ({ guestId, newColor }) => {
         console.log('Received color update from client:', guestId, newColor);
-        
+
         // Ažuriraj boju gosta na serveru
         if (!guestsData[guestId]) {
             guestsData[guestId] = {};
         }
         guestsData[guestId].color = newColor;
 
-        // Emituje promenu boje svim klijentima
+        // Emitujte promenu boje svim klijentima
         io.emit('updateGuestColor', { guestId, newColor });
         console.log('Broadcasted color update:', guestId, newColor);
     });
