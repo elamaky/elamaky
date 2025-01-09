@@ -159,21 +159,24 @@ users.forEach(nickname => {
     }
 });
     });
+// Osluškivanje trenutnih gostiju sa bojama
+socket.on('currentGuests', (guests) => {
+    guests.forEach(({ guestId, color }) => {
+        setGuestColor(guestId, color);  // Ovdje ažuriramo boje svih gostiju
+    });
+});
+
+// Osluškuje promenu boje sa servera
+socket.on('updateGuestColor', ({ guestId, newColor }) => {
+    console.log('Color update broadcasted:', guestId, newColor);
+    setGuestColor(guestId, newColor);
+});
+
+// Funkcija za postavljanje boje
 function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
         guestElement.style.color = color;
-        guestsData[guestId].color = color;
     }
 }
 
-function updateGuestColor(guestId, newColor) {
-    setGuestColor(guestId, newColor);
-    socket.emit('updateGuestColor', { guestId, newColor }); // Emituje sa "newColor"
-}
-
-// Osluškuje promenu boje sa servera
-socket.on('updateGuestColor', ({ guestId, newColor }) => { // Usaglašeno sa "newColor"
-    console.log('Color update broadcasted:', guestId, newColor);
-    setGuestColor(guestId, newColor);
-});
