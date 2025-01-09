@@ -65,8 +65,9 @@ io.on('connection', (socket) => {
 
   // Emitovanje događaja da bi ostali korisnici videli novog gosta
     socket.broadcast.emit('newGuest', nickname);
+     socket.emit('currentGuests', guestsData);
     io.emit('updateGuestList', Object.values(guests));
-
+    
     // Obrada prijave korisnika
     socket.on('userLoggedIn', (username) => {
         if (authorizedUsers.has(username)) {
