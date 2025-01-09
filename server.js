@@ -49,8 +49,6 @@ const bannedUsers = new Set();
 // Skladištenje informacija o gostima
 const guests = {};
 const guestsData = {};
-const color = newColor;
-guestsData[guestId].color = color;
 const assignedNumbers = new Set(); // Set za generisane brojeve
 
 // Dodavanje socket događaja iz banmodula
@@ -127,7 +125,14 @@ io.on('connection', (socket) => {
         return number;
     }
 // Osluškuje promenu boje sa klijenta
-    socket.on('updateGuestColor', ({ guestId, newColor }) => {
+// Funkcija za postavljanje boje gosta na serveru
+function setGuestColor(guestId, color) {
+    if (!guestsData[guestId]) {
+        guestsData[guestId] = {};
+    }
+    guestsData[guestId].color = color;
+}
+     socket.on('updateGuestColor', ({ guestId, newColor }) => {
         console.log('Received color update from client:', guestId, newColor);
         
         // Ažuriraj boju gosta na serveru
