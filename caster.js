@@ -1,10 +1,12 @@
 const axios = require('axios');
 
-const privateToken = '9327d0f7-2b66-460c-87cb-82b45055361c'; // Zamenite sa vašim privatnim tokenom
+const privateToken = '9327d0f7-2b66-460c-87cb-82b45055361c'; // Vaš privatni token
+const streamUrl = 'https://sapircast.caster.fm'; // URL strima
 
+// Funkcija za verifikaciju privatnog tokena
 async function verifyToken() {
   try {
-    const response = await axios.get(`https://hub.cloud.caster.fm/private/checkToken?token=${9327d0f7-2b66-460c-87cb-82b45055361c}`, {
+    const response = await axios.get(`https://hub.cloud.caster.fm/private/checkToken?token=${privateToken}`, {
       headers: {
         'Accept': 'application/json',
         'Cache-Control': 'no-cache'
@@ -25,10 +27,7 @@ async function verifyToken() {
   }
 }
 
-verifyToken();
-
-const streamUrl = 'https://sapircast.caster.fm'; // Server hostname za strimovanje
-
+// Funkcija za slanje strimovanih podataka
 async function streamToCaster() {
   const isTokenValid = await verifyToken(); // Validiraj token pre slanja podataka
   if (!isTokenValid) {
@@ -37,13 +36,13 @@ async function streamToCaster() {
   }
 
   try {
-    const response = await axios.post('https://hub.cloud.caster.fm/private/POST_ENDPOINT', JSON.stringify({
+    const response = await axios.post('https://hub.cloud.caster.fm/private/POST_ENDPOINT', {
       token: privateToken,
       url: streamUrl,
-    }), {
+    }, {
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json' // Dodajemo header za JSON
+        'Content-Type': 'application/json'
       }
     });
 
@@ -53,4 +52,10 @@ async function streamToCaster() {
   }
 }
 
-module.exports = streamToCaster;
+// Izvoz funkcija
+module.exports = { verifyToken, streamToCaster };
+
+// Pokretanje funkcije za slanje strimovanih podataka (opciono)
+if (require.main === module) {
+  streamToCaster();
+}
