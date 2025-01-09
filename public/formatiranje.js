@@ -130,19 +130,19 @@ socket.on('updateGuestList', function(users) {
     });
 
    // Dodaj nove goste
-const userArray = Array.from(users); // Konvertuje u niz ako je moguće
-userArray.forEach(nickname => {
-    const guestId = `guest-${nickname}`;
-    if (!guestsData[guestId]) {
-        const newGuest = document.createElement('div');
-        newGuest.className = 'guest';
-        newGuest.id = guestId; // Set the id for each guest
-        newGuest.textContent = nickname;
-        newGuest.style.color = '#FFFFFF'; // Default color if not set
+if (Array.isArray(users)) {
+    users.forEach(nickname => {
+        const guestId = `guest-${nickname}`;
+        if (!guestsData[guestId]) {
+            const newGuest = document.createElement('div');
+            newGuest.className = 'guest';
+            newGuest.id = guestId; // Set the id for each guest
+            newGuest.textContent = nickname;
+            newGuest.style.color = '#FFFFFF'; // Default color if not set
 
-        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
-        guestList.appendChild(newGuest); // Add new guest to the list
-  
+            guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
+            guestList.appendChild(newGuest); // Add new guest to the list
+    
       // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
 
