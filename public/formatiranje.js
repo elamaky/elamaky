@@ -130,8 +130,8 @@ socket.on('updateGuestList', function(users) {
     });
 
 // Dodaj nove goste
-users.forEach(nickname => {
     const guestId = `guest-${nickname}`;
+guestId.forEach(nickname => {
     if (!guestsData[guestId]) {
         const newGuest = document.createElement('div');
         newGuest.className = 'guest';
