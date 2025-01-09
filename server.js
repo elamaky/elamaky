@@ -145,13 +145,16 @@ io.on('connection', (socket) => {
         console.log('Broadcasted color update:', guestId, newColor);
     });
     socket.on('streamSong', (url) => {
-        console.log(`[${new Date().toISOString()}] Streaming song from ${socket.id}:`, url);
+        // Log kada server primi strim od tebe (elamaky)
+        console.log(`[${new Date().toISOString()}] Admin ${socket.id} streaming: ${url}`);
+        
+        // Šalji svima koji slušaju
         io.emit('playSong', url);
     });
-     socket.on('startListening', () => {
-        console.log(`[2025-01-09 10:30:42] User ${socket.id} started listening to music stream`);
-        socket.join('music-listeners');
-    });
+
+    socket.on('startListening', () => {
+        // Log kada neko klikne dugme Muzika
+        console.log(`[${new Date().toISOString()}] User ${socket.id} started listening to stream`);
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
