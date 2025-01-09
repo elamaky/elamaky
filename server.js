@@ -47,8 +47,8 @@ const authorizedUsers = new Set(['Radio Galaksija', 'ZI ZU', '__X__']);
 const bannedUsers = new Set();
 
 // Skladištenje informacija o gostima
-const guests = {};
 const guestsData = {};
+const guests = guestsData;
 const assignedNumbers = new Set(); // Set za generisane brojeve
 
 // Dodavanje socket događaja iz banmodula
