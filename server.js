@@ -47,6 +47,7 @@ app.get('/', (req, res) => {
 
 app.post('/stream-song', async (req, res) => {
   const { url } = req.body;
+    });
     
 // Lista autorizovanih i banovanih korisnika
 const authorizedUsers = new Set(['Radio Galaksija', 'ZI ZU', '__X__']);
