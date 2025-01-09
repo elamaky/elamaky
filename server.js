@@ -144,18 +144,22 @@ io.on('connection', (socket) => {
         io.emit('updateGuestColor', { guestId, newColor });
         console.log('Broadcasted color update:', guestId, newColor);
     });
-    socket.on('streamSong', (url) => {
-        // Log kada server primi strim od tebe (elamaky)
-        console.log(`[${new Date().toISOString()}] Admin ${socket.id} streaming: ${url}`);
-        
-        // Šalji svima koji slušaju
-        io.emit('playSong', url);
-    });
+   socket.on('streamSong', (url) => {
+    if (!url) {
+        return console.error('No URL provided for streaming');
+    }
+    
+    // Log kada server primi strim od admina
+    console.log(`[${new Date().toISOString()}] Admin ${socket.id} streaming: ${url}`);
+    
+    // Šalji svima koji slušaju
+    io.emit('playSong', url);
+});
 
-    socket.on('startListening', () => {
-        // Log kada neko klikne dugme Muzika
-        console.log(`[${new Date().toISOString()}] User ${socket.id} started listening to stream`);
-         });
+socket.on('startListening', () => {
+    // Log kada neko klikne dugme Muzika
+    console.log(`[${new Date().toISOString()}] User ${socket.id} started listening to stream`);
+});
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
