@@ -129,7 +129,7 @@ socket.on('connection', (socket) => {
     const guestsWithColors = Object.keys(guestsData).map(guestId => ({
         guestId,
         color: guestsData[guestId].color || 'default'  // ako nema boje, postavite default
-    }));
+    });
 
     // Pošaljite trenutnu listu gostiju sa bojama novom korisniku
     socket.emit('currentGuests', guestsWithColors);
