@@ -153,8 +153,6 @@ io.on('connection', (socket) => {
         // Dajemo pristup korisniku da sluša muziku
         socket.join('music-listeners');
     });
-});
-
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
