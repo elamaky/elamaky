@@ -180,3 +180,9 @@ body {
     right: 0;
     margin-top: 10px; /* Razmak od liste */
 }
+
+/* RADIO CO PLAYER */
+        #embedContainer {
+            display: none; /* Početno skriven */
+            margin-top: 20px;
+        }
