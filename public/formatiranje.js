@@ -85,22 +85,32 @@ socket.on('private_message', function(data) {
     messageArea.scrollTop = 0;
 });
 
-// Funkcija za dodavanje gosta
-function addGuest(nickname) {
-    const guestId = `guest-${nickname}`;
-    const guestList = document.getElementById('guestList');
+const guestsData = {};
+const guestList = document.getElementById('guestList');
+let currentGuestId = null;
 
+// Funkcija za dodavanje gosta u listu
+function addGuestToList(nickname) {
+    const guestId = `guest-${nickname}`;
+
+    // Proveri da li gost već postoji u `guestsData`
     if (!guestsData[guestId]) {
         const newGuest = document.createElement('div');
         newGuest.className = 'guest';
-        newGuest.id = guestId;
+        newGuest.id = guestId; // Setuj ID za gosta
         newGuest.textContent = nickname;
-        newGuest.style.color = '#FFFFFF'; // Default color if not set
+        newGuest.style.color = '#FFFFFF'; // Podrazumevana boja
 
-        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
-        guestList.appendChild(newGuest); // Add new guest to the list
+        // Dodaj u lokalni `guestsData`
+        guestsData[guestId] = { nickname, color: newGuest.style.color };
+
+        // Dodaj gosta u DOM
+        guestList.appendChild(newGuest);
 
         // Postavi trenutnog gosta za bojenje
+        currentGuestId = guestId;
+
+        // Dodaj listener za bojenje
         const colorPicker = document.getElementById('colorPicker');
         if (colorPicker) {
             colorPicker.addEventListener('input', function updateColor() {
@@ -112,55 +122,44 @@ function addGuest(nickname) {
     }
 }
 
+// Funkcija za uklanjanje gosta iz liste
+function removeGuestFromList(nickname) {
+    const guestId = `guest-${nickname}`;
+    delete guestsData[guestId];
+    const guestElement = document.getElementById(guestId);
+    if (guestElement) {
+        guestList.removeChild(guestElement);
+    }
+}
+
 // Socket događaji
 socket.on('newGuest', function (nickname) {
-    addGuest(nickname);
+    // Dodavanje novog gosta
+    addGuestToList(nickname);
 });
 
 socket.on('updateGuestList', function (users) {
-    const guestList = document.getElementById('guestList');
+    // Sinhronizacija liste gostiju
     const currentGuests = Array.from(guestList.children).map(guest => guest.textContent);
 
-    // Ukloni goste koji više nisu u listi
+    // Ukloni goste koji više nisu na serveru
     currentGuests.forEach(nickname => {
         if (!users.includes(nickname)) {
-            const guestId = `guest-${nickname}`;
-            delete guestsData[guestId];
-            const guestElement = document.getElementById(guestId);
-            if (guestElement) {
-                guestList.removeChild(guestElement);
-            }
+            removeGuestFromList(nickname);
         }
     });
 
     // Dodaj nove goste
-    users.forEach(nickname => addGuest(nickname));
+    users.forEach(nickname => addGuestToList(nickname));
 });
 
-function setGuestColor(guestId, color) {
-    const guestElement = document.getElementById(guestId);
-    if (guestElement) {
-        guestElement.style.color = color;
+// Funkcija za ažuriranje boje gosta
+function updateGuestColor(guestId, color) {
+    if (guestsData[guestId]) {
         guestsData[guestId].color = color;
-        console.log(`Boja za ${guestId} promenjena u ${color}`);
-    } else {
-        console.warn(`Element sa ID-om ${guestId} nije pronađen u DOM-u.`);
+        const guestElement = document.getElementById(guestId);
+        if (guestElement) {
+            guestElement.style.color = color;
+        }
     }
 }
-
-function updateGuestColor(guestId, newColor) {
-    setGuestColor(guestId, newColor);
-    socket.emit('updateGuestColor', { guestId, newColor });
-}
-
-// Osluškuje promenu boje sa servera
-socket.on('updateGuestColor', ({ guestId, newColor }) => {
-    console.log('Color update broadcasted:', guestId, newColor);
-    setGuestColor(guestId, newColor);
-});
-
-// Osluškuje sinhronizaciju cele strukture gostiju sa servera
-socket.on('syncGuests', (data) => {
-    Object.assign(guestsData, data); // Ažuriranje postojećeg objekta
-    console.log('Guests data synchronized:', guestsData);
-});
