@@ -53,7 +53,7 @@ socket.on('chat-cleared', function() {
             }
         };
 //RADIO CO TEST
-document.getElementById('cotest').addEventListener('click', function() {
-            const frame = document.getElementById('radioFrame');
-            frame.style.display = frame.style.display === 'none' ? 'block' : 'none';
+ document.getElementById('cotest').addEventListener('click', function() {
+            const embed = document.getElementById('embedContainer');
+            embed.style.display = (embed.style.display === 'none' || embed.style.display === '') ? 'block' : 'none';
         });
