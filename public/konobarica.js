@@ -121,11 +121,7 @@ document.addEventListener('mouseup', () => {
             songs.push({ url, name });
             const li = document.createElement('li');
             li.textContent = name;
-            // Emitovanje URL-a pesme kad je pesma dodata u mixer
-socket.emit('streamSong', url); // url je putanja do pesme
-
-
-                li.setAttribute('draggable', 'true');
+           li.setAttribute('draggable', 'true');
 
 
             li.addEventListener('click', (e) => {
@@ -169,7 +165,8 @@ socket.emit('streamSong', url); // url je putanja do pesme
                 audioPlayer.style.display = 'block';
                 audioPlayer.play();
                 // Emitovanje URL-a pesme kada se pesma pusti
-socket.emit('streamSong', songs[index].url);
+              console.log('Streaming song:', songs[index].url);
+              socket.emit('streamSong', songs[index].url);
 
             }
         }
