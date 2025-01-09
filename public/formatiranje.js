@@ -5,6 +5,8 @@ let newColor;
 let isUnderline = false;
 let isOverline = false;
 const guestsData = {};
+const guestList = document.getElementById('guestList');
+let currentGuestId = null;
 
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
@@ -84,10 +86,6 @@ socket.on('private_message', function(data) {
     messageArea.prepend(newMessage);
     messageArea.scrollTop = 0;
 });
-
-const guestsData = {};
-const guestList = document.getElementById('guestList');
-let currentGuestId = null;
 
 // Funkcija za dodavanje gosta u listu
 function addGuestToList(nickname) {
