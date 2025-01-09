@@ -130,7 +130,8 @@ socket.on('updateGuestList', function(users) {
     });
 
    // Dodaj nove goste
-users.forEach(nickname => {
+const userArray = Array.from(users); // Konvertuje u niz ako je moguće
+userArray.forEach(nickname => {
     const guestId = `guest-${nickname}`;
     if (!guestsData[guestId]) {
         const newGuest = document.createElement('div');
@@ -141,6 +142,8 @@ users.forEach(nickname => {
 
         guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
         guestList.appendChild(newGuest); // Add new guest to the list
+    }
+});
 
         // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
