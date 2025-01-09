@@ -27,6 +27,16 @@ async function verifyToken() {
     }
 }
 
+// Funkcija za dobijanje informacija o nalogu i serveru
+async function getAccountInfo() {
+    try {
+        const response = await axios.get(`https://hub.cloud.caster.fm/private/accountInfo?token=${privateToken}`);
+        console.log('Informacije o nalogu i serveru:', response.data);
+    } catch (error) {
+        console.error('Greška pri dobijanju informacija:', error.message);
+    }
+}
+
 // Funkcija za slanje strimovanih podataka
 async function streamToCaster() {
     const isTokenValid = await verifyToken();
@@ -52,10 +62,14 @@ async function streamToCaster() {
     }
 }
 
+// Pozivanje funkcije za dobijanje informacija o nalogu
+getAccountInfo();
+
 // Izvoz funkcija
 module.exports = {
     verifyToken,
-    streamToCaster
+    streamToCaster,
+    getAccountInfo
 };
 
 // Ako se fajl direktno pokreće
