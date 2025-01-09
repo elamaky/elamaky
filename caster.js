@@ -15,6 +15,7 @@ async function streamToCaster() {
     console.log('Stream successfully sent to Caster.fm', response.data);
   } catch (error) {
     console.error('Error streaming to Caster.fm', error);
+     res.status(500).send('Error streaming to Caster.fm');
   }
 }
 
