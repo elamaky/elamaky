@@ -46,11 +46,11 @@ app.get('/', (req, res) => {
 const authorizedUsers = new Set(['Radio Galaksija', 'ZI ZU', '__X__']);
 const bannedUsers = new Set();
 
-const guestsData = {};
+// Skladištenje informacija o gostima
 const guests = {};
 const assignedNumbers = new Set(); // Set za generisane brojeve
-// Dodavanje socket događaja iz banmodula
 
+// Dodavanje socket događaja iz banmodula
 setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
 privatmodul(io, guests);
 
@@ -60,12 +60,11 @@ io.on('connection', (socket) => {
     const uniqueNumber = generateUniqueNumber();
     const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
     guests[socket.id] = nickname; // Dodajemo korisnika u guest list
-    guestsData[socket.id] = { id: socket.id, nickname: nickname, joinedAt: new Date() };
     socket.emit('setNickname', nickname);
 
   // Emitovanje događaja da bi ostali korisnici videli novog gosta
     socket.broadcast.emit('newGuest', nickname);
-    io.emit('updateGuestList','updateGuestList', Object.values(guests));
+    io.emit('updateGuestList', Object.values(guests));
 
     // Obrada prijave korisnika
     socket.on('userLoggedIn', (username) => {
@@ -76,8 +75,8 @@ io.on('connection', (socket) => {
             guests[socket.id] = username;
             console.log(`${username} se prijavio kao gost.`);
         }
-       io.emit('updateGuestList','updateGuestList', Object.values(guests));
-});
+        io.emit('updateGuestList', Object.values(guests));
+    });
 
  // Obrada slanja chat poruka
     socket.on('chatMessage', (msgData) => {
@@ -89,8 +88,8 @@ io.on('connection', (socket) => {
             color: msgData.color,
              underline: msgData.underline,
             overline: msgData.overline,
+            nickname: guests[socket.id],
             time: time,
-            nickname: nickname,
         };
         io.emit('chatMessage', messageToSend);
     });
@@ -124,13 +123,20 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-   
+socket.on('updateColor', ({ guestId, color, newColor }) => {
+    const updatedColor = color || newColor;
+
+    console.log('Color update received:', guestId, updatedColor);
+
+    io.emit('updateColor', { guestId, updatedColor });
+    console.log('Broadcasting color update to all clients:', { guestId, updatedColor });
+});
+
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
-        io.emit('updateGuestList','updateGuestList', Object.values(guests));
-
+        io.emit('updateGuestList', Object.values(guests));
     });
      });
 // Pokretanje servera na definisanom portu
