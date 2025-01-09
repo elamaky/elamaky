@@ -233,9 +233,3 @@ function updateSongsOrder() {
 
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
-// Listen for the playSong event from the server
-    socket.on('playSong', (url) => {
-        const audioPlayer = document.getElementById('audioPlayer');
-        audioPlayer.src = url;
-        audioPlayer.play();
-    });
