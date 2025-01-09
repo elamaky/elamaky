@@ -60,11 +60,12 @@ io.on('connection', (socket) => {
     const uniqueNumber = generateUniqueNumber();
     const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
     guests[socket.id] = nickname; // Dodajemo korisnika u guest list
+    guestsData[socket.id] = { id: socket.id, nickname: nickname, joinedAt: new Date() };
     socket.emit('setNickname', nickname);
 
   // Emitovanje događaja da bi ostali korisnici videli novog gosta
     socket.broadcast.emit('newGuest', nickname);
-    io.emit('updateGuestList', Object.values(guests));
+    io.emit('updateGuestList','updateGuestList', Object.values(guests));
 
     // Obrada prijave korisnika
     socket.on('userLoggedIn', (username) => {
@@ -75,8 +76,8 @@ io.on('connection', (socket) => {
             guests[socket.id] = username;
             console.log(`${username} se prijavio kao gost.`);
         }
-        io.emit('updateGuestList', Object.values(guests));
-    });
+       io.emit('updateGuestList','updateGuestList', Object.values(guests));
+});
 
  // Obrada slanja chat poruka
     socket.on('chatMessage', (msgData) => {
@@ -154,7 +155,8 @@ socket.on('userConnected', function(userData) {
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
         delete guests[socket.id];
-        io.emit('updateGuestList', Object.values(guests));
+        io.emit('updateGuestList','updateGuestList', Object.values(guests));
+
     });
      });
 // Pokretanje servera na definisanom portu
