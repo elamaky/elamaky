@@ -155,6 +155,7 @@ io.on('connection', (socket) => {
     socket.on('startListening', () => {
         // Log kada neko klikne dugme Muzika
         console.log(`[${new Date().toISOString()}] User ${socket.id} started listening to stream`);
+         });
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
