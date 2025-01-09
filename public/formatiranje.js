@@ -153,7 +153,7 @@ users.forEach(nickname => {
             colorPicker.addEventListener('input', function updateColor() {
                 if (currentGuestId === guestId) {
                     updateGuestColor(guestId, this.value);
-                     socket.emit('updateGuestColor', { guestId, color });
+                     socket.emit('updateGuestColor', { guestId, newColor });
                 }
             });
             
@@ -171,11 +171,11 @@ function setGuestColor(guestId, color) {
 
 function updateGuestColor(guestId, newColor) {
     setGuestColor(guestId, newColor);
-    socket.emit('updateGuestColor', { guestId, color }); // Emituje sa "newColor"
+    socket.emit('updateGuestColor', { guestId, newColor }); // Emituje sa "newColor"
 }
 
-socket.on('updateGuestColor', ({ guestId, color }) => {
-    setGuestColor(guestId, color);
+socket.on('updateGuestColor', ({ guestId, newColor }) => {
+    setGuestColor(guestId, newColor);
 });
 socket.on('currentGuests', (guests) => {
     console.log('Received guests:', guests);  // Proveri šta stiže
