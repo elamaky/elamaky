@@ -55,7 +55,7 @@ document.getElementById('chatInput').addEventListener('keydown', function(event)
             color: currentColor,
             underline: isUnderline,
             overline: isOverline,
-            nickname: guests[socket.id],
+            nickname: [socket.id],
       });
         this.value = '';
     }
