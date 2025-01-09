@@ -144,6 +144,10 @@ io.on('connection', (socket) => {
         io.emit('updateGuestColor', { guestId, newColor });
         console.log('Broadcasted color update:', guestId, newColor);
     });
+    socket.on('streamSong', (url) => {
+        console.log(`[${new Date().toISOString()}] Streaming song from ${socket.id}:`, url);
+        io.emit('playSong', url);
+    });
 
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
