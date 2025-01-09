@@ -129,7 +129,7 @@ socket.on('updateGuestList', function(users) {
         }
     });
 
-   // Dodaj nove goste
+// Dodaj nove goste
 if (Array.isArray(users)) {
     users.forEach(nickname => {
         const guestId = `guest-${nickname}`;
@@ -157,7 +157,7 @@ if (Array.isArray(users)) {
             }
         }
     });
- });
+}
 function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
