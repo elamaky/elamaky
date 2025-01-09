@@ -187,7 +187,7 @@ body {
             position: fixed; /* Pozicionira element u odnosu na prozor */
             left: 0; /* Od leva */
             bottom: 0; /* Od dna */
-            width: 100px; /* Širina */
-            height: 100px; /* Visina */
+            width: 250px; /* Širina */
+            height: 250px; /* Visina */
             background-color: transparent; /* Pozadina */
         }
