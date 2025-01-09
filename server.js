@@ -49,6 +49,7 @@ const bannedUsers = new Set();
 // Skladištenje informacija o gostima
 const guests = {};
 const assignedNumbers = new Set(); // Set za generisane brojeve
+const guestsData = {};
 
 // Dodavanje socket događaja iz banmodula
 setupSocketEvents(io, guests, bannedUsers); // Dodavanje guests i bannedUsers u banmodul
