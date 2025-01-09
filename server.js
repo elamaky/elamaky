@@ -125,7 +125,8 @@ io.on('connection', (socket) => {
         return number;
     }
 // Osluškuje promenu boje sa klijenta
- socket.on('updateGuestColor', ({ guestId, newColor }) => {
+    socket.emit('currentGuests', guestsWithColors);
+socket.on('updateGuestColor', ({ guestId, newColor }) => {
         console.log('Received color update from client:', guestId, newColor);
         
         // Ažuriraj boju gosta na serveru
