@@ -1,7 +1,7 @@
 const axios = require('axios');
 
-const publicToken = '52fd78a9-8b7e-4b0c-aaf1-ab6502ccd171'; // Tvoj public token
-const streamUrl = 'https://elamaky-1.onrender.com/'; // Tvoja prava URL adresa za strimovanje
+const publicToken = process.env.PUBLIC_TOKEN; // Koristimo varijablu okruženja za token
+const streamUrl = process.env.STREAM_URL; // Koristimo varijablu okruženja za URL
 
 // Funkcija za slanje strimovanih podataka na Caster.fm
 async function streamToCaster() {
@@ -23,4 +23,3 @@ async function streamToCaster() {
 
 // Izvoz funkcije
 module.exports = streamToCaster;
-
