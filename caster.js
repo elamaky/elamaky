@@ -4,7 +4,7 @@ const privateToken = '9327d0f7-2b66-460c-87cb-82b45055361c'; // Zamenite sa vaš
 
 async function verifyToken() {
   try {
-    const response = await axios.get(`https://hub.cloud.caster.fm/private/checkToken?token=${privateToken}`, {
+    const response = await axios.get(`https://hub.cloud.caster.fm/private/checkToken?token=${9327d0f7-2b66-460c-87cb-82b45055361c}`, {
       headers: {
         'Accept': 'application/json',
         'Cache-Control': 'no-cache'
