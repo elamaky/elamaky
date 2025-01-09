@@ -125,18 +125,19 @@ io.on('connection', (socket) => {
         return number;
     }
   // Pošaljite trenutnu listu sa bojama
-    const guestsWithColors = Object.keys(guestsData).map(guestId => ({
+   const guestsWithColors = Object.keys(guestsData).map(guestId => ({
         guestId,
-        color: guestsData[guestId]?.color || 'default'
+        color: guestsData[guestId]?.color || 'default'  // Ako boja nije definisana, postavite 'default'
     }));
+
+    // Pošaljite gostima trenutne boje kada se povežu
     socket.emit('currentGuests', guestsWithColors);
 
-    // Osluškivanje promene boje
+    // Osluškivanje promene boje gosta sa klijenta
     socket.on('updateGuestColor', ({ guestId, newColor }) => {
         guestsData[guestId] = { color: newColor };
         io.emit('updateGuestColor', { guestId, newColor });
     });
-});
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
