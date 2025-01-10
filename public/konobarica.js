@@ -230,38 +230,40 @@ function updateSongsOrder() {
 
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
+//   ZA STRIMOVANJE
 document.getElementById('ton').addEventListener('click', function() {
     socket.emit('startListening');
 
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-const analyser = audioContext.createAnalyser();  // Analyzator za analizu audio signala
-let mediaStreamSource = null;
+    const analyser = audioContext.createAnalyser();  // Analyzator za analizu audio signala
+    let mediaStreamSource = null;
 
     // Povezivanje sa zvučnim ulazom (audioPlayer)
-audioPlayer.addEventListener('play', function() {
-    // Kada počne sa reprodukcijom, pokreni prikupljanje zvuka
-    if (audioContext.state === 'suspended') {
-        audioContext.resume();
+    audioPlayer.addEventListener('play', function() {
+        // Kada počne sa reprodukcijom, pokreni prikupljanje zvuka
+        if (audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
+
+        // Kreiraj MediaElementSource za audioPlayer i poveži ga sa analizatorom
+        mediaStreamSource = audioContext.createMediaElementSource(audioPlayer);
+        mediaStreamSource.connect(analyser);
+        analyser.connect(audioContext.destination); // Spajanje sa zvučnim izlazom
+
+        // Pokreni strimovanje audio podataka
+        startStreaming();
+    });
+
+    // Funkcija koja prikuplja zvučne podatke i emituje ih putem socket-a
+    function startStreaming() {
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+
+        // Funkcija za redovno prikupljanje podataka i emitovanje
+        setInterval(() => {
+            analyser.getByteFrequencyData(dataArray);  // Prikupljanje podataka o frekvencijama
+            // Prilagođavanje podataka u odgovarajući format (u ovom slučaju Uint8Array)
+            socket.emit('audio-stream', dataArray);  // Emituj podatke svim povezanim korisnicima
+        }, 100); // Prikupljaj podatke svakih 100 ms
     }
-
-    // Kreiraj MediaElementSource za audioPlayer i poveži ga sa analizatorom
-    mediaStreamSource = audioContext.createMediaElementSource(audioPlayer);
-    mediaStreamSource.connect(analyser);
-    analyser.connect(audioContext.destination); // Spajanje sa zvučnim izlazom
-
-    // Pokreni strimovanje audio podataka
-    startStreaming();
 });
-
-// Funkcija koja prikuplja zvučne podatke i emituje ih putem socket-a
-function startStreaming() {
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-
-    // Funkcija za redovno prikupljanje podataka i emitovanje
-    setInterval(() => {
-        analyser.getByteFrequencyData(dataArray);  // Prikupljanje podataka o frekvencijama
-        // Prilagođavanje podataka u odgovarajući format (u ovom slučaju Uint8Array)
-        socket.emit('audio-stream', dataArray);  // Emituj podatke svim povezanim korisnicima
-    }, 100); // Prikupljaj podatke svakih 100 ms
-}
