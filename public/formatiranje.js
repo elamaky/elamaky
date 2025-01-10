@@ -17,15 +17,6 @@ document.getElementById('italicBtn').addEventListener('click', function() {
     updateInputStyle();
 });
 
-document.getElementById('colorBtn').addEventListener('click', function() {
-    document.getElementById('colorPicker').click();
-});
-
-document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
-});
-
 document.getElementById('linijadoleBtn').addEventListener('click', function() {
     isUnderline = !isUnderline;
     updateInputStyle();
@@ -145,6 +136,15 @@ users.forEach(nickname => {
             colorPicker.addEventListener('input', function updateColor() {
                 if (currentGuestId === guestId) {
                     updateGuestColor(guestId, this.value);
+
+                    document.getElementById('colorBtn').addEventListener('click', function() {
+    document.getElementById('colorPicker').click();
+});
+
+document.getElementById('colorPicker').addEventListener('input', function() {
+    currentColor = this.value;
+    updateInputStyle();
+});
                 }
             });
             
