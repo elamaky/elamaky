@@ -233,19 +233,35 @@ function updateSongsOrder() {
 document.getElementById('ton').addEventListener('click', function() {
     socket.emit('startListening');
 
-    // Slušaj strim
-    socket.on('playSong', (url) => {
-        const audioPlayer = document.getElementById('audioPlayer');
-        audioPlayer.src = url;
-        audioPlayer.play();
-    });
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const analyser = audioContext.createAnalyser();  // Analyzator za analizu audio signala
+let mediaStreamSource = null;
+
+    // Povezivanje sa zvučnim ulazom (audioPlayer)
+audioPlayer.addEventListener('play', function() {
+    // Kada počne sa reprodukcijom, pokreni prikupljanje zvuka
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+
+    // Kreiraj MediaElementSource za audioPlayer i poveži ga sa analizatorom
+    mediaStreamSource = audioContext.createMediaElementSource(audioPlayer);
+    mediaStreamSource.connect(analyser);
+    analyser.connect(audioContext.destination); // Spajanje sa zvučnim izlazom
+
+    // Pokreni strimovanje audio podataka
+    startStreaming();
 });
 
-  // Pozivanje API-ja servera da pošalje URL Caster.fm  
-  fetch('/stream-song', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ url: currentSongUrl }),
-  });
+// Funkcija koja prikuplja zvučne podatke i emituje ih putem socket-a
+function startStreaming() {
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    // Funkcija za redovno prikupljanje podataka i emitovanje
+    setInterval(() => {
+        analyser.getByteFrequencyData(dataArray);  // Prikupljanje podataka o frekvencijama
+        // Prilagođavanje podataka u odgovarajući format (u ovom slučaju Uint8Array)
+        socket.emit('audio-stream', dataArray);  // Emituj podatke svim povezanim korisnicima
+    }, 100); // Prikupljaj podatke svakih 100 ms
+}
