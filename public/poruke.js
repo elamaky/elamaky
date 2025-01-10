@@ -53,5 +53,6 @@ document.getElementById('sound').addEventListener('click', function() {
 });
 //  REGISTRACIJA I LOGIN TABLA
 document.getElementById('NIK').addEventListener('click', function() {
-    document.getElementById('authContainer').style.display = 'block';
-});
+    var container = document.getElementById('authContainer');
+    container.style.display = container.style.display === 'none' ? 'block' : 'none';
+  });
