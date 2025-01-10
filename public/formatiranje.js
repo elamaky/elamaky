@@ -131,7 +131,7 @@ users.forEach(nickname => {
         newGuest.className = 'guest';
         newGuest.id = guestId; // Set the id for each guest
         newGuest.textContent = nickname;
-        newGuest.style.color = '#FFFFFF'; // Default color if not set
+        newGuest.style.color = ''; // Default color if not set
 
         guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
         guestList.appendChild(newGuest); // Add new guest to the list
