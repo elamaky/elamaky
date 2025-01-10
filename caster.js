@@ -63,4 +63,16 @@ async function streamToCaster() {
 streamToCaster().catch(error => {
     console.error('Greška pri pokretanju streama:', error);
 });
+// Izvoz funkcija
+module.exports = {
+    verifyToken,
+    streamToCaster,
+    getAccountInfo
+};
 
+// Ako se fajl direktno pokreće
+if (require.main === module) {
+    streamToCaster().catch(error => {
+        console.error('Greška pri pokretanju streama:', error);
+    });
+}
