@@ -130,8 +130,6 @@ if (colorPicker) {
         const guestId = `guest-${nickname}`; // Koristimo postojeću logiku
         updateGuestColor(guestId, this.value);
     });
-}
-
 // Uklonite event listener iz forEach petlje u updateGuestList
 users.forEach(nickname => {
     const guestId = `guest-${nickname}`;
