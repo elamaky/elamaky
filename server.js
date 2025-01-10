@@ -11,7 +11,6 @@ const pingService = require('./ping');
 const privatmodul = require('./privatmodul'); // Podesi putanju ako je u drugom folderu
 require('dotenv').config();
 const cors = require('cors');
-const caster = require('./caster'); // Uvoz funkcije iz caster.js
 
 const app = express();
 const server = http.createServer(app);
@@ -48,9 +47,6 @@ app.post('/stream-song', async (req, res) => {
   const { url } = req.body;
     });
 
-caster.verifyToken();
-caster.streamToCaster();
-    
 // Lista autorizovanih i banovanih korisnika
 const authorizedUsers = new Set(['Radio Galaksija', 'ZI ZU', '__X__']);
 const bannedUsers = new Set();
