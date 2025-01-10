@@ -151,9 +151,8 @@ users.forEach(nickname => {
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
-    socket.emit('colorChange', currentColor); // Emit događaj sa bojom
 });
- function setGuestColor(guestId, color) {
+             function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
         guestElement.style.color = color;
@@ -166,8 +165,16 @@ function updateGuestColor(guestId, newColor) {
     socket.emit('updateGuestColor', { guestId, newColor }); // Emituje sa "newColor"
 }
 
-// Osluškuje promenu boje sa servera
-socket.on('updateGuestColor', ({ guestId, newColor }) => { // Usaglašeno sa "newColor"
-    console.log('Color update broadcasted:', guestId, newColor);
+socket.on('updateGuestColor', ({ guestId, newColor }) => {
     setGuestColor(guestId, newColor);
-});       
+});
+socket.on('currentGuests', (guests) => {
+    console.log('Received guests:', guests);  // Proveri šta stiže
+    if (Array.isArray(guests)) {
+        guests.forEach(({ guestId, color }) => {
+            setGuestColor(guestId, color);
+        });
+    } else {
+        console.error('Expected an array, but got:', guests);
+    }
+});
