@@ -102,11 +102,6 @@ socket.on('newGuest', function (nickname) {
 
     newGuest.style.color = guestsData[guestId].color;
 
-    // Dodajemo click event za selektovanje gosta
-    newGuest.addEventListener('click', function() {
-        currentGuestId = guestId; // Kada kliknemo na gosta, on postaje trenutni
-    });
-
     guestList.appendChild(newGuest); // Dodaj novog gosta u listu
 });
 
@@ -128,40 +123,58 @@ socket.on('updateGuestList', function (users) {
         }
     });
 
-    // Dodaj nove goste
-    users.forEach(nickname => {
-        const guestId = `guest-${nickname}`;
-        if (!guestsData[guestId]) {
-            const newGuest = document.createElement('div');
-            newGuest.classList.add('guest');
-            newGuest.textContent = nickname;
-            newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
+     // Dodaj nove goste
+users.forEach(nickname => {
+    const guestId = `guest-${nickname}`;
+    if (!guestsData[guestId]) {
+        const newGuest = document.createElement('div');
+        newGuest.className = 'guest';
+        newGuest.id = guestId; // Set the id for each guest
+        newGuest.textContent = nickname;
+        newGuest.style.color = '#FFFFFF'; // Default color if not set
 
-            // Dodajemo click event za selektovanje gosta
-            newGuest.addEventListener('click', function() {
-                currentGuestId = guestId; // Kada kliknemo na gosta, on postaje trenutni
+        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
+        guestList.appendChild(newGuest); // Add new guest to the list
+
+        // Postavi trenutnog gosta za bojenje
+        currentGuestId = guestId;
+
+        // Dodaj listener za ažuriranje boje u realnom vremenu
+        const colorPicker = document.getElementById('colorPicker');
+        if (colorPicker) {
+            colorPicker.addEventListener('input', function updateColor() {
+                if (currentGuestId === guestId) {
+                    updateGuestColor(guestId, this.value);
+                }
             });
-
-            guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
-            guestList.appendChild(newGuest); // Dodaj novog gosta u listu
-   
- // Dodajemo JEDAN listener za color picker koji će raditi sa trenutno selektovanim gostom
-    const colorPicker = document.getElementById('colorPicker');
-    if (colorPicker) {
-        colorPicker.addEventListener('input', function() {
-            if (currentGuestId) { // Samo ako imamo selektovanog gosta
-                const newColor = this.value;
-                const guestElement = Array.from(guestList.children)
-                    .find(guest => guest.textContent === guestsData[currentGuestId].nickname);
-                
-                if (guestElement) {
-                    guestElement.style.color = newColor;
-                    guestsData[currentGuestId].color = newColor;
-                    socket.emit('updateGuestColor', { guestId: currentGuestId, newColor });
+            
+        }
     }
+});
     });
- }
-            }
+function setGuestColor(guestId, color) {
+    const guestElement = document.getElementById(guestId);
+    if (guestElement) {
+        guestElement.style.color = color;
+        guestsData[guestId].color = color;
+    }
+}
+
+function updateGuestColor(guestId, newColor) {
+    setGuestColor(guestId, newColor);
+    socket.emit('updateGuestColor', { guestId, newColor }); // Emituje sa "newColor"
+}
+
+socket.on('updateGuestColor', ({ guestId, newColor }) => {
+    setGuestColor(guestId, newColor);
+});
+socket.on('currentGuests', (guests) => {
+    console.log('Received guests:', guests);  // Proveri šta stiže
+    if (Array.isArray(guests)) {
+        guests.forEach(({ guestId, color }) => {
+            setGuestColor(guestId, color);
         });
+    } else {
+        console.error('Expected an array, but got:', guests);
     }
 });
