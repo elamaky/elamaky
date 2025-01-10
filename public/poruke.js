@@ -40,20 +40,14 @@ socket.on('chat-cleared', function() {
     chatWindow.innerHTML = ""; // Briše sve unutar chata
 });
 //  ZENO PLAYER NA DUGME  
- document.getElementById('sound').onclick = function() {
-            var iframe = document.getElementById('radioIframe');
-            if (iframe.style.display === 'none') {
-                // Prikazi iframe i pokreni strim
-                iframe.style.display = 'block';
-                this.textContent = 'Pause';
-            } else {
-                // Sakrij iframe i pauziraj strim
-                iframe.style.display = 'none';
-                this.textContent = 'Play';
-            }
-        };
-//RADIO CO TEST
- document.getElementById('cotest').addEventListener('click', function() {
-            const embed = document.getElementById('embedContainer');
-            embed.style.display = (embed.style.display === 'none' || embed.style.display === '') ? 'block' : 'none';
-        });
+document.getElementById('sound').addEventListener('click', function() {
+    const iframe = document.getElementById('radioIframe');
+    const cover = document.getElementById('playerCover');
+    
+    // Prikazivanje iframe playera i slike
+    iframe.style.display = 'block';
+    cover.style.display = 'block';
+    
+    // Automatski pokreni zvuk, ako treba
+    iframe.src = iframe.src;  // Ovo može ponovo pokrenuti player ako je potrebno
+});
