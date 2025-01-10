@@ -87,29 +87,35 @@ socket.on('private_message', function(data) {
     messageArea.scrollTop = 0;
 });
 
-socket.on('newGuest', function(nickname) {
+// Kada nov gost dođe
+socket.on('newGuest', function (nickname) {
     const guestId = `guest-${nickname}`;
     const guestList = document.getElementById('guestList');
     const newGuest = document.createElement('div');
     newGuest.classList.add('guest');
     newGuest.textContent = nickname;
 
+    // Dodaj novog gosta u guestsData ako ne postoji
     if (!guestsData[guestId]) {
-        guestsData[guestId] = { nickname, color: '#FFFFFF' };
+        guestsData[guestId] = { nickname, color: '#FFFFFF' }; // Ako ne postoji, dodajemo ga sa podrazumevanom bojom
     }
 
     newGuest.style.color = guestsData[guestId].color;
-    addGuestStyles(newGuest, guestId);
-    guestList.appendChild(newGuest);
+
+    guestList.appendChild(newGuest); // Dodaj novog gosta u listu
 });
 
-socket.on('updateGuestList', function(users) {
+// Ažuriranje liste gostiju bez resetovanja stilova
+socket.on('updateGuestList', function (users) {
     const guestList = document.getElementById('guestList');
     const currentGuests = Array.from(guestList.children).map(guest => guest.textContent);
 
+    // Ukloni goste koji više nisu u listi
     currentGuests.forEach(nickname => {
         if (!users.includes(nickname)) {
-            delete guestsData[`guest-${nickname}`];
+            delete guestsData[`guest-${nickname}`]; // Ukloni iz objekta
+
+            // Ukloni iz DOM-a
             const guestElement = Array.from(guestList.children).find(guest => guest.textContent === nickname);
             if (guestElement) {
                 guestList.removeChild(guestElement);
@@ -117,20 +123,19 @@ socket.on('updateGuestList', function(users) {
         }
     });
 
-   // Dodaj nove goste
-users.forEach(nickname => {
-    const guestId = `guest-${nickname}`;
-    if (!guestsData[guestId]) {
-        const newGuest = document.createElement('div');
-        newGuest.className = 'guest';
-        newGuest.id = guestId; // Set the id for each guest
-        newGuest.textContent = nickname;
-        newGuest.style.color = '#FFFFFF'; // Default color if not set
+    // Dodaj nove goste
+    users.forEach(nickname => {
+        const guestId = `guest-${nickname}`;
+        if (!guestsData[guestId]) {
+            const newGuest = document.createElement('div');
+            newGuest.className = 'guest';
+            newGuest.textContent = nickname;
+            newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
 
-        guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
-        guestList.appendChild(newGuest); // Add new guest to the list
-
-        // Postavi trenutnog gosta za bojenje
+            guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
+            guestList.appendChild(newGuest); // Dodaj novog gosta u listu
+     
+      // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
 
         // Dodaj listener za ažuriranje boje u realnom vremenu
