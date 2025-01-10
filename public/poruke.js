@@ -54,10 +54,9 @@ document.getElementById('sound').addEventListener('click', function() {
 //  REGISTRACIJA I LOGIN TABLA
 document.getElementById('NIK').addEventListener('click', function() {
     const authContainer = document.getElementById('authContainer');
+    
+    // Postavi display na 'block' kada se klikne
     if (authContainer.style.display === 'none' || authContainer.style.display === '') {
-        authContainer.style.display = 'block'; // Otvori container
-    } else {
-        authContainer.style.display = 'none'; // Sakrij container
+        authContainer.style.display = 'block'; // Otvori authContainer
     }
 });
-
