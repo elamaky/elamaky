@@ -51,3 +51,13 @@ document.getElementById('sound').addEventListener('click', function() {
     // Automatski pokreni zvuk, ako treba
     iframe.src = iframe.src;  // Ovo može ponovo pokrenuti player ako je potrebno
 });
+//  REGISTRACIJA I LOGIN TABLA
+document.getElementById('NIK').addEventListener('click', function() {
+    const authContainer = document.getElementById('authContainer');
+    if (authContainer.style.display === 'none' || authContainer.style.display === '') {
+        authContainer.style.display = 'block'; // Otvori container
+    } else {
+        authContainer.style.display = 'none'; // Sakrij container
+    }
+});
+
