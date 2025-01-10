@@ -145,16 +145,7 @@ users.forEach(nickname => {
             colorPicker.addEventListener('input', function updateColor() {
                 if (currentGuestId === guestId) {
                     updateGuestColor(guestId, this.value);
-                    
-            socket.on('guestColorUpdated', function({ guestId, newColor }) {
-    // Ažuriraj boju u DOM-u
-    const guestElement = document.querySelector(`.guest[data-guest-id="${guestId}"]`);
-    if (guestElement) {
-        guestElement.style.color = newColor;
-         socket.emit('updateGuestColor', { guestId: currentGuestId, newColor });
-    }
-});
-    }
+                }
             });
             
         }
