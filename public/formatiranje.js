@@ -5,7 +5,6 @@ let newColor;
 let isUnderline = false;
 let isOverline = false;
 const guestsData = {};
-const colorPrefs = {};
 
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
