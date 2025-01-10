@@ -144,6 +144,7 @@ io.on('connection', (socket) => {
             guestsData[guestId] = {};
         }
         guestsData[guestId].color = newColor;
+        io.emit('updateGuestColor', { guestId, newColor })
 
         // Emituje promenu boje svim klijentima
         io.emit('updateGuestColor', { guestId, newColor });
