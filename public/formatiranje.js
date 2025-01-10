@@ -130,12 +130,13 @@ users.forEach(nickname => {
         // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
 
-        // Dodaj listener za ažuriranje boje u realnom vremenu
-        const colorPicker = document.getElementById('colorPicker');
-        if (colorPicker) {
-            colorPicker.addEventListener('input', function updateColor() {
-                if (currentGuestId === guestId) {
-                    updateGuestColor(guestId, this.value);
+       const colorPicker = document.getElementById('colorPicker');
+if (colorPicker) {
+    colorPicker.addEventListener('input', function updateColor() {
+        if (currentGuestId === guestId) {
+            currentColor = this.value;
+            updateInputStyle();
+            updateGuestColor(guestId, this.value);
                       }
             });
             
@@ -147,12 +148,7 @@ users.forEach(nickname => {
                     document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPicker').click();
 });
-
-document.getElementById('colorPicker').addEventListener('input', function() {
-    currentColor = this.value;
-    updateInputStyle();
-});
-             function setGuestColor(guestId, color) {
+function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
         guestElement.style.color = color;
