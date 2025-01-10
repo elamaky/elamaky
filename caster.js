@@ -13,9 +13,16 @@ async function verifyToken() {
             }
         });
 
-        if (response.status === 200) {
-            console.log('Token je validan:', response.data);
+        if (response.status === 200 && response.data) {
+            const { private_token, public_token } = response.data;
+            console.log('Token je validan:', {
+                private_token,
+                public_token
+            });
             return true;
+        } else {
+            console.error('Nevažeći ili neispravan odgovor od servera.');
+            return false;
         }
     } catch (error) {
         if (error.response && error.response.status === 401) {
@@ -24,16 +31,6 @@ async function verifyToken() {
             console.error('Greška pri verifikaciji tokena:', error.message);
         }
         return false;
-    }
-}
-
-// Funkcija za dobijanje informacija o nalogu i serveru
-async function getAccountInfo() {
-    try {
-        const response = await axios.get(`https://hub.cloud.caster.fm/private/accountInfo?token=${privateToken}`);
-        console.log('Informacije o nalogu i serveru:', response.data);
-    } catch (error) {
-        console.error('Greška pri dobijanju informacija:', error.message);
     }
 }
 
@@ -46,7 +43,7 @@ async function streamToCaster() {
     }
 
     try {
-        const response = await axios.post('https://hub.cloud.caster.fm/private/POST_ENDPOINT', {
+        const response = await axios.post('https://hub.cloud.caster.fm/private/startStream', { // Tačan endpoint
             token: privateToken,
             url: streamUrl,
         }, {
@@ -56,25 +53,14 @@ async function streamToCaster() {
             }
         });
 
-        console.log('Strim je uspešno poslat na Caster.fm', response.data);
+        console.log('Strim je uspešno poslat na Caster.fm:', response.data);
     } catch (error) {
-        console.error('Greška pri strimovanju na Caster.fm', error.response ? error.response.data : error.message);
+        console.error('Greška pri strimovanju na Caster.fm:', error.response ? error.response.data : error.message);
     }
 }
 
-// Pozivanje funkcije za dobijanje informacija o nalogu
-getAccountInfo();
+// Pozivanje funkcije
+streamToCaster().catch(error => {
+    console.error('Greška pri pokretanju streama:', error);
+});
 
-// Izvoz funkcija
-module.exports = {
-    verifyToken,
-    streamToCaster,
-    getAccountInfo
-};
-
-// Ako se fajl direktno pokreće
-if (require.main === module) {
-    streamToCaster().catch(error => {
-        console.error('Greška pri pokretanju streama:', error);
-    });
-}
