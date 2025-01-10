@@ -153,4 +153,21 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     updateInputStyle();
     socket.emit('colorChange', currentColor); // Emit događaj sa bojom
 });
-        
+ function setGuestColor(guestId, color) {
+    const guestElement = document.getElementById(guestId);
+    if (guestElement) {
+        guestElement.style.color = color;
+        guestsData[guestId].color = color;
+    }
+}
+
+function updateGuestColor(guestId, newColor) {
+    setGuestColor(guestId, newColor);
+    socket.emit('updateGuestColor', { guestId, newColor }); // Emituje sa "newColor"
+}
+
+// Osluškuje promenu boje sa servera
+socket.on('updateGuestColor', ({ guestId, newColor }) => { // Usaglašeno sa "newColor"
+    console.log('Color update broadcasted:', guestId, newColor);
+    setGuestColor(guestId, newColor);
+});       
