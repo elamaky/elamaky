@@ -102,6 +102,11 @@ socket.on('newGuest', function (nickname) {
 
     newGuest.style.color = guestsData[guestId].color;
 
+    // Dodajemo click event za selektovanje gosta
+    newGuest.addEventListener('click', function() {
+        currentGuestId = guestId; // Kada kliknemo na gosta, on postaje trenutni
+    });
+
     guestList.appendChild(newGuest); // Dodaj novog gosta u listu
 });
 
@@ -132,20 +137,31 @@ socket.on('updateGuestList', function (users) {
             newGuest.textContent = nickname;
             newGuest.style.color = '#FFFFFF'; // Podrazumevana boja ako nije postavljena
 
+            // Dodajemo click event za selektovanje gosta
+            newGuest.addEventListener('click', function() {
+                currentGuestId = guestId; // Kada kliknemo na gosta, on postaje trenutni
+            });
+
             guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
             guestList.appendChild(newGuest); // Dodaj novog gosta u listu
-     
-            // Postavi trenutnog gosta za bojenje i poveži color picker OVDE
-            currentGuestId = guestId;
-            const colorPicker = document.getElementById('colorPicker');
-            if (colorPicker) {
-                colorPicker.addEventListener('input', function() {
-                    const newColor = this.value;
-                    newGuest.style.color = newColor; // Direktno menjamo boju gostu
-                    guestsData[guestId].color = newColor; // Ažuriramo u podacima
-                    socket.emit('updateGuestColor', { guestId, newColor }); // Šaljemo serveru
-                });
-            }
-        }
+   
+ // Dodajemo JEDAN listener za color picker koji će raditi sa trenutno selektovanim gostom
+    const colorPicker = document.getElementById('colorPicker');
+    if (colorPicker) {
+        colorPicker.addEventListener('input', function() {
+            if (currentGuestId) { // Samo ako imamo selektovanog gosta
+                const newColor = this.value;
+                const guestElement = Array.from(guestList.children)
+                    .find(guest => guest.textContent === guestsData[currentGuestId].nickname);
+                
+                if (guestElement) {
+                    guestElement.style.color = newColor;
+                    guestsData[currentGuestId].color = newColor;
+                    socket.emit('updateGuestColor', { guestId: currentGuestId, newColor });
+    }
     });
+ }
+            }
+        });
+    }
 });
