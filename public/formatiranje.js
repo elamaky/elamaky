@@ -136,6 +136,13 @@ users.forEach(nickname => {
             colorPicker.addEventListener('input', function updateColor() {
                 if (currentGuestId === guestId) {
                     updateGuestColor(guestId, this.value);
+                      }
+            });
+            
+        }
+    }
+});
+    });
 
                     document.getElementById('colorBtn').addEventListener('click', function() {
     document.getElementById('colorPicker').click();
@@ -145,14 +152,7 @@ document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
 });
-                }
-            });
-            
-        }
-    }
-});
-    });
-function setGuestColor(guestId, color) {
+             function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
         guestElement.style.color = color;
