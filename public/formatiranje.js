@@ -144,10 +144,7 @@ socket.on('updateGuestList', function (users) {
 
             guestsData[guestId] = { nickname, color: newGuest.style.color }; // Dodajemo boju
             guestList.appendChild(newGuest); // Dodaj novog gosta u listu
-        }
-    });
-});
-
+  
 // Dodaj jedan event listener za color picker izvan socket events
 const colorPicker = document.getElementById('colorPicker');
 colorPicker.addEventListener('input', function() {
@@ -162,4 +159,7 @@ colorPicker.addEventListener('input', function() {
             socket.emit('updateGuestColor', { guestId: currentGuestId, newColor });
         }
     }
+});
+                }
+    });
 });
