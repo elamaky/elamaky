@@ -67,7 +67,6 @@ streamToCaster().catch(error => {
 module.exports = {
     verifyToken,
     streamToCaster,
-    getAccountInfo
 };
 
 // Ako se fajl direktno pokreće
