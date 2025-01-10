@@ -180,14 +180,3 @@ body {
     right: 0;
     margin-top: 10px; /* Razmak od liste */
 }
-
-/* RADIO CO PLAYER */
-          #embedContainer {
-            display: none; /* Početno skriven */
-            position: fixed; /* Pozicionira element u odnosu na prozor */
-            left: 0; /* Od leva */
-            bottom: 0; /* Od dna */
-            width: 400px; /* Širina */
-            height: 400px; /* Visina */
-            background-color: transparent; /* Pozadina */
-        }
