@@ -151,5 +151,6 @@ users.forEach(nickname => {
 document.getElementById('colorPicker').addEventListener('input', function() {
     currentColor = this.value;
     updateInputStyle();
+    socket.emit('colorChange', currentColor); // Emit događaj sa bojom
 });
         
