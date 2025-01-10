@@ -97,7 +97,7 @@ socket.on('newGuest', function (nickname) {
 
     // Dodaj novog gosta u guestsData ako ne postoji
     if (!guestsData[guestId]) {
-        guestsData[guestId] = { nickname, color: '#FFFFFF' }; // Ako ne postoji, dodajemo ga sa podrazumevanom bojom
+        guestsData[guestId] = { nickname, color: '' }; // Ako ne postoji, dodajemo ga sa podrazumevanom bojom
     }
 
     newGuest.style.color = guestsData[guestId].color;
