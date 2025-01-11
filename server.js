@@ -135,7 +135,7 @@ io.on('connection', (socket) => {
         color: guestsData[guestId]?.color || 'default'  // Ako boja nije definisana, postavite 'default'
     }));
 
-    socket.emit('currentGuests', guestsWithColors);  // Pošaljite trenutnu listu sa bojama
+    socket.broadcast.emit('currentGuests', guestsWithColors);  // Pošaljite trenutnu listu sa bojama
 
     // Osluškivanje promene boje
     socket.on('updateGuestColor', ({ guestId, newColor }) => {
@@ -145,10 +145,7 @@ io.on('connection', (socket) => {
         }
         guestsData[guestId].color = newColor;
         io.emit('updateGuestColor', { guestId, newColor })
-
-        // Emituje promenu boje svim klijentima
-        io.emit('updateGuestColor', { guestId, newColor });
-        console.log('Broadcasted color update:', guestId, newColor);
+         console.log('Broadcasted color update:', guestId, newColor);
     });
   
 socket.on('startListening', () => {
