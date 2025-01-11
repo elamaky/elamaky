@@ -1,10 +1,11 @@
 let isBold = false;
 let isItalic = false;
-let currentColor = '';
+let currentColor = '#FFFFFF';
 let newColor;
 let isUnderline = false;
 let isOverline = false;
 const guestsData = {};
+const colorPrefs = {};
 
 document.getElementById('boldBtn').addEventListener('click', function() {
     isBold = !isBold;
@@ -87,7 +88,7 @@ socket.on('newGuest', function (nickname) {
 
     // Dodaj novog gosta u guestsData ako ne postoji
     if (!guestsData[guestId]) {
-        guestsData[guestId] = { nickname, color: '' }; // Ako ne postoji, dodajemo ga sa podrazumevanom bojom
+        guestsData[guestId] = { nickname, color: '#FFFFFF' }; // Ako ne postoji, dodajemo ga sa podrazumevanom bojom
     }
 
     newGuest.style.color = guestsData[guestId].color;
@@ -121,7 +122,7 @@ users.forEach(nickname => {
         newGuest.className = 'guest';
         newGuest.id = guestId; // Set the id for each guest
         newGuest.textContent = nickname;
-        newGuest.style.color = ''; // Default color if not set
+        newGuest.style.color = '#FFFFFF'; // Default color if not set
 
         guestsData[guestId] = { nickname, color: newGuest.style.color }; // Add guest data
         guestList.appendChild(newGuest); // Add new guest to the list
