@@ -95,12 +95,9 @@ users.forEach(nickname => {
             // Dodaj novog gosta u guestsData ako ne postoji
             if (!guestsData[guestId]) {
                 guestsData[guestId] = { nickname, color: '#FFFFFF' }; // Ako ne postoji, dodajemo ga sa podrazumevanom bojom
-            }
-
-            newGuest.style.color = guestsData[guestId].color;
-
-            guestList.appendChild(newGuest); // Dodaj novog gosta u listu
-            currentGuestId = guestId;
+               newGuest.style.color = guestsData[guestId].color;
+               guestList.appendChild(newGuest); // Dodaj novog gosta u listu
+              currentGuestId = guestId;
 
             // Dodaj listener za ažuriranje boje u realnom vremenu
             const colorPicker = document.getElementById('colorPicker');
