@@ -67,7 +67,7 @@ io.on('connection', (socket) => {
     const uniqueNumber = generateUniqueNumber();
     const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
     guests[socket.id] = nickname; // Dodajemo korisnika u guest list
-    socket.emit('setNickname', nickname);
+    io.emit('setNickname', nickname);
 
   // Emitovanje događaja da bi ostali korisnici videli novog gosta
     socket.broadcast.emit('newGuest', nickname);
@@ -135,7 +135,7 @@ io.on('connection', (socket) => {
         color: guestsData[guestId]?.color || 'default'  // Ako boja nije definisana, postavite 'default'
     }));
 
-    socket.emit('currentGuests', guestsWithColors);  // Pošaljite trenutnu listu sa bojama
+    io.emit('currentGuests', guestsWithColors);  // Pošaljite trenutnu listu sa bojama
 
     // Osluškivanje promene boje
     socket.on('updateGuestColor', ({ guestId, newColor }) => {
