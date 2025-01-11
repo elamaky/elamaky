@@ -108,8 +108,7 @@ users.forEach(nickname => {
                     }
                 });
             }
-        });
-    }
+         }
 });
 
 // Ažuriranje liste gostiju bez resetovanja stilova
