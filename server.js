@@ -130,25 +130,25 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
- const guestsWithColors = Object.keys(guestsData).map(guestId => ({
-        guestId,
-        color: guestsData[guestId]?.color || 'default'  // Ako boja nije definisana, postavite 'default'
-    }));
+ socket.emit('currentGuests', Object.entries(guestsData).map(([guestId, { color }]) => ({ guestId, color })));
 
-    socket.broadcast.emit('currentGuests', guestsWithColors);  // Pošaljite trenutnu listu sa bojama
-
-    // Osluškivanje promene boje
+    // Prima promenu boje od gosta
     socket.on('updateGuestColor', ({ guestId, newColor }) => {
-        // Ažuriraj boju gosta na serveru
         if (!guestsData[guestId]) {
-            guestsData[guestId] = {};
+            guestsData[guestId] = {}; // Ako gost još ne postoji, kreiraj ga
         }
-        guestsData[guestId].color = newColor;
-        io.emit('updateGuestColor', { guestId, newColor })
-         console.log('Broadcasted color update:', guestId, newColor);
+
+        const currentColor = guestsData[guestId].color;
+        if (currentColor !== newColor) {
+            guestsData[guestId].color = newColor; // Ažuriraj boju na serveru
+            console.log(`Updated color for ${guestId}: ${currentColor} -> ${newColor}`);
+
+            // Emituj svima da je boja gosta promenjena
+            io.emit('updateGuestColor', { guestId, newColor });
+        }
     });
-  
-socket.on('startListening', () => {
+
+  socket.on('startListening', () => {
     // Log kada neko klikne dugme Muzika
     console.log(`[${new Date().toISOString()}] User ${socket.id} started listening to stream`);
 });
