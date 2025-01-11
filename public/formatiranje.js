@@ -181,6 +181,7 @@ function updateGuestColor(guestId, newColor) {
 socket.on('updateGuestColor', ({ guestId, newColor }) => {
     console.log(`Received color update for guest: ${guestId} with new color: ${newColor}`);
     setGuestColor(guestId, newColor);
+    socket.emit('updateGuestColor', { guestId, newColor });
 });
 
 socket.on('currentGuests', (guests) => {
