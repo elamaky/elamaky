@@ -146,16 +146,17 @@ socket.on('updateGuestList', function (users) {
     users.forEach(nickname => {
         if (!guestsData[`guest-${nickname}`]) {
             addGuestToList(nickname);
-        }
-    });
-});
-
+ 
 // Dodaj listener za ažuriranje boje u realnom vremenu
 const colorPicker = document.getElementById('colorPicker');
 if (colorPicker) {
     colorPicker.addEventListener('input', function () {
         if (currentGuestId === guestId) {
             updateGuestColor(guestId, this.value);
+              }
+    });
+});
+
         }
     });
 }
