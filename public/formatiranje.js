@@ -138,6 +138,7 @@ users.forEach(nickname => {
 
         // Postavi trenutnog gosta za bojenje
         currentGuestId = guestId;
+         socket.emit('currentGuests', guestsData);
 
         // Dodaj listener za ažuriranje boje u realnom vremenu
         const colorPicker = document.getElementById('colorPicker');
@@ -153,40 +154,44 @@ users.forEach(nickname => {
 });
     });
 function setGuestColor(guestId, color) {
-    console.log(`Setting color for guest: ${guestId} to ${color}`);  // Log za postavljanje boje gosta
+    console.log(`Setting color for guest: ${guestId} to ${color}`);
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
-        console.log(`Found guest element for ${guestId}`);  // Log ako je gost element pronađen
+        console.log(`Found guest element for ${guestId}`);
         guestElement.style.color = color;
         guestsData[guestId].color = color;
-        console.log(`Updated guest data:`, guestsData[guestId]);  // Log za ažuriranu boju u guestsData
+        console.log(`Updated guest data for ${guestId}:`, guestsData[guestId]);
     } else {
-        console.error(`Guest element not found for ${guestId}`);  // Log ako nije pronađen element
+        console.error(`Guest element not found for ${guestId}`);
     }
 }
 
 function updateGuestColor(guestId, newColor) {
-    console.log(`Updating color for guest: ${guestId} to ${newColor}`);  // Log za ažuriranje boje
-    setGuestColor(guestId, newColor);
-    socket.emit('updateGuestColor', { guestId, newColor }); // Emituje sa "newColor"
-    console.log(`Emitting color update for ${guestId} with color ${newColor}`);  // Log za emitovanje događaja
+    const currentColor = guestsData[guestId]?.color;
+    if (currentColor !== newColor) {
+        console.log(`Color changed for ${guestId}: ${currentColor} -> ${newColor}`);
+        setGuestColor(guestId, newColor);
+        socket.emit('updateGuestColor', { guestId, newColor });
+        console.log(`Emitting color update for ${guestId} with color ${newColor}`);
+    } else {
+        console.log(`Color for ${guestId} is the same as before, no update needed.`);
+    }
 }
 
 socket.on('updateGuestColor', ({ guestId, newColor }) => {
-    console.log(`Received color update for guest: ${guestId} with new color: ${newColor}`);  // Log za prijem ažuriranja boje
+    console.log(`Received color update for guest: ${guestId} with new color: ${newColor}`);
     setGuestColor(guestId, newColor);
 });
 
 socket.on('currentGuests', (guests) => {
-    console.log('Received guests:', guests);  // Log za ispisivanje gostiju koji stižu
+    console.log('Received guests:', guests);
     if (Array.isArray(guests)) {
         console.log('Guests are in array format');
         guests.forEach(({ guestId, color }) => {
-            console.log(`Setting initial color for guest: ${guestId} to ${color}`);  // Log za postavljanje inicijalne boje
+            console.log(`Setting initial color for guest: ${guestId} to ${color}`);
             setGuestColor(guestId, color);
         });
     } else {
-        console.error('Expected an array, but got:', guests);  // Log ako nije niz
+        console.error('Expected an array, but got:', guests);
     }
 });
-
