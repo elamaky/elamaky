@@ -71,9 +71,12 @@ io.on('connection', (socket) => {
     socket.emit('setNickname', nickname);
 
   // Emitovanje događaja da bi ostali korisnici videli novog gosta
-    socket.broadcast.emit('newGuest','nickname' , 'newColor');
-     io.emit('updateGuestList', Object.values(guests));
-    io.emit('updateGuestColor',  Object.values(guests));
+   socket.broadcast.emit('newGuest', nickname, newColor);
+   io.emit('updateGuestListAndColor', { 
+  guestList: Object.values(guests), 
+  guestColors: Object.values(guests) 
+});
+
     
     // Obrada prijave korisnika
     socket.on('userLoggedIn', (username) => {
