@@ -54,6 +54,7 @@ const bannedUsers = new Set();
 // Skladištenje informacija o gostima
 const guests = {};
 const guestsData = {};
+ const guestId = `guest-${nickname}`;
 let newColor;
 const assignedNumbers = new Set(); // Set za generisane brojeve
 
