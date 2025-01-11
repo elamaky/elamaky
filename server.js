@@ -54,6 +54,7 @@ const bannedUsers = new Set();
 // Skladištenje informacija o gostima
 const guests = {};
 const guestsData = {};
+let newColor;
 const assignedNumbers = new Set(); // Set za generisane brojeve
 
 // Dodavanje socket događaja iz banmodula
@@ -66,17 +67,11 @@ io.on('connection', (socket) => {
     const uniqueNumber = generateUniqueNumber();
     const nickname = `Gost-${uniqueNumber}`; // Nadimak korisnika
     guests[socket.id] = nickname; // Dodajemo korisnika u guest list
-     const guestId = `guest-${nickname}`;
-     let newColor;
     socket.emit('setNickname', nickname);
 
   // Emitovanje događaja da bi ostali korisnici videli novog gosta
-   socket.broadcast.emit('newGuest', nickname, newColor);
-   io.emit('updateGuestListAndColor', { 
-  guestList: Object.values(guests), 
-  guestColors: Object.values(guests) 
-});
-
+    socket.broadcast.emit('newGuest', nickname);
+     io.emit('updateGuestList', Object.values(guests));
     
     // Obrada prijave korisnika
     socket.on('userLoggedIn', (username) => {
@@ -135,8 +130,7 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-
-   const guestsWithColors = Object.keys(guestsData).map(guestId => ({
+ const guestsWithColors = Object.keys(guestsData).map(guestId => ({
         guestId,
         color: guestsData[guestId]?.color || 'default'  // Ako boja nije definisana, postavite 'default'
     }));
