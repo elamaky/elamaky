@@ -150,20 +150,16 @@ socket.on('updateGuestList', function (users) {
     });
 });
 
-
-        // Dodaj listener za ažuriranje boje u realnom vremenu
-        const colorPicker = document.getElementById('colorPicker');
-        if (colorPicker) {
-            colorPicker.addEventListener('input', function updateColor() {
-                if (currentGuestId === guestId) {
-                    updateGuestColor(guestId, this.value);
-                }
-            });
-            
+// Dodaj listener za ažuriranje boje u realnom vremenu
+const colorPicker = document.getElementById('colorPicker');
+if (colorPicker) {
+    colorPicker.addEventListener('input', function () {
+        if (currentGuestId === guestId) {
+            updateGuestColor(guestId, this.value);
         }
-    }
-});
     });
+}
+
 function setGuestColor(guestId, color) {
     const guestElement = document.getElementById(guestId);
     if (guestElement) {
