@@ -130,6 +130,18 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
+
+    // Kada novi gost dođe
+socket.on('newGuest', function (nickname) {
+    const guestId = `guest-${nickname}`;
+    if (!guestsData[guestId]) {
+        guestsData[guestId] = { nickname, color: '' }; // Dodaj novog gosta
+    }
+
+    // Emituj trenutne goste svim klijentima, uključujući novog
+    io.emit('currentGuests', guestsData);
+});
+
  const guestsWithColors = Object.keys(guestsData).map(guestId => ({
         guestId,
         color: guestsData[guestId]?.color || 'default'  // Ako boja nije definisana, postavite 'default'
