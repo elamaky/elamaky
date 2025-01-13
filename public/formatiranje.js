@@ -165,31 +165,26 @@ function setGuestColor(guestId, color) {
         console.error(`Guest element not found for ${guestId}`);
     }
 }
-
-function updateGuestColor(guestId, newColor) {
-    const currentColor = guestsData[guestId]?.color;
-    if (currentColor !== newColor) {
-        console.log(`Color changed for ${guestId}: ${currentColor} -> ${newColor}`);
-        setGuestColor(guestId, newColor);
-        socket.emit('updateGuestColor', { guestId, newColor });
-        console.log(`Emitting color update for ${guestId} with color ${newColor}`);
-    } else {
-        console.log(`Color for ${guestId} is the same as before, no update needed.`);
+function setGuestColor(guestId, color) {
+    const guestElement = document.getElementById(guestId);
+    if (guestElement) {
+        guestElement.style.color = color;
+        guestsData[guestId].color = color;
     }
 }
 
-socket.on('updateGuestColor', ({ guestId, newColor }) => {
-    console.log(`Received color update for guest: ${guestId} with new color: ${newColor}`);
+function updateGuestColor(guestId, newColor) {
     setGuestColor(guestId, newColor);
-    socket.emit('updateGuestColor', { guestId, newColor });
-});
+    socket.emit('updateGuestColor', { guestId, newColor }); // Emituje sa "newColor"
+}
 
+socket.on('updateGuestColor', ({ guestId, newColor }) => {
+    setGuestColor(guestId, newColor);
+});
 socket.on('currentGuests', (guests) => {
-    console.log('Received guests:', guests);
+    console.log('Received guests:', guests);  // Proveri šta stiže
     if (Array.isArray(guests)) {
-        console.log('Guests are in array format');
         guests.forEach(({ guestId, color }) => {
-            console.log(`Setting initial color for guest: ${guestId} to ${color}`);
             setGuestColor(guestId, color);
         });
     } else {
