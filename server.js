@@ -42,11 +42,6 @@ app.post('/login', (req, res) => login(req, res, io));
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
-
-app.post('/stream-song', async (req, res) => {
-  const { url } = req.body;
-    });
-
 // Lista autorizovanih i banovanih korisnika
 const authorizedUsers = new Set(['Radio Galaksija', 'ZI ZU', '__X__']);
 const bannedUsers = new Set();
@@ -130,33 +125,41 @@ io.on('connection', (socket) => {
         assignedNumbers.add(number);
         return number;
     }
-socket.on('updateGuestColor', ({ guestId, newColor }) => {
-    // Provera i inicijalizacija gosta
-    if (!guestsData[guestId]) {
-        guestsData[guestId] = {}; // Kreiraj objekat za gosta ako ne postoji
-        console.log(`Initializing guest: ${guestId}`);
-    }
+ const guestsWithColors = Object.keys(guestsData).map(guestId => ({
+        guestId,
+        color: guestsData[guestId]?.color || 'default'  // Ako boja nije definisana, postavite 'default'
+    }));
 
-    const currentColor = guestsData[guestId].color; // Dohvati trenutnu boju (može biti undefined)
-    if (currentColor !== newColor) {
-        guestsData[guestId].color = newColor; // Ažuriraj boju
-        console.log(`Updated color for ${guestId}: ${currentColor} -> ${newColor}`);
+    socket.emit('currentGuests', guestsWithColors);  // Pošaljite trenutnu listu sa bojama
 
-        // Emituj promenu svima
+    // Osluškivanje promene boje
+    socket.on('updateGuestColor', ({ guestId, newColor }) => {
+        // Ažuriraj boju gosta na serveru
+        if (!guestsData[guestId]) {
+            guestsData[guestId] = {};
+        }
+        guestsData[guestId].color = newColor;
+
+        // Emituje promenu boje svim klijentima
         io.emit('updateGuestColor', { guestId, newColor });
+        console.log('Broadcasted color update:', guestId, newColor);
+    });
+   socket.on('streamSong', (url) => {
+    if (!url) {
+        return console.error('No URL provided for streaming');
     }
+    
+    // Log kada server primi strim od admina
+    console.log(`[${new Date().toISOString()}] Admin ${socket.id} streaming: ${url}`);
+    
+    // Šalji svima koji slušaju
+    io.emit('playSong', url);
 });
 
-  socket.on('startListening', () => {
+socket.on('startListening', () => {
     // Log kada neko klikne dugme Muzika
     console.log(`[${new Date().toISOString()}] User ${socket.id} started listening to stream`);
 });
- // Kada server primi zvučne podatke
-    socket.on('audio-stream', (audioData) => {
-        // Emituj podatke svim povezanim korisnicima
-        socket.broadcast.emit('audio-stream', audioData);  // Emituj podatke drugim korisnicima
-    });
-    
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
