@@ -272,10 +272,3 @@ audioPlayer.addEventListener('play', () => {
     // Pokreni strimovanje
     streamAudio();
 });
-
-// Kada server šalje audio podatke, on ih pušta svim korisnicima
-socket.on('audioStream', (audioData) => {
-    console.log('Primljeni audio podaci:', audioData);  // Log za primanje podataka
-    const audio = new Audio(audioData);
-    audio.play();  // Reprodukujemo podatke koje smo primili
-});
