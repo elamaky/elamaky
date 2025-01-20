@@ -238,3 +238,44 @@ function updateSongsOrder() {
 
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
+// Kada korisnik pritisne play, počinjemo sa strimovanjem audio podataka
+audioPlayer.addEventListener('play', () => {
+    console.log('Pokrenut je audio player. Počinjemo sa strimovanjem...');
+    
+    // Kreiramo AudioContext za snimanje audio podataka u realnom vremenu
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const analyser = audioContext.createAnalyser();
+    const source = audioContext.createMediaElementSource(audioPlayer);
+    source.connect(analyser);
+    analyser.connect(audioContext.destination);
+
+    // Pronađi buffer sa audio podacima
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    // Emituj podatke kada god se promene
+    function streamAudio() {
+        analyser.getByteFrequencyData(dataArray);
+        
+        // Pretvoriti podatke u format koji se može poslati
+        const audioData = new Array(bufferLength).fill(0).map((_, index) => dataArray[index]);
+        
+        console.log('Slanje audio podataka:', audioData);  // Log za slanje podataka
+        
+        // Emituj podatke svim povezanim korisnicima
+        socket.emit('audioStream', audioData);
+        
+        // Nastavi sa strimovanjem
+        requestAnimationFrame(streamAudio);
+    }
+
+    // Pokreni strimovanje
+    streamAudio();
+});
+
+// Kada server šalje audio podatke, on ih pušta svim korisnicima
+socket.on('audioStream', (audioData) => {
+    console.log('Primljeni audio podaci:', audioData);  // Log za primanje podataka
+    const audio = new Audio(audioData);
+    audio.play();  // Reprodukujemo podatke koje smo primili
+});
