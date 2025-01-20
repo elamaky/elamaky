@@ -1,4 +1,4 @@
-const socket = io("https://socketio-u71k.onrender.com", {
+const socket = io("https://elamaky-1.onrender.com", {
     transports: ['websocket'],
     upgrade: false
 });
