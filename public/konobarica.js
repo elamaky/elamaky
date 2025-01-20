@@ -233,37 +233,33 @@ function updateSongsOrder() {
 //   ZA STRIMOVANJE
 document.getElementById('pesme').addEventListener('click', function() {
     socket.emit('startListening');
+});
 
-    socket.on('connect', () => {
-  navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+socket.on('connect', () => {
+    navigator.mediaDevices.getUserMedia({ audio: true, video: false })
     .then((stream) => {
-        var madiaRecorder = new MediaRecorder(stream);
+        var mediaRecorder = new MediaRecorder(stream);  // Ispravljeno "madiaRecorder"
         var audioChunks = [];
 
-        madiaRecorder.addEventListener("dataavailable", function (event) {
+        mediaRecorder.addEventListener("dataavailable", function (event) {
             audioChunks.push(event.data);
         });
 
-        madiaRecorder.addEventListener("stop", function () {
+        mediaRecorder.addEventListener("stop", function () {
             var audioBlob = new Blob(audioChunks);
-            audioChunks = [];
             var fileReader = new FileReader();
             fileReader.readAsDataURL(audioBlob);
             fileReader.onloadend = function () {
                 var base64String = fileReader.result;
                 socket.emit("audioStream", base64String);
             };
-
-            madiaRecorder.start();
-            setTimeout(function () {
-                madiaRecorder.stop();
-            }, 1000);
         });
 
-        madiaRecorder.start();
+        // Pokreni snimanje
+        mediaRecorder.start();
         setTimeout(function () {
-            madiaRecorder.stop();
-        }, 1000);
+            mediaRecorder.stop();
+        }, 1000);  // Zaustavite nakon 1 sekunde
     })
     .catch((error) => {
         console.error('Error capturing audio.', error);
@@ -272,7 +268,7 @@ document.getElementById('pesme').addEventListener('click', function() {
 
 socket.on('audioStream', (audioData) => {
     var newData = audioData.split(";");
-    newData[0] = "data:audio/ogg;";
+    newData[0] = "data:audio/ogg;";  // Ako je potrebno, zamenite tip MIME
     newData = newData[0] + newData[1];
 
     var audio = new Audio(newData);
