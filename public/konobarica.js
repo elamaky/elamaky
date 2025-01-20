@@ -231,7 +231,7 @@ function updateSongsOrder() {
     songs = updatedOrder; // Ažuriraj globalni niz pesama
 }
 //   ZA STRIMOVANJE
-document.getElementById('ton').addEventListener('click', function() {
+document.getElementById('pesme').addEventListener('click', function() {
     socket.emit('startListening');
 
     socket.on('connect', () => {
