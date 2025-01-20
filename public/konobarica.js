@@ -1,7 +1,3 @@
-const socket = io("https://elamaky-1.onrender.com", {
-    transports: ['websocket'],
-    upgrade: false
-});
 // Kada se povežemo sa serverom, emitujemo događaj za novog gosta
 socket.emit('new_guest');
 
