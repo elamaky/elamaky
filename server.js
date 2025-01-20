@@ -145,10 +145,13 @@ io.on('connection', (socket) => {
         console.log('Broadcasted color update:', guestId, newColor);
     });
   
- socket.on('streamSong', (songUrl) => {
-        console.log('Prima se pesma sa URL-om:', songUrl);
-socket.emit('audioStream', songUrl);  // Emitovanje nazad klijentu
-    });
+// Kada klijent pošalje audio podatke
+    socket.on('audioStream', (audioData) => {
+        console.log('Primljeni audio podaci:', audioData);  // Log za primanje podataka
+        // Emitujemo audio podatke svim povezanim korisnicima
+        socket.broadcast.emit('audioStream', audioData); // strimovanje svim korisnicima osim onog koji je poslao
+        console.log('Emitujem audio podatke svim korisnicima.');
+    })
 // Obrada diskonekcije korisnika
     socket.on('disconnect', () => {
         console.log(`${guests[socket.id]} se odjavio.`);
