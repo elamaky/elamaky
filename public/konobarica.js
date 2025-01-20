@@ -234,36 +234,50 @@ function updateSongsOrder() {
 document.getElementById('ton').addEventListener('click', function() {
     socket.emit('startListening');
 
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const analyser = audioContext.createAnalyser();  // Analyzator za analizu audio signala
-    let mediaStreamSource = null;
+    socket.on('connect', () => {
+  navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+    .then((stream) => {
+        var madiaRecorder = new MediaRecorder(stream);
+        var audioChunks = [];
 
-    // Povezivanje sa zvučnim ulazom (audioPlayer)
-    audioPlayer.addEventListener('play', function() {
-        // Kada počne sa reprodukcijom, pokreni prikupljanje zvuka
-        if (audioContext.state === 'suspended') {
-            audioContext.resume();
-        }
+        madiaRecorder.addEventListener("dataavailable", function (event) {
+            audioChunks.push(event.data);
+        });
 
-        // Kreiraj MediaElementSource za audioPlayer i poveži ga sa analizatorom
-        mediaStreamSource = audioContext.createMediaElementSource(audioPlayer);
-        mediaStreamSource.connect(analyser);
-        analyser.connect(audioContext.destination); // Spajanje sa zvučnim izlazom
+        madiaRecorder.addEventListener("stop", function () {
+            var audioBlob = new Blob(audioChunks);
+            audioChunks = [];
+            var fileReader = new FileReader();
+            fileReader.readAsDataURL(audioBlob);
+            fileReader.onloadend = function () {
+                var base64String = fileReader.result;
+                socket.emit("audioStream", base64String);
+            };
 
-        // Pokreni strimovanje audio podataka
-        startStreaming();
+            madiaRecorder.start();
+            setTimeout(function () {
+                madiaRecorder.stop();
+            }, 1000);
+        });
+
+        madiaRecorder.start();
+        setTimeout(function () {
+            madiaRecorder.stop();
+        }, 1000);
+    })
+    .catch((error) => {
+        console.error('Error capturing audio.', error);
     });
+});
 
-    // Funkcija koja prikuplja zvučne podatke i emituje ih putem socket-a
-    function startStreaming() {
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
+socket.on('audioStream', (audioData) => {
+    var newData = audioData.split(";");
+    newData[0] = "data:audio/ogg;";
+    newData = newData[0] + newData[1];
 
-        // Funkcija za redovno prikupljanje podataka i emitovanje
-        setInterval(() => {
-            analyser.getByteFrequencyData(dataArray);  // Prikupljanje podataka o frekvencijama
-            // Prilagođavanje podataka u odgovarajući format (u ovom slučaju Uint8Array)
-            socket.emit('audio-stream', dataArray);  // Emituj podatke svim povezanim korisnicima
-        }, 100); // Prikupljaj podatke svakih 100 ms
+    var audio = new Audio(newData);
+    if (!audio || document.hidden) {
+        return;
     }
+    audio.play();
 });
