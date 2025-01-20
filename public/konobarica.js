@@ -234,11 +234,6 @@ function updateSongsOrder() {
 document.getElementById('pesme').addEventListener('click', function() {
     socket.emit('startListening');
 });
-
-mixerButton.addEventListener('click', function() {
-    socket.emit('startListening');
-});
-
 socket.on('connect', () => {
     // Kreiranje AudioContext objekta za preuzimanje zvuka iz audioPlayer
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
