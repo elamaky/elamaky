@@ -1,3 +1,10 @@
+const socket = io("https://socketio-u71k.onrender.com", {
+    transports: ['websocket'],
+    upgrade: false
+});
+// Kada se povežemo sa serverom, emitujemo događaj za novog gosta
+socket.emit('new_guest');
+
 // Slušamo za poruke od servera, u ovom slučaju pozdravnu poruku od Konobarice
 socket.on('message', (data) => {
     const messageArea = document.getElementById('messageArea');
@@ -230,11 +237,6 @@ function updateSongsOrder() {
 //   ZA STRIMOVANJE
 document.getElementById('pesme').addEventListener('click', function() {
     socket.emit('startListening');
-});
-
-const socket = io("https://socketio-u71k.onrender.com", {
-    transports: ['websocket'],
-    upgrade: false
 });
 
 mixerButton.addEventListener('click', function() {
