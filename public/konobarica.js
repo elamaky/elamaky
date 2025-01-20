@@ -235,40 +235,59 @@ document.getElementById('pesme').addEventListener('click', function() {
     socket.emit('startListening');
 });
 
-socket.on('connect', () => {
-    navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-    .then((stream) => {
-        var mediaRecorder = new MediaRecorder(stream);  // Ispravljeno "madiaRecorder"
-        var audioChunks = [];
-
-        mediaRecorder.addEventListener("dataavailable", function (event) {
-            audioChunks.push(event.data);
-        });
-
-        mediaRecorder.addEventListener("stop", function () {
-            var audioBlob = new Blob(audioChunks);
-            var fileReader = new FileReader();
-            fileReader.readAsDataURL(audioBlob);
-            fileReader.onloadend = function () {
-                var base64String = fileReader.result;
-                socket.emit("audioStream", base64String);
-            };
-        });
-
-        // Pokreni snimanje
-        mediaRecorder.start();
-        setTimeout(function () {
-            mediaRecorder.stop();
-        }, 1000);  // Zaustavite nakon 1 sekunde
-    })
-    .catch((error) => {
-        console.error('Error capturing audio.', error);
-    });
+const socket = io("https://socketio-u71k.onrender.com", {
+    transports: ['websocket'],
+    upgrade: false
 });
 
+mixerButton.addEventListener('click', function() {
+    socket.emit('startListening');
+});
+
+socket.on('connect', () => {
+    // Kreiranje AudioContext objekta za preuzimanje zvuka iz audioPlayer
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const mediaElementSource = audioContext.createMediaElementSource(audioPlayer); // Povezivanje audioPlayer sa AudioContext
+    const analyser = audioContext.createAnalyser(); // Analizer za eventualne efekte ili manipulacije
+
+    mediaElementSource.connect(analyser); // Povezivanje sa analizerom
+    analyser.connect(audioContext.destination); // Konekcija sa izlazom
+
+    // Funkcija za streamovanje podataka u realnom vremenu
+    function streamAudio() {
+        const audioChunks = [];
+        const mediaRecorder = new MediaRecorder(audioPlayer.captureStream()); // Kreirajte MediaRecorder sa streamom audioPlayer-a
+
+        mediaRecorder.ondataavailable = function(event) {
+            audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = function() {
+            const audioBlob = new Blob(audioChunks);
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(audioBlob);
+            fileReader.onloadend = function() {
+                const base64String = fileReader.result;
+                socket.emit('audioStream', base64String);
+            };
+        };
+
+        mediaRecorder.start();
+        setTimeout(function() {
+            mediaRecorder.stop();
+        }, 1000);  // Snimanje za 1 sekundu (po želji možete promeniti trajanje snimanja)
+    }
+
+    // Pozivanje funkcije za streamovanje kada počne reprodukcija
+    audioPlayer.onplay = function() {
+        streamAudio();
+    };
+});
+
+// Prikazivanje i slušanje streamovanog zvuka
 socket.on('audioStream', (audioData) => {
     var newData = audioData.split(";");
-    newData[0] = "data:audio/ogg;";  // Ako je potrebno, zamenite tip MIME
+    newData[0] = "data:audio/ogg;";
     newData = newData[0] + newData[1];
 
     var audio = new Audio(newData);
