@@ -55,14 +55,15 @@ function setSocket(serverIo) {
             io.emit('update-images', newImage);
         });
 
-        socket.on('delete-all', (password) => {
-            if (password === 'your_password') { // Provera lozinke
-                newImage = [];
-                userImages = {};
-                io.emit('update-images', newImage); // Obavesti sve klijente
-            } else {
-                socket.emit('error', 'Pogrešna lozinka!');
-            }
+  socket.on('delete-all', (username) => {
+    // Provera da li je korisnik u autorizovanoj grupi
+    if (authorizedUsers.has(username)) { 
+        newImage = []; // Briše sve slike
+        userImages = {}; // Briše sve korisničke slike
+        io.emit('update-images', newImage); // Obavesti sve klijente o brisanju slika
+    } else {
+        socket.emit('error', 'Nemate privilegije da obrišete slike!'); // Ako korisnik nije privilegovan
+      }
         });
     });
 }
