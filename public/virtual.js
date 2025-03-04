@@ -1,40 +1,36 @@
-// Drag and Drop functionality
+// DRAG AND DROP FUNCTIONALITY
 let iframeContainer = document.getElementById('iframe-container');
 let isDragging = false;
 let offsetX, offsetY;
 
-iframeContainer.addEventListener('mousedown', (e) => {
+iframeContainer.addEventListener('mousedown', function(e) {
     isDragging = true;
     offsetX = e.clientX - iframeContainer.getBoundingClientRect().left;
     offsetY = e.clientY - iframeContainer.getBoundingClientRect().top;
+    document.addEventListener('mousemove', dragMove);
 });
 
-document.addEventListener('mousemove', (e) => {
+document.addEventListener('mouseup', function() {
+    isDragging = false;
+    document.removeEventListener('mousemove', dragMove);
+});
+
+function dragMove(e) {
     if (isDragging) {
         iframeContainer.style.left = e.clientX - offsetX + 'px';
         iframeContainer.style.top = e.clientY - offsetY + 'px';
     }
-});
+}
 
-document.addEventListener('mouseup', () => {
-    isDragging = false;
-});
-
-// Resize functionality
-let resizeHandle = document.createElement('div');
-resizeHandle.classList.add('resize-handle');
-iframeContainer.appendChild(resizeHandle);
-
+// RESIZE FUNCTIONALITY
+let resizeHandle = document.getElementById('resize-handle');
 let isResizing = false;
 
-resizeHandle.addEventListener('mousedown', (e) => {
-    e.preventDefault();
+resizeHandle.addEventListener('mousedown', function(e) {
     isResizing = true;
     document.addEventListener('mousemove', resizeIframe);
-    document.addEventListener('mouseup', () => {
-        isResizing = false;
-        document.removeEventListener('mousemove', resizeIframe);
-    });
+    document.addEventListener('mouseup', stopResize);
+    e.preventDefault(); // Prevent default behavior for better control
 });
 
 function resizeIframe(e) {
@@ -44,4 +40,9 @@ function resizeIframe(e) {
         iframeContainer.style.width = newWidth + 'px';
         iframeContainer.style.height = newHeight + 'px';
     }
+}
+
+function stopResize() {
+    isResizing = false;
+    document.removeEventListener('mousemove', resizeIframe);
 }
