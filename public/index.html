@@ -15,10 +15,25 @@
 </head>
 <body>
 
-      <button id="openModal" class="toolbarBtn">D</button>
-        <button class="toolbarBtn" id="smilesBtn">😊</button>
-         </div>
 
+
+        
+        <button id="openModal" class="toolbarBtn">D</button>
+        <button class="toolbarBtn" id="smilesBtn">😊</button>
+        <button class="toolbarBtn" id="GBtn">G</button>
+    </div>
+
+<!-- Modal -->
+<div id="gostimodal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        
+        <!-- Dugmici unutar modala -->
+         <button class="toolbarBtn" id="sound">Muzika</button>
+        
+       
+      </div>
+</div>
 <div id="functionModal" class="modal" style="display: none;" draggable="true">
     <div class="modal-content">
         <span class="close" id="closeModal">&times;</span>
@@ -26,32 +41,62 @@
         
         <div class="foregroundFunctions">
             <button id="clearChat">Obriši chat</button>
-            <button id="privateMessage">Privatna poruka</button>
-        </div>
+            <button id="privateMessage">Privat</button>
+<button id="pozadina">Pozadina</button>
+    
+</div>
         
         <div class="backgroundFunctions">
-            <button id="addImage"> slika</button>
-            <button id="banned">A</button>
-             <button id="memorija">memorija</button>
-            <button id="addVideo"> video </button>
+            <button id="addImage"> Slika</button>
+                 <button id="chat"> Chat </button>
             <button id="pesme"> Mixer </button>
+            <button id="govna"> *__X__*</button>
             
 
      </div>
     </div>
 </div>
 
+<div id="uuidModal" style="display: none;">
+    <h3>BY *__X__*</h3>
+    <ul id="uuidList"></ul>
+<button id="blokip"> Blokip </button>
+<button id="delete"> Delete </button>
+</div>
 
-         <script src="smile.js"></script> 
-<script src="funkcije.js"></script>
+
+      <div id="mixer">
+        <audio id="audioPlayer" controls style="position: absolute; top: 0px; left: 0;"></audio>
+        <h2 class="title" style="position: absolute; top: 60px; left: 0;">By *__X__*</h2>
+        <input type="file" id="fileInput" multiple style="position: absolute; top: 90px; left: 0; right: 0; margin-bottom: 10px;">
+
+        <ul id="songList"></ul>
+        
+        <div id="mixer-buttons">
+            <button id="playSelected">Play</button>
+            <button id="deleteSelected">Obriši</button>
+            
+             </div>
+    </div>
+     <script src="regist.js"></script>
+ <script src="elementi.js"></script>   
+    <script src="konobarica.js"></script>
+<script src="formatiranje.js"></script> 
+ <script src="funkcije.js"></script>
+<script src="smile.js"></script> 
 <script src="slike.js"></script>
  <script src="poruke.js"></script>
     <script src="privat.js"></script>
- <iframe id="radioIframe" src="https://zeno.fm/player/radio-galaksija?autoplay=true&muted=true" 
+       <script src="virtual.js"></script>
+    <iframe src="https://xat.com/embed/chat.php#id=220525650&gn=MIRJANA_2023" width="750" height="586" frameborder="0" scrolling="no"></iframe><br>
+
+
+     <iframe id="radioIframe" src="https://zeno.fm/player/radio-galaksija?autoplay=true&muted=true" 
             width="300" height="139" frameborder="5" scrolling="no"
             style="display: none; position: fixed; top: 0; right: 0; z-index: 9998;"></iframe>
-    
-<iframe src="https://xat.com/embed/chat.php#id=220525650&gn=MIRJANA_2023" width="900" height="736" frameborder="0" scrolling="no"></iframe><br><small><a target="_BLANK" href="https://xat.com/web_gear/chat/embed.php?id=220525650&GroupName=MIRJANA_2023">Get MIRJANA_2023 chat group</a> | <a target="_BLANK" href="https://xat.com/MIRJANA_2023"> Go to MIRJANA_2023 website</a></small><br>
-
+    <img id="playerCover" src="https://i.imgur.com/OFK8Tur.jpeg" 
+    width="300" height="139" 
+    style="position: fixed; top: 0; right: 0; z-index: 9999; pointer-events: none; display: none;">
+ 
  </body>
 </html>
