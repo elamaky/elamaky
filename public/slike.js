@@ -29,7 +29,6 @@ socket.on('display-image', (data) => {
 
 // Osluškujemo 'initial-images' događaj sa servera i prikazujemo postojeće slike
 socket.on('initial-images', (images) => {
-    console.log('Prikaz inicijalnih slika:', images);
     images.forEach((imageData) => {
         addImageToDOM(imageData.imageUrl, imageData.position, imageData.dimensions);
     });
@@ -37,14 +36,12 @@ socket.on('initial-images', (images) => {
 
 // Osluškujemo 'update-images' događaj sa servera
 socket.on('update-images', (updatedImages) => {
-    console.log('Nova lista slika:', updatedImages);
-
-    // Prvo uklanjamo sve slike sa stranice
-    document.querySelectorAll('img').forEach(slika => {
+     document.querySelectorAll('img').forEach(slika => {
     if (slika.id !== "playerCover") {
         slika.remove(); // Briše samo slike koje nemaju ID "playerCover"
     }
 });
+
     // Zatim ponovo dodajemo sve slike iz nove liste
     updatedImages.forEach((imageData) => {
         addImageToDOM(imageData.imageUrl, imageData.position, imageData.dimensions);
@@ -107,21 +104,21 @@ function addImageToDOM(imageUrl, position, dimensions) {
         alert("Nijedna slika nije selektovana!");
     }
 });
+// Definiši privilegovane korisnike
+const authorizedUsers = new Set(['Radio Galaksija', 'ZI ZU', '*__X__*']); 
 
-
-        // Omogućavanje interakcije samo za prijavljene korisnike
-        if (isLoggedIn) {
-            newImage.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
-            enableDragAndResize(newImage); // Uključi funkcionalnost za povlačenje i promenu veličine
-        } else {
-            newImage.style.pointerEvents = "none"; // Onemogućava klikove
-        }
-
-        document.body.appendChild(deleteButton);
-        document.body.appendChild(newImage);
-    }
+// Omogućavanje interakcije samo za privilegovane korisnike
+if (authorizedUsers.has(currentUser)) {
+    newImage.style.pointerEvents = "auto"; // Omogućava klikove i interakciju
+    enableDragAndResize(newImage); // Uključi funkcionalnost za povlačenje i promenu veličine
+} else {
+    newImage.style.pointerEvents = "none"; // Onemogućava klikove
 }
 
+document.body.appendChild(deleteButton);
+document.body.appendChild(newImage);
+}
+}
 // Funkcija za omogućavanje drag-and-resize funkcionalnosti za sliku
 function enableDragAndResize(img) {
     let isResizing = false;
@@ -225,16 +222,12 @@ function emitImageUpdate(img) {
     const position = { x: img.offsetLeft, y: img.offsetTop }; // Pozicija slike
     const dimensions = { width: img.offsetWidth, height: img.offsetHeight }; // Dimenzije slike
     const imageUrl = img.src; // URL slike
-    console.log(`Emituju se podaci slike: URL: ${imageUrl}, pozicija: (${position.x}, ${position.y}), dimenzije: (${dimensions.width}, ${dimensions.height})`);
-
-    // Pozivamo funkciju koja emituje podatke serveru
-    updateImageOnServer(imageUrl, position, dimensions);
+     updateImageOnServer(imageUrl, position, dimensions);
 }
 
 // Funkcija za slanje podataka o slici serveru
 function updateImageOnServer(imageUrl, position, dimensions) {
-    console.log(`Slanje podataka serveru: URL: ${imageUrl}, pozicija: (${position.x}, ${position.y}), dimenzije: (${dimensions.width}, ${dimensions.height})`);
-    socket.emit('update-image', {
+     socket.emit('update-image', {
         imageUrl: imageUrl,
         position: position,
         dimensions: dimensions
@@ -243,13 +236,28 @@ function updateImageOnServer(imageUrl, position, dimensions) {
 
 // Funkcija za sinhronizaciju slike sa servera
 socket.on('sync-image', (data) => {
-    console.log(`Prijem sinhronizovanih podataka: URL: ${data.imageUrl}, pozicija: (${data.position.x}, ${data.position.y}), dimenzije: (${data.dimensions.width}, ${data.dimensions.height})`);
     const syncedImage = document.querySelector(`img[src="${data.imageUrl}"]`); // Selektujemo sliku po URL-u
     if (syncedImage) {
         syncedImage.style.left = data.position.x + 'px';
         syncedImage.style.top = data.position.y + 'px';
         syncedImage.style.width = data.dimensions.width + 'px';
         syncedImage.style.height = data.dimensions.height + 'px';
-        console.log(`Slika sinhronizovana: X: ${data.position.x}, Y: ${data.position.y}, širina: ${data.dimensions.width}, visina: ${data.dimensions.height}`);
+        
     }
+});
+// SLIKE ZA POZADINU 
+document.getElementById("pozadina").addEventListener("click", function() {
+    var url = prompt("Unesite URL slike:");
+    if (url) {
+        document.body.style.backgroundImage = "url('" + url + "')";
+        socket.emit("changeBackground", url); // Ovo šalje serveru
+    } else {
+        document.body.style.backgroundImage = "url('default_image_url.jpg')";
+        socket.emit("changeBackground", "default_image_url.jpg");
+
+    }
+});
+
+socket.on("updateBackground", (url) => {
+    document.body.style.backgroundImage = "url('" + url + "')";
 });
