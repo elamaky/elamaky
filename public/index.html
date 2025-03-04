@@ -15,49 +15,10 @@
 </head>
 <body>
 
-    <div id="authContainer">
-    <!-- Forma za registraciju -->
-    <form id="registerForm">
-        <input type="text" id="registerUsername" placeholder="Napavi Nik" required>
-        <input type="password" id="registerPassword" placeholder="Lozinka" required>
-        <button type="submit">Registracija</button>
-    </form>
-    
-    <!-- Forma za prijavu -->
-    <form id="loginForm">
-        <input type="text" id="loginUsername" placeholder="Login" required>
-        <input type="password" id="loginPassword" placeholder="Lozinka" required>
-        <button type="submit">Prijava</button>
-    </form>
-</div>
-
-    <button id="openModal" class="toolbarBtn">D</button>
+      <button id="openModal" class="toolbarBtn">D</button>
         <button class="toolbarBtn" id="smilesBtn">😊</button>
-        <button class="toolbarBtn" id="GBtn">G</button>
-    </div>
+         </div>
 
-<!-- Modal -->
-<div id="gostimodal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        
-        <!-- Dugmici unutar modala -->
-        <button class="toolbarBtn" id="boldBtn">Bold</button>
-        <button class="toolbarBtn" id="italicBtn">Italic</button>
-        <!-- Dugme za boju koje sadrži paletu boja -->
-        <button class="toolbarBtn" id="colorBtn">Color</button>
-        <input type="color" id="colorPicker" style="display: none;">
-    
-        <!-- Dodaj druge dugmice po potrebi -->
-       <button class="toolbarBtn" id="plusBtn" onclick="increaseFontSize()">+</button>
-<button class="toolbarBtn" id="minusBtn" onclick="decreaseFontSize()">-</button>
-<button class="toolbarBtn" id="linijadoleBtn">Temelj</button>
-<button class="toolbarBtn" id="linijagoreBtn">Krov</button>
-        <button class="toolbarBtn" id="sound">Muzika</button>
-        <button class="toolbarBtn" id="ton">Muzika-Mixer</button>
-      
-</div>
-</div>
 <div id="functionModal" class="modal" style="display: none;" draggable="true">
     <div class="modal-content">
         <span class="close" id="closeModal">&times;</span>
@@ -80,43 +41,10 @@
     </div>
 </div>
 
-<div id="memoryForm" style="display: none;">
-    <h3>Unesite naziv stranice</h3>
-    <input type="text" id="pageNameInput" placeholder="Naziv stranice" />
-    <button id="savePageButton">Spremi stranicu</button>
-</div>
-<div id="savedPagesMenu"></div>
 
- <div id="messageArea"></div>
-
- <div id="messageInput">
-        <textarea id="chatInput" rows="1" placeholder="Ispeci Pa Reci...Godjaja Lafi.....               ❤️"></textarea>
-    </div>
-
-    <div id="guestList"></div>
-      <div id="mixer">
-        <audio id="audioPlayer" controls style="position: absolute; top: 0px; left: 0;"></audio>
-        <h2 class="title" style="position: absolute; top: 60px; left: 0;">By *__X__*</h2>
-        <input type="file" id="fileInput" multiple style="position: absolute; top: 90px; left: 0; right: 0; margin-bottom: 10px;">
-
-        <ul id="songList"></ul>
-        
-        <div id="mixer-buttons">
-            <button id="playSelected">Play</button>
-            <button id="deleteSelected">Obriši</button>
-            
-             </div>
-    </div>
-         
-<script src="virtual.js"></script>  
-<script src="konobarica.js"></script>
-<script src="formatiranje.js"></script> 
- <script src="regist.js"></script>
-<script src="smile.js"></script> 
+         <script src="smile.js"></script> 
 <script src="funkcije.js"></script>
 <script src="slike.js"></script>
- <script src="memorija.js"></script>
- <script src="uuid.js"></script>
  <script src="poruke.js"></script>
     <script src="privat.js"></script>
  <iframe id="radioIframe" src="https://zeno.fm/player/radio-galaksija?autoplay=true&muted=true" 
